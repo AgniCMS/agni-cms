@@ -35,6 +35,20 @@
 				<?php echo lang( 'post_by' ); ?> <?php echo anchor( 'author/'.$row->account_username, $row->account_username, array( 'rel' => 'author' ) ); ?> 
 			</small>
 		</header>
+		<a href="<?php echo site_url( $post_url ); ?>">
+		<?php 
+		if ( $row->post_feature_image != null ) {
+			$this->load->model( 'media_model' );
+		?> 
+		<img src="<?php echo $this->media_model->get_img( $row->post_feature_image, '' ); ?>" alt="" class="post-feature-image" />
+		<?php 
+		} else {
+		?> 
+		<img src="<?php echo $this->theme_path; ?>front/images/no-feature-image.png" alt="" class="post-feature-image" />
+		<?php 
+		}
+		?> 
+		</a>
 		<div class="entry">
 			<?php if ( $row->body_summary != null ) {
 				echo $row->body_summary;
@@ -42,6 +56,7 @@
 				echo mb_strimwidth( nl2br( strip_tags( $row->body_value ) ), 0, 255, '...' );
 			} ?> 
 		</div>
+		<div class="clear"></div>
 		<?php if ( !empty( $row->comment_count ) ): ?><footer><?php echo anchor( $list_url.'#list-comments', sprintf( lang( 'post_total_comment' ), $row->comment_count ) ); ?></footer><?php endif; ?> 
 	</article>
 	

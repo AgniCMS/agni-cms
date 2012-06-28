@@ -24,6 +24,7 @@
 				<?php echo lang( 'post_by' ); ?> <?php echo anchor( 'author/'.$row->account_username, $row->account_username, array( 'rel' => 'author' ) ); ?> 
 			</small>
 		</header>
+		<a href="<?php echo site_url( $post_url ); ?>">
 		<?php 
 		if ( $row->post_feature_image != null ) {
 			$this->load->model( 'media_model' );
@@ -36,6 +37,7 @@
 		<?php 
 		}
 		?> 
+		</a>
 		<div class="entry">
 			<?php if ( $row->body_summary != null ) {
 				echo $row->body_summary;

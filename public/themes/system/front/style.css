@@ -2,6 +2,8 @@ a {color: #ff4200; text-decoration: none;}
 a:visited {color: #ff6600;}
 a:hover {color: #f00; text-decoration: none;}
 
+a img {border: none;}
+
 body {background: #fff; color: #555; font-family: tahoma,Geneva,Arial,Helvetica,sans-serif; font-size: 12px;}
 
 h1, h2, h3, h4, h5, h6 {margin-bottom: 10px;}
