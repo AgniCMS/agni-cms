@@ -44,6 +44,7 @@
 				<th><?php echo anchor( current_url().'?orders=post_status&amp;sort='.$sort.'&amp;q='.$q.'&amp;tid='.$tid, lang( 'post_status' ) ); ?></th>
 				<th><?php echo lang( 'post_categories' ); ?></th>
 				<th><?php echo lang( 'post_tags' ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=theme_system_name&amp;sort='.$sort.'&amp;q='.$q.'&amp;tid='.$tid, lang( 'admin_theme' ) ); ?></th>
 				<th><?php echo lang( 'post_date' ); ?></th>
 				<th></th>
 			</tr>
@@ -56,6 +57,7 @@
 				<th><?php echo anchor( current_url().'?orders=post_status&amp;sort='.$sort.'&amp;q='.$q.'&amp;tid='.$tid, lang( 'post_status' ) ); ?></th>
 				<th><?php echo lang( 'post_categories' ); ?></th>
 				<th><?php echo lang( 'post_tags' ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=theme_system_name&amp;sort='.$sort.'&amp;q='.$q.'&amp;tid='.$tid, lang( 'admin_theme' ) ); ?></th>
 				<th><?php echo lang( 'post_date' ); ?></th>
 				<th></th>
 			</tr>
@@ -104,6 +106,14 @@
 						}
 					}
 				?></td>
+				<td><?php
+				// read theme name
+				if ( $row->theme_system_name != null ) {
+					$theme_data = $this->themes_model->read_theme_metadata( $row->theme_system_name.'/'.$row->theme_system_name.'.info' );
+					echo anchor( 'area/demo/'.$row->theme_system_name, $theme_data['name'] );
+					unset( $theme_data );
+				}
+				?></td>
 				<td>
 					<?php echo lang( 'post_add_since' ); ?>: <?php echo gmt_date( 'Y-m-d H:i:s', $row->post_add_gmt ); ?><br />
 					<?php echo lang( 'post_update_since' ); ?>: <?php echo gmt_date( 'Y-m-d H:i:s', $row->post_update_gmt ); ?><br />
@@ -118,7 +128,7 @@
 		<?php endforeach; ?> 
 		<?php else: ?> 
 			<tr>
-				<td colspan="8"><?php echo lang( 'admin_nodata' ); ?></td>
+				<td colspan="9"><?php echo lang( 'admin_nodata' ); ?></td>
 			</tr>
 		<?php endif; ?> 
 		</tbody>

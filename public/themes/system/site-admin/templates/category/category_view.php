@@ -19,6 +19,7 @@
 						<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
 						<th><?php echo lang( 'category_name' ); ?></th>
 						<th><?php echo lang( 'category_total_posts' ); ?></th>
+						<th><?php echo lang( 'admin_theme' ); ?></th>
 						<th></th>
 					</tr>
 				</thead>
@@ -27,6 +28,7 @@
 						<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
 						<th><?php echo lang( 'category_name' ); ?></th>
 						<th><?php echo lang( 'category_total_posts' ); ?></th>
+						<th><?php echo lang( 'admin_theme' ); ?></th>
 						<th></th>
 					</tr>
 				</tfoot>

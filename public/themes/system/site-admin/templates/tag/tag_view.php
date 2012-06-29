@@ -23,6 +23,7 @@
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
 				<th><?php echo anchor( current_url().'?orders=t_name&sort='.$sort.'&q='.$q, lang( 'tag_name' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=t_total&sort='.$sort.'&q='.$q, lang( 'tag_total_post' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=theme_system_name&sort='.$sort.'&q='.$q, lang( 'admin_theme' ) ); ?></th>
 				<th></th>
 			</tr>
 		</thead>
@@ -31,6 +32,7 @@
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
 				<th><?php echo anchor( current_url().'?orders=t_name&sort='.$sort.'&q='.$q, lang( 'tag_name' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=t_total&sort='.$sort.'&q='.$q, lang( 'tag_total_post' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=theme_system_name&sort='.$sort.'&q='.$q, lang( 'admin_theme' ) ); ?></th>
 				<th></th>
 			</tr>
 		</tfoot>
@@ -41,12 +43,20 @@
 				<td class="check-column"><?php echo form_checkbox( 'id[]', $row->tid); ?></td>
 				<td><?php echo $row->t_name; ?></td>
 				<td><?php echo $row->t_total; ?></td>
+				<td><?php
+				// read theme name
+				if ( $row->theme_system_name != null ) {
+					$theme_data = $this->themes_model->read_theme_metadata( $row->theme_system_name.'/'.$row->theme_system_name.'.info' );
+					echo anchor( 'area/demo/'.$row->theme_system_name, $theme_data['name'] );
+					unset( $theme_data );
+				}
+				?></td>
 				<td><?php echo anchor( 'site-admin/tag/edit/'.$row->tid, lang( 'admin_edit' ) ); ?></td>
 			</tr>
 		<?php endforeach; ?> 
 		<?php else: ?> 
 			<tr>
-				<td colspan="4"><?php echo lang( 'admin_nodata' ); ?></td>
+				<td colspan="5"><?php echo lang( 'admin_nodata' ); ?></td>
 			</tr>
 		<?php endif; ?> 
 		</tbody>

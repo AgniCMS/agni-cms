@@ -24,6 +24,7 @@
 				<th><?php echo anchor( current_url().'?orders=post_name&amp;sort='.$sort.'&amp;q='.$q, lang( 'post_page_name' ) ); ?></th>
 				<th><?php echo lang( 'post_author_name' ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=post_status&amp;sort='.$sort.'&amp;q='.$q, lang( 'post_status' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=theme_system_name&amp;sort='.$sort.'&amp;q='.$q, lang( 'admin_theme' ) ); ?></th>
 				<th><?php echo lang( 'post_date' ); ?></th>
 				<th></th>
 			</tr>
@@ -34,6 +35,7 @@
 				<th><?php echo anchor( current_url().'?orders=post_name&amp;sort='.$sort.'&amp;q='.$q, lang( 'post_page_name' ) ); ?></th>
 				<th><?php echo lang( 'post_author_name' ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=post_status&amp;sort='.$sort.'&amp;q='.$q, lang( 'post_status' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=theme_system_name&amp;sort='.$sort.'&amp;q='.$q, lang( 'admin_theme' ) ); ?></th>
 				<th><?php echo lang( 'post_date' ); ?></th>
 				<th></th>
 			</tr>
@@ -46,6 +48,14 @@
 				<td><?php echo anchor( $row->post_uri_encoded, $row->post_name ); ?></td>
 				<td><?php echo anchor( 'site-admin/account/edit/'.$row->account_id, $row->account_username ); ?></td>
 				<td><?php echo ( $row->post_status == '1' ? lang( 'post_published' ) : lang( 'post_draft' ) ); ?></td>
+				<td><?php
+				// read theme name
+				if ( $row->theme_system_name != null ) {
+					$theme_data = $this->themes_model->read_theme_metadata( $row->theme_system_name.'/'.$row->theme_system_name.'.info' );
+					echo anchor( 'area/demo/'.$row->theme_system_name, $theme_data['name'] );
+					unset( $theme_data );
+				}
+				?></td>
 				<td>
 					<?php echo lang( 'post_add_since' ); ?>: <?php echo gmt_date( 'Y-m-d H:i:s', $row->post_add_gmt ); ?><br />
 					<?php echo lang( 'post_update_since' ); ?>: <?php echo gmt_date( 'Y-m-d H:i:s', $row->post_update_gmt ); ?><br />
@@ -60,7 +70,7 @@
 		<?php endforeach; ?> 
 		<?php else: ?> 
 			<tr>
-				<td colspan="6"><?php echo lang( 'admin_nodata' ); ?></td>
+				<td colspan="7"><?php echo lang( 'admin_nodata' ); ?></td>
 			</tr>
 		<?php endif; ?> 
 		</tbody>

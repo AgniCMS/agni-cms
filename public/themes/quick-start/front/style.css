@@ -10,6 +10,17 @@ body {background: #fff; color: #555; font-family: tahoma,Geneva,Arial,Helvetica,
 .content-wraper, .sidebar {margin-bottom: 18px;}
 
 
+.demo-area {background: #ff0; background-color: rgba(255,255,0,0.5); outline: #ff4200 1px dotted;}
+
+
+/* icons */
+.ico16-delete {background: url('images/web-icons.png') no-repeat -16px -20px; cursor: pointer; display: inline-block; height: 16px; text-indent: -999999px; width: 16px;}
+.ico16-edit {background: url('images/web-icons.png') no-repeat -64px -20px; cursor: pointer; display: inline-block; height: 16px; text-indent: -999999px; width: 16px;}
+.ico-no {background: url('images/check-icons.png') no-repeat -17px 0; display: inline-block; height: 16px; width: 16px;}
+.ico-unknow {background: url('images/check-icons.png') no-repeat -34px 0;display: inline-block; height: 16px; width: 16px;}
+.ico-yes {background: url('images/check-icons.png') no-repeat; display: inline-block; height: 16px; width: 16px;}
+
+
 .list-posts .each-post {border-bottom: 2px solid #eee; margin-bottom: 6px; padding-bottom: 7px;}
 .list-posts .each-post .entry {margin: 0 0 0 160px;}
 .list-posts .each-post .post-feature-image {float: left; margin: 0 10px 0 0; max-width: 150px; position: relative;}
