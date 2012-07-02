@@ -4,7 +4,7 @@
  * Module URL: 
  * Description: Akismet spam prevention.
  * Author: vee w.
- * Author URL: http://okvee.net
+ * Author URL: http://www.okvee.net
   */
 class akismet_module {
 	

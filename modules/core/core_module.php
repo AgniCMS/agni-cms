@@ -4,7 +4,7 @@
  * Module URL: http://www.agnicms.org
  * Description: Agni cms core module.
  * Author: vee w.
- * Author URL: http://okvee.net
+ * Author URL: http://www.okvee.net
  * 
  */
 
