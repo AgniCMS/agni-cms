@@ -78,7 +78,7 @@ class akismet_module {
 						$row = $query->row();
 						$query->free_result();
 						// load akismet class
-						include( dirname(__FILE__).'/libraries/Akismet.class.php ');
+						include_once( dirname(__FILE__).'/libraries/Akismet.class.php ');
 						$akismet = new Akismet( site_url(), $akismet_api );
 						if ( $akismet->isKeyValid() ) {
 							$akismet->setCommentAuthor($row->name);
@@ -111,7 +111,7 @@ class akismet_module {
 						$row = $query->row();
 						$query->free_result();
 						// load akismet class
-						include( dirname(__FILE__).'/libraries/Akismet.class.php ');
+						include_once( dirname(__FILE__).'/libraries/Akismet.class.php ');
 						$akismet = new Akismet( site_url(), $akismet_api );
 						if ( $akismet->isKeyValid() ) {
 							$akismet->setCommentAuthor($row->name);
