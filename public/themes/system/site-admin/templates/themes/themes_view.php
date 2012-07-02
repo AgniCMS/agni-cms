@@ -24,17 +24,14 @@
 			<?php if ( $key->theme_default_admin == '1' ): ?> (<?php echo lang( 'themes_default_admin_theme' ); ?>)<?php endif; ?>
 		</div>
 		<?php if ( !empty( $key->theme_description ) ): ?><div class="theme-description"><?php echo $key->theme_description; ?></div><?php endif; ?> 
-		<div class="theme-cmd">
+		<ul class="theme-cmd actions-inline">
 			<?php if ( $key->theme_default == '0' && $key->theme_default_admin == '0' ): ?> 
-			<?php echo anchor( 'site-admin/themes/disable/'.urlencode( $key->theme_system_name ), lang( 'themes_disable' ) ); ?> 
-			<?php $connector = true; ?>
+			<li><?php echo anchor( 'site-admin/themes/disable/'.urlencode( $key->theme_system_name ), lang( 'themes_disable' ) ); ?></li>
 			<?php endif; ?> 
-			
 			<?php if ( $key->theme_default == '0' ): ?> 
-			<?php if ( isset( $connector ) ): ?>| <?php endif; ?>
-			<?php echo anchor( 'site-admin/themes/defaults/'.urlencode( $key->theme_system_name ), lang( 'themes_default' ) ); ?>
+			<li><?php echo anchor( 'site-admin/themes/defaults/'.urlencode( $key->theme_system_name ), lang( 'themes_default' ) ); ?></li>
 			<?php endif; ?> 
-		</div>
+		</ul>
 	</div>
 	<?php endforeach; ?> 
 	<?php endif; ?> 
@@ -51,11 +48,11 @@
 		<?php if ( $key['theme_screenshot_large'] != null ) {echo '</a>';} ?> 
 		<div class="theme-name"><?php if ( !empty( $key['theme_name'] ) ): ?><?php echo $key['theme_name']; ?><?php else: ?><em title="<?php echo lang( 'themes_no_name' ); ?>"><?php echo $key['theme_system_name']; ?></em><?php endif; ?></div>
 		<?php if ( !empty( $key['theme_description'] ) ): ?><div class="theme-description"><?php echo $key['theme_description']; ?></div><?php endif; ?> 
-		<div class="theme-cmd">
-			<?php echo anchor( 'site-admin/themes/enable/'.urlencode( $key['theme_system_name'] ), lang( 'themes_enable' ) ); ?> 
-			| <?php echo anchor( 'site-admin/themes/defaults/'.urlencode( $key['theme_system_name'] ), lang( 'themes_enable_and_default' ) ); ?> 
-			| <?php echo anchor( 'site-admin/themes/delete/'.urlencode( $key['theme_system_name'] ), lang( 'admin_delete' ) ); ?>
-		</div>
+		<ul class="theme-cmd actions-inline">
+			<li><?php echo anchor( 'site-admin/themes/enable/'.urlencode( $key['theme_system_name'] ), lang( 'themes_enable' ) ); ?></li>
+			<li><?php echo anchor( 'site-admin/themes/defaults/'.urlencode( $key['theme_system_name'] ), lang( 'themes_enable_and_default' ) ); ?></li>
+			<li><?php echo anchor( 'site-admin/themes/delete/'.urlencode( $key['theme_system_name'] ), lang( 'admin_delete' ) ); ?></li>
+		</ul>
 	</div>
 	<?php endif; ?> 
 	<?php endforeach; ?> 

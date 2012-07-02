@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="<?php echo strtolower( config_item( 'charset' ) ); ?>" />
 		<title><?php echo $page_title; ?></title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<?php if ( isset( $page_meta ) ) {echo $page_meta;} ?> 
 		<!--[if lt IE 9]>
 			<script src="<?php echo $this->base_url; ?>public/js/html5.js"></script>
@@ -60,13 +60,13 @@
 		<div class="container_16 body-wraper">
 			<div class="grid_12 content-wraper">
 				<div class="content-inner-wraper">
-					<?php if ( $area_breadcrumb ): ?><div class="breadcrumb"><?php echo $area_breadcrumb; ?></div><?php endif; ?> 
+					<?php if ( $area_breadcrumb != null ): ?><div class="breadcrumb"><?php echo $area_breadcrumb; ?></div><?php endif; ?> 
 					
 					<?php echo $page_content; ?> 
 					
 				</div>
 			</div>
-			<?php if ( $area_sidebar ): ?> 
+			<?php if ( $area_sidebar != null ): ?> 
 			<div class="grid_4 sidebar rightbar">
 				<!--sidebar prototype-->
 				<?php echo $area_sidebar; ?> 
@@ -77,7 +77,7 @@
 			
 			<div class="grid_16 page-footer">
 				<footer class="inner-page-footer">
-					<?php if ( $area_footer ): ?> 
+					<?php if ( $area_footer != null ): ?> 
 					<nav class="footer-nav">
 						<?php echo $area_footer; ?> 
 					</nav>

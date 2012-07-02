@@ -1,0 +1,38 @@
+
+input[type=text], input[type=password], input[type=search], input[type=tel], input[type=url], input[type=email]
+, input[type=datetime], input[type=date], input[type=month], input[type=week], input[type=time], input[type=datetime-local]
+, input[type=number] {display: block; width: 99%;}
+/* input:focus */
+input[type=text]:focus, input[type=password]:focus, input[type=search]:focus, input[type=tel]:focus, input[type=url]:focus, input[type=email]:focus
+, input[type=datetime]:focus, input[type=date]:focus, input[type=month]:focus, input[type=week]:focus, input[type=time]:focus, input[type=datetime-local]:focus
+, input[type=number]:focus {box-shadow: 0 0 2px #61da10}
+/* input:disabled */
+input[type=text]:disabled, input[type=password]:disabled, input[type=search]:disabled, input[type=tel]:disabled, input[type=url]:disabled, input[type=email]:disabled
+, input[type=datetime]:disabled, input[type=date]:disabled, input[type=month]:disabled, input[type=week]:disabled, input[type=time]:disabled, input[type=datetime-local]:disabled
+, input[type=number]:disabled {background: #f5f5f5;}
+
+input[type=button], input[type=submit], button {margin-bottom: 18px; position: relative;}
+
+label, div.form-label {display: block; margin-bottom: 18px; position: relative; width: 100%;}
+
+select {display: block;}
+
+textarea {display: block; clear: left; width: 99%;}
+textarea:focus {border: 1px solid #ff4200; outline: none;}
+
+.container_16 .grid_1 .input-text {width: 34px}
+.container_16 .grid_2 .input-text {width: 94px}
+.container_16 .grid_3 .input-text {width: 154px}
+.container_16 .grid_4 .input-text {width: 214px}
+.container_16 .grid_5 .input-text {width: 274px}
+.container_16 .grid_6 .input-text {width: 334px;}
+.container_16 .grid_7 .input-text {width: 394px}
+.container_16 .grid_8 .input-text {width: 454px}
+.container_16 .grid_9 .input-text {width: 514px}
+.container_16 .grid_10 .input-text{width:574px}
+.container_16 .grid_11 .input-text{width:634px}
+.container_16 .grid_12 .input-text{width:694px}
+.container_16 .grid_13 .input-text{width:754px}
+.container_16 .grid_14 .input-text{width:814px}
+.container_16 .grid_15 .input-text{width:874px}
+.container_16 .grid_16 .input-text{width:934px}

@@ -1,0 +1,10 @@
+Theme Name: Colored
+Theme URL: http://www.agnicms.org
+Version: 1.0
+Description: Colored 3 column block style content.
+
+areas[navigation] = Navigation
+areas[banner] = Banner
+areas[footer1] = Footer 1
+areas[footer2] = Footer 2
+areas[footer3] = Footer 3
