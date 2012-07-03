@@ -296,6 +296,10 @@ class taxonomy_model extends CI_Model {
 	 */
 	function nodup_uri( $uri, $editmode = false, $id = '' ) {
 		$uri = url_title( $uri );
+		// load url model for check disallowed uri
+		$this->load->model( 'url_model' );
+		$uri = $this->url_model->validate_allow_url( $uri );
+		//
 		if ( $editmode == true ) {
 			if ( !is_numeric( $id ) ) {return null;}
 			// no duplicate uri edit mode
