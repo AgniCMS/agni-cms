@@ -38,7 +38,7 @@ class permission_model extends CI_Model {
 					if ( $file != '.' && $file != '..' && ( filetype( $this->app_admin.$file ) == 'file' ) ) {
 						if ( $file != 'account_permission'.EXT ) {
 							// prevent re-declare class
-							include( $this->app_admin.$file );
+							include_once( $this->app_admin.$file );
 						}
 						$file_to_class = str_replace(EXT, '', $file );
 						$obj = new $file_to_class;
@@ -59,7 +59,7 @@ class permission_model extends CI_Model {
 			if ( $query->num_rows() > 0 ) {
 				foreach ( $query->result() as $row ) {
 					if ( file_exists( $this->mx_path.$row->module_system_name.'/controllers/'.$row->module_system_name.'_admin.php' ) ) {
-						include( $this->mx_path.$row->module_system_name.'/controllers/'.$row->module_system_name.'_admin.php' );
+						include_once( $this->mx_path.$row->module_system_name.'/controllers/'.$row->module_system_name.'_admin.php' );
 						$file_to_class = $row->module_system_name.'_admin';
 						$obj = new $file_to_class;
 						if ( method_exists( $obj, '_define_permission' ) ) {
@@ -71,23 +71,6 @@ class permission_model extends CI_Model {
 			}
 			$query->free_result();
 		}
-		/*if ( is_dir( $this->mx_path) ) {
-			if ( $dh = opendir( $this->mx_path) ) {
-				while ( ( $file = readdir( $dh) ) !== false ) {
-					if ( $file != '.' && $file != '..' && ( filetype( $this->mx_path.$file) == 'dir' ) ) {
-						if ( file_exists( $this->mx_path.$file.'/controllers/'.$file.'_admin.php' ) ) {
-							include( $this->mx_path.$file.'/controllers/'.$file.'_admin.php' );
-							$file_to_class = $file.'_admin';
-							$obj = new $file_to_class;
-							if ( method_exists( $obj, '_define_permission' ) ) {
-								$permission_array = array_merge( $permission_array, $obj->_define_permission() );
-							}
-							unset( $obj );
-						}
-					}
-				}
-			}
-		}*/ // not use anymore
 		return $permission_array;
 	}// fetch_permissions
 	
