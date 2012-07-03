@@ -13,7 +13,7 @@ Desktop.ini
 ###########
 # github
 ###########
-#*.gitignore
+#.gitignore
 
 ###########
 # project image source
@@ -24,6 +24,7 @@ _img_src/*
 # project ignore files
 ###########
 /*.7z
+/*.zip
 application/cache/*
 application/cache/!index.html
 */logs/log-*.php
