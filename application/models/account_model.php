@@ -274,8 +274,10 @@ class account_model extends CI_Model {
 				// do nothing
 			} else {
 				$c_account = $cm_account;
+				unset( $cm_account );
 			}
 		}
+		unset( $ca_account );
 		// replace method's attributes with cookie
 		if ( $id == null || $username == null || $password == null || $onlinecode = '' ) {
 			$id = $c_account['id'];
@@ -383,7 +385,6 @@ class account_model extends CI_Model {
 						$query2->free_result();
 						$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
 						return true;
-
 					}
 					$query2->free_result();
 				}
@@ -877,13 +878,19 @@ class account_model extends CI_Model {
 	 * logout
 	 */
 	function logout() {
-		// api logout
-		$cm_account = $this->get_account_cookie( 'member' );
+		// get account id from cookie
+		$cm_account = $this->get_account_cookie( 'admin' );
+		if ( !isset( $cm_account['id'] ) ) {
+			$cm_account = $this->get_account_cookie( 'member' );
+		}
+		// delete cache of this account id
 		if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) && isset( $cm_account['email'] ) ) {
 			$this->modules_plug->do_action( 'account_logout', $cm_account );
 			$this->config_model->delete_cache( 'chkacc_'.$cm_account['id'].'_' );
 		}
+		// load helper for delete cookie
 		$this->load->helper( array( 'cookie' ) );
+		// delete cookie
 		delete_cookie( 'admin_account' );
 		delete_cookie( 'member_account' );
 	}// logout
