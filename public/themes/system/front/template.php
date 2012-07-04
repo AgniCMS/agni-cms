@@ -9,14 +9,37 @@
 			<script src="<?php echo $this->base_url; ?>public/js/html5.js"></script>
 		<![endif]-->
 		
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960/reset.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960/text.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960/960.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/form.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/style.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/beauty-buttons/beauty-buttons.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960adapt/css/master.css" />
+		<noscript><link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960adapt/css/960.min.css" /></noscript>
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/form.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/style.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/beauty-buttons/beauty-buttons.css" />
 		<?php if ( isset( $page_link ) ) {echo $page_link;} ?> 
 		<script src="<?php echo $this->base_url; ?>public/js/jquery.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			var ADAPT_CONFIG = {
+				// Where is your CSS?
+				path: '<?php echo $this->base_url; ?>public/css-fw/960adapt/css/',
+				
+				// false = Only run once, when page first loads.
+				// true = Change on window resize and page tilt.
+				dynamic: true,
+				
+				// First range entry is the minimum.
+				// Last range entry is the maximum.
+				// Separate ranges by "to" keyword.
+				range: [
+					'0px    to 760px  = mobile.css',
+					'760px  to 980px  = 720.min.css',
+					'980px  to 1280px = 960.min.css',
+					'1280px to 1600px = 1200.min.css',
+					'1600px to 1920px = 1200.min.css',// replace 1560
+					'1940px to 2540px = 1200.min.css',// replace 1920
+					'2540px           = 1200.min.css'// replace 2520
+				]
+			};
+		</script>
+		<script src="<?php echo $this->base_url; ?>public/css-fw/960adapt/js/adapt.min.js" type="text/javascript"></script>
 		<?php if ( isset( $page_script ) ) {echo $page_script;} ?> 
 		<script type="text/javascript">
 			// declare variable for use in .js file
@@ -33,11 +56,11 @@
 	<body class="body-class<?php echo $this->html_model->gen_front_body_class( 'theme-'.$this->theme_system_name ); ?>">
 		
 		
-		<div class="container_16 page-header">
+		<div class="container_12 page-header">
 			<header class="inner-page-header">
 				<div class="page-header-top">
-					<?php $header_tag = (current_url() == site_url() || current_url() == site_url( '/' ) ? 'h1' : 'div' );?><<?php echo $header_tag; ?> class="grid_6 site-name"><a href="<?php echo site_url(); ?>"><?php echo $this->config_model->load_single( 'site_name' ); ?></a></<?php echo $header_tag; ?>>
-					<div class="grid_10 account-header-area">
+					<?php $header_tag = (current_url() == site_url() || current_url() == site_url( '/' ) ? 'h1' : 'div' );?><<?php echo $header_tag; ?> class="grid_5 site-name"><a href="<?php echo site_url(); ?>"><?php echo $this->config_model->load_single( 'site_name' ); ?></a></<?php echo $header_tag; ?>>
+					<div class="grid_7 account-header-area">
 						<?php
 						if ( $this->account_model->is_member_login() ) {
 							echo anchor( 'account/edit-profile', lang( 'account_edit_profile' ) );
@@ -50,15 +73,15 @@
 					</div>
 					<div class="clear"></div>
 				</div>
-				<nav class="grid_16 navbar">
+				<nav class="grid_12 navbar">
 					<?php echo $area_navigation; ?> 
 					<div class="clear"></div>
 				</nav>
 			</header>
 		</div>
 		
-		<div class="container_16 body-wraper">
-			<div class="grid_12 content-wraper">
+		<div class="container_12 body-wraper">
+			<div class="grid_9 content-wraper">
 				<div class="content-inner-wraper">
 					<?php if ( $area_breadcrumb != null ): ?><div class="breadcrumb"><?php echo $area_breadcrumb; ?></div><?php endif; ?> 
 					
@@ -67,7 +90,7 @@
 				</div>
 			</div>
 			<?php if ( $area_sidebar != null ): ?> 
-			<div class="grid_4 sidebar rightbar">
+			<div class="grid_3 sidebar rightbar">
 				<!--sidebar prototype-->
 				<?php echo $area_sidebar; ?> 
 				<!--end sidebar prototype-->
@@ -75,7 +98,7 @@
 			<?php endif; ?> 
 			<div class="clear"></div>
 			
-			<div class="grid_16 page-footer">
+			<div class="grid_12 page-footer">
 				<footer class="inner-page-footer">
 					<?php if ( $area_footer != null ): ?> 
 					<nav class="footer-nav">
