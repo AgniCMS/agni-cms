@@ -47,7 +47,10 @@ $lang['admin_nav_roles'] = 'หน้าที่';
 $lang['admin_nav_roles_and_permissions'] = 'หน้าที่และการอนุญาต';
 $lang['admin_nav_tags'] = 'แท็ก';
 $lang['admin_nav_themes_manager'] = 'ระบบจัดการธีม';
+$lang['admin_nav_tools'] = 'เครื่องมือ';
+$lang['admin_nav_url_redirect'] = 'เปลี่ยนเส้นทาง URL';
 $lang['admin_nav_users'] = 'ผู้ใช้';
+$lang['admin_nav_users_roles_and_permssions'] = 'ผู้ใช้ หน้าที่ และสิทธิ';
 $lang['admin_nav_visit_site'] = 'เข้าชมเว็บไซต์';
 $lang['admin_nav_website'] = 'เว็บไซต์';
 

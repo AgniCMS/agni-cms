@@ -105,3 +105,29 @@ if ( !function_exists( 'url_title' ) ) {
 		return trim( stripslashes( $str ) );
 	}// url_title
 }
+
+
+if ( !function_exists( 'urlencode_except_slash' ) ) {
+	function urlencode_except_slash( $url = '' ) {
+		if ( $url == null ) {return null;}
+		//
+		$url_raw = explode( '/', $url );
+		if ( !is_array( $url_raw ) ) {return $url;}
+		//
+		$output = '';
+		//
+		foreach ( $url_raw as $uri ) {
+			if ( mb_strpos( $uri, 'http:' ) !== false || mb_strpos( $uri, 'https:' ) !== false || mb_strpos( $uri, 'ftp:' ) !== false || mb_strpos( $uri, ':' ) !== false ) {
+				// contain protocol (http://), do not encode this part
+				$output .= $uri;
+			} else {
+				$output .= urlencode( $uri );
+			}
+			//
+			if ( $uri != end( $url_raw ) ) {
+				$output .= '/';
+			}
+		}
+		return $output;
+	}// urlencode_except_slash
+}

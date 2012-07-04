@@ -26,8 +26,8 @@ class auto_controller extends MY_Controller {
 	
 	
 	function index() {
-		$att = $this->uri->uri_string();
 		$att1 = $this->uri->segment(1);
+		// set att2 and prevent some of att2 match att1.
 		$uri_arr = $this->uri->segment_array();
 		$att2 = array();
 		foreach ( $uri_arr as $item ) {
@@ -62,9 +62,28 @@ class auto_controller extends MY_Controller {
 				$this->load->module( 'post' );
 				return $this->post->view( $last_urisegment );
 			}
+			$query->free_result();
+			unset( $c_type, $query );
+		} else {
+			$query->free_result();
+			// not found? lookup in url alias as redirect
+			$uri_string = $this->uri->uri_string();
+			$uri_string = preg_replace( '/\/(.*)/', '$1', $uri_string );
+			// find in db
+			$this->db->where( 'uri_encoded', $uri_string );
+			$this->db->where( 'c_type', 'redirect' );
+			$query = $this->db->get( 'url_alias' );
+			//
+			unset( $uri_string );
+			//
+			if ( $query->num_rows() > 0 ) {
+				$row = $query->row();
+				$query->free_result();
+				redirect( $row->redirect_to_encoded );
+			}
+			$query->free_result();
+			unset( $query );
 		}
-		$query->free_result();
-		unset( $c_type, $query );
 		// found nothing.
 		show_404();
 	}// index

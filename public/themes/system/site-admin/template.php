@@ -25,10 +25,18 @@
 								<li><?php echo anchor( 'site-admin', lang( 'admin_home' ) ); ?></li>
 								<li><?php echo anchor( site_url(), lang( 'admin_nav_visit_site' ) ); ?></li>
 								<?php if ( check_admin_permission( 'config_global', 'config_global' ) ): ?><li><?php echo anchor( 'site-admin/config', lang( 'admin_nav_global_config' ) ); ?></li><?php endif; ?> 
+								<li><?php echo anchor( '#', lang( 'admin_nav_tools' ), array( 'onclick' => 'return false;' ) ); ?>
+									<?php if ( check_admin_permission( 'urls_perm', 'urls_perm_view_all' ) ): ?> 
+									<ul>
+										<?php if ( check_admin_permission( 'urls_perm', 'urls_perm_view_all' ) ): ?><li><?php echo anchor( 'site-admin/urls', lang( 'admin_nav_url_redirect' ) ); ?></li><?php endif; ?> 
+									</ul>
+									<?php endif; ?> 
+								</li>
 							</ul>
 						</li>
-						<li><?php echo anchor( 'site-admin/account', lang( 'admin_nav_users' ) ); ?> 
+						<li><?php echo anchor( '#', lang( 'admin_nav_users_roles_and_permssions' ), array( 'onclick' => 'return false;' ) ); ?> 
 							<ul>
+								<?php if ( check_admin_permission( 'account_perm', 'account_manage_perm' ) ): ?><li><?php echo anchor( 'site-admin/account', lang( 'admin_nav_users' ) ); ?></li><?php endif; ?> 
 								<?php if ( check_admin_permission( 'account_perm', 'account_add_perm' ) ): ?><li><?php echo anchor( 'site-admin/account/add', lang( 'admin_nav_add_user' ) ); ?></li><?php endif; ?> 
 								<li><?php echo anchor( 'site-admin/account/edit', lang( 'admin_nav_edit_profile' ) ); ?></li>
 								<?php if ( check_admin_permission( 'account_lv_perm', 'account_lv_manage_perm' ) || check_admin_permission( 'account_permission_perm', 'account_permission_manage_perm' ) ): ?><li><?php echo anchor( '#', lang( 'admin_nav_roles_and_permissions' ), array( 'onclick' => 'return false' ) ); ?> 

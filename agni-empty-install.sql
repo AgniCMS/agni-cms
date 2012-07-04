@@ -552,7 +552,7 @@ CREATE TABLE IF NOT EXISTS `an_taxonomy_term_data` (
   `t_description` longtext,
   `t_uri` varchar(255) DEFAULT NULL,
   `t_uri_encoded` tinytext,
-  `t_uris` text COMMENT 'full path of uri, eg. animal/4legs/cat (no end slash and must uri encoded) ',
+  `t_uris` text COMMENT 'full path of uri, eg. animal/4legs/cat (no end slash and must uri encoded)',
   `meta_title` varchar(255) DEFAULT NULL,
   `meta_description` varchar(255) DEFAULT NULL,
   `meta_keywords` varchar(255) DEFAULT NULL,
@@ -607,6 +607,8 @@ CREATE TABLE IF NOT EXISTS `an_url_alias` (
   `c_id` int(11) DEFAULT NULL COMMENT 'those content id',
   `uri` varchar(255) DEFAULT NULL,
   `uri_encoded` tinytext,
+  `redirect_to` varchar(255) DEFAULT NULL COMMENT 'for use in url redirect',
+  `redirect_to_encoded` TINYTEXT NULL DEFAULT NULL,
   `language` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`alias_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

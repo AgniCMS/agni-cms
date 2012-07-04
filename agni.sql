@@ -740,6 +740,8 @@ CREATE TABLE IF NOT EXISTS `an_url_alias` (
   `c_id` int(11) DEFAULT NULL COMMENT 'those content id',
   `uri` varchar(255) DEFAULT NULL,
   `uri_encoded` tinytext,
+  `redirect_to` varchar(255) DEFAULT NULL COMMENT 'for use in url redirect',
+  `redirect_to_encoded` TINYTEXT NULL DEFAULT NULL,
   `language` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`alias_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;
