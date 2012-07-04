@@ -26,9 +26,6 @@ class MY_Loader extends MX_Loader {
 			
 		if ( file_exists( $view_path.$use_theme.'/'.$view.'.php' ) ) {
 			// มองหาใน public/themes/theme_name/view_name.php แล้วเจอ
-			/**
-			 *@todo ทำ load view mobile from settings. 
-			 */
 			$ci_view = $use_theme.'/'.$view;
 		} elseif ( file_exists( $view_path.$default_theme.'/'.$view.'.php' ) ) {
 			// มองหาใน public/themes/system/view_name.php แล้วเจอ

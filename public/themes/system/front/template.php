@@ -1,4 +1,5 @@
-<?php include( dirname(__FILE__).'/functions.php' ); ?><!DOCTYPE html>
+<?php include( dirname(__FILE__).'/functions.php' ); ?>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="<?php echo strtolower( config_item( 'charset' ) ); ?>" />
@@ -91,9 +92,7 @@
 			</div>
 			<?php if ( $area_sidebar != null ): ?> 
 			<div class="grid_3 sidebar rightbar">
-				<!--sidebar prototype-->
 				<?php echo $area_sidebar; ?> 
-				<!--end sidebar prototype-->
 			</div>
 			<?php endif; ?> 
 			<div class="clear"></div>
