@@ -30,6 +30,7 @@ $lang['admin_nav_add_tag'] = 'Add tag';
 $lang['admin_nav_add_user'] = 'Add user';
 $lang['admin_nav_articles'] = 'Articles';
 $lang['admin_nav_block'] = 'Block';
+$lang['admin_nav_cache_manager'] = 'Cache manager';
 $lang['admin_nav_categories'] = 'Categories';
 $lang['admin_nav_comment'] = 'Comment';
 $lang['admin_nav_component'] = 'Component';

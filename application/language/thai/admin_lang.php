@@ -30,6 +30,7 @@ $lang['admin_nav_add_tag'] = 'เพิ่มแท็ก';
 $lang['admin_nav_add_user'] = 'เพิ่มผู้ใช้';
 $lang['admin_nav_articles'] = 'บทความ';
 $lang['admin_nav_block'] = 'บล็อค';
+$lang['admin_nav_cache_manager'] = 'ระบบจัดการแคช';
 $lang['admin_nav_categories'] = 'หมวดหมู่';
 $lang['admin_nav_comment'] = 'ความคิดเห็น';
 $lang['admin_nav_component'] = 'ส่วนประกอบ';

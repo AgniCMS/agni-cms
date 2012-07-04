@@ -27,7 +27,15 @@ class config_model extends CI_Model {
 		// if partial is ALL (clean cache)
 		if ( $partial_name == 'ALL' || $partial_name == 'clean' ) {
 			$this->load->driver( 'cache' );
-			return $this->cache->clean();
+			//return $this->cache->clean();// DO NOT use this method because it is delete all index.html and .htaccess files
+			$map = scandir( 'application/cache' );
+			if ( is_array( $map ) && !empty( $map ) ) {
+				foreach ( $map as $key => $item ) {
+					if ( $item != '.' && $item != '..' && $item != 'index.html' && $item != '.htaccess' ) {
+						unlink( 'application/cache/'.$item );
+					}
+				}
+			}
 		}
 		// delete cache
 		$map = scandir( 'application/cache' );

@@ -29,6 +29,7 @@
 									<?php if ( check_admin_permission( 'urls_perm', 'urls_perm_view_all' ) ): ?> 
 									<ul>
 										<?php if ( check_admin_permission( 'urls_perm', 'urls_perm_view_all' ) ): ?><li><?php echo anchor( 'site-admin/urls', lang( 'admin_nav_url_redirect' ) ); ?></li><?php endif; ?> 
+										<li><?php echo anchor( 'site-admin/cacheman', lang( 'admin_nav_cache_manager' ) ); ?></li>
 									</ul>
 									<?php endif; ?> 
 								</li>
