@@ -38,6 +38,7 @@ class url_model extends CI_Model {
 		$this->db->set( 'uri_encoded', urlencode_except_slash( $data['uri'] ) );
 		$this->db->set( 'redirect_to', $data['redirect_to'] );
 		$this->db->set( 'redirect_to_encoded', $this->encode_redirect_to( $data['redirect_to'] ) );
+		$this->db->set( 'redirect_code', $data['redirect_code'] );
 		$this->db->set( 'language', $this->language );
 		$this->db->insert( 'url_alias' );
 		// get insert id
@@ -74,6 +75,7 @@ class url_model extends CI_Model {
 		$this->db->set( 'uri_encoded', urlencode_except_slash( $data['uri'] ) );
 		$this->db->set( 'redirect_to', $data['redirect_to'] );
 		$this->db->set( 'redirect_to_encoded', $this->encode_redirect_to( $data['redirect_to'] ) );
+		$this->db->set( 'redirect_code', $data['redirect_code'] );
 		$this->db->where( 'c_type', $this->c_type );
 		$this->db->where( 'language', $this->language );
 		$this->db->where( 'alias_id', $data['alias_id'] );
@@ -105,6 +107,7 @@ class url_model extends CI_Model {
 			$sql .= " or uri_encoded like '%" . $this->db->escape_like_str( $q ) . "%'";
 			$sql .= " or redirect_to like '%" . $this->db->escape_like_str( $q ) . "%'";
 			$sql .= " or redirect_to_encoded like '%" . $this->db->escape_like_str( $q ) . "%'";
+			$sql .= " or redirect_code like '%" . $this->db->escape_like_str( $q ) . "%'";
 			$sql .= ')';
 		}
 		// order and sort

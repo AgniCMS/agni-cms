@@ -2,6 +2,10 @@
 
 $lang['urls_add'] = 'Add URL';
 $lang['urls_edit'] = 'Edit URL';
+$lang['urls_redirect_301'] = '301 Move permanently';
+$lang['urls_redirect_302'] = '302 Move temporarily';
+$lang['urls_redirect_303'] = '303 See other';
+$lang['urls_redirect_code'] = 'Redirect code';
 $lang['urls_redirect_comment'] = 'Input as normal character not url encode.';
 $lang['urls_redirect_to'] = 'Redirect to';
 $lang['urls_search'] = 'Search';

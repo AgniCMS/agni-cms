@@ -2,6 +2,10 @@
 
 $lang['urls_add'] = 'เพิ่มเส้นทาง';
 $lang['urls_edit'] = 'แก้ไขเส้นทาง';
+$lang['urls_redirect_301'] = '301 ย้ายถาวร';
+$lang['urls_redirect_302'] = '302 ย้ายชั่วคราว';
+$lang['urls_redirect_303'] = '303 ดูอย่างอื่น';
+$lang['urls_redirect_code'] = 'รหัสเปลี่ยนเส้นทาง';
 $lang['urls_redirect_comment'] = 'กรอกตัวอักษรธรรมดา ไม่ต้องเข้ารหัส url.';
 $lang['urls_redirect_to'] = 'เปลี่ยนเส้นทางไปยัง';
 $lang['urls_search'] = 'ค้นหา';

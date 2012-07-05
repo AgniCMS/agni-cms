@@ -79,7 +79,7 @@ class auto_controller extends MY_Controller {
 			if ( $query->num_rows() > 0 ) {
 				$row = $query->row();
 				$query->free_result();
-				redirect( $row->redirect_to_encoded );
+				redirect( $row->redirect_to_encoded, '', $row->redirect_code );
 			}
 			$query->free_result();
 			unset( $query );

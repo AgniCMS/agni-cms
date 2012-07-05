@@ -31,10 +31,14 @@ class urls extends admin_controller {
 	function add() {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'urls_perm', 'urls_perm_add' ) != true ) {redirect( 'site-admin' );}
+		// preset value
+		$output['redirect_code'] = 302;
 		// post method. save action
 		if ( $this->input->post() ) {
 			$data['uri'] = trim( $this->input->post( 'uri' ) );
 			$data['redirect_to'] = trim( $this->input->post( 'redirect_to' ) );
+			$data['redirect_code'] = trim( $this->input->post( 'redirect_code' ) );
+				if ( !is_numeric( $data['redirect_code'] ) ) {$data['redirect_code'] = 301;}
 			// load form validation
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'uri', 'lang:urls_uri', 'trim|required|xss_clean' );
@@ -56,6 +60,7 @@ class urls extends admin_controller {
 			// re-populate form
 			$output['uri'] = htmlspecialchars( $data['uri'], ENT_QUOTES, config_item( 'charset' ) );
 			$output['redirect_to'] = htmlspecialchars( $data['redirect_to'], ENT_QUOTES, config_item( 'charset' ) );
+			$output['redirect_code'] = $data['redirect_code'];
 		}
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'urls_url_redirect' ) );
@@ -100,11 +105,14 @@ class urls extends admin_controller {
 		$output['row'] = $row;
 		$output['uri'] = htmlspecialchars( $row->uri, ENT_QUOTES, config_item( 'charset' ) );
 		$output['redirect_to'] = htmlspecialchars( $row->redirect_to, ENT_QUOTES, config_item( 'charset' ) );
+		$output['redirect_code'] = $row->redirect_code;
 		// post method. save action
 		if ( $this->input->post() ) {
 			$data['alias_id'] = $alias_id;
 			$data['uri'] = trim( $this->input->post( 'uri' ) );
 			$data['redirect_to'] = trim( $this->input->post( 'redirect_to' ) );
+			$data['redirect_code'] = trim( $this->input->post( 'redirect_code' ) );
+				if ( !is_numeric( $data['redirect_code'] ) ) {$data['redirect_code'] = 301;}
 			// load form validation
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'uri', 'lang:urls_uri', 'trim|required|xss_clean' );
@@ -123,6 +131,10 @@ class urls extends admin_controller {
 					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
 				}
 			}
+			// re-populate form
+			$output['uri'] = htmlspecialchars( $data['uri'], ENT_QUOTES, config_item( 'charset' ) );
+			$output['redirect_to'] = htmlspecialchars( $data['redirect_to'], ENT_QUOTES, config_item( 'charset' ) );
+			$output['redirect_code'] = $data['redirect_code'];
 		}
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'urls_url_redirect' ) );

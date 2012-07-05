@@ -12,6 +12,13 @@
 			<input type="text" name="redirect_to" value="<?php if ( isset( $redirect_to ) ) {echo $redirect_to;} ?>" maxlength="255" />
 			<span class="txt_comment"><?php echo lang( 'urls_redirect_comment' ); ?></span>
 		</label>
+		<label><?php echo lang( 'urls_redirect_code' ); ?>: <span class="txt_require">*</span>
+			<select name="redirect_code">
+				<option value="301"<?php if ( isset( $redirect_code ) && $redirect_code == '301' ) {echo ' selected="selected"';} ?>><?php echo lang( 'urls_redirect_301' ); ?></option>
+				<option value="302"<?php if ( isset( $redirect_code ) && $redirect_code == '302' ) {echo ' selected="selected"';} ?>><?php echo lang( 'urls_redirect_302' ); ?></option>
+				<option value="303"<?php if ( isset( $redirect_code ) && $redirect_code == '303' ) {echo ' selected="selected"';} ?>><?php echo lang( 'urls_redirect_303' ); ?></option>
+			</select>
+		</label>
 		<button type="submit" class="bb-button standard"><?php echo lang( 'admin_save' ); ?></button>
 	</div>
 	

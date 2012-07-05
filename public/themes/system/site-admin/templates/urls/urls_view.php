@@ -23,6 +23,7 @@
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
 				<th><?php echo anchor( current_url().'?orders=uri&amp;sort='.$sort, lang( 'urls_uri' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=redirect_to&amp;sort='.$sort, lang( 'urls_redirect_to' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=redirect_code&amp;sort='.$sort, lang( 'urls_redirect_code' ) ); ?></th>
 				<th></th>
 			</tr>
 		</thead>
@@ -31,6 +32,7 @@
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
 				<th><?php echo anchor( current_url().'?orders=uri&amp;sort='.$sort, lang( 'urls_uri' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=redirect_to&amp;sort='.$sort, lang( 'urls_redirect_to' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=redirect_code&amp;sort='.$sort, lang( 'urls_redirect_code' ) ); ?></th>
 				<th></th>
 			</tr>
 		</tfoot>
@@ -41,6 +43,7 @@
 				<td class="check-column"><?php echo form_checkbox( 'id[]', $row->alias_id); ?></td>
 				<td><?php echo anchor( $row->uri_encoded, $row->uri, array( 'target' => '_review' ) ); ?></td>
 				<td><?php echo anchor( $row->redirect_to_encoded, $row->redirect_to, array( 'target' => '_review' ) ); ?></td>
+				<td><?php echo $this->lang->line( 'urls_redirect_'.$row->redirect_code); ?></td>
 				<td>
 					<ul class="actions-inline">
 						<li><?php echo anchor( 'site-admin/urls/edit/'.$row->alias_id, lang( 'admin_edit' ) ); ?></li>
@@ -50,7 +53,7 @@
 			<?php endforeach; ?> 
 			<?php else: ?> 
 			<tr>
-				<td colspan="4"><?php echo lang( 'admin_nodata' ); ?></td>
+				<td colspan="5"><?php echo lang( 'admin_nodata' ); ?></td>
 			</tr>
 			<?php endif; ?> 
 		</tbody>

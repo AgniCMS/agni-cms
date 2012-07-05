@@ -609,6 +609,7 @@ CREATE TABLE IF NOT EXISTS `an_url_alias` (
   `uri_encoded` tinytext,
   `redirect_to` varchar(255) DEFAULT NULL COMMENT 'for use in url redirect',
   `redirect_to_encoded` TINYTEXT NULL DEFAULT NULL,
+  `redirect_code` INT( 5 ) NULL DEFAULT NULL COMMENT '301 permanent, 302 temporarily',
   `language` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`alias_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
