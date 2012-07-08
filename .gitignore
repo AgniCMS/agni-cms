@@ -28,8 +28,10 @@ _img_src/*
 application/cache/*
 application/cache/!index.html
 */logs/log-*.php
+public/upload/avatar/*
 public/upload/avatar/!index.html
 public/upload/media/*/*
 public/upload/media/*/!index.html
+public/upload/unzip/*
 public/upload/unzip/!index.html
 todo.txt
