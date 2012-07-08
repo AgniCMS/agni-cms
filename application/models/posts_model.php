@@ -389,7 +389,7 @@ class posts_model extends CI_Model {
 	 * @return boolean 
 	 */
 	function is_allow_delete_post( $row = '' ) {
-		if ( !is_object( $row ) || $row == null ) {return false;}
+		if ( !is_object( $row ) || $row == null || !isset( $row->post_type ) ) {return false;}
 		// get my account id
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		$my_account_id = ( isset( $cm_account['id'] ) ? $cm_account['id'] : 0 );
@@ -421,7 +421,7 @@ class posts_model extends CI_Model {
 	 * @return boolean 
 	 */
 	function is_allow_edit_post( $row = '' ) {
-		if ( !is_object( $row ) || $row == null ) {return false;}
+		if ( !is_object( $row ) || $row == null || !isset( $row->post_type ) ) {return false;}
 		// get my account id
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		$my_account_id = ( isset( $cm_account['id'] ) ? $cm_account['id'] : 0 );
