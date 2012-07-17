@@ -30,7 +30,7 @@ class html_model extends CI_Model {
 		// gen logged in class
 		$cm_cookie = $this->account_model->get_account_cookie( 'member' );
 		if ( !isset( $cm_cookie['id'] ) || !isset( $cm_cookie['username'] ) || !isset( $cm_cookie['password'] ) || !isset( $cm_cookie['onlinecode'] ) ) {
-			$class .= ' logged-in';
+			$class .= ' not-logged-in';
 		}
 		// plugins here
 		$class .= ' '.$this->modules_plug->do_action( 'front_html_body_class' );
