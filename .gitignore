@@ -25,7 +25,6 @@ _img_src/*
 ###########
 /*.7z
 /*.zip
-/*.sql
 application/cache/*
 application/cache/!index.html
 */logs/log-*.php
