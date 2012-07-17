@@ -54,6 +54,7 @@ class blocks_model extends CI_Model {
 		$this->db->set( 'block_values', serialize( $value ) );
 		$this->db->set( 'block_status', $data['block_status'] );
 		$this->db->set( 'block_except_uri', $data['block_except_uri'] );
+		$this->db->set( 'block_only_uri', $data['block_only_uri'] );
 		$this->db->where( 'block_id', $data['block_id'] );
 		$this->db->update( 'blocks' );
 		return true;

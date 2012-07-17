@@ -166,6 +166,7 @@ CREATE TABLE IF NOT EXISTS `an_blocks` (
   `block_values` text,
   `block_status` int(1) NOT NULL DEFAULT '0' COMMENT '0=disable, 1=enable',
   `block_except_uri` text,
+  `block_only_uri` text,
   PRIMARY KEY (`block_id`),
   KEY `theme_system_name` (`theme_system_name`),
   KEY `area_name` (`area_name`)

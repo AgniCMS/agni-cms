@@ -417,6 +417,7 @@ class themes_model extends CI_Model {
 		$this->db->order_by( 'position', 'asc' );
 		$query = $this->db->get( 'blocks' );
 		if ( $query->num_rows() > 0 && strpos( current_url(), site_url( 'area/demo' ) ) === false ) {
+			// list blocks in area and NOT in area demo
 			$current_uri = urldecode( substr( $this->uri->uri_string(), 1 ) );
 			// loop to cut out the blocks that are in except uri------------------------------------
 			$results = $query->result();
@@ -429,6 +430,15 @@ class themes_model extends CI_Model {
 				$i++;
 			}
 			// end cut except uri---------------------------------------------------------------------
+			// loop cut to show only uri--------------------------------------------------------------
+			$i = 0;
+			foreach ( $results as $row ) {
+				$block_only_uri = explode( "\n", $row->block_only_uri );
+				if ( $row->block_only_uri != null && !in_array( $current_uri, $block_only_uri ) ) {
+					unset( $results[$i] );
+				}
+			}
+			// end loop cut to show only uri---------------------------------------------------------
 			$output = null;
 			if ( !empty( $results ) ) {
 				// results not empty, start loop display blocks.
@@ -447,11 +457,13 @@ class themes_model extends CI_Model {
 			}
 			// end
 		} elseif ( strpos( current_url(), site_url( 'area/demo' ) ) !== false ) {
+			// display area demo
 			$this->load->helper( 'array' );
 			$areas = $this->list_areas( $this->theme_system_name );
 			$key = recursive_array_search( $area_name, $areas );
 			$output = '<div class="area-'.$area_name.' demo-area">'.$areas[$key]['area_name'].'</div>';
 		} else {
+			// something wrong, return nothing
 			$output = null;
 		}
 		$query->free_result();

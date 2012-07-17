@@ -139,14 +139,18 @@ class block extends admin_controller {
 		$output['block_values'] = unserialize( $row->block_values );
 		$output['block_status'] = $row->block_status;
 		$output['block_except_uri'] = $row->block_except_uri;
+		$output['block_only_uri'] = $row->block_only_uri;
 		// save action
 		if ( $this->input->post() ) {
 			$data['block_id'] = $block_id;
 			$data['block_status'] = $this->input->post( 'block_status' );
 				if ( $data['block_status'] != '1' ) {$data['block_status'] = '0';}
-			$data['block_except_uri'] = strip_tags( trim( $this->input->post( 'block_except_uri' ) ) );
+			$data['block_except_uri'] = strip_tags( $this->input->post( 'block_except_uri' ) );
 				$data['block_except_uri'] = str_replace( array( "\r\n", "\r" ), "\n", $data['block_except_uri'] );
 				if ( $data['block_except_uri'] == null ) {$data['block_except_uri'] = null;}
+			$data['block_only_uri'] = strip_tags( $this->input->post( 'block_only_uri' ) );
+				$data['block_only_uri'] = str_replace( array( "\r\n", "\r" ), "\n", $data['block_only_uri'] );
+				if ( $data['block_only_uri'] == null ) {$data['block_only_uri'] = null;}
 			//
 			$result = $this->blocks_model->edit( $data );
 			if ( $result === true ) {

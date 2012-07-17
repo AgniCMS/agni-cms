@@ -39,6 +39,11 @@
 				<textarea name="block_except_uri" class="except-uri"><?php echo $block_except_uri; ?></textarea>
 				<span class="txt_comment"><?php echo lang( 'block_except_uri_comment' ); ?></span>
 			</div>
+			<h3><a href="#"><?php echo lang( 'block_only_uri' ); ?></a></h3>
+			<div>
+				<textarea name="block_only_uri" class="except-uri"><?php echo $block_only_uri; ?></textarea>
+				<span class="txt_comment"><?php echo lang( 'block_only_uri_comment' ); ?></span>
+			</div>
 		</div>
 		<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
 
