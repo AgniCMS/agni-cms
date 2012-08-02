@@ -84,9 +84,11 @@ input[type=text], input[type=password], input[type=search], input[type=tel], inp
 .page-header {margin: 15px auto;}
 .page-header-top {margin-bottom: 15px;}
 
-.pagination {text-align: center;}
+.pagination {margin: 0; text-align: center;}
 .pagination a {background: #fff4f0; border: 1px solid #ffa586; display: inline-block; margin: 0 5px; min-width: 20px; text-align: center;}
-.pagination strong {border: 1px solid #ffa586; display: inline-block; margin: 0 5px; min-width: 20px; text-align: center;}
+.pagination ul {display: inline-block; list-style: none; margin: 0; padding: 0;}
+.pagination ul li {display: inline-block; margin: 0;}
+.pagination ul li.active {font-weight: bold;}
 
 .post-page h1 {font-size: 23px;}
 .post-page h2 {font-size: 21px;}

@@ -84,7 +84,7 @@ class account_permission extends admin_controller {
 		}
 		// set success msg and send back
 		$this->load->library( 'session' );
-		$this->session->set_flashdata( 'form_status', '<div class="txt_success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+		$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
 		redirect( 'site-admin/account-permission' );
 	}// save
 	

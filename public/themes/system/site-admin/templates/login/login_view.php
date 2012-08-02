@@ -6,7 +6,7 @@
 			<div class="login-container">
 				<h1><?php echo config_load( 'site_name' ); ?></h1>
 				<?php echo form_open( current_url().( isset( $go_to ) ? '?rdr='.$go_to : '' ), array( 'onsubmit' => 'return ajax_admin_login($(this));' ) ); ?> 
-					<noscript><div class="txt_error"><?php echo lang( 'account_please_enable_javascript' ); ?></div></noscript>
+					<noscript><div class="txt_error alert alert-error"><?php echo lang( 'account_please_enable_javascript' ); ?></div></noscript>
 					<div class="form-status"><?php if ( isset( $form_status ) ) {echo $form_status;} ?></div>
 					
 					<div class="language"><?php echo language_switch(); ?></div>

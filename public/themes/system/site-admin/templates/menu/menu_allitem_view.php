@@ -227,7 +227,7 @@
 			success: function( data ) {
 				if ( data == 'true' ) {
 					$('.inline-edit').hide().html('');
-					$('.form-result').html( '<div class="txt_success"><?php echo lang( 'admin_saved' ); ?></div>' );
+					$('.form-result').html( '<div class="txt_success alert alert-success"><?php echo lang( 'admin_saved' ); ?></div>' );
 				} else {
 					$('.form-result').html( data );
 					$('body,html').animate({scrollTop: 0}, 800);

@@ -48,7 +48,7 @@ class block extends admin_controller {
 				$output['block_id'] = $result['id'];
 			} else {
 				$output['result'] = false;
-				$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+				$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 			}
 			// output
 			$this->output->set_content_type( 'application/json' );
@@ -118,7 +118,7 @@ class block extends admin_controller {
 					$this->db->update( 'blocks' );
 					$i++;
 				}
-				echo '<div class="txt_success">'.lang( 'admin_saved' ).'</div>';
+				echo '<div class="txt_success alert alert-success">'.lang( 'admin_saved' ).'</div>';
 			}
 		}
 	}// ajax_sort
@@ -156,10 +156,10 @@ class block extends admin_controller {
 			if ( $result === true ) {
 				// load session library
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 				redirect( 'site-admin/block?theme_system_name='.$row->theme_system_name );
 			} else {
-				$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+				$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 			}
 		}
 		// head tags output ##############################

@@ -38,10 +38,10 @@ class akismet extends admin_controller {
 			if ( $result === true ) {
 				// load session library
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 				redirect( 'akismet/site-admin/akismet/config' );
 			} else {
-				$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+				$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 			}
 			// re-populate form
 			$output['akismet_api'] = $data['akismet_api'];

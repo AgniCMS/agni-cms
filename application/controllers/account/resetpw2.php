@@ -35,7 +35,7 @@ class resetpw2 extends MY_Controller {
 				$this->db->set( 'account_confirm_code', NULL );
 				$this->db->where( 'account_id', $account_id );
 				$this->db->update( 'accounts' );
-				$output['form_status'] = '<div class="txt_success">' . $this->lang->line( 'account_cancel_change_password' ) . '</div>';
+				$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_cancel_change_password' ) . '</div>';
 			} else {
 				$this->db->where( 'account_id', $account_id );
 				$this->db->where( 'account_confirm_code', $confirm_code );
@@ -56,7 +56,7 @@ class resetpw2 extends MY_Controller {
 						$this->form_validation->set_rules('new_password', 'lang:account_new_password', 'trim|required|matches[conf_new_password]');
 						$this->form_validation->set_rules('conf_new_password', 'lang:account_confirm_new_password', 'trim|required');
 						if ( $this->form_validation->run() == false ) {
-							$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+							$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 						} else {
 							// update new password
 							$this->db->set( 'account_password', $this->account_model->encrypt_password( $data['new_password'] ) );
@@ -64,19 +64,19 @@ class resetpw2 extends MY_Controller {
 							$this->db->set( 'account_confirm_code', NULL );
 							$this->db->where( 'account_id', $account_id );
 							$this->db->update( 'accounts' );
-							$output['form_status'] = '<div class="txt_success">' . $this->lang->line( 'account_confirm_reset_password' ) . '</div>';
+							$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_confirm_reset_password' ) . '</div>';
 							// any APIs add here
 							$this->modules_plug->do_action( 'account_change_password', $data );
 						}
 					}
 					
 				} else {
-					$output['form_status'] = '<div class="txt_error">' . $this->lang->line( 'account_forgetpw_invalid_url' ) . '</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_forgetpw_invalid_url' ) . '</div>';
 				}
 				$query->free_result();
 			}
 		} else {
-			$output['form_status'] = '<div class="txt_error">' . $this->lang->line( 'account_forgetpw_invalid_url' ) . '</div>';
+			$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_forgetpw_invalid_url' ) . '</div>';
 		}
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_reset_password' ) );

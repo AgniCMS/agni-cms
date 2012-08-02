@@ -63,6 +63,13 @@ body {background: #fff; color: #555; font-family: tahoma,Geneva,Arial,Helvetica,
 .post-page .taxonomy-term ul.items li ul li:first-child:before {content: '';}
 
 
+.pagination {margin: 0; text-align: center;}
+.pagination a {display: inline-block; margin: 0 5px; min-width: 20px; text-align: center;}
+.pagination ul {display: inline-block; list-style: none; margin: 0; padding: 0;}
+.pagination ul li {display: inline-block; margin: 0;}
+.pagination ul li.active {font-weight: bold;}
+
+
 .site-name {font-size: 19px; font-weight: bold; margin-bottom: 18px; padding: 0;}
 
 

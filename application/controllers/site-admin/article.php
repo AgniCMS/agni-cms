@@ -99,16 +99,16 @@ class article extends admin_controller {
 			$this->form_validation->set_rules( 'post_name', 'lang:post_article_name', 'trim|required' );
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				// save result
 				$result = $this->posts_model->add( $data );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
 					redirect( 'site-admin/article' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">' . $result . '</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
 				}
 			}
 			// re-populate form
@@ -426,16 +426,16 @@ class article extends admin_controller {
 			$this->form_validation->set_rules( 'post_name', 'lang:post_article_name', 'trim|required' );
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				// save result
 				$result = $this->posts_model->edit( $data );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
 					redirect( 'site-admin/article' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">' . $result . '</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
 				}
 			}
 			// re-populate form

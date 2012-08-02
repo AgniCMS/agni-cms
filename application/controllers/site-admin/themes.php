@@ -37,10 +37,10 @@ class themes extends admin_controller {
 			if ( $result === true ) {
 				// load session
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.lang( 'themes_added' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'themes_added' ).'</div>' );
 				redirect( 'site-admin/themes' );
 			} else {
-				$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+				$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 			}
 		}
 		// head tags output ##############################
@@ -64,9 +64,9 @@ class themes extends admin_controller {
 		// load session
 		$this->load->library( 'session' );
 		if ( $result == true ) {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.sprintf( lang( 'themes_default_done' ), ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name ) ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.sprintf( lang( 'themes_default_done' ), ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name ) ).'</div>' );
 		} else {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'themes_default_fail' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'themes_default_fail' ).'</div>' );
 		}
 		redirect( 'site-admin/themes' );
 	}// defaultadmin
@@ -81,9 +81,9 @@ class themes extends admin_controller {
 		// load session
 		$this->load->library( 'session' );
 		if ( $result == true ) {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.sprintf( lang( 'themes_default_done' ), ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name ) ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.sprintf( lang( 'themes_default_done' ), ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name ) ).'</div>' );
 		} else {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'themes_default_fail' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'themes_default_fail' ).'</div>' );
 		}
 		redirect( 'site-admin/themes' );
 	}// defaults
@@ -102,10 +102,10 @@ class themes extends admin_controller {
 				if ( $result === true ) {
 					// load session
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.sprintf( lang( 'themes_deleted' ), $output['theme_name'] ).'</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.sprintf( lang( 'themes_deleted' ), $output['theme_name'] ).'</div>' );
 					redirect( 'site-admin/themes' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 		}
@@ -127,9 +127,9 @@ class themes extends admin_controller {
 		// load session
 		$this->load->library( 'session' );
 		if ( $result == true ) {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.sprintf( lang( 'themes_disabled' ), ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name ) ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.sprintf( lang( 'themes_disabled' ), ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name ) ).'</div>' );
 		} else {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'themes_disabled_fail' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'themes_disabled_fail' ).'</div>' );
 		}
 		redirect( 'site-admin/themes' );
 	}// disable
@@ -144,9 +144,9 @@ class themes extends admin_controller {
 		// load session
 		$this->load->library( 'session' );
 		if ( $result == true ) {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.sprintf( lang( 'themes_enabled' ), ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name ) ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.sprintf( lang( 'themes_enabled' ), ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name ) ).'</div>' );
 		} else {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'themes_enabled_fail' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'themes_enabled_fail' ).'</div>' );
 		}
 		redirect( 'site-admin/themes' );
 	}// enable

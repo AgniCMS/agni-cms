@@ -60,9 +60,10 @@
 </div>
 <?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 
+<?php echo form_open( 'site-admin/themes/defaultadmin/' ); ?> 
 <fieldset class="fieldset-theme-admin">
 	<legend><?php echo lang( 'themes_administration' ); ?></legend>
-	<?php echo form_open( 'site-admin/themes/defaultadmin/' ); ?> 
+	
 		<select name="theme_system_name">
 			<?php if ( isset( $list_item['items'] ) && is_array( $list_item['items'] ) ): ?> 
 			<?php foreach ( $list_item['items'] as $key ): ?> 
@@ -73,5 +74,6 @@
 			<?php endif; ?> 
 		</select>
 		<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
-	<?php echo form_close(); ?> 
+	
 </fieldset>
+<?php echo form_close(); ?> 

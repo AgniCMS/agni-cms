@@ -244,7 +244,7 @@ class comment extends MY_Controller {
 			$this->form_validation->set_rules( 'name', 'lang:comment_name', 'trim|required|xss_clean' );
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			if ( $this->form_validation->run() == false ) {
-				return validation_errors( '<div class="txt_error">', '</div>' );
+				return validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				$result = $this->comments_model->edit( $data );
 				if ( $result === true ) {
@@ -255,7 +255,7 @@ class comment extends MY_Controller {
 						redirect( 'post/'.$row->post_uri_encoded.'?per_page='.$gotopage.'#comment-id-'.$comment_id );
 					}
 				} else {
-					return '<div class="txt_error">'.$result.'</div>';
+					return '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 		}
@@ -348,7 +348,7 @@ class comment extends MY_Controller {
 			$this->form_validation->set_rules( 'name', 'lang:comment_name', 'trim|required|xss_clean' );
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			if ( $this->form_validation->run() == false ) {
-				return validation_errors( '<div class="txt_error">', '</div>' );
+				return validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				// recieve post and modify, check
 				$data['parent_id'] = trim( $this->input->post( 'parent_id' ) );
@@ -425,15 +425,15 @@ class comment extends MY_Controller {
 						$gotopage = $this->comments_model->get_comment_display_page( $result['id'], $this->mode );
 						redirect( current_url().'?per_page='.$gotopage.'#comment-id-'.$result['id'] );
 					} else {
-						return '<div class="txt_success">'.$this->lang->line( 'comment_user_wait_approve' ).'</div>';
+						return '<div class="txt_success alert alert-success">'.$this->lang->line( 'comment_user_wait_approve' ).'</div>';
 					}
 				} else {
-					return '<div class="txt_error">'.$result.'</div>';
+					return '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
-		} else {
+		}/* else {
 			redirect( current_url() );
-		}
+		}*/// do not redirect. leave method post to other modules to work.
 	}// post
 	
 	

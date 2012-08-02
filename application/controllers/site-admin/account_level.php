@@ -37,16 +37,16 @@ class account_level extends admin_controller {
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'level_name', 'lang:account_level', 'trim|strip_tags|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				$result = $this->account_model->add_level_group( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/account-level' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 			// re-populate form
@@ -85,7 +85,7 @@ class account_level extends admin_controller {
 		// delete cache
 		$this->config_model->delete_cache( 'alg_' );
 		// done
-		$output['form_status'] = '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>';
+		$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>';
 		$this->output->set_content_type( 'application/json' );
 		$this->output->set_output( json_encode( $output ) );
 	}// ajaxsort
@@ -116,16 +116,16 @@ class account_level extends admin_controller {
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'level_name', 'lang:account_level', 'trim|strip_tags|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				$result = $this->account_model->edit_level_group( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/account-level' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 			// re-populate form

@@ -93,13 +93,13 @@ class comment extends admin_controller {
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			$this->form_validation->set_rules( 'email', 'lang:comment_email', 'trim|valid_email|xss_clean' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				// save result
 				$result = $this->comments_model->edit( $data );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
 					$this->load->library( 'user_agent' );
 					if ( $this->agent->is_referral() && $this->agent->referrer() != current_url() ) {
 						redirect( $this->agent->referrer() );
@@ -107,7 +107,7 @@ class comment extends admin_controller {
 						redirect( 'site-admin/comment' );
 					}
 				} else {
-					$output['form_status'] = '<div class="txt_error">' . $result . '</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
 				}
 			}
 		}

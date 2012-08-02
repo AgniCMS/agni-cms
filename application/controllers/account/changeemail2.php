@@ -35,7 +35,7 @@ class changeemail2 extends MY_Controller {
 				$this->db->set( 'account_confirm_code', NULL );
 				$this->db->where( 'account_id', $account_id );
 				$this->db->update( 'accounts' );
-				$output['form_status'] = '<div class="txt_success">' . $this->lang->line( 'account_cancel_change_email' ) . '</div>';
+				$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_cancel_change_email' ) . '</div>';
 			} else {
 				$this->db->where( 'account_id', $account_id );
 				$this->db->where( 'account_confirm_code', $confirm_code );
@@ -48,15 +48,15 @@ class changeemail2 extends MY_Controller {
 					$this->db->set( 'account_confirm_code', NULL );
 					$this->db->where( 'account_id', $account_id );
 					$this->db->update( 'accounts' );
-					$output['form_status'] = '<div class="txt_success">' . $this->lang->line( 'account_confirmed_change_email' ) . '</div>';
+					$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_confirmed_change_email' ) . '</div>';
 					$this->modules_plug->do_action( 'account_change_email', array( 'account_id' => $account_id, 'account_username' => $row->account_username, 'account_email' => $row->account_new_email ) );
 				} else {
-					$output['form_status'] = '<div class="txt_error">' . $this->lang->line( 'account_chengeemail_invalid_url' ) . '</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_chengeemail_invalid_url' ) . '</div>';
 				}
 				$query->free_result();
 			}
 		} else {
-			$output['form_status'] = '<div class="txt_error">' . $this->lang->line( 'account_chengeemail_invalid_url' ) . '</div>';
+			$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_chengeemail_invalid_url' ) . '</div>';
 		}
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_change_email' ) );

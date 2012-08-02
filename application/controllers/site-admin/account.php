@@ -53,17 +53,17 @@ class account extends admin_controller {
 			$this->form_validation->set_rules( 'account_status', 'lang:account_status', 'trim|required' );
 			$this->form_validation->set_rules( 'level_group_id', 'lang:account_level', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				// save
 				$result = $this->account_model->add_account( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/account' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 			// re-populate form
@@ -177,7 +177,7 @@ class account extends admin_controller {
 				// you cannot edit this user because he/she has higher role than you
 				$query->free_result();
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.$this->lang->line( 'account_cannot_edit_account_higher_your_level' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_cannot_edit_account_higher_your_level' ).'</div>' );
 				redirect( 'site-admin/account' );
 			}
 		} else {
@@ -212,17 +212,17 @@ class account extends admin_controller {
 			$this->form_validation->set_rules( 'account_status', 'lang:account_status', 'trim|required' );
 			$this->form_validation->set_rules( 'level_group_id', 'lang:account_level', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				// save
 				$result = $this->account_model->edit_account( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/account' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 			// re-populate form

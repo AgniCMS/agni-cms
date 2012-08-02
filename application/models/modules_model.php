@@ -249,13 +249,25 @@ class modules_model extends CI_Model {
 		$config['base_url'] = site_url( $this->uri->uri_string() ).'?';
 		$config['total_rows'] = count($dir);
 		$config['per_page'] = 20;
-		$config['num_links'] = 5;
 		$config['use_page_numbers'] = true;
+		// pagination tags customize for bootstrap css framework
+		$config['num_links'] = 3;
 		$config['page_query_string'] = true;
-		$config['full_tag_open'] = '<div class="pagination">';
-		$config['full_tag_close'] = "</div>\n";
-		$config['first_tag_close'] = '';
-		$config['last_tag_open'] = '';
+		$config['full_tag_open'] = '<div class="pagination"><ul>';
+		$config['full_tag_close'] = "</ul></div>\n";
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a>';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		// end customize for bootstrap
 		$config['first_link'] = '|&lt;';
 		$config['last_link'] = '&gt;|';
 		$this->pagination->initialize( $config);

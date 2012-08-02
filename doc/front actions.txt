@@ -1,2 +1,2 @@
 front_html_body_class = ให้ return ค่า class ที่จะแสดงใน <body class="...">
-front_html_head = ให้ return ค่าต่างๆที่จะแสดงใน <head>...</head> ของหน้าแรกออกมา.
+front_html_head = ให้ echo ค่าต่างๆที่จะแสดงใน <head>...</head> ของหน้าแรกออกมา.

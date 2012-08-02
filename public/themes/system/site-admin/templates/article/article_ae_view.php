@@ -277,6 +277,7 @@
 			height: '150px',
 			width: '100%',
 			theme : "advanced",
+			plugins: "inlinepopups",
 			theme_advanced_toolbar_align : "left",
 			theme_advanced_toolbar_location : "top",
 			theme_advanced_buttons1: "bold, italic , underline , strikethrough, forecolor, backcolor, link, unlink, image, removeformat, code",

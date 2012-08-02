@@ -30,13 +30,13 @@ class forgotpw extends MY_Controller {
 			$this->load->library( array( 'form_validation', 'securimage/securimage' ) );
 			$this->form_validation->set_rules( 'account_email', 'lang:account_email', 'trim|required|valid_email' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				// check captcha
 				if ( $output['plugin_captcha'] != null ) {
 					// use plugin captcha to check
 					if ( $this->modules_plug->do_action( 'account_check_captcha' ) == false ) {
-						$output['form_status'] = '<div class="txt_error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
+						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
 					} else {
 						$continue = true;
 					}
@@ -44,7 +44,7 @@ class forgotpw extends MY_Controller {
 					// use system captcha to check
 					$this->load->library( 'securimage/securimage' );
 					if ( $this->securimage->check( $this->input->post( 'captcha', true ) ) == false ) {
-						$output['form_status'] = '<div class="txt_error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
+						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
 					} else {
 						$continue = true;
 					}
@@ -54,9 +54,9 @@ class forgotpw extends MY_Controller {
 					$result = $this->account_model->reset_password1( $data['account_email'] );
 					if ( $result === true ) {
 						$output['hide_form'] = true;
-						$output['form_status'] = '<div class="txt_success">' . $this->lang->line( 'account_please_check_email_confirm_resetpw' ) . '</div>';
+						$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_please_check_email_confirm_resetpw' ) . '</div>';
 					} else {
-						$output['form_status'] = '<div class="txt_error">' . $result . '</div>';
+						$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
 					}
 				}
 			}

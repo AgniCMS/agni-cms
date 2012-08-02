@@ -95,13 +95,13 @@ class media extends admin_controller {
 					$this->db->update( 'files' );
 					// done.
 					$output['result'] = true;
-					$output['form_status'] = '<div class="txt_success">'.$this->lang->line( 'media_resize_success' ).'</div>';
+					$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'media_resize_success' ).'</div>';
 					$output['resized_img'] = base_url().$row->file.'?'.time();
 				} else {
 					$memory_limit = ((int) ini_get('memory_limit') * 1024) * 1024;
 					$require_mem = $this->media_model->checkMemAvailbleForResize( $row->file, $width, $height, true );
 					$output['result'] = false;
-					$output['form_status'] = '<div class="txt_error">'.sprintf( $this->lang->line( 'media_resize_memory_exceed_limit' ), $memory_limit, $require_mem ).'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.sprintf( $this->lang->line( 'media_resize_memory_exceed_limit' ), $memory_limit, $require_mem ).'</div>';
 				}
 				//
 				$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
@@ -252,7 +252,7 @@ class media extends admin_controller {
 			$result = $this->media_model->edit( $data );
 			if ( $result === true ) {
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
 				redirect( 'site-admin/media' );
 			}
 			// re-populate form
@@ -428,9 +428,9 @@ class media extends admin_controller {
 			<meta http-equiv="Content-type" content="text/html; charset='.config_item( 'charset' ).'" />';
 		//
 		if ( $upload_result === true ) {
-			echo '<script type="text/javascript">window.parent.upload_status(\'<div class="txt_success">'.$this->lang->line("media_upload_complete").'</div>\');</script>';
+			echo '<script type="text/javascript">window.parent.upload_status(\'<div class="txt_success alert alert-success">'.$this->lang->line("media_upload_complete").'</div>\');</script>';
 		} else {
-			echo '<script type="text/javascript">window.parent.upload_status(\'<div class="txt_error">'.$upload_result.'</div>\');</script>';
+			echo '<script type="text/javascript">window.parent.upload_status(\'<div class="txt_error alert alert-error">'.$upload_result.'</div>\');</script>';
 		}
 		echo '</head><body></body></html>';
 	}// upload

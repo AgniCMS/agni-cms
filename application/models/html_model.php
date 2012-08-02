@@ -31,6 +31,8 @@ class html_model extends CI_Model {
 		$cm_cookie = $this->account_model->get_account_cookie( 'member' );
 		if ( !isset( $cm_cookie['id'] ) || !isset( $cm_cookie['username'] ) || !isset( $cm_cookie['password'] ) || !isset( $cm_cookie['onlinecode'] ) ) {
 			$class .= ' not-logged-in';
+		} elseif ( isset( $cm_cookie['id'] ) ) {
+			$class .= ' logged-in';
 		}
 		// plugins here
 		$class .= ' '.$this->modules_plug->do_action( 'front_html_body_class' );

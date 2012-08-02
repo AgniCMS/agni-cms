@@ -56,9 +56,9 @@ class tag extends admin_controller {
 			$this->form_validation->set_rules("t_name", "lang:tag_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} elseif ( $this->taxonomy_model->show_taxterm_info( $data['t_name'], 't_name', 'tid' ) != null ) {
-				$output['form_status'] = '<div class="txt_error">'.$this->lang->line( 'tag_name_exists' ).'</div>';
+				$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'tag_name_exists' ).'</div>';
 			} else {
 				$result = $this->taxonomy_model->add( $data );
 				if ( $result === true ) {
@@ -71,11 +71,11 @@ class tag extends admin_controller {
 					} else {
 						// load session library
 						$this->load->library( 'session' );
-						$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+						$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 						redirect( 'site-admin/tag' );
 					}
 				} else {
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 			$output['parent_id'] = $data['parent_id'];
@@ -163,20 +163,20 @@ class tag extends admin_controller {
 			$this->form_validation->set_rules("t_name", "lang:tag_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				$check_result = $this->taxonomy_model->show_taxterm_info( $data['t_name'], 't_name', 'tid' );
 				if ( $check_result != $data['tid'] && $check_result != null ) {
-					$output['form_status'] = '<div class="txt_error">'.$this->lang->line( 'tag_name_exists' ).'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'tag_name_exists' ).'</div>';
 				} else {
 					$result = $this->taxonomy_model->edit( $data );
 					if ( $result === true ) {
 						// load session library
 						$this->load->library( 'session' );
-						$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+						$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 						redirect( 'site-admin/tag' );
 					} else {
-						$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+						$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 					}
 				}
 			}

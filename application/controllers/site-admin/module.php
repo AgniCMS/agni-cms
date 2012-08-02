@@ -37,9 +37,9 @@ class module extends admin_controller {
 		// load session
 		$this->load->library( 'session' );
 		if ( $result === true ) {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.lang( 'modules_activated' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'modules_activated' ).'</div>' );
 		} else {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'modules_activated_fail' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'modules_activated_fail' ).'</div>' );
 		}
 		redirect( 'site-admin/module' );
 	}// activate
@@ -54,10 +54,10 @@ class module extends admin_controller {
 			if ( $result === true ) {
 				// load session
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.lang( 'modules_added' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'modules_added' ).'</div>' );
 				redirect( 'site-admin/module' );
 			} else {
-				$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+				$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 			}
 		}
 		// head tags output ##############################
@@ -79,9 +79,9 @@ class module extends admin_controller {
 		// load session
 		$this->load->library( 'session' );
 		if ( $result === true ) {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.lang( 'modules_deactivated' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'modules_deactivated' ).'</div>' );
 		} else {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'modules_deactivated_fail' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'modules_deactivated_fail' ).'</div>' );
 		}
 		redirect( 'site-admin/module' );
 	}// deactivate
@@ -96,9 +96,9 @@ class module extends admin_controller {
 		// load session
 		$this->load->library( 'session' );
 		if ( $result === true ) {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.lang( 'modules_deleted' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'modules_deleted' ).'</div>' );
 		} else {
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'modules_deleted_fail' ).'</div>' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'modules_deleted_fail' ).'</div>' );
 		}
 		redirect( 'site-admin/module' );
 	}// delete
@@ -145,9 +145,9 @@ class module extends admin_controller {
 				}
 			}
 			if ( isset( $fail_activate ) && $fail_activate == true ) {
-				$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'modules_activated_fail_some' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'modules_activated_fail_some' ).'</div>' );
 			} else {
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.lang( 'modules_activated' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'modules_activated' ).'</div>' );
 			}
 			unset( $fail_activate, $result );
 		} elseif ( $act == 'deactivate' ) {
@@ -160,9 +160,9 @@ class module extends admin_controller {
 				}
 			}
 			if ( isset( $fail_activate ) && $fail_activate == true ) {
-				$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'modules_deactivated_fail_some' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'modules_deactivated_fail_some' ).'</div>' );
 			} else {
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.lang( 'modules_deactivated' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'modules_deactivated' ).'</div>' );
 			}
 			unset( $fail_deactivate, $result );
 		} elseif ( $act == 'del' ) {
@@ -176,9 +176,9 @@ class module extends admin_controller {
 				}
 			}
 			if ( $delete_fail == true ) {
-				$this->session->set_flashdata( 'form_status', '<div class="txt_error">'.lang( 'modules_delete_fail_some' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'modules_delete_fail_some' ).'</div>' );
 			} else {
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.lang( 'modules_deleted' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'modules_deleted' ).'</div>' );
 			}
 			unset( $delete_fail, $result );
 		}

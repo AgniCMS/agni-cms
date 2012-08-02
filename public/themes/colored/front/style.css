@@ -49,6 +49,13 @@ body {background: #fff url('images/page-bg.jpg') no-repeat center fixed; color: 
 .page-footer .each-block ul li {margin: 0 0 0 0.5em;}
 
 
+.pagination {clear: both; margin: 0; text-align: center;}
+.pagination a {border: 1px solid #3a8607; display: inline-block; margin: 0 5px; min-width: 20px; text-align: center;}
+.pagination ul {display: inline-block; list-style: none; margin: 0; padding: 0;}
+.pagination ul li {display: inline-block; margin: 0;}
+.pagination ul li.active {font-weight: bold;}
+
+
 /* comments in post page */
 .post-page .comments {border-top: 3px solid #ddd; overflow: hidden; padding-top: 10px;}
 .post-page .comments .comment-add-title {font-weight: normal; margin: 15px 0 10px 0;}

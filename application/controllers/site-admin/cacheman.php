@@ -36,7 +36,7 @@ class cacheman extends admin_controller {
 				// flash message-----------------------------------
 				// load session library
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'cache_cleared' ).'</div>' );
+				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'cache_cleared' ).'</div>' );
 			}
 		}
 		// go back

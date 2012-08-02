@@ -54,16 +54,16 @@ class menu extends admin_controller {
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'mg_name', 'lang:menu_group_name', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				$result = $this->menu_model->add_group( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/menu' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 			// re-populate form
@@ -109,7 +109,7 @@ class menu extends admin_controller {
 			}
 			if ( $this->form_validation->run() == false ) {
 				$output['result'] = false;
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 				log_message( 'error', $output['form_status'] );
 			} else {
 				// 
@@ -118,7 +118,7 @@ class menu extends admin_controller {
 					$output['result'] = true;
 				} else {
 					$output['result'] = false;
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 			// output
@@ -169,7 +169,7 @@ class menu extends admin_controller {
 					$this->form_validation->set_rules( 'link_url', 'lang:menu_link_url', 'trim|required' );
 				}
 				if ( $this->form_validation->run() == false ) {
-					echo validation_errors( '<div class="txt_error">', '</div>' );
+					echo validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 					exit;
 				} else {
 					$data['link_url'] = strip_tags( trim( $this->input->post( 'link_url' ) ) );
@@ -270,7 +270,7 @@ class menu extends admin_controller {
 			}
 			unset( $key, $key1, $item, $item1 );
 			$this->menu_model->rebuild();
-			echo '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>';
+			echo '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>';
 		}
 	}// ajax_sortitem
 	
@@ -298,16 +298,16 @@ class menu extends admin_controller {
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'mg_name', 'lang:menu_group_name', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error">', '</div>' );
+				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				$result = $this->menu_model->edit_group( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/menu' );
 				} else {
-					$output['form_status'] = '<div class="txt_error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
 			// re-populate form
