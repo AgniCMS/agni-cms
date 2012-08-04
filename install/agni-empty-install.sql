@@ -367,7 +367,7 @@ CREATE TABLE IF NOT EXISTS `an_menu_items` (
   `language` varchar(5) DEFAULT NULL,
   `mi_type` varchar(255) DEFAULT NULL COMMENT 'refer to post_type, tax_type, link, custom_link',
   `type_id` int(11) DEFAULT NULL,
-  `link_url` varchar(255) DEFAULT NULL,
+  `link_url` text,
   `link_text` varchar(255) DEFAULT NULL,
   `custom_link` text COMMENT 'when normal link field doesn''t fullfill your need',
   `nlevel` int(10) NOT NULL DEFAULT '1',
@@ -411,31 +411,6 @@ INSERT INTO `an_modules` (`module_id`, `module_system_name`, `module_name`, `mod
 -- --------------------------------------------------------
 
 --
--- Table structure for table `an_plugins`
---
-
-CREATE TABLE IF NOT EXISTS `an_plugins` (
-  `plugin_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `plugin_system_name` varchar(255) NOT NULL,
-  `plugin_name` varchar(255) NOT NULL,
-  `plugin_url` varchar(255) DEFAULT NULL,
-  `plugin_version` varchar(30) DEFAULT NULL,
-  `plugin_description` text,
-  `plugin_author` varchar(255) DEFAULT NULL,
-  `plugin_author_url` varchar(255) DEFAULT NULL,
-  `plugin_active` int(1) DEFAULT '0',
-  PRIMARY KEY (`plugin_id`),
-  UNIQUE KEY `plugin_system_name` (`plugin_system_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Deprecated, use modules plug instead' AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `an_plugins`
---
-
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `an_posts`
 --
 
@@ -447,8 +422,8 @@ CREATE TABLE IF NOT EXISTS `an_posts` (
   `language` varchar(5) DEFAULT NULL,
   `theme_system_name` varchar(255) DEFAULT NULL,
   `post_name` varchar(255) DEFAULT NULL,
-  `post_uri` varchar(255) NOT NULL,
-  `post_uri_encoded` tinytext,
+  `post_uri` tinytext,
+  `post_uri_encoded` text,
   `post_feature_image` int(11) DEFAULT NULL COMMENT 'refer to file id',
   `post_comment` int(1) NOT NULL DEFAULT '0' COMMENT 'allow comment? 0=no, 1=yes',
   `post_status` int(1) NOT NULL DEFAULT '1' COMMENT 'published? 0=no, 1=yes',
@@ -551,9 +526,9 @@ CREATE TABLE IF NOT EXISTS `an_taxonomy_term_data` (
   `t_total` int(11) NOT NULL DEFAULT '0' COMMENT 'total posts relate to this.',
   `t_name` varchar(255) DEFAULT NULL,
   `t_description` longtext,
-  `t_uri` varchar(255) DEFAULT NULL,
-  `t_uri_encoded` tinytext,
-  `t_uris` text COMMENT 'full path of uri, eg. animal/4legs/cat (no end slash and must uri encoded)',
+  `t_uri` tinytext,
+  `t_uri_encoded` text,
+  `t_uris` longtext COMMENT 'full path of uri, eg. animal/4legs/cat (no end slash and must uri encoded)',
   `meta_title` varchar(255) DEFAULT NULL,
   `meta_description` varchar(255) DEFAULT NULL,
   `meta_keywords` varchar(255) DEFAULT NULL,
@@ -606,10 +581,10 @@ CREATE TABLE IF NOT EXISTS `an_url_alias` (
   `alias_id` int(11) NOT NULL AUTO_INCREMENT,
   `c_type` varchar(255) DEFAULT NULL COMMENT 'content type eg. article, page, category, tag, ...etc...',
   `c_id` int(11) DEFAULT NULL COMMENT 'those content id',
-  `uri` varchar(255) DEFAULT NULL,
-  `uri_encoded` tinytext,
-  `redirect_to` varchar(255) DEFAULT NULL COMMENT 'for use in url redirect',
-  `redirect_to_encoded` TINYTEXT NULL DEFAULT NULL,
+  `uri` tinytext,
+  `uri_encoded` text,
+  `redirect_to` tinytext COMMENT 'for use in url redirect',
+  `redirect_to_encoded` text NULL DEFAULT NULL,
   `redirect_code` INT( 5 ) NULL DEFAULT NULL COMMENT '301 permanent, 302 temporarily',
   `language` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`alias_id`)
