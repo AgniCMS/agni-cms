@@ -437,6 +437,7 @@ class themes_model extends CI_Model {
 				if ( $row->block_only_uri != null && !in_array( $current_uri, $block_only_uri ) ) {
 					unset( $results[$i] );
 				}
+				$i++;
 			}
 			// end loop cut to show only uri---------------------------------------------------------
 			$output = null;
