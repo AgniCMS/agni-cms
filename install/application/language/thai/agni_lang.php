@@ -36,6 +36,7 @@ $lang['agni_install_please_remove_install_dir'] = 'เพื่อความ�
 $lang['agni_install_requirement'] = 'ตรวจสอบสิ่งที่ต้องการ';
 $lang['agni_next_step'] = 'ขั้นตอนต่อไป';
 $lang['agni_php_installed_extensions'] = 'นี่คือ PHP extensions ที่ติดตั้งไว้: %s';
+$lang['agni_php_missing_extensions'] = 'นี่คือ PHP extensions ที่ต้องการใช้งานและยังไม่ได้เปิด: %s';
 $lang['agni_php_required_extensions'] = 'นี่คือ PHP extensions ที่ต้องการเปิดใช้งาน: %s';
 $lang['agni_please_check_error_message_and_fix'] = 'โปรดตรวจสอบข้อผิดพลาดและแก้ไขให้ถูกต้องก่อนดำเนินการต่อไป.';
 $lang['agni_please_disable_magic_quotes_gpc'] = 'โปรดปิดใช้งาน Magic quotes GPC.';
@@ -47,6 +48,7 @@ $lang['agni_this_dir_or_file_cannot_writable_please_change_permission'] = 'ไ�
 $lang['agni_unwritable'] = 'ไม่สามารถเขียนได้';
 $lang['agni_vf_db_support'] = 'รองรับฐานข้อมูล (MySQLi)';
 $lang['agni_vf_magic_quote_gpc'] = 'PHP Magic quotes GPC';
+$lang['agni_vf_mysql_recommend_function'] = 'แนะนำให้เปิดใช้ MySQLi (คุณสามารถติดตั้งได้แต่จะต้องแก้ค่า mysqli ใน application/config/database.php เสียก่อน).';
 $lang['agni_vf_php'] = 'PHP &gt;= 5.2';
 $lang['agni_vf_php_extensions'] = 'PHP extensions';
 $lang['agni_vf_php_recomment_version'] = 'แนะนำให้ใช้เวอร์ชั่น 5.3';

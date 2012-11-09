@@ -105,11 +105,45 @@ class index extends MY_Controller {
 			$list_verify['agni_vf_magic_quote_gpc']['result'] = 'pass';
 		}
 		
-		// php extensions
+		// php extensions----------------------------------------------------------------
 		$extensions = get_loaded_extensions();
 		natsort( $extensions );
-		$required_extensions = array( 'curl', 'date', 'gd', 'hash', 'iconv', 'json', 'mbstring', 'mcrypt', 'mhash', 'mysqli', 'xml', 'zip' );
+		$required_extensions = array( 'curl', 'date', 'gd', 'hash', 'iconv', 'json', 'mbstring', 'mysqli', 'xml', 'zip' );
+		// preset variables
+		$not_installed_extensions = array();
+		$critical_error = false;
+		// loop test
 		foreach ( $required_extensions as $required_extension ) {
+			if ( !in_array( $required_extension, $extensions ) && $required_extension != 'mysqli' ) {
+				$not_installed_extensions[] = $required_extension;
+			} elseif ( $required_extension == 'mysqli' ) {
+				if ( !in_array( 'mysqli', $extensions ) && !in_array( 'mysql', $extensions ) ) {
+					$not_installed_extensions[] = $required_extension;
+					$critical_error = true;
+				} elseif ( !in_array( 'mysqli', $extensions ) ) {
+					$not_installed_extensions[] = $required_extension;
+				} elseif ( !in_array( 'mysql', $extensions ) ) {
+					$not_installed_extensions[] = $required_extension;
+					$critical_error = true;
+				}
+			}
+		}
+		if ( empty( $not_installed_extensions ) ) {
+			// verified pass!
+			$list_verify['agni_vf_php_extensions']['value'] = lang( 'agni_enable' );
+			$list_verify['agni_vf_php_extensions']['result'] = 'pass';
+		} else {
+			if ( $critical_error === false ) {
+				$list_verify['agni_vf_php_extensions']['value'] = lang( 'agni_disable' );
+				$list_verify['agni_vf_php_extensions']['result'] = 'warn';
+				$list_verify['agni_vf_php_extensions']['result_text'] = sprintf( lang( 'agni_php_missing_extensions' ), implode( ', ', $not_installed_extensions ) );
+			} elseif ( $critical_error === true ) {
+				$list_verify['agni_vf_php_extensions']['value'] = lang( 'agni_disable' );
+				$list_verify['agni_vf_php_extensions']['result'] = 'fail';
+				$list_verify['agni_vf_php_extensions']['result_text'] = sprintf( lang( 'agni_php_missing_extensions' ), implode( ', ', $not_installed_extensions ) );
+			}
+		}
+		/*foreach ( $required_extensions as $required_extension ) {
 			if ( in_array( $required_extension, $extensions ) ) {
 				$list_verify['agni_vf_php_extensions']['value'] = lang( 'agni_enable' );
 				$list_verify['agni_vf_php_extensions']['result'] = 'pass';
@@ -119,12 +153,17 @@ class index extends MY_Controller {
 				$list_verify['agni_vf_php_extensions']['result_text'] = sprintf( lang( 'agni_php_required_extensions' ), implode( ', ', $required_extensions ) ).'<br />'.sprintf( lang( 'agni_php_installed_extensions' ), implode( ', ', $extensions ) );
 				break;
 			}
-		}
+		}*/
+		// php extensions----------------------------------------------------------------
 		
 		// db support
-		if ( function_exists( 'mysql_connect' ) || function_exists( 'mysql_pconnect' ) || function_exists( 'mysqli_connect' ) ) {
+		if ( function_exists( 'mysqli_connect' ) ) {
 			$list_verify['agni_vf_db_support']['value'] = lang( 'agni_enable' );
 			$list_verify['agni_vf_db_support']['result'] = 'pass';
+		} elseif ( function_exists( 'mysql_connect' ) || function_exists( 'mysql_pconnect' ) ) {
+			$list_verify['agni_vf_db_support']['value'] = lang( 'agni_enable' );
+			$list_verify['agni_vf_db_support']['result'] = 'warn';
+			$list_verify['agni_vf_db_support']['result_text'] = lang( 'agni_vf_mysql_recommend_function' );
 		} else {
 			$list_verify['agni_vf_db_support']['value'] = lang( 'agni_disable' );
 			$list_verify['agni_vf_db_support']['result'] = 'fail';

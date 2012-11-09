@@ -9,7 +9,7 @@
 					<noscript><div class="txt_error alert alert-error"><?php echo lang( 'account_please_enable_javascript' ); ?></div></noscript>
 					<div class="form-status"><?php if ( isset( $form_status ) ) {echo $form_status;} ?></div>
 					
-					<div class="language"><?php echo language_switch(); ?></div>
+					<div class="language"><?php echo language_switch_admin(); ?></div>
 					
 					<label><?php echo lang( 'account_username' ); ?>:<input type="text" name="username" value="<?php if ( isset( $username ) ) {echo $username;} ?>" class="login-username" /></label>
 					<label><?php echo lang( 'account_password' ); ?>:<input type="password" name="password" value="" /></label>

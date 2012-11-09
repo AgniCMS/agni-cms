@@ -36,6 +36,7 @@ $lang['agni_install_please_remove_install_dir'] = 'For security reason, please r
 $lang['agni_install_requirement'] = 'Verify requirements';
 $lang['agni_next_step'] = 'Next step';
 $lang['agni_php_installed_extensions'] = 'These are installed PHP extensions: %s';
+$lang['agni_php_missing_extensions'] = 'These are missing PHP extensions: %s';
 $lang['agni_php_required_extensions'] = 'These are required PHP extensions: %s';
 $lang['agni_please_check_error_message_and_fix'] = 'Please check error and fix before continue to next step.';
 $lang['agni_please_disable_magic_quotes_gpc'] = 'Please disable Magic quotes GPC.';
@@ -47,6 +48,7 @@ $lang['agni_this_dir_or_file_cannot_writable_please_change_permission'] = 'This 
 $lang['agni_unwritable'] = 'Un-writable';
 $lang['agni_vf_db_support'] = 'Database support (MySQLi)';
 $lang['agni_vf_magic_quote_gpc'] = 'PHP Magic quotes GPC';
+$lang['agni_vf_mysql_recommend_function'] = 'Recommended use MySQLi (You can still use old mysql connection but you have to change mysqli value in application/config/database.php).';
 $lang['agni_vf_php'] = 'PHP &gt;= 5.2';
 $lang['agni_vf_php_extensions'] = 'PHP extensions';
 $lang['agni_vf_php_recomment_version'] = 'Recommended version is 5.3';

@@ -79,6 +79,8 @@ class install_model extends CI_Model {
 		}
 		//
 		$sql_file = $this->load->file( dirname(APPPATH).'/agni-install.sql', true );
+		// standardize new line
+		$sql_file = str_replace( array( "\r\n", "\r"), "\n", $sql_file );
 		// choose 1 that match in .sql file
 		#$sql_file = preg_replace("/\#(.*)\n$/", "", $sql_file);// ลบพวก comment ใน sql แบบ # table xxxx ออก
 		$sql_file = preg_replace("/--(.*)\n/", "", $sql_file);// ลบพวก comment ในแบบ -- table xxxx ออก
