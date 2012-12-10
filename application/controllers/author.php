@@ -30,6 +30,7 @@ class author extends MY_Controller {
 	
 	function index( $username = '', $att2 = '' ) {
 		if ( !empty( $att2 ) ) {show_404(); exit;}// prevent duplicate content (localhost/author/authorname and localhost/author/authorname/aaa can be same result, just 404 it). good for seo.
+		
 		// get account cookie
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) ) {
@@ -39,8 +40,10 @@ class author extends MY_Controller {
 			$my_account_id = '0';
 		}
 		unset( $cm_account );
+		
 		// send username to views
 		$output['username'] = $username;
+		
 		// list posts
 		$sql = 'select * from '.$this->db->dbprefix( 'posts' ).' as p';
 		$sql .= ' inner join '.$this->db->dbprefix( 'accounts' ).' as a';
@@ -96,6 +99,7 @@ class author extends MY_Controller {
 		}
 		$query->free_result();
 		// endlist posts---------------------------------------------------------------
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( sprintf( lang( 'post_article_by_' ), $username ) );
 		// meta tags
@@ -105,6 +109,7 @@ class author extends MY_Controller {
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'front/templates/author/author_view', $output );
 	}// index

@@ -27,6 +27,7 @@ class search extends MY_Controller {
 	function index() {
 		$q = trim( $this->input->get( 'q' ) );
 		$output['q'] = htmlspecialchars( $q, ENT_QUOTES, config_item( 'charset' ) );
+		
 		if ( mb_strlen( $q ) > 1 ) {
 			// search and list post
 			$sql = 'select * from '.$this->db->dbprefix( 'posts' ).' as p';
@@ -96,6 +97,7 @@ class search extends MY_Controller {
 			}
 			$query->free_result();
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'search_search' ) );
 		// meta tags

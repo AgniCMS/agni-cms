@@ -19,6 +19,8 @@ class logout extends MY_Controller {
 	
 	function index() {
 		$this->account_model->logout();
+		
+		// go back
 		$this->load->library( 'user_agent' );
 		if ( $this->agent->is_referral() && $this->agent->referrer() != current_url() ) {
 			redirect( $this->agent->referrer() );

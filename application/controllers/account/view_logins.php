@@ -14,8 +14,10 @@ class view_logins extends MY_Controller {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// load helper
 		$this->load->helper( array( 'date', 'language' ) );
+		
 		// load language
 		$this->lang->load( 'account' );
 	}// __construct
@@ -24,26 +26,27 @@ class view_logins extends MY_Controller {
 	function index() {
 		// is member login?
 		if ( !$this->account_model->is_member_login() ) {redirect( site_url() );}
+		
 		// get id
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
+		
 		// load accounts table
-		$query = $this->db->where( 'account_id', $cm_account['id'] )->get( 'accounts' );
-		if ( $query->num_rows() <= 0 ) {
-			$query->free_result();
-			unset( $cm_account, $query );
+		$row = $this->account_model->get_data_account( array( 'account_id' => $cm_account['id'] ) );
+		if ( $row == null ) {
 			redirect( site_url() );
 		}
-		unset( $cm_account );
-		$row = $query->row();
 		$output['account'] = $row;
+		
 		// list logins
 		$output['list_item'] = $this->account_model->list_account_logins( $row->account_id );
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_view_logins' ) );
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		if ( $this->input->is_ajax_request() ) {
 			$this->load->view( 'front/templates/account/view_logins_view', $output );

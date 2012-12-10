@@ -29,11 +29,13 @@ class category extends MY_Controller {
 	
 	
 	function index( $att1 = '', $att2 = '' ) {
+		
 		if ( empty( $att2 ) ) {
 			$t_uri = $att1;
 		} else {
 			$t_uri = $att2[count($att2)-1];
 		}
+		
 		// load category for title, metas
 		$this->db->where( 't_uri_encoded', $t_uri );
 		$this->db->where( 'language', $this->lang->get_current_lang() );
@@ -48,15 +50,18 @@ class category extends MY_Controller {
 		}
 		$row = $query->row();
 		$query->free_result();
+		unset( $query );
+		
 		// set cat (category) object for use in views
 		$output['cat'] = $row;
+		
 		// if has theme setting.
 		if ( $row->theme_system_name != null ) {
 			// set theme
 			$this->theme_path = base_url().config_item( 'agni_theme_path' ).$row->theme_system_name.'/';// for use in css
 			$this->theme_system_name = $row->theme_system_name;// for template file.
 		}
-		unset( $query );
+		
 		// list posts---------------------------------------------------------------
 		$sql = 'select * from '.$this->db->dbprefix( 'posts' ).' as p';
 		$sql .= ' left outer join '.$this->db->dbprefix( 'taxonomy_index' ).' as ti';
@@ -114,6 +119,7 @@ class category extends MY_Controller {
 		}
 		$query->free_result();
 		// endlist posts---------------------------------------------------------------
+		
 		// head tags output ##############################
 		if ( $row->meta_title != null ) {
 			$output['page_title'] = $row->meta_title;
@@ -133,6 +139,7 @@ class category extends MY_Controller {
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'front/templates/taxterm/category_view', $output );
 	}// index

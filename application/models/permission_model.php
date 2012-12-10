@@ -31,6 +31,7 @@ class permission_model extends CI_Model {
 	 */
 	function fetch_permissions() {
 		$permission_array = array();
+		
 		// fetch _define_permission from application controllers admin
 		if ( is_dir( $this->app_admin) ) {
 			if ( $dh = opendir( $this->app_admin) ) {
@@ -40,8 +41,10 @@ class permission_model extends CI_Model {
 							// prevent re-declare class
 							include_once( $this->app_admin.$file );
 						}
+						
 						$file_to_class = str_replace(EXT, '', $file );
 						$obj = new $file_to_class;
+						
 						if ( method_exists( $obj, '_define_permission' ) ) {
 							$permission_array = array_merge( $permission_array, $obj->_define_permission() );
 						}
@@ -50,18 +53,21 @@ class permission_model extends CI_Model {
 				}
 			}
 		}
+		
 		// fetch _define_permission from modules
 		// ปรับแต่งใหม่จาก Web Start ให้โหลดค่า _define_permission จากโมดูลที่เปิดใช้งานเท่านั้น.
 		if ( is_dir( $this->mx_path) ) {
 			$this->db->where( 'module_enable', '1' );
 			$this->db->order_by( 'module_system_name', 'asc' );
 			$query = $this->db->get( 'modules' );
+			
 			if ( $query->num_rows() > 0 ) {
 				foreach ( $query->result() as $row ) {
 					if ( file_exists( $this->mx_path.$row->module_system_name.'/controllers/'.$row->module_system_name.'_admin.php' ) ) {
 						include_once( $this->mx_path.$row->module_system_name.'/controllers/'.$row->module_system_name.'_admin.php' );
 						$file_to_class = $row->module_system_name.'_admin';
 						$obj = new $file_to_class;
+						
 						if ( method_exists( $obj, '_define_permission' ) ) {
 							$permission_array = array_merge( $permission_array, $obj->_define_permission() );
 						}
@@ -71,6 +77,7 @@ class permission_model extends CI_Model {
 			}
 			$query->free_result();
 		}
+		
 		return $permission_array;
 	}// fetch_permissions
 	
@@ -83,9 +90,11 @@ class permission_model extends CI_Model {
 	function list_permissions_check() {
 		$output = array();
 		$query = $this->db->get( 'account_level_permission' );
+		
 		foreach ( $query->result() as $row ) {
 			$output[$row->permission_id][$row->permission_page][$row->permission_action] = $row->level_group_id;
 		}
+		
 		return $output;
 	}// list_permissions_check
 	
@@ -96,8 +105,10 @@ class permission_model extends CI_Model {
 	 */
 	function reset_permissions() {
 		$this->config_model->delete_cache( 'check_admin_permission_' );
+		
 		// empty permissions db
 		$this->db->truncate( 'account_level_permission' );
+		
 		return true;
 	}// reset_permission
 	

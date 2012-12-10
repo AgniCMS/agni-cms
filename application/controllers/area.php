@@ -30,6 +30,7 @@ class area extends MY_Controller {
 			$this->theme_path = base_url().config_item( 'agni_theme_path' ).$theme_system_name.'/';// for use in css
 			$this->theme_system_name = $theme_system_name;// for template file.
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title();
 		// meta tags

@@ -30,6 +30,7 @@ class tag extends MY_Controller {
 	
 	function index( $uri = '', $att2 = '' ) {
 		if ( !empty( $att2 ) ) {show_404(); exit;}// prevent duplicate content (localhost/tag/tagname and localhost/tag/tagname/aaa can be same result, just 404 it). good for seo.
+		
 		// load category for title, metas
 		$this->db->where( 't_uri_encoded', $uri );
 		$this->db->where( 'language', $this->lang->get_current_lang() );
@@ -43,8 +44,10 @@ class tag extends MY_Controller {
 		}
 		$row = $query->row();
 		$query->free_result();
+		
 		// set cat (tag) object for use in views
 		$output['cat'] = $row;
+		
 		// if has theme setting.
 		if ( $row->theme_system_name != null ) {
 			// set theme
@@ -52,6 +55,7 @@ class tag extends MY_Controller {
 			$this->theme_system_name = $row->theme_system_name;// for template file.
 		}
 		unset( $query );
+		
 		// list posts---------------------------------------------------------------
 		$sql = 'select * from '.$this->db->dbprefix( 'posts' ).' as p';
 		$sql .= ' left outer join '.$this->db->dbprefix( 'taxonomy_index' ).' as ti';
@@ -109,6 +113,7 @@ class tag extends MY_Controller {
 		}
 		$query->free_result();
 		// endlist posts---------------------------------------------------------------
+		
 		// head tags output ##############################
 		if ( $row->meta_title != null ) {
 			$output['page_title'] = $row->meta_title;

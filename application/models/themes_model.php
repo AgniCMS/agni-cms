@@ -226,6 +226,7 @@ class themes_model extends CI_Model {
 	function get_default_theme( $check_for = 'front', $return = 'theme_system_name' ) {
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
+		
 		// check cached
 		if ( false === $theme_val = $this->cache->get( 'themedefault_'.$check_for.$return ) ) {
 			if ( $check_for == 'admin' ) {
@@ -233,6 +234,7 @@ class themes_model extends CI_Model {
 			} else {
 				$this->db->where( 'theme_default', '1' );
 			}
+			
 			$query = $this->db->get( 'themes' );
 			if ( $query->num_rows() <= 0 ) {
 				$query->free_result();
@@ -241,9 +243,12 @@ class themes_model extends CI_Model {
 			$row = $query->row();
 			$query->free_result();
 			unset( $query );
+			
 			$this->cache->save( 'themedefault_'.$check_for.$return, $row->$return, 2678400 );
+			
 			return $row->$return;
 		}
+		
 		return $theme_val;
 	}// get_default_theme
 	

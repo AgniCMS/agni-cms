@@ -27,6 +27,7 @@ class auto_controller extends MY_Controller {
 	
 	function index() {
 		$att1 = $this->uri->segment(1);
+		
 		// set att2 and prevent some of att2 match att1.
 		$uri_arr = $this->uri->segment_array();
 		$att2 = array();
@@ -36,12 +37,14 @@ class auto_controller extends MY_Controller {
 			}
 		}
 		unset( $uri_arr );
+		
 		// get real uri.
 		if ( empty( $att2 ) ) {
 			$last_urisegment = $att1;
 		} else {
 			$last_urisegment = $att2[count($att2)-1];
 		}
+		
 		// lookup in url alias
 		$this->db->where( 'uri_encoded', $last_urisegment );
 		$this->db->where( 'language', $this->lang->get_current_lang() );
@@ -84,6 +87,7 @@ class auto_controller extends MY_Controller {
 			$query->free_result();
 			unset( $query );
 		}
+		
 		// found nothing.
 		show_404();
 	}// index

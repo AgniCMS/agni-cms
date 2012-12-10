@@ -31,8 +31,10 @@ class index extends MY_Controller {
 	
 	
 	function index() {
+		
 		// get frontpage category from config
 		$fp_category = $this->config_model->load_single( 'content_frontpage_category', $this->lang->get_current_lang() );
+		
 		if ( $fp_category != null ) {
 			// load category for title, metas
 			$this->db->where( 'tid', $fp_category );
@@ -51,6 +53,7 @@ class index extends MY_Controller {
 			$query->free_result();
 			unset( $query );			
 		}
+		
 		// list posts---------------------------------------------------------------
 		$sql = 'select * from '.$this->db->dbprefix( 'posts' ).' as p';
 		$sql .= ' left outer join '.$this->db->dbprefix( 'taxonomy_index' ).' as ti';
@@ -111,6 +114,7 @@ class index extends MY_Controller {
 		}
 		$query->free_result();
 		// endlist posts---------------------------------------------------------------
+		
 		// head tags output ##############################
 		if ( isset( $row ) && $row->meta_title != null ) {
 			$output['page_title'] = $row->meta_title;
