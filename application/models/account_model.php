@@ -293,20 +293,30 @@ class account_model extends CI_Model {
 	function check_account( $id='', $username='', $password='', $onlinecode='' ) {
 		// load other model
 		$this->load->model( 'config_model' );
+		
 		// load library
 		$this->load->library( 'session' );
+		
+		// get cookie
 		$ca_account = $this->get_account_cookie( 'admin' );
 		$c_account = $ca_account;
+		
+		// if admin cookie is not set...
 		if ( !isset( $ca_account['id'] ) || !isset( $ca_account['username'] ) || !isset( $ca_account['password'] ) || !isset( $ca_account['onlinecode'] ) ) {
+			// get member cookie.
 			$cm_account = $this->get_account_cookie( 'member' );
+			
+			// if member cookie is not set
 			if ( !isset( $cm_account['id'] ) || !isset( $cm_account['username'] ) || !isset( $cm_account['password'] ) || !isset( $cm_account['onlinecode'] ) ) {
 				// do nothing
 			} else {
+				// in this condition, member cookie is set.
 				$c_account = $cm_account;
 				unset( $cm_account );
 			}
 		}
 		unset( $ca_account );
+		
 		// replace method's attributes with cookie
 		if ( $id == null || $username == null || $password == null || $onlinecode = '' ) {
 			$id = $c_account['id'];
@@ -314,9 +324,13 @@ class account_model extends CI_Model {
 			$password = $c_account['password'];
 			$onlinecode = $c_account['onlinecode'];
 		}
+		
+		// if still has no cookie account id
 		if ( !is_numeric( $id ) ) {return false;}
+		
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
+		
 		// check cached
 		if ( false === $account_val = $this->cache->get( 'chkacc_'.$id.'_'.$username.$password ) ) {
 			// check with db
@@ -326,49 +340,81 @@ class account_model extends CI_Model {
 			$query = $this->db->get( 'accounts' );
 			if ( $query->num_rows() > 0 ) {
 				$row = $query->row();
+				
+				// check account disabled or not
 				if ( $row->account_status == '1' ) {
+					// account is not disable
+					
+					// check if globa config not allow duplicate login
 					if ( $this->config_model->load_single( 'duplicate_login' ) == '0' ) {
 						if ( $row->account_online_code != $onlinecode ) {
 							// dup log in detected.
 							$query->free_result();
 							$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+							
+							// log out
 							$this->logout();
+							
 							// load langauge
 							$this->lang->load( 'account' );
+							
+							// flash error and return
 							$this->session->set_flashdata( 'account_error', $this->lang->line( 'account_duplicate_login_detected' ) );
 							return false;
 						}
 					}
-					// dup log in allowed, not allowed and check account pass!
+					
+					// dup log in allowed or not allowed and check account pass!
 					$query->free_result();
+					
+					// save to cache and return true
 					$this->cache->save( 'chkacc_'.$id.'_'.$username.$password, $row->account_online_code, 3600 );
 					return true;
 				} else {
 					// account was disabled
 					$query->free_result();
+					
+					// delete cache
 					$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+					
+					// log out
 					$this->logout();
 					return false;
 				}
 			}
 			// not found
 			$query->free_result();
+			
+			// delete cache
 			$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+			
+			// log out
 			$this->logout();
 			return false;
 		}
+		
 		// return cached
 		if ( $account_val != null ) {
+			// check global config not allow duplicate login
 			if ( $this->config_model->load_single( 'duplicate_login' ) == '0' ) {
 				if ( $onlinecode != $account_val ) {
+					// duplicate login detected
+					
+					// delete cache
 					$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+					
+					// log out
 					$this->logout();
+					
 					// load language
 					$this->lang->load( 'account' );
+					
+					// set error message and return false
 					$this->session->set_flashdata( 'account_error', $this->lang->line( 'account_duplicate_login_detected' ) );
 					return false;
 				}
 			}
+			// dup log in allowed or not allowed and check account pass!
 			return true;
 		}
 	}// check_account
@@ -810,10 +856,14 @@ class account_model extends CI_Model {
 	 * @return boolean 
 	 */
 	function is_admin_login() {
+		// get admin cookie
 		$ca_account = $this->get_account_cookie( 'admin' );
+		
+		// check admin cookie is set or not?
 		if ( !isset( $ca_account['id'] ) || !isset( $ca_account['username'] ) || !isset( $ca_account['password'] ) || !isset( $ca_account['onlinecode'] ) ) {
 			return false;
 		}
+		
 		// check again in database
 		return $this->check_account();
 	}// is_admin_login
@@ -824,10 +874,14 @@ class account_model extends CI_Model {
 	 * @return boolean 
 	 */
 	function is_member_login() {
+		// get member cookie
 		$cm_account = $this->get_account_cookie( 'member' );
+		
+		// check if member cookie is not set
 		if ( !isset( $cm_account['id'] ) || !isset( $cm_account['username'] ) || !isset( $cm_account['password'] ) || !isset( $cm_account['onlinecode'] ) ) {
 			return false;
 		}
+		
 		// check again in database
 		return $this->check_account();
 	}// is_member_login
@@ -920,17 +974,21 @@ class account_model extends CI_Model {
 	 */
 	function list_account_logins( $account_id = '' ) {
 		if ( !is_numeric( $account_id ) ) {return null;}
+		
 		// query sql
 		$sql = 'select * from ' . $this->db->dbprefix( 'account_logins' ) . ' where account_id = ' . $account_id;
+		
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders != null ? $orders : 'account_login_id' );
 		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
 		$sort = ( $sort != null ? $sort : 'desc' );
 		$sql .= ' order by '.$orders.' '.$sort;
+		
 		// query for count total
 		$query = $this->db->query( $sql );
 		$total = $query->num_rows();
+		
 		// pagination-----------------------------
 		$this->load->library( 'pagination' );
 		$config['base_url'] = site_url( $this->uri->uri_string() ).'?orders='.htmlspecialchars( $orders ).'&amp;sort='.htmlspecialchars( $sort );
@@ -959,14 +1017,17 @@ class account_model extends CI_Model {
 		$this->pagination->initialize( $config );
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
+		
 		$sql .= ' limit '.( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ).', '.$config['per_page'].';';
 		$query = $this->db->query( $sql);
+		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $total;
 			$output['items'] = $query->result();
 			$query->free_result();
 			return $output;
 		}
+		
 		$query->free_result();
 		return null;
 	}// list_account_logins
@@ -1024,6 +1085,7 @@ class account_model extends CI_Model {
 				return false;
 			}
 		}
+		
 		$query->free_result();
 		return false;
 	}// login_fail_last_time
@@ -1223,7 +1285,7 @@ class account_model extends CI_Model {
 	function register_account( $data = array() ) {
 		if ( empty( $data ) || !is_array( $data ) ) {return false;}
 		
-		// check duplicate account
+		// check duplicate account (duplicate username)
 		$this->db->where( 'account_username', $data['account_username'] );
 		$query = $this->db->select( 'account_username' )->get( 'accounts' );
 		if ( $query->num_rows() > 0 ) {
@@ -1231,6 +1293,8 @@ class account_model extends CI_Model {
 			return $this->lang->line( 'account_username_already_exists' );
 		}
 		$query->free_result();
+		
+		// check duplicate account (duplicate email)
 		$this->db->where( 'account_email', $data['account_email'] );
 		$query = $this->db->select( 'account_email' )->get( 'accounts' );
 		if ( $query->num_rows() > 0 ) {
