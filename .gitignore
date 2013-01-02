@@ -28,6 +28,8 @@ _img_src/*
 /*.sql
 application/cache/*
 application/cache/!index.html
+application/config/config.php
+application/config/database.php
 */logs/log-*.php
 public/upload/avatar/*
 public/upload/avatar/!index.html
