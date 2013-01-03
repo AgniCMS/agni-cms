@@ -196,93 +196,88 @@ class posts_model extends CI_Model {
 	
 	/**
 	 * edit
+	 * @param array $data_posts
+	 * @param array $data_post_revision
+	 * @param array $data_tax_index
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function edit( $data = array() ) {
-		if ( empty( $data ) || !is_array( $data ) ) {return false;}
+	function edit( $data_posts = array(), $data_post_revision = array(), $data_tax_index = array(), $data = array() ) {
+		if ( empty( $data_posts ) || !is_array( $data_posts ) || empty( $data_post_revision ) || !is_array( $data_post_revision ) ) {return false;}
+		
+		// there are 4 table for add data to article and 3 table for add data to  page
+		// 1. posts
+		// 2. post_revision
+		// 3. url_alias
+		// 4. taxonomy_index
+		
 		// set type and language to array for module plug
-		$data['post_type'] = $this->post_type;
-		$data['language'] = $this->language;
+		$data_posts['post_type'] = $this->post_type;
+		$data_posts['language'] = $this->language;
+		
 		// load data for check things
-		$this->db->join( 'taxonomy_index', 'posts.post_id = taxonomy_index.post_id', 'left outer' );
-		$this->db->join( 'accounts', 'posts.account_id = accounts.account_id', 'left' );
-		$this->db->join( 'post_revision', 'posts.revision_id = post_revision.revision_id', 'inner' );
-		$this->db->where( 'post_type', $this->posts_model->post_type );
-		$this->db->where( 'language', $this->posts_model->language );
-		$this->db->where( 'posts.post_id', $data['post_id'] );
-		$this->db->group_by( 'posts.post_id' );
-		$query = $this->db->get( 'posts' );
-		if ( $query->num_rows() <= 0 ) {$query->free_result(); return false;}// not found.
-		$row = $query->row();
-		$query->free_result();
+		$row = $this->get_post_data( array( 'post_id' => $data_posts['post_id'] ) );
+		if ( $row == null ) {return false;}
+		
 		// get account id from cookie
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
+		$data_post_revision['account_id'] = $ca_account['id'];
+		
 		// re-check post_uri
-		$data['post_uri'] = $this->nodup_uri( $data['post_uri'], true, $data['post_id'] );
+		$data_posts['post_uri'] = $this->nodup_uri( $data_posts['post_uri'], true, $data_posts['post_id'] );
+		$data_posts['post_uri_encoded'] = urlencode( $data_posts['post_uri'] );
+		
+		// set data for post_revision table
+		$data_post_revision['post_id'] = $data_posts['post_id'];
+		
 		// update posts table-------------------------------------------------------------
-		$this->db->set( 'theme_system_name', $data['theme_system_name'] );
-		$this->db->set( 'post_name', $data['post_name'] );
-		$this->db->set( 'post_uri', $data['post_uri'] );
-		$this->db->set( 'post_uri_encoded', urlencode( $data['post_uri'] ) );
-		$this->db->set( 'post_feature_image', $data['post_feature_image'] );
-		$this->db->set( 'post_comment', $data['post_comment'] );
-		if ( isset( $data['post_status'] ) ) {
+		if ( isset( $data_posts['post_status'] ) ) {
 			// if this admin has not permission to publish/unpublish, the post_status is not set.
-			$this->db->set( 'post_status', $data['post_status'] );
+			$this->db->set( 'post_status', $data_posts['post_status'] );
 		}
-		$this->db->set( 'post_update', time() );
-		$this->db->set( 'post_update_gmt', local_to_gmt( time() ) );
 		if ( $row->post_publish_date == null && $row->post_publish_date_gmt == null && ( isset( $data['post_status'] ) && $data['post_status'] == '1' ) ) {
-			$this->db->set( 'post_publish_date', time() );
-			$this->db->set( 'post_publish_date_gmt', local_to_gmt( time() ) );
+			$this->db->set( 'post_publish_date', $data_posts['post_publish_date'] );
+			$this->db->set( 'post_publish_date_gmt', $data_posts['post_publish_date_gmt'] );
+			
 			// publish plugin
 			$this->modules_plug->do_action( 'post_published', $data );
 		}
-		$this->db->set( 'meta_title', $data['meta_title'] );
-		$this->db->set( 'meta_description', $data['meta_description'] );
-		$this->db->set( 'meta_keywords', $data['meta_keywords'] );
-		$this->db->set( 'content_settings', $data['content_settings'] );
-		$this->db->where( 'post_id', $data['post_id'] );
-		$this->db->update( 'posts' );
+		$this->db->where( 'post_id', $data_posts['post_id'] );
+		$this->db->update( 'posts', $data_posts );
+		
 		// insert/update revision table---------------------------------------------------
 		if ( $data['new_revision'] == '1' ) {
-			// insert new revision
-			$this->db->set( 'post_id', $data['post_id'] );
-			$this->db->set( 'account_id', $ca_account['id'] );
-			$this->db->set( 'header_value', $data['header_value'] );
-			$this->db->set( 'body_value', $data['body_value'] );
-			$this->db->set( 'body_summary', $data['body_summary'] );
-			$this->db->set( 'log', $data['log'] );
-			$this->db->set( 'revision_date', time() );
-			$this->db->set( 'revision_date_gmt', local_to_gmt( time() ) );
-			$this->db->insert( 'post_revision' );
+			// insert new revision#####
+			$this->db->insert( 'post_revision', $data_post_revision );
+			
 			// get revision id
 			$data['revision_id'] = $this->db->insert_id();
+			
 			// update revision id to posts table
 			$this->db->set( 'revision_id', $data['revision_id'] );
-			$this->db->where( 'post_id', $data['post_id'] );
+			$this->db->where( 'post_id', $data_posts['post_id'] );
 			$this->db->update( 'posts' );
 		} else {
-			// update current revision related to posts
-			$this->db->set( 'header_value', $data['header_value'] );
-			$this->db->set( 'body_value', $data['body_value'] );
-			$this->db->set( 'body_summary', $data['body_summary'] );
+			// remove unwanted data
+			unset( $data_post_revision['account_id'], $data_post_revision['revision_date'], $data_post_revision['revision_date_gmt'], $data_post_revision['log'] );
+			
+			// update current revision related to posts#####
 			$this->db->where( 'revision_id', $row->revision_id );
-			$this->db->where( 'post_id', $data['post_id'] );
-			$this->db->update( 'post_revision' );
+			$this->db->where( 'post_id', $data_posts['post_id'] );
+			$this->db->update( 'post_revision', $data_post_revision );
 		}
+		
 		// update categories----------------------------------------------------------------
-		if ( isset( $data['tid'] ) && is_array( $data['tid'] ) ) {
-			foreach ( $data['tid'] as $tid ) {
+		if ( isset( $data_tax_index['tid'] ) && is_array( $data_tax_index['tid'] ) ) {
+			foreach ( $data_tax_index['tid'] as $tid ) {
 				$this->db->where( 'tid', $tid );
-				$this->db->where( 'post_id', $data['post_id'] );
+				$this->db->where( 'post_id', $data_posts['post_id'] );
 				$query2 = $this->db->get( 'taxonomy_index' );
 				if ( $query2->num_rows() > 0 ) {
 					// exists, nothing to do
 				} else {
 					// not exists, insert taxonomy term
-					$this->db->set( 'post_id', $data['post_id'] );
+					$this->db->set( 'post_id', $data_posts['post_id'] );
 					$this->db->set( 'tid', $tid );
 					$this->db->set( 'position', $this->get_last_tax_position( $tid ) );
 					$this->db->set( 'create', time() );
@@ -291,12 +286,13 @@ class posts_model extends CI_Model {
 				}
 				$query2->free_result();
 			}
+			
 			// loop for delete uncheck taxonomy term
 			$this->db->join( 'taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'left' );
-			$this->db->where( 'post_id', $data['post_id'] );
+			$this->db->where( 'post_id', $data_posts['post_id'] );
 			$query2 = $this->db->get( 'taxonomy_index' );
 			foreach ( $query2->result() as $row2 ) {
-				if ( !in_array( $row2->tid, $data['tid'] ) && $row2->t_type == 'category' ) {
+				if ( !in_array( $row2->tid, $data_tax_index['tid'] ) && $row2->t_type == 'category' ) {
 					$this->db->delete( 'taxonomy_index', array( 'index_id' => $row2->index_id ) );
 				}
 			}
@@ -304,25 +300,25 @@ class posts_model extends CI_Model {
 		} else {
 			// no term select, delete all related to this post_id
 			$this->db->join( 'taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'left' );
-			$this->db->where( 't_type', 'category' );
-			$this->db->where( 'post_id', $data['post_id'] );
+			$this->db->where( 't_type', 'category' )->where( 'post_id', $data_posts['post_id'] );
 			$query2 = $this->db->get( 'taxonomy_index' );
 			foreach ( $query2->result() as $row2 ) {
-				$this->db->delete( 'taxonomy_index', array( 'tid' => $row2->tid, 'post_id' => $data['post_id'] ) );
+				$this->db->delete( 'taxonomy_index', array( 'tid' => $row2->tid, 'post_id' => $data_posts['post_id'] ) );
 			}
 			$query2->free_result();
 		}
+		
 		// update tags-----------------------------------------------------------------------
-		if ( isset( $data['tagid'] ) && is_array( $data['tagid'] ) ) {
-			foreach ( $data['tagid'] as $tid ) {
+		if ( isset( $data_tax_index['tagid'] ) && is_array( $data_tax_index['tagid'] ) ) {
+			foreach ( $data_tax_index['tagid'] as $tid ) {
 				$this->db->where( 'tid', $tid );
-				$this->db->where( 'post_id', $data['post_id'] );
+				$this->db->where( 'post_id', $data_posts['post_id'] );
 				$query2 = $this->db->get( 'taxonomy_index' );
 				if ( $query2->num_rows() > 0 ) {
 					// exists, nothing to do
 				} else {
 					// not exists, insert taxonomy term
-					$this->db->set( 'post_id', $data['post_id'] );
+					$this->db->set( 'post_id', $data_posts['post_id'] );
 					$this->db->set( 'tid', $tid );
 					$this->db->set( 'create', time() );
 					$this->db->insert( 'taxonomy_index' );
@@ -332,10 +328,10 @@ class posts_model extends CI_Model {
 			}
 			// loop for delete uncheck taxonomy term
 			$this->db->join( 'taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'left' );
-			$this->db->where( 'post_id', $data['post_id'] );
+			$this->db->where( 'post_id', $data_posts['post_id'] );
 			$query2 = $this->db->get( 'taxonomy_index' );
 			foreach ( $query2->result() as $row2 ) {
-				if ( !in_array( $row2->tid, $data['tagid'] ) && $row2->t_type == 'tag' ) {
+				if ( !in_array( $row2->tid, $data_tax_index['tagid'] ) && $row2->t_type == 'tag' ) {
 					$this->db->delete( 'taxonomy_index', array( 'index_id' => $row2->index_id ) );
 				}
 			}
@@ -344,29 +340,34 @@ class posts_model extends CI_Model {
 			// no term select, delete all related to this post_id
 			$this->db->join( 'taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'left' );
 			$this->db->where( 't_type', 'tag' );
-			$this->db->where( 'post_id', $data['post_id'] );
+			$this->db->where( 'post_id', $data_posts['post_id'] );
 			$query2 = $this->db->get( 'taxonomy_index' );
 			foreach ( $query2->result() as $row2 ) {
-				$this->db->delete( 'taxonomy_index', array( 'tid' => $row2->tid, 'post_id' => $data['post_id'] ) );
+				$this->db->delete( 'taxonomy_index', array( 'tid' => $row2->tid, 'post_id' => $data_posts['post_id'] ) );
 			}
 			$query2->free_result();
 		}
+		
 		// any fields settings add here.
+		
 		// update to url alias
 		$this->db->where( 'c_type', $this->post_type );
-		$this->db->where( 'c_id', $data['post_id'] );
-		$this->db->set( 'uri', $data['post_uri'] );
-		$this->db->set( 'uri_encoded', urlencode( $data['post_uri'] ) );
+		$this->db->where( 'c_id', $data_posts['post_id'] );
+		$this->db->set( 'uri', $data_posts['post_uri'] );
+		$this->db->set( 'uri_encoded', $data_posts['post_uri_encoded'] );
 		$this->db->where( 'language', $this->language );
 		$this->db->update( 'url_alias' );
+		
 		// update menu_items
 		$this->db->where( 'mi_type', $this->post_type );
-		$this->db->where( 'type_id', $data['post_id'] );
-		$this->db->set( 'link_url', urlencode( $data['post_uri'] ) );
-		$this->db->set( 'link_text', $data['post_name'] );
+		$this->db->where( 'type_id', $data_posts['post_id'] );
+		$this->db->set( 'link_url', $data_posts['post_uri_encoded'] );
+		$this->db->set( 'link_text', $data_posts['post_name'] );
 		$this->db->update( 'menu_items' );
+		
 		// module plug
 		$this->modules_plug->do_action( 'post_after_edit', $data );
+		
 		// done.
 		return true;
 	}// edit
@@ -379,15 +380,19 @@ class posts_model extends CI_Model {
 	 */
 	function get_last_tax_position( $tid = '' ) {
 		if ( !is_numeric( $tid ) ) {return false;}
+		
 		$this->db->where( 'tid', $tid );
 		$this->db->order_by( 'position', 'desc' );
+		
 		$query = $this->db->get( 'taxonomy_index' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			$query->free_result();
 			unset( $query );
 			return ($row->position+1);
 		}
+		
 		$query->free_result();
 		unset( $query, $row );
 		return '1';
@@ -435,9 +440,11 @@ class posts_model extends CI_Model {
 	 */
 	function is_allow_delete_post( $row = '' ) {
 		if ( !is_object( $row ) || $row == null || !isset( $row->post_type ) ) {return false;}
+		
 		// get my account id
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		$my_account_id = ( isset( $cm_account['id'] ) ? $cm_account['id'] : 0 );
+		
 		if ( $row->post_type == 'article' ) {
 			if ( ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) && $row->account_id == $my_account_id ) || ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_other_perm' ) && $row->account_id != $my_account_id ) ) {
 				return true;
@@ -467,9 +474,11 @@ class posts_model extends CI_Model {
 	 */
 	function is_allow_edit_post( $row = '' ) {
 		if ( !is_object( $row ) || $row == null || !isset( $row->post_type ) ) {return false;}
+		
 		// get my account id
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		$my_account_id = ( isset( $cm_account['id'] ) ? $cm_account['id'] : 0 );
+		
 		if ( $row->post_type == 'article' ) {
 			if ( ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_own_perm' ) && $row->account_id == $my_account_id ) || ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_other_perm' ) && $row->account_id != $my_account_id ) ) {
 				return true;
@@ -528,6 +537,7 @@ class posts_model extends CI_Model {
 			$sql .= ')';
 		}
 		$sql .= ' group by p.post_id';
+		
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders != null ? $orders : 'position' );
@@ -538,10 +548,12 @@ class posts_model extends CI_Model {
 		} else {
 			$sql .= ' order by '.$orders.' '.$sort.', post_update desc';
 		}
+		
 		// query for count total
 		$query = $this->db->query( $sql );
 		$total = $query->num_rows();
 		$query->free_result();
+		
 		// pagination-----------------------------
 		$this->load->library( 'pagination' );
 		if ( $list_for == 'admin' ) {
@@ -575,14 +587,18 @@ class posts_model extends CI_Model {
 		$this->pagination->initialize( $config );
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
+		
 		$sql .= ' limit '.( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ).', '.$config['per_page'].';';
+		
 		$query = $this->db->query( $sql);
+		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $total;
 			$output['items'] = $query->result();
 			$query->free_result();
 			return $output;
 		}
+		
 		$query->free_result();
 		return null;
 	}// list_item
@@ -617,10 +633,13 @@ class posts_model extends CI_Model {
 	 */
 	function modify_content( $content = '', $post_type = '' ) {
 		if ( $content == null ) {return;}
+		
 		// modify content by core here.
 		
 		// modify content by plugin
 		$content = $this->modules_plug->do_action( 'post_modifybody_value', $content, $post_type );
+		
+		// done
 		return $content;
 	}// modify_content
 	
@@ -634,10 +653,12 @@ class posts_model extends CI_Model {
 	 */
 	function nodup_uri( $uri, $editmode = false, $id = '' ) {
 		$uri = url_title( $uri );
+		
 		// load url model for check disallowed uri
 		$this->load->model( 'url_model' );
 		$uri = $this->url_model->validate_allow_url( $uri );
-		//
+		
+		// check if edit mode?
 		if ( $editmode == true ) {
 			if ( !is_numeric( $id ) ) {return null;}
 			// no duplicate uri edit mode
@@ -650,7 +671,8 @@ class posts_model extends CI_Model {
 				return $uri;
 			}
 		}
-		// loop check
+		
+		// loop check for duplicate uri
 		$found = true;
 		$count = 0;
 		$uri = ( $uri == null ? 'p' : $uri );
@@ -666,6 +688,7 @@ class posts_model extends CI_Model {
 			}
 			$count++;
 		} while ( $found === true );
+		
 		unset( $found, $count );
 		return $new_uri;
 	}// nodup_uri
@@ -678,11 +701,14 @@ class posts_model extends CI_Model {
 	 */
 	function update_total_comment( $post_id = '' ) {
 		if ( !is_numeric( $post_id ) ) {return false;}
+		
 		$this->db->where( 'post_id', $post_id );
 		$total_comment = $this->db->count_all_results( 'comments' );
+		
 		$this->db->where( 'post_id', $post_id );
 		$this->db->set( 'comment_count', $total_comment );
 		$this->db->update( 'posts' );
+		
 		unset( $total_comment );
 		return true;
 	}// update_total_comment

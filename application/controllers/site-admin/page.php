@@ -369,46 +369,53 @@ class page extends admin_controller {
 		
 		// save action
 		if ( $this->input->post() ) {
-			$data['post_id'] = $post_id;
-			$data['theme_system_name'] = trim( $this->input->post( 'theme_system_name' ) );
-				$data['theme_system_name'] = ( $data['theme_system_name'] == null ? null : $data['theme_system_name'] );
-			$data['post_name'] = htmlspecialchars( trim( $this->input->post( 'post_name' ) ), ENT_QUOTES, config_item( 'charset' ) );
-			$data['post_uri'] = trim( $this->input->post( 'post_uri' ) );
-			$data['post_feature_image'] = trim( $this->input->post( 'post_feature_image' ) );
-				if ( $data['post_feature_image'] == null || !is_numeric( $data['post_feature_image'] ) ) {$data['post_feature_image'] = null;}
-			$data['post_comment'] = $this->input->post( 'post_comment' );
-				$data['post_comment'] = ( $data['post_comment'] != '1' ? '0' : '1' );
-			if ( $this->account_model->check_admin_permission( 'post_page_perm', 'post_page_publish_unpublish_perm' ) ) {
-				$data['post_status'] = $this->input->post( 'post_status' );
-				$data['post_status'] = ( $data['post_status'] == '1' ? '1' : '0' );
+			
+			// for posts table
+			$data_posts['post_id'] = $post_id;
+			$data_posts['theme_system_name'] = trim( $this->input->post( 'theme_system_name' ) );
+				if ( $data_posts['theme_system_name'] == null ) {$data_posts['theme_system_name']= null;}
+			$data_posts['post_name'] = htmlspecialchars( trim( $this->input->post( 'post_name' ) ), ENT_QUOTES, config_item( 'charset' ) );
+			$data_posts['post_uri'] = trim( $this->input->post( 'post_uri' ) );
+			$data_posts['post_feature_image'] = trim( $this->input->post( 'post_feature_image' ) );
+				if ( $data_posts['post_feature_image'] == null || !is_numeric( $data_posts['post_feature_image'] ) ) {$data_posts['post_feature_image'] = null;}
+			$data_posts['post_comment'] = (int) $this->input->post( 'post_comment' );
+			if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_publish_unpublish_perm' ) ) {
+				$data_posts['post_status'] = (int) $this->input->post( 'post_status' );
+				$data_posts['post_status'] = ( $data_posts['post_status'] == '1' ? '1' : '0' );
 			}
-			$data['meta_title'] = htmlspecialchars( trim( $this->input->post( 'meta_title' ) ), ENT_QUOTES, config_item( 'charset' ) );
-				$data['meta_title'] = ( $data['meta_title'] == null ? null : $data['meta_title'] );
-			$data['meta_description'] = htmlspecialchars( trim( $this->input->post( 'meta_description' ) ), ENT_QUOTES, config_item( 'charset' ) );
-				$data['meta_description'] = ( $data['meta_description'] == null ? null : $data['meta_description'] );
-			$data['meta_keywords'] = htmlspecialchars( trim( $this->input->post( 'meta_keywords' ) ), ENT_QUOTES, config_item( 'charset' ) );
-				$data['meta_keywords'] = ( $data['meta_keywords'] == null ? null : $data['meta_keywords'] );
+			$data_posts['post_update'] = time();
+			$data_posts['post_update_gmt'] = local_to_gmt( time() );
+			$data_posts['post_publish_date'] = time();
+			$data_posts['post_publish_date_gmt'] = local_to_gmt( time() );
+			$data_posts['meta_title'] = htmlspecialchars( trim( $this->input->post( 'meta_title' ) ), ENT_QUOTES, config_item( 'charset' ) );
+				if ( $data_posts['meta_title'] == null ) {$data_posts['meta_title']= null;}
+			$data_posts['meta_description'] = htmlspecialchars( trim( $this->input->post( 'meta_description' ) ), ENT_QUOTES, config_item( 'charset' ) );
+				if ( $data_posts['meta_description'] == null ) {$data_posts['meta_description']= null;}
+			$data_posts['meta_keywords'] = htmlspecialchars( trim( $this->input->post( 'meta_keywords' ) ), ENT_QUOTES, config_item( 'charset' ) );
+				if ( $data_posts['meta_keywords'] == null ) {$data_posts['meta_keywords']= null;}
 			
 			// content settings
 			if ( $this->input->post( 'content_show_title' ) == null && $this->input->post( 'content_show_time' ) == null && $this->input->post( 'content_show_author' ) == null ) {
-				$data['content_settings'] = null;
+				$data_posts['content_settings'] = null;
 			} else {
 				$setting['content_show_title'] = $this->input->post( 'content_show_title' );
 				$setting['content_show_time'] = $this->input->post( 'content_show_time' );
 				$setting['content_show_author'] = $this->input->post( 'content_show_author' );
-				$data['content_settings'] = serialize( $setting );
+				$data_posts['content_settings'] = serialize( $setting );
 				unset( $setting );
 			}
 			
 			// revision table
-			$data['header_value'] = trim( $this->input->post( 'header_value' ) );
-				$data['header_value'] = ( $data['header_value'] == null ? null : $data['header_value'] );
-			$data['body_value'] = trim( $this->input->post( 'body_value' ) );
-			$data['body_summary'] = trim( $this->input->post( 'body_summary' ) );
-				$data['body_summary'] = ( $data['body_summary'] == null ? null : $data['body_summary'] );
+			$data_post_revision['header_value'] = trim( $this->input->post( 'header_value' ) );
+				if ( $data_post_revision['header_value'] == null ) {$data_post_revision['header_value']= null;}
+			$data_post_revision['body_value'] = trim( $this->input->post( 'body_value' ) );
+			$data_post_revision['body_summary'] = trim( $this->input->post( 'body_summary' ) );
+				if ( $data_post_revision['body_summary'] == null ) {$data_post_revision['body_summary']= null;}
 			$data['new_revision'] = $this->input->post( 'new_revision' );
-			$data['log'] = htmlspecialchars( trim( $this->input->post( 'revision_log' ) ), ENT_QUOTES, config_item( 'charset' ) );
-				$data['log'] = ( $data['log'] == null || $data['new_revision'] != '1' ? null : $data['log'] );
+			$data_post_revision['log'] = htmlspecialchars( trim( $this->input->post( 'revision_log' ) ), ENT_QUOTES, config_item( 'charset' ) );
+				$data_post_revision['log'] = ( $data_post_revision['log'] == null || $data['new_revision'] != '1' ? null : $data_post_revision['log'] );
+			$data_post_revision['revision_date'] = time();
+			$data_post_revision['revision_date_gmt'] = local_to_gmt( time() );
 			
 			// load form validation
 			$this->load->library( 'form_validation' );
@@ -420,7 +427,7 @@ class page extends admin_controller {
 				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				// save result
-				$result = $this->posts_model->edit( $data );
+				$result = $this->posts_model->edit( $data_posts, $data_post_revision, '', $data );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
 					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
@@ -431,17 +438,11 @@ class page extends admin_controller {
 			}
 			
 			// re-populate form
-			$output['theme_system_name'] = $data['theme_system_name'];
-			$output['post_name'] = $data['post_name'];
-			$output['post_uri'] = $data['post_uri'];
-			$output['post_feature_image'] = $data['post_feature_image'];
-			$output['post_comment'] = $data['post_comment'];
+			$output = array_merge( $output, $data_posts );
+			$output = array_merge( $output, $data_post_revision );
 			if ( isset( $data['post_status'] ) ) {
 				$output['post_status'] = $data['post_status'];
 			}
-			$output['meta_title'] = $data['meta_title'];
-			$output['meta_description'] = $data['meta_description'];
-			$output['meta_keywords'] = $data['meta_keywords'];
 			
 			// content settings
 			$output['content_show_title'] = ( $this->input->post( 'content_show_title' ) != '1' && $this->input->post( 'content_show_title' ) != '0' ? null : $this->input->post( 'content_show_title' ) );
@@ -449,11 +450,10 @@ class page extends admin_controller {
 			$output['content_show_author'] = ( $this->input->post( 'content_show_author' ) != '1' && $this->input->post( 'content_show_author' ) != '0' ? null : $this->input->post( 'content_show_author' ) );
 			
 			// revision values
-			$output['header_value'] = htmlspecialchars( $data['header_value'], ENT_QUOTES, config_item( 'charset' ) );
-			$output['body_value'] = htmlspecialchars( $data['body_value'], ENT_QUOTES, config_item( 'charset' ) );
-			$output['body_summary'] = htmlspecialchars( $data['body_summary'], ENT_QUOTES, config_item( 'charset' ) );
+			$output['header_value'] = htmlspecialchars( $data_post_revision['header_value'], ENT_QUOTES, config_item( 'charset' ) );
+			$output['body_value'] = htmlspecialchars( $data_post_revision['body_value'], ENT_QUOTES, config_item( 'charset' ) );
+			$output['body_summary'] = htmlspecialchars( $data_post_revision['body_summary'], ENT_QUOTES, config_item( 'charset' ) );
 			$output['new_revision'] = $data['new_revision'];
-			$output['revision_log'] = $data['log'];
 		}
 		
 		// head tags output ##############################

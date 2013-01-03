@@ -173,6 +173,11 @@ class taxonomy_model extends CI_Model {
 	}// edit
 	
 	
+	/**
+	 * get taxonomy index data.
+	 * @param array $data
+	 * @return mixed
+	 */
 	function get_taxonomy_index_data( $data = array() ) {
 		if ( isset( $data['post_id'] ) ) {
 			$this->db->where( 'post_id', $data['post_id'] );
@@ -299,6 +304,7 @@ class taxonomy_model extends CI_Model {
 	 */
 	function list_taxterm_index( $post_id = '', $nohome_category = false ) {
 		$home_category_id = $this->config_model->load_single( 'content_frontpage_category', $this->lang->get_current_lang() );
+		
 		//
 		$this->db->join( 'taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'inner' );
 		$this->db->where( 'post_id', $post_id );
@@ -309,11 +315,15 @@ class taxonomy_model extends CI_Model {
 		$this->db->where( 'language', $this->language );
 		$this->db->group_by( 'taxonomy_term_data.tid' );
 		$this->db->order_by( 't_name', 'asc' );
+		
 		$query = $this->db->get( 'taxonomy_index' );
+		
 		if ( $query->num_rows() > 0 ) {
 			return $query->result();
 		}
+		
 		$query->free_result();
+		
 		return null;
 	}// list_taxterm_index
 	
