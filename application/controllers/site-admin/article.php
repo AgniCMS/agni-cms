@@ -14,12 +14,16 @@ class article extends admin_controller {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// load model
 		$this->load->model( array( 'posts_model', 'taxonomy_model' ) );
+		
 		// load helper
 		$this->load->helper( array( 'category', 'date', 'form' ) );
+		
 		// load language
 		$this->lang->load( 'post' );
+		
 		// set post_type
 		$this->posts_model->post_type = 'article';
 	}// __construct
@@ -47,16 +51,21 @@ class article extends admin_controller {
 	function add() {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_add_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// list themes for select
 		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		
 		// list categories for check
 		$this->taxonomy_model->tax_type = 'category';
 		$output['list_category'] = $this->taxonomy_model->list_item();
+		
 		// preset settings and values
 		$output['post_comment'] = '1';
 		$output['post_status'] = '1';
+		
 		// save action
 		if ( $this->input->post() ) {
+			
 			$data['tid'] = $this->input->post( 'tid' );// categories
 			$data['tagid'] = $this->input->post( 'tagid' );// tags
 			$data['theme_system_name'] = trim( $this->input->post( 'theme_system_name' ) );
@@ -75,6 +84,7 @@ class article extends admin_controller {
 				$data['meta_description'] = ( $data['meta_description'] == null ? null : $data['meta_description'] );
 			$data['meta_keywords'] = htmlspecialchars( trim( $this->input->post( 'meta_keywords' ) ), ENT_QUOTES, config_item( 'charset' ) );
 				$data['meta_keywords'] = ( $data['meta_keywords'] == null ? null : $data['meta_keywords'] );
+			
 			// content settings
 			if ( $this->input->post( 'content_show_title' ) == null && $this->input->post( 'content_show_time' ) == null && $this->input->post( 'content_show_author' ) == null ) {
 				$data['content_settings'] = null;
@@ -85,6 +95,7 @@ class article extends admin_controller {
 				$data['content_settings'] = serialize( $setting );
 				unset( $setting );
 			}
+			
 			// revision table
 			$data['header_value'] = trim( $this->input->post( 'header_value' ) );
 				$data['header_value'] = ( $data['header_value'] == null ? null : $data['header_value'] );
@@ -94,10 +105,12 @@ class article extends admin_controller {
 			$data['new_revision'] = $this->input->post( 'new_revision' );
 			$data['log'] = htmlspecialchars( trim( $this->input->post( 'revision_log' ) ), ENT_QUOTES, config_item( 'charset' ) );
 				$data['log'] = ( $data['log'] == null || $data['new_revision'] != '1' ? null : $data['log'] );
+			
 			// load form validation
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'post_name', 'lang:post_article_name', 'trim|required' );
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
+			
 			if ( $this->form_validation->run() == false ) {
 				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
@@ -111,6 +124,7 @@ class article extends admin_controller {
 					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
 				}
 			}
+			
 			// re-populate form
 			$output['tid'] = $data['tid'];
 			$output['tagid'] = $data['tagid'];
@@ -123,10 +137,12 @@ class article extends admin_controller {
 			$output['meta_title'] = $data['meta_title'];
 			$output['meta_description'] = $data['meta_description'];
 			$output['meta_keywords'] = $data['meta_keywords'];
+			
 			// content settings
 			$output['content_show_title'] = ( $this->input->post( 'content_show_title' ) != '1' && $this->input->post( 'content_show_title' ) != '0' ? null : $this->input->post( 'content_show_title' ) );
 			$output['content_show_time'] = ( $this->input->post( 'content_show_time' ) != '1' && $this->input->post( 'content_show_time' ) != '0' ? null : $this->input->post( 'content_show_time' ) );
 			$output['content_show_author'] = ( $this->input->post( 'content_show_author' ) != '1' && $this->input->post( 'content_show_author' ) != '0' ? null : $this->input->post( 'content_show_author' ) );
+			
 			// revision values
 			$output['header_value'] = htmlspecialchars( $data['header_value'], ENT_QUOTES, config_item( 'charset' ) );
 			$output['body_value'] = htmlspecialchars( $data['body_value'], ENT_QUOTES, config_item( 'charset' ) );
@@ -134,6 +150,7 @@ class article extends admin_controller {
 			$output['new_revision'] = $data['new_revision'];
 			$output['revision_log'] = $data['log'];
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'post_articles' ) );
 		// meta tags
@@ -143,6 +160,7 @@ class article extends admin_controller {
 		$output['page_script'] = $this->html_model->gen_tags( $script_tags );
 		unset( $script_tags );
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'site-admin/templates/article/article_ae_view', $output );
 	}// add
@@ -150,22 +168,28 @@ class article extends admin_controller {
 	
 	function ajax_nameuri() {
 		if ( $this->input->post() && $this->input->is_ajax_request() ) {
+			
 			$post_name = trim( $this->input->post( 'post_name' ) );
 			$nodupedit = trim( $this->input->post( 'nodupedit' ) );
 			$nodupedit = ( $nodupedit == 'true' ? true : false );
 			$id = intval( $this->input->post( 'id' ) );
+			
 			$output['post_uri'] = $this->posts_model->nodup_uri( $post_name, $nodupedit, $id );
+			
 			// output
 			$this->output->set_content_type( 'application/json' );
 			$this->output->set_output( json_encode( $output ) );
+			
 		}
 	}// ajax_nameuri
 	
 	
 	function ajax_searchtag() {
 		$_GET['q'] = trim( $this->input->get( 'term' ) );
+		
 		$this->taxonomy_model->tax_type = 'tag';
 		$list_tags = $this->taxonomy_model->list_tags( 'admin' );
+		
 		$output = '';
 		if ( isset( $list_tags['items'] ) && is_array( $list_tags['items'] ) ) {
 			$i = 0;// important. can't use other number in array key. because jqueryui autocomplete count from 0 and +1 for each array
@@ -175,8 +199,10 @@ class article extends admin_controller {
 				$i++;
 			}
 		}
+		
 		// clear unused items
 		unset( $list_tags, $i, $row );
+		
 		// output
 		$this->output->set_content_type( 'application/json' );
 		$this->output->set_output( json_encode( $output ) );
@@ -186,17 +212,22 @@ class article extends admin_controller {
 	function del_rev( $post_id = '', $revision_id = '' ) {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_delete_revision' ) != true ) {redirect( 'site-admin' );}
+		
 		if ( !is_numeric( $post_id ) || !is_numeric( $revision_id ) ) {redirect( 'site-admin/article' );}
+		
 		if ( !$this->input->post() ) {
+			
 			// head tags output ##############################
 			$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'post_articles' ) );
 			// meta tags
 			// link tags
 			// script tags
 			// end head tags output ##############################
+			
 			// output
 			$this->generate_page( 'site-admin/templates/post/del_rev_view', $output );
 		} else {
+			
 			// check if revision_id match post_id in revision table and not current
 			$this->db->join( 'posts', 'posts.post_id = post_revision.post_id', 'left' );
 			$this->db->where( 'post_revision.post_id', $post_id )->where( 'post_revision.revision_id', $revision_id );
@@ -208,9 +239,11 @@ class article extends admin_controller {
 				redirect( 'site-admin/article/edit/'.$post_id );
 			}
 			$query->free_result();
+			
 			// delete revision
 			$this->db->where( 'post_id', $post_id )->where( 'revision_id', $revision_id );
 			$this->db->delete( 'post_revision' );
+			
 			// go back
 			redirect( 'site-admin/article/edit/'.$post_id );
 		}
@@ -220,10 +253,12 @@ class article extends admin_controller {
 	function delete( $post_id = '' ) {
 		// check permission (both canNOT delete own and delete other => get out)
 		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) != true && $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_other_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$my_account_id = $ca_account['id'];
 		unset( $ca_account );
+		
 		// open posts table for check permission and delete.
 		$this->db->join( 'post_fields', 'posts.post_id = post_fields.post_id', 'left outer' );
 		$this->db->join( 'accounts', 'posts.account_id = accounts.account_id', 'left' );
@@ -234,6 +269,7 @@ class article extends admin_controller {
 		$query = $this->db->get( 'posts' );
 		if ( $query->num_rows() <= 0 ) {$query->free_result(); redirect( 'site-admin/article' );}// not found
 		$row = $query->row();
+		
 		// check permissions-----------------------------------------------------------
 		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) && $row->account_id != $my_account_id ) {
 			// this user has permission to delete own post, but NOT deleting own post
@@ -250,6 +286,7 @@ class article extends admin_controller {
 			redirect( 'site-admin' );
 		}
 		// end check permissions-----------------------------------------------------------
+		
 		// redirect back value
 		$this->load->library( 'user_agent' );
 		if ( $this->input->get( 'rdr' ) == null ) {
@@ -257,9 +294,11 @@ class article extends admin_controller {
 		} else {
 			$output['rdr'] = trim( $this->input->get( 'rdr' ) );
 		}
+		
 		// send row for other use.
 		$output['row'] = $row;
 		$query->free_result();
+		
 		// save action
 		if ( $this->input->post() ) {
 			if ( $this->input->post( 'confirm' ) == 'yes' ) {
@@ -278,6 +317,7 @@ class article extends admin_controller {
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'site-admin/templates/article/article_delete_view', $output );
 	}// delete
@@ -286,22 +326,23 @@ class article extends admin_controller {
 	function edit( $post_id = '' ) {
 		// check permission (both canNOT edit own and edit other => get out)
 		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_own_perm' ) != true && $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_other_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$my_account_id = $ca_account['id'];
 		unset( $ca_account );
-		// open posts table for check permission and edit.
-		$this->db->join( 'taxonomy_index', 'posts.post_id = taxonomy_index.post_id', 'left outer' );
-		$this->db->join( 'post_fields', 'posts.post_id = post_fields.post_id', 'left outer' );
-		$this->db->join( 'accounts', 'posts.account_id = accounts.account_id', 'left' );
-		$this->db->join( 'post_revision', 'posts.revision_id = post_revision.revision_id', 'inner' );
-		$this->db->where( 'post_type', $this->posts_model->post_type );
-		$this->db->where( 'language', $this->posts_model->language );
-		$this->db->where( 'posts.post_id', $post_id );
-		$this->db->group_by( 'posts.post_id' );
-		$query = $this->db->get( 'posts' );
-		if ( $query->num_rows() <= 0 ) {$query->free_result(); redirect( 'site-admin/article' );}// not found
-		$row = $query->row();
+		
+		$data['post_id'] = $post_id;
+		$row = $this->posts_model->get_post_data( $data );
+		unset( $data['post_id'] );
+		
+		// if selected post id is not exists.
+		if ( $row == null ) {
+			$this->load->library( 'session' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'post_there_is_no_selected_article' ) . '</div>' );
+			redirect( 'site-admin/article' );
+		}
+		
 		// check permissions-----------------------------------------------------------
 		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_own_perm' ) && $row->account_id != $my_account_id ) {
 			// this user has permission to edit own post, but NOT editing own post
@@ -318,15 +359,19 @@ class article extends admin_controller {
 			redirect( 'site-admin' );
 		}
 		// end check permissions-----------------------------------------------------------
+		
 		// list themes for select
 		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		
 		// list categories for check
 		$this->taxonomy_model->tax_type = 'category';
 		$output['list_category'] = $this->taxonomy_model->list_item();
+		
 		// preset settings and values---------------------------------------------------------
 		$output['post_id'] = $post_id;
 		$output['post_comment'] = '1';
 		$output['post_status'] = '1';
+		
 		// load settings and values from db for edit.---------------------------------------
 		$this->taxonomy_model->tax_type = 'tag';
 		$ttlist = $this->taxonomy_model->list_taxterm_index( $post_id );
@@ -338,7 +383,8 @@ class article extends admin_controller {
 		}
 		unset( $ttlist );
 		$output['tagid'] = $tid;
-		//
+		
+		// load categories of this post for edit.
 		$this->taxonomy_model->tax_type = 'category';
 		$ttlist = $this->taxonomy_model->list_taxterm_index( $post_id );
 		$tid = array();
@@ -349,7 +395,8 @@ class article extends admin_controller {
 		}
 		unset( $ttlist );
 		$output['tid'] = $tid;
-		//
+		
+		// store output data for form
 		$output['theme_system_name'] = $row->theme_system_name;
 		$output['post_name'] = $row->post_name;
 		$output['post_uri'] = $row->post_uri;
@@ -359,28 +406,33 @@ class article extends admin_controller {
 		$output['meta_title'] = $row->meta_title;
 		$output['meta_description'] = $row->meta_description;
 		$output['meta_keywords'] = $row->meta_keywords;
-			// content settings
-			$content_settings = unserialize( $row->content_settings );
+		
+		// content settings
+		$content_settings = unserialize( $row->content_settings );
+		
 		$output['content_show_title'] = $content_settings['content_show_title'];
 		$output['content_show_time'] = $content_settings['content_show_time'];
 		$output['content_show_author'] = $content_settings['content_show_author'];
-			// revision table
+		
+		// revision table
 		$output['revision_id'] = $row->revision_id;
 		$output['header_value'] = htmlspecialchars( $row->header_value, ENT_QUOTES, config_item( 'charset' ) );
 		$output['body_value'] = htmlspecialchars( $row->body_value, ENT_QUOTES, config_item( 'charset' ) );
 		$output['body_summary'] = htmlspecialchars( $row->body_summary, ENT_QUOTES, config_item( 'charset' ) );
-			// send row for other use.
+		
+		// send row for other use.
 		$output['row'] = $row;
+		
 		// list revision
-		$this->db->join( 'accounts', 'post_revision.account_id = accounts.account_id', 'left' );
-		$this->db->where( 'post_id', $post_id );
-		$this->db->order_by( 'revision_date', 'desc' );
-		$query2 = $this->db->get( 'post_revision' );
-		$output['count_revision'] = $query2->num_rows();
-		$output['list_revision'] = $query2->result();
-		$query2->free_result();
+		$condition['post_id'] = $post_id;
+		$revision = $this->posts_model->list_revision( $condition );
+		$output['count_revision'] = $revision['total'];
+		$output['list_revision'] = $revision['items'];
+		unset( $revision, $condition );
+		
 		// save action
 		if ( $this->input->post() ) {
+			
 			$data['tid'] = $this->input->post( 'tid' );// categories
 			$data['tagid'] = $this->input->post( 'tagid' );// tags
 			$data['post_id'] = $post_id;
@@ -402,6 +454,7 @@ class article extends admin_controller {
 				$data['meta_description'] = ( $data['meta_description'] == null ? null : $data['meta_description'] );
 			$data['meta_keywords'] = htmlspecialchars( trim( $this->input->post( 'meta_keywords' ) ), ENT_QUOTES, config_item( 'charset' ) );
 				$data['meta_keywords'] = ( $data['meta_keywords'] == null ? null : $data['meta_keywords'] );
+			
 			// content settings
 			if ( $this->input->post( 'content_show_title' ) == null && $this->input->post( 'content_show_time' ) == null && $this->input->post( 'content_show_author' ) == null ) {
 				$data['content_settings'] = null;
@@ -412,6 +465,7 @@ class article extends admin_controller {
 				$data['content_settings'] = serialize( $setting );
 				unset( $setting );
 			}
+			
 			// revision table
 			$data['header_value'] = trim( $this->input->post( 'header_value' ) );
 				$data['header_value'] = ( $data['header_value'] == null ? null : $data['header_value'] );
@@ -421,10 +475,12 @@ class article extends admin_controller {
 			$data['new_revision'] = $this->input->post( 'new_revision' );
 			$data['log'] = htmlspecialchars( trim( $this->input->post( 'revision_log' ) ), ENT_QUOTES, config_item( 'charset' ) );
 				$data['log'] = ( $data['log'] == null || $data['new_revision'] != '1' ? null : $data['log'] );
+			
 			// load form validation
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'post_name', 'lang:post_article_name', 'trim|required' );
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
+			
 			if ( $this->form_validation->run() == false ) {
 				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
@@ -438,6 +494,7 @@ class article extends admin_controller {
 					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
 				}
 			}
+			
 			// re-populate form
 			$output['tid'] = $data['tid'];
 			$output['tagid'] = $data['tagid'];
@@ -452,17 +509,21 @@ class article extends admin_controller {
 			$output['meta_title'] = $data['meta_title'];
 			$output['meta_description'] = $data['meta_description'];
 			$output['meta_keywords'] = $data['meta_keywords'];
+			
 			// content settings
 			$output['content_show_title'] = ( $this->input->post( 'content_show_title' ) != '1' && $this->input->post( 'content_show_title' ) != '0' ? null : $this->input->post( 'content_show_title' ) );
 			$output['content_show_time'] = ( $this->input->post( 'content_show_time' ) != '1' && $this->input->post( 'content_show_time' ) != '0' ? null : $this->input->post( 'content_show_time' ) );
 			$output['content_show_author'] = ( $this->input->post( 'content_show_author' ) != '1' && $this->input->post( 'content_show_author' ) != '0' ? null : $this->input->post( 'content_show_author' ) );
+			
 			// revision values
 			$output['header_value'] = htmlspecialchars( $data['header_value'], ENT_QUOTES, config_item( 'charset' ) );
 			$output['body_value'] = htmlspecialchars( $data['body_value'], ENT_QUOTES, config_item( 'charset' ) );
 			$output['body_summary'] = htmlspecialchars( $data['body_summary'], ENT_QUOTES, config_item( 'charset' ) );
 			$output['new_revision'] = $data['new_revision'];
 			$output['revision_log'] = $data['log'];
+			
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'post_articles' ) );
 		// meta tags
@@ -472,6 +533,7 @@ class article extends admin_controller {
 		$output['page_script'] = $this->html_model->gen_tags( $script_tags );
 		unset( $script_tags );
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'site-admin/templates/article/article_ae_view', $output );
 	}// edit
@@ -480,14 +542,17 @@ class article extends admin_controller {
 	function index() {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_viewall_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// list category for select filter
 		$this->taxonomy_model->tax_type = 'category';
 		$output['list_category'] = $this->taxonomy_model->list_item();
+		
 		// sort, orders, search, tid
 		$output['orders'] = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$output['sort'] = ($this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'desc' ? 'asc' : 'desc' );
 		$output['q'] = htmlspecialchars( trim( $this->input->get( 'q' ) ) );
 		$output['tid'] = strip_tags( trim( $this->input->get( 'tid' ) ) );
+		
 		// load session for flashdata
 		$this->load->library( 'session' );
 		$form_status = $this->session->flashdata( 'form_status' );
@@ -495,21 +560,25 @@ class article extends admin_controller {
 			$output['form_status'] = $form_status;
 		}
 		unset( $form_status );
+		
 		// list item
 		$output['list_item'] = $this->posts_model->list_item( 'admin' );
 		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
+		
 		// my account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$output['my_account_id'] = $ca_account['id'];
 		unset( $ca_account );
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'post_articles' ) );
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'site-admin/templates/article/article_view', $output );
 	}// index
@@ -520,13 +589,16 @@ class article extends admin_controller {
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$my_account_id = $ca_account['id'];
 		unset( $ca_account );
-		//
+		
+		// get id and acttion
 		$id = $this->input->post( 'id' );
 		if ( !is_array( $id ) ) {redirect( 'site-admin/article' );}
 		$act = trim( $this->input->post( 'act' ) );
+		
 		if ( $act == 'publish' ) {
 			// check permission
 			if ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_publish_unpublish_perm' ) ) {redirect( 'site-admin/article' );}
+			
 			foreach ( $id as $an_id ) {
 				// open for check
 				$this->db->where( 'post_id', $an_id );
@@ -534,6 +606,7 @@ class article extends admin_controller {
 				if ( $query->num_rows() <= 0 ) {$query->free_result(); continue;}
 				$row = $query->row();
 				$query->free_result();
+				
 				// update
 				$this->db->where( 'post_id', $an_id );
 				$this->db->set( 'post_status', '1' );
@@ -542,6 +615,7 @@ class article extends admin_controller {
 				if ( $row->post_publish_date == null && $row->post_publish_date_gmt == null ) {
 					$this->db->set( 'post_publish_date', time() );
 					$this->db->set( 'post_publish_date_gmt', local_to_gmt( time() ) );
+					
 					// publish plugin
 					$this->modules_plug->do_action( 'post_published_byid', $an_id );
 				}
@@ -550,6 +624,7 @@ class article extends admin_controller {
 		} elseif( $act == 'unpublish' ) {
 			// check permission
 			if ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_publish_unpublish_perm' ) ) {redirect( 'site-admin/article' );}
+			
 			foreach ( $id as $an_id ) {
 				$this->db->where( 'post_id', $an_id );
 				$this->db->set( 'post_status', '0' );
@@ -560,12 +635,15 @@ class article extends admin_controller {
 		} elseif ( $act == 'del' ) {
 			// check both permission
 			if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) != true && $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_other_perm' ) != true ) {redirect( 'site-admin/article' );}
+			
 			foreach ( $id as $an_id ) {
+				// get data for check
 				$this->db->where( 'post_id', $an_id );
 				$query = $this->db->get( 'posts' );
 				if ( $query->num_rows() <= 0 ) {$query->free_result(); continue;}
 				$row = $query->row();
 				$query->free_result();
+				
 				// check permissions-----------------------------------------------------------
 				if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) && $row->account_id != $my_account_id ) {
 					// this user has permission to delete own post, but NOT delete own post
@@ -582,9 +660,11 @@ class article extends admin_controller {
 					continue;
 				}
 				// end check permissions-----------------------------------------------------------
+				
 				$this->posts_model->delete( $an_id );
 			}
 		}
+		
 		// go back
 		$this->load->library( 'user_agent' );
 		if ( $this->agent->is_referral() ) {
@@ -598,15 +678,26 @@ class article extends admin_controller {
 	function reorder( $post_id = '', $tid = '', $move = '' ) {
 		// check permission
 		if ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_sort_perm' ) ) {redirect( 'site-admin/article' );}
+		
 		//
 		if ( !is_numeric( $post_id ) || !is_numeric( $tid ) || ($move != 'up' && $move != 'dn' ) ) {redirect( 'site-admin/article' );}
+		
 		$this->load->library( 'user_agent' );
+		
 		// get current position
-		$this->db->where( 'post_id', $post_id )->where( 'tid', $tid );
+		/*$this->db->where( 'post_id', $post_id )->where( 'tid', $tid );
 		$query = $this->db->get( 'taxonomy_index' );
 		if ( $query->num_rows() <= 0 ) {$query->free_result(); redirect( 'site-admin/article' );}// not found
 		$row = $query->row();
-		$query->free_result();
+		$query->free_result();*/// no more use, use model instead (below this line).
+		$condition['post_id'] = $post_id;
+		$condition['tid'] = $tid;
+		$row = $this->taxonomy_model->get_taxonomy_index_data( $condition );
+		if ( $row == null ) {
+			// not found
+			redirect( 'site-admin/article' );
+		}
+		
 		if ( $move == 'up' ) {
 			// check if there is higher position
 			$this->db->where( 'tid', $tid )->where( 'position >', $row->position );
@@ -615,6 +706,7 @@ class article extends admin_controller {
 			if ( $query2->num_rows() <= 0 ) {$query2->free_result(); redirect( $this->agent->referrer() );}// not found. this is heighest position, no more up.
 			$row2 = $query2->row();
 			$query2->free_result();
+			
 			// update heigher to -1
 			if ( $row2->position-$row->position > 1 ) {
 				$position = $row->position;
@@ -624,6 +716,7 @@ class article extends admin_controller {
 			$this->db->set( 'position', $position );
 			$this->db->where( 'index_id', $row2->index_id );
 			$this->db->update( 'taxonomy_index' );
+			
 			// update current position to heigher
 			$this->db->set( 'position', $row->position+1 );
 			$this->db->where( 'index_id', $row->index_id );
@@ -636,10 +729,12 @@ class article extends admin_controller {
 			if ( $query2->num_rows() <= 0 ) {$query2->free_result(); redirect( $this->agent->referrer() );}// not found. this is heighest position, no more up.
 			$row2 = $query2->row();
 			$query2->free_result();
+			
 			// update lower to +1
 			$this->db->set( 'position', $row2->position+1 );
 			$this->db->where( 'index_id', $row2->index_id );
 			$this->db->update( 'taxonomy_index' );
+			
 			// update current position to lower
 			if ( $row->position-$row2->position > 1 ) {
 				$position = $row2->position;
@@ -650,7 +745,9 @@ class article extends admin_controller {
 			$this->db->where( 'index_id', $row->index_id );
 			$this->db->update( 'taxonomy_index' );
 		}
+		
 		unset( $position, $query, $query2, $row, $row2 );
+		
 		redirect( $this->agent->referrer() );
 	}// reorder
 	
@@ -658,7 +755,9 @@ class article extends admin_controller {
 	function revert( $post_id = '', $revision_id = '' ) {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_revert_revision' ) != true ) {redirect( 'site-admin' );}
+		
 		if ( !is_numeric( $post_id ) || !is_numeric( $revision_id ) ) {redirect( 'site-admin/article' );}
+		
 		if ( !$this->input->post() ) {
 			// head tags output ##############################
 			$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'post_articles' ) );
@@ -666,6 +765,7 @@ class article extends admin_controller {
 			// link tags
 			// script tags
 			// end head tags output ##############################
+			
 			// output
 			$this->generate_page( 'site-admin/templates/post/revert_view', $output );
 		} else {
@@ -678,10 +778,12 @@ class article extends admin_controller {
 				redirect( 'site-admin/article/edit/'.$post_id );
 			}
 			$query->free_result();
+			
 			// update revision id to posts table
 			$this->db->set( 'revision_id', $revision_id );
 			$this->db->where( 'post_id', $post_id );
 			$this->db->update( 'posts' );
+			
 			// go back
 			redirect( 'site-admin/article/edit/'.$post_id );
 		}

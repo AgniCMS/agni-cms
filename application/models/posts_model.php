@@ -383,6 +383,39 @@ class posts_model extends CI_Model {
 	
 	
 	/**
+	 * get post data
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_post_data( $data = array() ) {
+		if ( !is_array( $data ) ) {return null;}
+		
+		$this->db->join( 'taxonomy_index', 'posts.post_id = taxonomy_index.post_id', 'left outer' );
+		$this->db->join( 'post_fields', 'posts.post_id = post_fields.post_id', 'left outer' );
+		$this->db->join( 'accounts', 'posts.account_id = accounts.account_id', 'left' );
+		$this->db->join( 'post_revision', 'posts.revision_id = post_revision.revision_id', 'inner' );
+		$this->db->where( 'post_type', $this->posts_model->post_type );
+		$this->db->where( 'language', $this->posts_model->language );
+		if ( isset( $data['post_id'] ) ) {
+			$this->db->where( 'posts.post_id', $data['post_id'] );
+		}
+		if ( isset( $data['post_status'] ) ) {
+			$this->db->where( 'posts.post_status', $data['post_status'] );
+		}
+		$this->db->group_by( 'posts.post_id' );
+		
+		$query = $this->db->get( 'posts' );
+		
+		if ( $query->num_rows() > 0 ) {
+			return $query->row();
+		}
+		
+		// there is no selected post
+		return null;
+	}// get_post_data
+	
+	
+	/**
 	 * is_allow_delete_post
 	 * check permission if user allowed to delete post.
 	 * @param object $row
@@ -541,6 +574,28 @@ class posts_model extends CI_Model {
 		$query->free_result();
 		return null;
 	}// list_item
+	
+	
+	/**
+	 * list revisions.
+	 * @param array $data
+	 * @return mixed
+	 */
+	function list_revision( $data = array() ) {
+		$this->db->join( 'accounts', 'post_revision.account_id = accounts.account_id', 'left' );
+		if ( isset( $data['post_id'] ) ) {
+			$this->db->where( 'post_id', $data['post_id'] );
+		}
+		$this->db->order_by( 'revision_date', 'desc' );
+		
+		$query = $this->db->get( 'post_revision' );
+		
+		// output
+		$output['total'] = $query->num_rows();
+		$output['items'] = $query->result();
+		
+		return $output;
+	}// list_revision
 	
 	
 	/**

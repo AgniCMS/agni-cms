@@ -74,7 +74,7 @@
 						<?php echo anchor( 'site-admin/article/reorder/'.$row->post_id.'/'.$this->input->get( 'tid' ).'/up', 'up', array( 'class' => 'up' ) ); ?> 
 						<?php echo anchor( 'site-admin/article/reorder/'.$row->post_id.'/'.$this->input->get( 'tid' ).'/dn', 'dn', array( 'class' => 'down' ) ); ?> 
 					</span><?php endif; ?> 
-					<?php echo anchor( 'post/'.$row->post_uri_encoded, $row->post_name ); ?>
+					<?php echo anchor( current_url().'/edit/'.$row->post_id, $row->post_name ); ?>
 				</td>
 				<td><?php echo anchor( 'site-admin/account/edit/'.$row->account_id, $row->account_username ); ?></td>
 				<td><?php echo ( $row->post_status == '1' ? lang( 'post_published' ) : lang( 'post_draft' ) ); ?></td>

@@ -173,6 +173,25 @@ class taxonomy_model extends CI_Model {
 	}// edit
 	
 	
+	function get_taxonomy_index_data( $data = array() ) {
+		if ( isset( $data['post_id'] ) ) {
+			$this->db->where( 'post_id', $data['post_id'] );
+		}
+		if ( isset( $data['tid'] ) ) {
+			$this->db->where( 'tid', $data['tid'] );
+		}
+		
+		$query = $this->db->get( 'taxonomy_index' );
+		
+		if ( $query->num_rows() > 0 ) {
+			return $query->row();
+		}
+		
+		// there is no selected taxonomy_index
+		return null;
+	}// get_taxonomy_index_data
+	
+	
 	/**
 	 * list_item
 	 * @return mixed 
