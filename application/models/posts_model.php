@@ -24,64 +24,59 @@ class posts_model extends CI_Model {
 	
 	
 	/**
-	 * add
-	 * @param array $data
+	 * add post to database.
+	 * @param array $data_posts
+	 * @param array $data_post_revision
+	 * @param array $data_tax_index
 	 * @return mixed 
 	 */
-	function add( $data = array() ) {
-		if ( empty( $data ) || !is_array( $data ) ) {return false;}
+	function add( $data_posts = array(), $data_post_revision = array(), $data_tax_index = array() ) {
+		if ( empty( $data_posts ) || !is_array( $data_posts ) || empty( $data_post_revision ) || !is_array( $data_post_revision ) ) {return false;}
+		
+		// there are 4 table for add data to article and 3 table for add data to  page
+		// 1. posts
+		// 2. post_revision
+		// 3. url_alias
+		// 4. taxonomy_index
+		
 		// set type and language to array for module plug
-		$data['post_type'] = $this->post_type;
-		$data['language'] = $this->language;
+		$data_posts['post_type'] = $this->post_type;
+		$data_posts['language'] = $this->language;
+		
 		// get account id from cookie
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
+		$data_posts['account_id'] = $ca_account['id'];
+		$data_post_revision['account_id'] = $ca_account['id'];
+		
 		// re-check post_uri
-		$data['post_uri'] = $this->nodup_uri( $data['post_uri'] );
-		// insert
-		$this->db->set( 'account_id', $ca_account['id'] );
-		$this->db->set( 'post_type', $this->post_type );
-		$this->db->set( 'language', $this->language );
-		$this->db->set( 'theme_system_name', $data['theme_system_name'] );
-		$this->db->set( 'post_name', $data['post_name'] );
-		$this->db->set( 'post_uri', $data['post_uri'] );
-		$this->db->set( 'post_uri_encoded', urlencode( $data['post_uri'] ) );
-		$this->db->set( 'post_feature_image', $data['post_feature_image'] );
-		$this->db->set( 'post_comment', $data['post_comment'] );
-		$this->db->set( 'post_status', $data['post_status'] );
-		$this->db->set( 'post_add', time() );
-		$this->db->set( 'post_add_gmt', local_to_gmt( time() ) );
-		$this->db->set( 'post_update', time() );
-		$this->db->set( 'post_update_gmt', local_to_gmt( time() ) );
-		if ( $data['post_status'] == '1' ) {
-			$this->db->set( 'post_publish_date', time() );
-			$this->db->set( 'post_publish_date_gmt', local_to_gmt( time() ) );
+		$data_posts['post_uri'] = $this->nodup_uri( $data_posts['post_uri'] );
+		$data_posts['post_uri_encoded'] = urlencode( $data_posts['post_uri'] );
+		
+		// insert into posts table #####
+		if ( $data_posts['post_status'] == '1' ) {
+			$this->db->set( 'post_publish_date', $data_posts['post_publish_date'] );
+			$this->db->set( 'post_publish_date_gmt', $data_posts['post_publish_date_gmt'] );
 		}
-		$this->db->set( 'meta_title', $data['meta_title'] );
-		$this->db->set( 'meta_description', $data['meta_description'] );
-		$this->db->set( 'meta_keywords', $data['meta_keywords'] );
-		$this->db->set( 'content_settings', $data['content_settings'] );
-		$this->db->insert( 'posts' );
+		$this->db->insert( 'posts', $data_posts );
+		
 		// get insert_id
 		$data['post_id'] = $this->db->insert_id();
-		// insert to revision body value
-		$this->db->set( 'post_id', $data['post_id'] );
-		$this->db->set( 'account_id', $ca_account['id'] );
-		$this->db->set( 'header_value', $data['header_value'] );
-		$this->db->set( 'body_value', $data['body_value'] );
-		$this->db->set( 'body_summary', $data['body_summary'] );
-		$this->db->set( 'log', $data['log'] );
-		$this->db->set( 'revision_date', time() );
-		$this->db->set( 'revision_date_gmt', local_to_gmt( time() ) );
-		$this->db->insert( 'post_revision' );
+		$data_post_revision['post_id'] = $data['post_id'];
+		
+		// insert to post_revision table #####
+		$this->db->insert( 'post_revision', $data_post_revision );
+		
 		// get revision id
 		$data['revision_id'] = $this->db->insert_id();
-		// now, update revision id into posts table
+		
+		// now, update revision id into posts table #####
 		$this->db->set( 'revision_id', $data['revision_id'] );
 		$this->db->where( 'post_id', $data['post_id'] );
 		$this->db->update( 'posts' );
+		
 		// add categories taxonimy term
-		if ( isset( $data['tid'] ) && is_array( $data['tid'] ) ) {
-			foreach ( $data['tid'] as $tid ) {
+		if ( isset( $data_tax_index['tid'] ) && is_array( $data_tax_index['tid'] ) ) {
+			foreach ( $data_tax_index['tid'] as $tid ) {
 				$this->db->set( 'post_id', $data['post_id'] );
 				$this->db->set( 'tid', $tid );
 				$this->db->set( 'position', $this->get_last_tax_position( $tid ) );
@@ -90,9 +85,10 @@ class posts_model extends CI_Model {
 				$this->taxonomy_model->update_total_post( $tid );
 			}
 		}
+		
 		// add tag taxonomy term
-		if ( isset( $data['tagid'] ) && is_array( $data['tagid'] ) ) {
-			foreach ( $data['tagid'] as $tid ) {
+		if ( isset( $data_tax_index['tagid'] ) && is_array( $data_tax_index['tagid'] ) ) {
+			foreach ( $data_tax_index['tagid'] as $tid ) {
 				$this->db->set( 'post_id', $data['post_id'] );
 				$this->db->set( 'tid', $tid );
 				$this->db->set( 'create', time() );
@@ -100,19 +96,22 @@ class posts_model extends CI_Model {
 				$this->taxonomy_model->update_total_post( $tid );
 			}
 		}
-		// insert to url alias
-		$this->db->set( 'c_type', $this->post_type );
+		
+		// insert to url alias table #####
+		$this->db->set( 'c_type', $data_posts['post_type'] );
 		$this->db->set( 'c_id', $data['post_id'] );
-		$this->db->set( 'uri', $data['post_uri'] );
-		$this->db->set( 'uri_encoded', urlencode( $data['post_uri'] ) );
-		$this->db->set( 'language', $this->language );
+		$this->db->set( 'uri', $data_posts['post_uri'] );
+		$this->db->set( 'uri_encoded', $data_posts['post_uri_encoded'] );
+		$this->db->set( 'language', $data_posts['language'] );
 		$this->db->insert( 'url_alias' );
+		
 		// any fields settings add here.
-		$this->modules_plug->do_action( 'post_after_add', $data );
-		if ( $data['post_status'] == '1' ) {
+		$this->modules_plug->do_action( 'post_after_add', array( $data, $data_posts, $data_post_revision, $data_tax_index ) );
+		if ( $data_posts['post_status'] == '1' ) {
 			// publish plugin
-			$this->modules_plug->do_action( 'post_published', $data );
+			$this->modules_plug->do_action( 'post_published', array( $data, $data_posts, $data_post_revision, $data_tax_index ) );
 		}
+		
 		// done.
 		return true;
 	}// add
@@ -125,35 +124,43 @@ class posts_model extends CI_Model {
 	 */
 	function delete( $post_id = '' ) {
 		if ( !is_numeric( $post_id ) ) {return false;}
+		
 		// delete from menu items ------------------------------------------------------------------------------------
 		// move child of this menu item to upper parent item
 		$this->db->where( 'mi_type', $this->post_type );
 		$this->db->where( 'type_id', $post_id );
 		$this->db->where( 'language', $this->language );
 		$query = $this->db->get( 'menu_items' );
+		
 		foreach ( $query->result() as $row ) {
 			$this->db->set( 'parent_id', $row->parent_id );
 			$this->db->where( 'parent_id', $row->mi_id );
 			$this->db->update( 'menu_items' );
 		}
+		
 		$query->free_result();
+		
 		// do delete
 		$this->db->where( 'mi_type', $this->post_type );
 		$this->db->where( 'type_id', $post_id );
 		$this->db->where( 'language', $this->language );
 		$this->db->delete( 'menu_items' );
+		
 		// rebuild menu items
 		$this->load->model( 'menu_model' );
 		$this->menu_model->rebuild();
 		// end delete from menu items -------------------------------------------------------------------------------
+		
 		// delete from url alias
 		$this->db->where( 'c_type', $this->post_type );
 		$this->db->where( 'c_id', $post_id );
 		$this->db->where( 'language', $this->language );
 		$this->db->delete( 'url_alias' );
+		
 		// delete from comment
 		$this->db->where( 'post_id', $post_id );
 		$this->db->delete( 'comments' );
+		
 		// delete from taxonomy_index--------------------------------------------------------------------------------
 		// update total posts in taxonomy term
 		$this->db->where( 'post_id', $post_id );
@@ -162,22 +169,27 @@ class posts_model extends CI_Model {
 		// delete
 		$this->db->where( 'post_id', $post_id );
 		$this->db->delete( 'taxonomy_index' );
+		
 		// then update
 		foreach ( $query_result as $row ) {
 			$this->taxonomy_model->update_total_post( $row->tid );
 		}
 		// end delete from taxonomy_index---------------------------------------------------------------------------
+		
 		// delete from post_revision
 		$this->db->where( 'post_id', $post_id );
 		$this->db->delete( 'post_revision' );
+		
 		// delete from post_fields
 		$this->db->where( 'post_id', $post_id );
 		$this->db->delete( 'post_fields' );
 		// delete from posts
 		$this->db->where( 'post_id', $post_id );
 		$this->db->delete( 'posts' );
+		
 		// for modules plug
 		$this->modules_plug->do_action( 'post_after_delete', $post_id );
+		
 		return true;
 	}// delete
 	
