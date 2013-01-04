@@ -506,37 +506,42 @@ class posts_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_item( $list_for = 'front' ) {
-		$sql = 'select * from '.$this->db->dbprefix( 'posts' ).' as p';
-		$sql .= ' left outer join '.$this->db->dbprefix( 'taxonomy_index' ).' as ti';
-		$sql .= ' on p.post_id = ti.post_id';
-		$sql .= ' left join '.$this->db->dbprefix( 'accounts' ).' as a';
-		$sql .= ' on p.account_id = a.account_id';
-		$sql .= ' inner join '.$this->db->dbprefix( 'post_revision' ).' as pr';
-		$sql .= ' on p.post_id = pr.post_id';
-		$sql .= ' where post_type = '.$this->db->escape( $this->post_type );
-		$sql .= ' and language = '.$this->db->escape( $this->language );
+		$this->db->join( 'taxonomy_index', 'taxonomy_index.post_id = posts.post_id', 'left outer' );
+		$this->db->join( 'accounts', 'accounts.account_id = posts.account_id', 'left' );
+		$this->db->join( 'post_revision', 'post_revision.post_id = posts.post_id', 'inner' );
+		$this->db->where( 'post_type', $this->post_type );
+		$this->db->where( 'language', $this->language );
 		if ( $list_for == 'front' ) {
-			$sql .= ' and post_status = 1';
+			$this->db->where( 'post_status', '1' );
 		}
 		$tid = trim( $this->input->get( 'tid' ) );
 		if ( $tid != null && is_numeric( $tid ) ) {
-			$sql .= ' and ti.tid = '.$this->db->escape( $tid );
+			$this->db->where( 'taxonomy_index.tid', $tid );
 		}
-		$q = htmlspecialchars( trim( $this->input->get( 'q' ) ) );
+		$q = trim( $this->input->get( 'q' ) );
 		if ( $q != null && $q != 'none' ) {
-			$sql .= ' and (';
-			$sql .= " post_name like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or post_uri like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or body_value like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or body_summary like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or pr.log like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or meta_title like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or meta_description like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or meta_keywords like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or theme_system_name like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= ')';
+			$like_data[0]['field'] = 'posts.post_name';
+			$like_data[0]['match'] = $q;
+			$like_data[1]['field'] = 'posts.post_uri';
+			$like_data[1]['match'] = $q;
+			$like_data[2]['field'] = 'post_revision.body_value';
+			$like_data[2]['match'] = $q;
+			$like_data[3]['field'] = 'post_revision.body_summary';
+			$like_data[3]['match'] = $q;
+			$like_data[4]['field'] = 'post_revision.log';
+			$like_data[4]['match'] = $q;
+			$like_data[5]['field'] = 'posts.meta_title';
+			$like_data[5]['match'] = $q;
+			$like_data[6]['field'] = 'posts.meta_description';
+			$like_data[6]['match'] = $q;
+			$like_data[7]['field'] = 'posts.meta_keywords';
+			$like_data[7]['match'] = $q;
+			$like_data[8]['field'] = 'posts.theme_system_name';
+			$like_data[8]['match'] = $q;
+			$this->db->like_group( $like_data );
+			unset( $like_data );
 		}
-		$sql .= ' group by p.post_id';
+		$this->db->group_by( 'posts.post_id' );
 		
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
@@ -544,15 +549,26 @@ class posts_model extends CI_Model {
 		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
 		$sort = ( $sort != null ? $sort : 'desc' );
 		if ( $tid == null && $this->input->get( 'orders' ) == null ) {
-			$sql .= ' order by post_update desc';
+			$this->db->order_by( 'post_update', 'desc' );
 		} else {
-			$sql .= ' order by '.$orders.' '.$sort.', post_update desc';
+			$this->db->order_by( $orders, $sort );
+			$this->db->order_by( 'post_update', 'desc' );
 		}
 		
+		// clone object before run $this->db->get()
+		$this_db = clone $this->db;
+		
 		// query for count total
-		$query = $this->db->query( $sql );
+		$query = $this->db->get( 'posts' );
 		$total = $query->num_rows();
 		$query->free_result();
+		
+		// restore $this->db object
+		$this->db = $this_db;
+		unset( $this_db );
+		
+		// html encode for links.
+		$q = urlencode( htmlspecialchars( $q ) );
 		
 		// pagination-----------------------------
 		$this->load->library( 'pagination' );
@@ -588,9 +604,10 @@ class posts_model extends CI_Model {
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
 		
-		$sql .= ' limit '.( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ).', '.$config['per_page'].';';
+		// limit query
+		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
 		
-		$query = $this->db->query( $sql);
+		$query = $this->db->get( 'posts' );
 		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $total;
