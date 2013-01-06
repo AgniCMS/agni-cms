@@ -50,6 +50,7 @@ $lang['post_status'] = 'Status';
 $lang['post_summary'] = 'Summary';
 $lang['post_tag_usage_comment'] = 'Enter tag name and select from auto complete, if not found just press enter.';
 $lang['post_tags'] = 'Tags';
+$lang['post_there_is_no_selected_article'] = 'There is no selected article.';
 $lang['post_total_comment'] = '%d comments';
 $lang['post_unpublished'] = 'Unpublished';
 $lang['post_update_since'] = 'Update';
