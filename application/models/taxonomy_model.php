@@ -174,6 +174,30 @@ class taxonomy_model extends CI_Model {
 	
 	
 	/**
+	 * get taxonomy index data.
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_taxonomy_index_data( $data = array() ) {
+		if ( isset( $data['post_id'] ) ) {
+			$this->db->where( 'post_id', $data['post_id'] );
+		}
+		if ( isset( $data['tid'] ) ) {
+			$this->db->where( 'tid', $data['tid'] );
+		}
+		
+		$query = $this->db->get( 'taxonomy_index' );
+		
+		if ( $query->num_rows() > 0 ) {
+			return $query->row();
+		}
+		
+		// there is no selected taxonomy_index
+		return null;
+	}// get_taxonomy_index_data
+	
+	
+	/**
 	 * list_item
 	 * @return mixed 
 	 * 
@@ -181,21 +205,25 @@ class taxonomy_model extends CI_Model {
 	 * @link http://stackoverflow.com/questions/4843945/php-tree-structure-for-categories-and-sub-categories-without-looping-a-query
 	 */
 	function list_item() {
-		// query sql
-		$sql = 'select * from ' . $this->db->dbprefix( 'taxonomy_term_data' );
-		$sql .= ' where language = ' . $this->db->escape( $this->language );
-		$sql .= ' and t_type = ' . $this->db->escape( $this->tax_type );
-		$sql .= ' order by t_name asc';
-		$query = $this->db->query( $sql );
+		$this->db->where( 'language', $this->language );
+		$this->db->where( 't_type', $this->tax_type );
+		$this->db->order_by( 't_name', 'asc' );
+		
+		$query = $this->db->get( 'taxonomy_term_data' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$output = array();
+			
 			foreach ( $query->result() as $row )
 				$output[$row->parent_id][] = $row;
+			
 			foreach ( $query->result() as $row ) if ( isset( $output[$row->tid] ) )
 				$row->childs = $output[$row->tid];
+			
 			$output = $output[0];// this is important for prevent duplicate items
 			return $output;
 		}
+		
 		$query->free_result();
 		return null;
 	}// list_item
@@ -207,31 +235,52 @@ class taxonomy_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_tags( $list_for = 'front' ) {
-		$sql = 'select * from ' . $this->db->dbprefix( 'taxonomy_term_data' );
-		$sql .= ' where language = ' . $this->db->escape( $this->language );
-		$sql .= ' and t_type = ' . $this->db->escape( $this->tax_type );
-		$q = htmlspecialchars( trim( $this->input->get( 'q' ) ) );
+		$this->db->where( 'language', $this->language );
+		$this->db->where( 't_type', $this->tax_type );
+		
+		// search
+		$q = trim( $this->input->get( 'q' ) );
 		if ( $q != null && $q != 'none' ) {
-			$sql .= ' and (';
-			$sql .= " t_name like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or t_description like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or t_uri like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or meta_title like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or meta_description like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or meta_keywords like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or theme_system_name like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= ')';
+			$like_data[0]['field'] = 'taxonomy_term_data.t_name';
+			$like_data[0]['match'] = $q;
+			$like_data[1]['field'] = 'taxonomy_term_data.t_description';
+			$like_data[1]['match'] = $q;
+			$like_data[2]['field'] = 'taxonomy_term_data.t_uri';
+			$like_data[2]['match'] = $q;
+			$like_data[3]['field'] = 'taxonomy_term_data.meta_title';
+			$like_data[3]['match'] = $q;
+			$like_data[4]['field'] = 'taxonomy_term_data.meta_description';
+			$like_data[4]['match'] = $q;
+			$like_data[5]['field'] = 'taxonomy_term_data.meta_keywords';
+			$like_data[5]['match'] = $q;
+			$like_data[6]['field'] = 'taxonomy_term_data.theme_system_name';
+			$like_data[6]['match'] = $q;
+			$this->db->like_group( $like_data );
+			unset( $like_data );
 		}
+		
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders != null ? $orders : 't_name' );
 		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
 		$sort = ( $sort != null ? $sort : 'asc' );
-		$sql .= ' order by '.$orders.' '.$sort;
+		$this->db->order_by( $orders, $sort );
+		
+		// clone object before run $this->db->get()
+		$this_db = clone $this->db;
+		
 		// query for count total
-		$query = $this->db->query( $sql );
+		$query = $this->db->get( 'taxonomy_term_data' );
 		$total = $query->num_rows();
 		$query->free_result();
+		
+		// restore $this->db object
+		$this->db = $this_db;
+		unset( $this_db );
+		
+		//html encode search keyword for create links
+		$q = urlencode( htmlspecialchars( $q ) );
+		
 		// pagination-----------------------------
 		$this->load->library( 'pagination' );
 		$config['base_url'] = site_url( $this->uri->uri_string() ).'?orders='.htmlspecialchars( $orders ).'&amp;sort='.htmlspecialchars( $sort ).( $q != null ?'&amp;q='.$q : '' );
@@ -260,14 +309,19 @@ class taxonomy_model extends CI_Model {
 		$this->pagination->initialize( $config );
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
-		$sql .= ' limit '.( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ).', '.$config['per_page'].';';
-		$query = $this->db->query( $sql);
+		
+		// limit query
+		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
+		
+		$query = $this->db->get( 'posts' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $total;
 			$output['items'] = $query->result();
 			$query->free_result();
 			return $output;
 		}
+		
 		$query->free_result();
 		return null;
 	}// list_tags
@@ -280,6 +334,7 @@ class taxonomy_model extends CI_Model {
 	 */
 	function list_taxterm_index( $post_id = '', $nohome_category = false ) {
 		$home_category_id = $this->config_model->load_single( 'content_frontpage_category', $this->lang->get_current_lang() );
+		
 		//
 		$this->db->join( 'taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'inner' );
 		$this->db->where( 'post_id', $post_id );
@@ -290,11 +345,15 @@ class taxonomy_model extends CI_Model {
 		$this->db->where( 'language', $this->language );
 		$this->db->group_by( 'taxonomy_term_data.tid' );
 		$this->db->order_by( 't_name', 'asc' );
+		
 		$query = $this->db->get( 'taxonomy_index' );
+		
 		if ( $query->num_rows() > 0 ) {
 			return $query->result();
 		}
+		
 		$query->free_result();
+		
 		return null;
 	}// list_taxterm_index
 	
