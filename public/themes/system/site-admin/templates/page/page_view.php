@@ -45,7 +45,7 @@
 		<?php foreach ( $list_item['items'] as $row ): ?> 
 			<tr>
 				<td class="check-column"><?php echo form_checkbox( 'id[]', $row->post_id); ?></td>
-				<td><?php echo anchor( $row->post_uri_encoded, $row->post_name ); ?></td>
+				<td><?php echo anchor( current_url().'/edit/'.$row->post_id, $row->post_name ); ?></td>
 				<td><?php echo anchor( 'site-admin/account/edit/'.$row->account_id, $row->account_username ); ?></td>
 				<td><?php echo ( $row->post_status == '1' ? lang( 'post_published' ) : lang( 'post_draft' ) ); ?></td>
 				<td><?php
