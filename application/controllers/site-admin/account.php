@@ -181,28 +181,32 @@ class account extends admin_controller {
 		// load data for form
 		$row = $this->account_model->get_data_account( array( 'account_id' => $account_id ) );
 		
-		if ( $row != null ) {
-			$output['account_id'] = $row->account_id;
-			$output['account_username'] = $row->account_username;
-			$output['account_email'] = $row->account_email;
-			$output['account_fullname'] = $row->account_fullname;
-			$output['account_birthdate'] = $row->account_birthdate;
-			$output['account_avatar'] = $row->account_avatar;
-			$output['account_timezone'] = $row->account_timezone;
-			$output['account_status'] = $row->account_status;
-			$output['account_status_text'] = $row->account_status_text;
-			$output['level_group_id'] = $row->level_group_id;
-			
-			// check if editing higher level?
-			if ( !$this->account_model->can_i_add_edit_account( $output['level_group_id'] ) ) {
-				// you cannot edit this user because he/she has higher role than you
-				$query->free_result();
-				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_cannot_edit_account_higher_your_level' ).'</div>' );
-				redirect( 'site-admin/account' );
-			}
-		} else {
+		if ( $row == null ) {
+			// not found selected account_id.
 			redirect( 'site-admin' );
+		}
+		
+		$output['account_id'] = $row->account_id;
+		$output['account_username'] = $row->account_username;
+		$output['account_email'] = $row->account_email;
+		$output['account_fullname'] = $row->account_fullname;
+		$output['account_birthdate'] = $row->account_birthdate;
+		$output['account_avatar'] = $row->account_avatar;
+		$output['account_timezone'] = $row->account_timezone;
+		$output['account_status'] = $row->account_status;
+		$output['account_status_text'] = $row->account_status_text;
+		$output['level_group_id'] = $row->level_group_id;
+		
+		// for future use
+		$output['row'] = $row;
+
+		// check if editing higher level?
+		if ( !$this->account_model->can_i_add_edit_account( $output['level_group_id'] ) ) {
+			// you cannot edit this user because he/she has higher role than you
+			$query->free_result();
+			$this->load->library( 'session' );
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_cannot_edit_account_higher_your_level' ).'</div>' );
+			redirect( 'site-admin/account' );
 		}
 		
 		// list level group for select
