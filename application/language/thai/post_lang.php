@@ -50,6 +50,7 @@ $lang['post_status'] = 'สถานะ';
 $lang['post_summary'] = 'เนื้อหาย่อ';
 $lang['post_tag_usage_comment'] = 'กรอกชื่อแท็กแล้วรอเลือกจาก auto complete, หากไม่มีให้กรอกจนเสร็จแล้วกด enter.';
 $lang['post_tags'] = 'แท็ก';
+$lang['post_there_is_no_selected_article'] = 'ไม่พบบทความที่เลือก.';
 $lang['post_total_comment'] = '%d ความคิดเห็น';
 $lang['post_unpublished'] = 'เลิกเผยแพร่';
 $lang['post_update_since'] = 'อัพเดท';
