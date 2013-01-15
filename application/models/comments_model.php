@@ -229,6 +229,7 @@ class comments_model extends CI_Model {
 		} else {
 			$sql .= ' and c1.comment_id < '.$comment_id;
 		}
+		$sql .= ' GROUP BY c1.comment_id';
 		$query = $this->db->query( $sql );
 		$row = $query->row();
 		$query->free_result();
