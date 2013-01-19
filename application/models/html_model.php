@@ -25,8 +25,10 @@ class html_model extends CI_Model {
 	 */
 	function gen_front_body_class($class = '') {
 		$class = ' '.$class;
+		
 		// gen front class
 		if ( current_url() == base_url() || current_url() == site_url() ) {$class .= ' home';}
+		
 		// gen logged in class
 		$cm_cookie = $this->account_model->get_account_cookie( 'member' );
 		if ( !isset( $cm_cookie['id'] ) || !isset( $cm_cookie['username'] ) || !isset( $cm_cookie['password'] ) || !isset( $cm_cookie['onlinecode'] ) ) {
@@ -34,8 +36,10 @@ class html_model extends CI_Model {
 		} elseif ( isset( $cm_cookie['id'] ) ) {
 			$class .= ' logged-in';
 		}
+		
 		// plugins here
 		$class .= ' '.$this->modules_plug->do_action( 'front_html_body_class' );
+		
 		return rtrim( $class );
 	}// gen_front_body_class
 	
@@ -47,10 +51,12 @@ class html_model extends CI_Model {
 	 */
 	function gen_tags( $tags = array() ) {
 		if ( !is_array( $tags ) || empty( $tags ) ) {return null;}
+		
 		$output = '';
 		foreach ( $tags as $tag ) {
 			$output .= $tag."\n";
 		}
+		
 		return $output;
 	}// gen_tags
 	
@@ -62,6 +68,7 @@ class html_model extends CI_Model {
 	 */
 	function gen_title( $title = '' ) {
 		$cfg = $this->config_model->load( array( 'site_name', 'page_title_separator' ) );
+		
 		if ( ! empty($cfg) ) {
 			if ( $title != null ) {
 				$title = $cfg['site_name']['value'] . $cfg['page_title_separator']['value'] . $title;
@@ -69,9 +76,12 @@ class html_model extends CI_Model {
 				// no $title set, return only site name
 				$title = $cfg['site_name']['value'];
 			}
+			
 			$title = $this->modules_plug->do_action( 'html_title', $title );
+			
 			return $title;
 		}
+		
 		return $title;
 	}// gen_title
 	
