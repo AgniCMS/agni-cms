@@ -349,7 +349,7 @@ class taxonomy_model extends CI_Model {
 		// limit query
 		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
 		
-		$query = $this->db->get( 'posts' );
+		$query = $this->db->get( 'taxonomy_term_data' );
 		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $total;
