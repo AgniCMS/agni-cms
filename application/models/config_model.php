@@ -28,6 +28,7 @@ class config_model extends CI_Model {
 		// if partial is ALL (clean cache)
 		if ( $partial_name == 'ALL' || $partial_name == 'clean' ) {
 			$this->load->driver( 'cache' );
+			
 			//return $this->cache->clean();// << DO NOT use this method because it is delete all index.html and .htaccess files
 			$map = scandir( 'application/cache' );
 			
@@ -62,6 +63,7 @@ class config_model extends CI_Model {
 	function load( $fields = array() ) {
 		if ( ! is_array( $fields ) ) {return $this->load_single( $fields );}
 		if ( empty( $fields ) ) {return array();}
+		
 		$this->db->where_in( 'config_name', $fields );
 		$query = $this->db->get( 'config' );
 		
@@ -151,9 +153,10 @@ class config_model extends CI_Model {
 	
 	function save_frontpage_category( $data = array() ) {
 		if ( !isset( $data['content_frontpage_category'] ) ) {return false;}
-		//
+		
 		$this->db->where( 'language', $this->lang->get_current_lang() );
 		$query = $this->db->get( 'frontpage_category' );
+		
 		if ( $query->num_rows() > 0 ) {
 			// exists, use update
 			$this->db->where( 'language', $this->lang->get_current_lang() );
@@ -165,6 +168,7 @@ class config_model extends CI_Model {
 			$this->db->set( 'tid', $data['content_frontpage_category'] );
 			$this->db->insert( 'frontpage_category' );
 		}
+		
 		return true;
 	}// save_frontpage_category
 	

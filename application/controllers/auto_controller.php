@@ -49,12 +49,14 @@ class auto_controller extends MY_Controller {
 		$this->db->where( 'uri_encoded', $last_urisegment );
 		$this->db->where( 'language', $this->lang->get_current_lang() );
 		$query = $this->db->get( 'url_alias' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			$query->free_result();
 			$c_type = $row->c_type;
 			unset( $row );
-			//
+			
+			// select which type is it.
 			if ( $c_type == 'category' ) {
 				$this->load->module( 'category' );
 				return $this->category->index( $att1, $att2 );
@@ -65,28 +67,32 @@ class auto_controller extends MY_Controller {
 				$this->load->module( 'post' );
 				return $this->post->view( $last_urisegment );
 			}
+			
 			$query->free_result();
 			unset( $c_type, $query );
-		} else {
-			$query->free_result();
-			// not found? lookup in url alias as redirect
-			$uri_string = $this->uri->uri_string();
-			$uri_string = preg_replace( '/\/(.*)/', '$1', $uri_string );
-			// find in db
-			$this->db->where( 'uri_encoded', $uri_string );
-			$this->db->where( 'c_type', 'redirect' );
-			$query = $this->db->get( 'url_alias' );
-			//
-			unset( $uri_string );
-			//
-			if ( $query->num_rows() > 0 ) {
-				$row = $query->row();
-				$query->free_result();
-				redirect( $row->redirect_to_encoded, '', $row->redirect_code );
-			}
-			$query->free_result();
-			unset( $query );
 		}
+		
+		// nod found any alias?? check redirection in url_alias.-----------------------------------------------------------------------
+		// not found? lookup in url alias as redirect
+		$uri_string = $this->uri->uri_string();
+		$uri_string = preg_replace( '/\/(.*)/', '$1', $uri_string );
+		
+		// find in db
+		$this->db->where( 'uri_encoded', $uri_string );
+		$this->db->where( 'c_type', 'redirect' );
+		$query = $this->db->get( 'url_alias' );
+		//
+		unset( $uri_string );
+		
+		if ( $query->num_rows() > 0 ) {
+			$row = $query->row();
+			$query->free_result();
+			redirect( $row->redirect_to_encoded, '', $row->redirect_code );
+		}
+		
+		$query->free_result();
+		unset( $query );
+		// end check redirection in url_alias.-----------------------------------------------------------------------------------------------
 		
 		// found nothing.
 		show_404();

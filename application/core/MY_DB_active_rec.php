@@ -45,11 +45,14 @@ class MY_DB_active_record extends CI_DB_active_record {
 				$item['side'] =strtolower( trim( $item['side'] ) );
 			}
 			
-			// like active record.
-			if ( $i == '1' ) {
+			// use OR or not ( first loop do not use OR )
+			if ( $i > 1 ) {
+				$sql .= ' OR ';
+			}
+			
+			// detect table name and add prefix
+			if ( strpos( $item['field'], '.' ) !== false ) {
 				$sql .= $this->dbprefix( $item['field'] );
-			} else {
-				$sql .= ' OR '.$this->dbprefix( $item['field'] );
 			}
 			
 			if ( $item['side'] == 'none' ) {
