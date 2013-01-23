@@ -20,6 +20,7 @@ class taxonomy_model extends CI_Model {
 		parent::__construct();
 		// set language
 		$this->language = $this->lang->get_current_lang();
+		
 		// for do some very hard thing like nlevel
 		$this->fields = array('id'     => 'tid', 'parent' => 'parent_id' );
 	}// __construct
@@ -32,34 +33,38 @@ class taxonomy_model extends CI_Model {
 	 */
 	function add( $data = array() ) {
 		if ( empty( $data ) ) {return false;}
+		
 		// check uri
 		$data['t_uri'] = $this->nodup_uri( $data['t_uri'] );
+		
+		// additional data for insert to db
+		$data['language'] = $this->language;
+		$data['t_type'] = $this->tax_type;
+		$data['t_uri_encoded'] = urlencode( $data['t_uri'] );
+		
 		// insert
-		$this->db->set( 'parent_id', $data['parent_id'] );
-		$this->db->set( 'language', $this->language );
-		$this->db->set( 't_type', $this->tax_type );
-		$this->db->set( 't_name', $data['t_name'] );
-		$this->db->set( 't_description', $data['t_description'] );
-		$this->db->set( 't_uri', $data['t_uri'] );
-		$this->db->set( 't_uri_encoded', urlencode( $data['t_uri'] ) );
-		$this->db->set( 'meta_title', $data['meta_title'] );
-		$this->db->set( 'meta_description', $data['meta_description'] );
-		$this->db->set( 'meta_keywords', $data['meta_keywords'] );
-		$this->db->set( 'theme_system_name', $data['theme_system_name'] );
-		$this->db->insert( 'taxonomy_term_data' );
+		$this->db->insert( 'taxonomy_term_data', $data );
+		
 		// get insert id
 		$tid = $this->db->insert_id();
+		
+		// set t_uris (it is taxonomy tree)
 		$this->db->set( 't_uris', $this->show_uri_tree( $tid ) );
 		$this->db->where( 'tid', $tid );
 		$this->db->update( 'taxonomy_term_data' );
+		
+		// rebuild tree level.
 		$this->rebuild();
+		
+		// additional data for url_alias
+		$data_alias['c_type'] = $this->tax_type;
+		$data_alias['c_id'] = $tid;
+		$data_alias['uri'] = $data['t_uri'];
+		$data_alias['uri_encoded'] = urlencode( $data['t_uri'] );
+		$data_alias['language'] = $this->language;
+		
 		// insert to url alias
-		$this->db->set( 'c_type', $this->tax_type );
-		$this->db->set( 'c_id', $tid );
-		$this->db->set( 'uri', $data['t_uri'] );
-		$this->db->set( 'uri_encoded', urlencode( $data['t_uri'] ) );
-		$this->db->set( 'language', $this->language );
-		$this->db->insert( 'url_alias' );
+		$this->db->insert( 'url_alias', $data_alias );
 		return true;
 	}// add
 	
@@ -71,32 +76,39 @@ class taxonomy_model extends CI_Model {
 	 */
 	function delete( $tid ) {
 		if ( !is_numeric( $tid ) ) {return false;}
+		
 		// delete from menu items ------------------------------------------------------------------------------------
 		// move child of this menu item to upper parent item
 		$this->db->where( 'mi_type', $this->tax_type );
 		$this->db->where( 'type_id', $tid );
 		$this->db->where( 'language', $this->language );
+		
 		$query = $this->db->get( 'menu_items' );
+		
 		foreach ( $query->result() as $row ) {
 			$this->db->set( 'parent_id', $row->parent_id );
 			$this->db->where( 'parent_id', $row->mi_id );
 			$this->db->update( 'menu_items' );
 		}
 		$query->free_result();
-		// do delete
+		
+		// do delete menu item
 		$this->db->where( 'mi_type', $this->tax_type );
 		$this->db->where( 'type_id', $tid );
 		$this->db->where( 'language', $this->language );
 		$this->db->delete( 'menu_items' );
+		
 		// rebuild menu items
 		$this->load->model( 'menu_model' );
 		$this->menu_model->rebuild();
 		// end delete from menu items -------------------------------------------------------------------------------
+		
 		// delete url alias
 		$this->db->where( 'c_type', $this->tax_type );
 		$this->db->where( 'c_id', $tid );
 		$this->db->where( 'language', $this->language );
 		$this->db->delete( 'url_alias' );
+		
 		// update first child of this category to parent or root
 		$this->db->where( 'tid', $tid );
 		$query = $this->db->get( 'taxonomy_term_data' );
@@ -112,15 +124,19 @@ class taxonomy_model extends CI_Model {
 			$query2->free_result();
 		}
 		$query->free_result();
+		
 		// delete taxonomy index
 		$this->db->where( 'tid', $tid );
 		$this->db->delete( 'taxonomy_index' );
+		
 		// delete item
 		$this->db->where( 'tid', $tid );
 		$this->db->delete( 'taxonomy_term_data' );
+		
 		// delete frontpage category
 		$this->db->where( 'tid', $tid );
 		$this->db->delete( 'frontpage_category' );
+		
 		return true;
 	}// delete
 	
@@ -130,44 +146,48 @@ class taxonomy_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function edit( $data = array() ) {
+	function edit( $data = array(), $data_ua = array(), $data_mi = array() ) {
 		if ( empty( $data ) ) {return false;}
+		
 		// check uri
 		$data['t_uri'] = $this->nodup_uri( $data['t_uri'], true, $data['tid'] );
+		
+		// additional data for taxonomy_term_data table
+		$data['t_uri_encoded'] = urlencode( $data['t_uri'] );
+		
 		// update
-		$this->db->set( 'parent_id', $data['parent_id'] );
-		$this->db->set( 't_name', $data['t_name'] );
-		$this->db->set( 't_description', $data['t_description'] );
-		$this->db->set( 't_uri', $data['t_uri'] );
-		$this->db->set( 't_uri_encoded', urlencode( $data['t_uri'] ) );
-		$this->db->set( 'meta_title', $data['meta_title'] );
-		$this->db->set( 'meta_description', $data['meta_description'] );
-		$this->db->set( 'meta_keywords', $data['meta_keywords'] );
-		$this->db->set( 'theme_system_name', $data['theme_system_name'] );
 		$this->db->where( 'tid', $data['tid'] );
 		$this->db->where( 'language', $this->language );
 		$this->db->where( 't_type', $this->tax_type );
-		$this->db->update( 'taxonomy_term_data' );
+		$this->db->update( 'taxonomy_term_data', $data );
+		
 		// update uris
 		$uri_tree = $this->show_uri_tree( $data['tid'] );
 		$this->db->set( 't_uris', $uri_tree );
 		$this->db->where( 'tid', $data['tid'] );
 		$this->db->update( 'taxonomy_term_data' );
+		
+		// rebuild tree.
 		$this->rebuild();
+		
+		// additional data for url_alias table
+		$data['uri_encoded'] = $data['t_uri_encoded'];
+		
 		// update url alias
 		$this->db->where( 'c_type', $this->tax_type );
 		$this->db->where( 'c_id', $data['tid'] );
-		$this->db->set( 'uri', $data['t_uri'] );
-		$this->db->set( 'uri_encoded', urlencode( $data['t_uri'] ) );
 		$this->db->where( 'language', $this->language );
-		$this->db->update( 'url_alias' );
+		$this->db->update( 'url_alias', $data_ua );
+		
+		// additional data for menu_items table
+		$data_mi['link_url'] = $uri_tree;
+		
 		// update menu_items
 		$this->db->where( 'mi_type', $this->tax_type );
 		$this->db->where( 'type_id', $data['tid'] );
-		$this->db->set( 'link_url', $uri_tree );
-		$this->db->set( 'link_text', $data['t_name'] );
-		$this->db->update( 'menu_items' );
-		//
+		$this->db->update( 'menu_items', $data_mi );
+		
+		// done
 		unset( $uri_tree );
 		return true;
 	}// edit
@@ -195,6 +215,22 @@ class taxonomy_model extends CI_Model {
 		// there is no selected taxonomy_index
 		return null;
 	}// get_taxonomy_index_data
+	
+	
+	/**
+	 * get taxonomy_term_data from db.
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_taxonomy_term_data_db( $data = array() ) {
+		if ( !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
+		$query = $this->db->get( 'taxonomy_term_data' );
+		
+		return $query->row();
+	}// get_taxonomy_term_data_db
 	
 	
 	/**
@@ -313,7 +349,7 @@ class taxonomy_model extends CI_Model {
 		// limit query
 		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
 		
-		$query = $this->db->get( 'posts' );
+		$query = $this->db->get( 'taxonomy_term_data' );
 		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $total;
@@ -367,38 +403,47 @@ class taxonomy_model extends CI_Model {
 	 */
 	function nodup_uri( $uri, $editmode = false, $id = '' ) {
 		$uri = url_title( $uri );
+		
 		// load url model for check disallowed uri
 		$this->load->model( 'url_model' );
 		$uri = $this->url_model->validate_allow_url( $uri );
+		
 		//
 		if ( $editmode == true ) {
 			if ( !is_numeric( $id ) ) {return null;}
+			
 			// no duplicate uri edit mode
 			$this->db->where( 'language', $this->language );
 			$this->db->where( 't_type', $this->tax_type );
 			$this->db->where( 't_uri', $uri );
 			$this->db->where( 'tid', $id );
+			
 			if ( $this->db->count_all_results( 'taxonomy_term_data' ) > 0 ) {
 				// nothing change, return old value
 				return $uri;
 			}
 		}
+		
 		// loop check
 		$found = true;
 		$count = 0;
 		$uri = ( $uri == null ? 't' : $uri );
 		do {
 			$new_uri = ($count === 0 ? $uri : $uri . "-" . $count);
+			
 			$this->db->where( 'language', $this->language );
 			$this->db->where( 't_type', $this->tax_type );
 			$this->db->where( 't_uri', $new_uri );
+			
 			if ( $this->db->count_all_results( 'taxonomy_term_data' ) > 0 ) {
 				$found = true;
 			} else {
 				$found = false;
 			}
+			
 			$count++;
 		} while ( $found === true );
+		
 		unset( $found, $count );
 		return $new_uri;
 	}// nodup_uri
@@ -416,12 +461,15 @@ class taxonomy_model extends CI_Model {
 		$this->db->where( 't_type', $this->tax_type );
 		$this->db->where( $check_field, $check_val );
 		$query = $this->db->get( 'taxonomy_term_data' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			$query->free_result();
 			return $row->$return_field;
 		}
+		
 		$query->free_result();
+		
 		return null;
 	}// show_taxterm_info
 	
@@ -451,8 +499,10 @@ class taxonomy_model extends CI_Model {
 				$end_depth = 'yes';
 			}
 		} while ( $end_depth == 'no' );
+		
 		// reverse array
 		$output = array_reverse( $output );
+		
 		$uri = '';
 		foreach ( $output as $key => $item ) {
 			$uri .= $item;
@@ -460,6 +510,7 @@ class taxonomy_model extends CI_Model {
 				$uri .= '/';
 			}
 		}
+		
 		// remove junk var
 		unset( $end_depth, $query, $row, $output );
 		return $uri;
@@ -475,10 +526,12 @@ class taxonomy_model extends CI_Model {
 		if ( !is_numeric( $tid ) ) {return false;}
 		$this->db->where( 'tid', $tid );
 		$total = $this->db->count_all_results( 'taxonomy_index' );
+		
 		// update total posts in tax.term
 		$this->db->set( 't_total', $total );
 		$this->db->where( 'tid', $tid );
 		$this->db->update( 'taxonomy_term_data' );
+		
 		return true;
 	}// update_total_post
 	

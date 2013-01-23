@@ -14,10 +14,13 @@ class media extends admin_controller {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// load model
 		$this->load->model( array( 'media_model' ) );
+		
 		// load helper
 		$this->load->helper( array( 'date', 'file', 'form' ) );
+		
 		// load language
 		$this->lang->load( 'media' );
 	}// __construct
@@ -42,57 +45,58 @@ class media extends admin_controller {
 	function ajax_resize() {
 		// check both permission
 		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) != true && $this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$my_account_id = $ca_account['id'];
 		unset( $ca_account );
-		//
+		
+		// check that it is ajax request.
 		if ( $this->input->is_ajax_request() ) {
 			$file_id = trim( $this->input->post( 'file_id' ) );
+			
 			// open db for edit and check permission (own, other)
-			$this->db->join( 'accounts', 'files.account_id = accounts.account_id', 'left' );
-			$this->db->where( 'file_id', $file_id );
-			$this->db->where( 'language', $this->lang->get_current_lang() );
-			$query = $this->db->get( 'files' );
-			if ( $query->num_rows() <= 0 ) {
-				$query->free_result();
+			$data['file_id'] = $file_id;
+			$row = $this->media_model->get_file_data_db( $data );
+			unset( $data );
+			if ( $row == null ) {
 				redirect( 'site-admin/media' );
 			}
-			//
-			$row = $query->row();
-			$query->free_result();
+			
 			// check permissions-----------------------------------------------------------
 			if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id != $my_account_id ) {
 				// this user has permission to edit own, but NOT editing own
 				if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) ) {
 					// this user has NOT permission to edit other's, but editing other's
-					$query->free_result();
-					unset( $row, $query, $my_account_id );
+					unset( $row, $my_account_id );
 					redirect( 'site-admin' );
 				}
 			} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id == $my_account_id ) {
 				// this user has NOT permission to edit own, but editing own.
-				$query->free_result();
-				unset( $row, $query, $my_account_id );
+				unset( $row, $my_account_id );
 				redirect( 'site-admin' );
 			}
 			// end check permissions-----------------------------------------------------------
+			
 			if ( strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png' ) {
 				$width = trim( $this->input->post( 'width' ) );
 					if ( !is_numeric( $width ) ) {return false;}
 				$height = trim( $this->input->post( 'height' ) );
 					if ( !is_numeric( $height ) ) {return false;}
+				
 				// calculate memory limit usage for resize image
 				if ( $this->media_model->checkMemAvailbleForResize( $row->file, $width, $height ) ) {
 					// resize
 					$this->load->library('vimage', $row->file );
 					$this->vimage->resize_no_ratio( $width, $height );
 					$this->vimage->save('', $row->file );
+					
 					// update file size in db
 					$size = get_file_info( $row->file, 'size' );
 					$this->db->set( 'file_size', $size['size'] );
 					$this->db->where( 'file_id', $file_id );
 					$this->db->update( 'files' );
+					
 					// done.
 					$output['result'] = true;
 					$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'media_resize_success' ).'</div>';
@@ -103,7 +107,8 @@ class media extends admin_controller {
 					$output['result'] = false;
 					$output['form_status'] = '<div class="txt_error alert alert-error">'.sprintf( $this->lang->line( 'media_resize_memory_exceed_limit' ), $memory_limit, $require_mem ).'</div>';
 				}
-				//
+				
+				// send data to output and done.
 				$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 				$this->output->set_header( 'Pragma: no-cache' );
 				$this->output->set_content_type( 'application/json' );
@@ -119,21 +124,24 @@ class media extends admin_controller {
 	function copy( $file_id = '' ) {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_copy_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$my_account_id = $ca_account['id'];
 		unset( $ca_account );
+		
 		// open db for copy files and info
-		$this->db->where( 'file_id', $file_id );
-		$this->db->where( 'language', $this->lang->get_current_lang() );
-		$query = $this->db->get( 'files' );
-		if ( $query->num_rows() <= 0 ) {
-			$query->free_result();
+		$data['file_id'] = $file_id;
+		$row = $this->media_model->get_file_data_db( $data );
+		unset( $data );
+		
+		if ( $row == null ) {
 			redirect( 'site-admin/media' );
 		}
-		$row = $query->row();
+		
 		// copy file processes.------------------------------------------------------------------------------------------
 		$file = explode( '.', $row->file );
+		
 		// cut only name.
 		$file_name = '';
 		for ( $i = 0; $i < count($file)-1; $i++ ) {
@@ -142,11 +150,13 @@ class media extends admin_controller {
 				$file_name .= '.';
 			}
 		}
+		
 		// cut only file ext.
 		$file_ext = '';
 		if ( isset( $file[count($file)-1] ) ) {
 			$file_ext = '.'.$file[count($file)-1];
 		}
+		
 		// loop new name + num until not found.
 		$i = 1;
 		$found = true;
@@ -167,27 +177,30 @@ class media extends admin_controller {
 			}
 			$i++;
 		}while( $found === true );
+		
 		// copy file
 		copy( $row->file, $file_name.$file_ext );
 		//-----------------------------------------------------------------------------------------------------------------
+		
 		// get new file name only
 		$file = explode( '/', $file_name );
 		$file_name_only = $file[count($file)-1];
+		
 		// copy info
-		$this->db->set( 'account_id', $my_account_id );
-		$this->db->set( 'language', $row->language );
-		$this->db->set( 'file', $file_name.$file_ext );
-		$this->db->set( 'file_name', $file_name_only.$file_ext );
-		$this->db->set( 'file_original_name', $row->file_original_name );
-		$this->db->set( 'file_client_name', $row->file_client_name );
-		$this->db->set( 'file_mime_type', $row->file_mime_type );
-		$this->db->set( 'file_ext', $row->file_ext );
-		$this->db->set( 'file_size', $row->file_size );
-		$this->db->set( 'media_name', $row->media_name );
-		$this->db->set( 'media_keywords', $row->media_keywords );
-		$this->db->set( 'file_add', time() );
-		$this->db->set( 'file_add_gmt', local_to_gmt( time() ) );
-		$this->db->insert( 'files' );
+		$data['account_id'] = $my_account_id;
+		$data['language'] = $row->language;
+		$data['file'] = $file_name.$file_ext;
+		$data['file_name'] = $file_name_only.$file_ext;
+		$data['file_original_name'] = $row->file_original_name;
+		$data['file_client_name'] = $row->file_client_name;
+		$data['file_mime_type'] = $row->file_mime_type;
+		$data['file_ext'] = $row->file_ext;
+		$data['file_size'] = $row->file_size;
+		$data['media_name'] = $row->media_name;
+		$data['media_keywords'] = $row->media_keywords;
+		$this->media_model->add_data_only( $data );
+		unset( $data );
+		
 		// done
 		// go back
 		$this->load->library( 'user_agent' );
@@ -202,45 +215,44 @@ class media extends admin_controller {
 	function edit( $file_id = '' ) {
 		// check both permission
 		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) != true && $this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$my_account_id = $ca_account['id'];
 		unset( $ca_account );
+		
 		// open db for edit and check permission (own, other)
-		$this->db->join( 'accounts', 'files.account_id = accounts.account_id', 'left' );
-		$this->db->where( 'file_id', $file_id );
-		$this->db->where( 'language', $this->lang->get_current_lang() );
-		$query = $this->db->get( 'files' );
-		if ( $query->num_rows() <= 0 ) {
-			$query->free_result();
+		$data['file_id'] = $file_id;
+		$row = $this->media_model->get_file_data_db( $data );
+		unset( $data );
+		if ( $row == null ) {
 			redirect( 'site-admin/media' );
 		}
-		//
-		$row = $query->row();
-		$query->free_result();
+		
 		// check permissions-----------------------------------------------------------
 		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id != $my_account_id ) {
 			// this user has permission to edit own, but NOT editing own
 			if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) ) {
 				// this user has NOT permission to edit other's, but editing other's
-				$query->free_result();
-				unset( $row, $query, $my_account_id );
+				unset( $row, $my_account_id );
 				redirect( 'site-admin' );
 			}
 		} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id == $my_account_id ) {
 			// this user has NOT permission to edit own, but editing own.
-			$query->free_result();
-			unset( $row, $query, $my_account_id );
+			unset( $row, $my_account_id );
 			redirect( 'site-admin' );
 		}
 		// end check permissions-----------------------------------------------------------
+		
 		// 
 		$output['row'] = $row;
 		$output['media_name'] = $row->media_name;
 		$output['media_description'] = htmlspecialchars( $row->media_description, ENT_QUOTES, config_item( 'charset' ) );
 		$output['media_keywords'] = $row->media_keywords;
+		
 		// save action
 		if ( $this->input->post() ) {
+			
 			$data['file_id'] = $file_id;
 			$data['media_name'] = htmlspecialchars( trim( $this->input->post( 'media_name', true ) ), ENT_QUOTES, config_item( 'charset' ) );
 				if ( $data['media_name'] == null ) {$data['media_name'] = null;}
@@ -248,6 +260,7 @@ class media extends admin_controller {
 				if ( $data['media_description'] == null ) {$data['media_description'] = null;}
 			$data['media_keywords'] = htmlspecialchars( trim( $this->input->post( 'media_keywords', true ) ), ENT_QUOTES, config_item( 'charset' ) );
 				if ( $data['media_keywords'] == null ) {$data['media_keywords'] = null;}
+			
 			// update to db
 			$result = $this->media_model->edit( $data );
 			if ( $result === true ) {
@@ -255,17 +268,20 @@ class media extends admin_controller {
 				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
 				redirect( 'site-admin/media' );
 			}
+			
 			// re-populate form
 			$output['media_name'] = $data['media_name'];
 			$output['media_description'] = htmlspecialchars( $data['media_description'], ENT_QUOTES, config_item( 'charset' ) );
 			$output['media_keywords'] = $data['media_keywords'];
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'media_media' ) );
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
 		$this->output->set_header( 'Pragma: no-cache' );
@@ -282,6 +298,7 @@ class media extends admin_controller {
 	function index() {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_viewall_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// load session for flashdata
 		$this->load->library( 'session' );
 		$form_status = $this->session->flashdata( 'form_status' );
@@ -289,10 +306,12 @@ class media extends admin_controller {
 			$output['form_status'] = $form_status;
 		}
 		unset( $form_status );
+		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$output['my_account_id'] = $ca_account['id'];
 		unset( $ca_account );
+		
 		// get values
 		$output['filter'] = trim( $this->input->get( 'filter', true ) );
 		$output['filter_val'] = trim( $this->input->get( 'filter_val', true ) );
@@ -300,17 +319,20 @@ class media extends admin_controller {
 		$output['orders'] = trim( $this->input->get( 'orders', true ) );
 		$output['cur_sort'] = $this->input->get( 'sort', true );
 		$output['sort'] = ( $this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'desc' ? 'asc' : 'desc' );
+		
 		// list item
 		$output['list_item'] = $this->media_model->list_item( 'admin' );
 		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'media_media' ) );
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		if ( $this->input->is_ajax_request() ) {
 			$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
@@ -326,6 +348,7 @@ class media extends admin_controller {
 	function popup() {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_viewall_perm' ) != true ) {return null;}
+		
 		// load session for flashdata
 		$this->load->library( 'session' );
 		$form_status = $this->session->flashdata( 'form_status' );
@@ -333,10 +356,12 @@ class media extends admin_controller {
 			$output['form_status'] = $form_status;
 		}
 		unset( $form_status );
+		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$output['my_account_id'] = $ca_account['id'];
 		unset( $ca_account );
+		
 		// get values
 		$output['filter'] = trim( $this->input->get( 'filter', true ) );
 		$output['filter_val'] = trim( $this->input->get( 'filter_val', true ) );
@@ -344,17 +369,20 @@ class media extends admin_controller {
 		$output['orders'] = trim( $this->input->get( 'orders', true ) );
 		$output['cur_sort'] = $this->input->get( 'sort', true );
 		$output['sort'] = ( $this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'desc' ? 'asc' : 'desc' );
+		
 		// list item
 		$output['list_item'] = $this->media_model->list_item( 'admin' );
 		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'media_media' ) );
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		if ( $this->input->is_ajax_request() ) {
 			$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
@@ -372,39 +400,44 @@ class media extends admin_controller {
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
 		$my_account_id = $ca_account['id'];
 		unset( $ca_account );
-		//
+		
+		// get file id and action
 		$id = $this->input->post( 'id' );
 		if ( !is_array( $id ) ) {redirect( 'site-admin/media' );}
 		$act = trim( $this->input->post( 'act' ) );
-		//
+		
+		// do action.
 		if ( $act == 'del' ) {
 			// check both permission
 			if ( $this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) != true && $this->account_model->check_admin_permission( 'media_perm', 'media_delete_other_perm' ) != true ) {redirect( 'site-admin' );}
+			
 			foreach ( $id as $an_id ) {
-				$this->db->where( 'file_id', $an_id );
-				$query = $this->db->get( 'files' );
-				if ( $query->num_rows() <= 0 ) {$query->free_result(); continue;}
-				$row = $query->row();
-				$query->free_result();
+				$data['file_id'] = $an_id;
+				$row = $this->media_model->get_file_data_db( $data );
+				unset( $data );
+				
+				// file not found in db, skip it.
+				if ( $row == null ) {continue;}
+				
 				// check permissions-----------------------------------------------------------
 				if ( $this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) && $row->account_id != $my_account_id ) {
 					// this user has permission to delete own, but NOT delete own
 					if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_delete_other_perm' ) ) {
 						// this user has NOT permission to delete other's, but deleting other's
-						$query->free_result();
-						unset( $row, $query );
+						unset( $row );
 						continue;
 					}
 				} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) && $row->account_id == $my_account_id ) {
 					// this user has NOT permission to delete own, but deleting own.
-					$query->free_result();
-					unset( $row, $query );
+					unset( $row );
 					continue;
 				}
 				// end check permissions-----------------------------------------------------------
+				
 				$this->media_model->delete( $an_id );
 			}
 		}
+		
 		// go back
 		$this->load->library( 'user_agent' );
 		if ( $this->agent->is_referral() ) {
@@ -418,20 +451,24 @@ class media extends admin_controller {
 	function upload() {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_upload_perm' ) != true ) {redirect( 'site-admin' );}
+		
 		// upload
 		$upload_result = $this->media_model->upload_media();
+		
 		// fix non utf-8 in browsers.
 		echo '<!DOCTYPE html>
 			<html>
 			<head>
 			<title></title>
 			<meta http-equiv="Content-type" content="text/html; charset='.config_item( 'charset' ).'" />';
+		
 		//
 		if ( $upload_result === true ) {
 			echo '<script type="text/javascript">window.parent.upload_status(\'<div class="txt_success alert alert-success">'.$this->lang->line("media_upload_complete").'</div>\');</script>';
 		} else {
 			echo '<script type="text/javascript">window.parent.upload_status(\'<div class="txt_error alert alert-error">'.$upload_result.'</div>\');</script>';
 		}
+		
 		echo '</head><body></body></html>';
 	}// upload
 	

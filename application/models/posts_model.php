@@ -314,6 +314,7 @@ class posts_model extends CI_Model {
 				$this->db->where( 'tid', $tid );
 				$this->db->where( 'post_id', $data_posts['post_id'] );
 				$query2 = $this->db->get( 'taxonomy_index' );
+				
 				if ( $query2->num_rows() > 0 ) {
 					// exists, nothing to do
 				} else {
@@ -324,27 +325,34 @@ class posts_model extends CI_Model {
 					$this->db->insert( 'taxonomy_index' );
 					$this->taxonomy_model->update_total_post( $tid );
 				}
+				
 				$query2->free_result();
 			}
 			// loop for delete uncheck taxonomy term
 			$this->db->join( 'taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'left' );
 			$this->db->where( 'post_id', $data_posts['post_id'] );
+			
 			$query2 = $this->db->get( 'taxonomy_index' );
+			
 			foreach ( $query2->result() as $row2 ) {
 				if ( !in_array( $row2->tid, $data_tax_index['tagid'] ) && $row2->t_type == 'tag' ) {
 					$this->db->delete( 'taxonomy_index', array( 'index_id' => $row2->index_id ) );
 				}
 			}
+			
 			$query2->free_result();
 		} else {
 			// no term select, delete all related to this post_id
 			$this->db->join( 'taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'left' );
 			$this->db->where( 't_type', 'tag' );
 			$this->db->where( 'post_id', $data_posts['post_id'] );
+			
 			$query2 = $this->db->get( 'taxonomy_index' );
+			
 			foreach ( $query2->result() as $row2 ) {
 				$this->db->delete( 'taxonomy_index', array( 'tid' => $row2->tid, 'post_id' => $data_posts['post_id'] ) );
 			}
+			
 			$query2->free_result();
 		}
 		
@@ -394,6 +402,7 @@ class posts_model extends CI_Model {
 		}
 		
 		$query->free_result();
+		
 		unset( $query, $row );
 		return '1';
 	}// get_last_tax_position

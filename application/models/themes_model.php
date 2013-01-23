@@ -38,24 +38,30 @@ class themes_model extends CI_Model {
 	function add_theme() {
 		// load agni config
 		$this->config->load( 'agni' );
+		
 		// config upload
 		$config['upload_path'] = $this->config->item( 'agni_upload_path' ).'unzip';
 		$config['allowed_types'] = 'zip';
 		$config['encrypt_name'] = true;
 		$this->load->library( 'upload', $config );
+		
 		if ( ! $this->upload->do_upload( 'theme_file' ) ) {
 			return $this->upload->display_errors( '<div>', '</div>' );
 		} else {
 			$data = $this->upload->data();
 		}
+		
 		// trying to extract ZIP
 		if ( isset( $data ) && is_array( $data ) && !empty( $data ) ) {
 			require_once( APPPATH.'/libraries/dunzip/dUnzip2.inc.php' );
+			
 			$zip = new dUnzip2( $data['full_path'] );
 			$zip->debug = false;
+			
 			// check inside zip that it is module directory.
 			$list = $zip->getList();
 			$valid_theme = true;
+			
 			$i = 1;
 			foreach ( $list as $file_name => $zipped ) {
 				if ( $i == 1 ) {
@@ -68,33 +74,43 @@ class themes_model extends CI_Model {
 				$i++;
 				if ( $i >= 2 ) {continue;}
 			}
+			
 			// theme required file is not exists = invalid theme file (theme_name/theme.info)
 			if ( !isset( $list[$theme_dir.'/'.$theme_dir.'.info'] ) ) {
 				$valid_theme = false;
 			}
+			
 			// valid theme or not
 			if ( $valid_theme == false ) {
 				$zip->__destroy();
+				
 				if ( file_exists( $data['full_path'] ) ) {
 					unlink( $data['full_path'] );
 				}
+				
 				unset( $i, $valid_theme, $list, $zip );
+				
 				return $this->lang->line( 'themes_wrong_structure' );
 			} else {
 				// unzip
 				$zip->unzipall($config['upload_path']);
 				$zip->__destroy();
+				
 				// remove zip file
 				if ( file_exists( $data['full_path'] ) ) {
 					unlink( $data['full_path'] );
 				}
+				
 				// move to theme dir
 				$this->load->helper( 'file' );
 				smartCopy( dirname(BASEPATH).'/'.$config['upload_path'].'/'.$theme_dir, dirname(BASEPATH).'/'.$this->theme_dir.$theme_dir );
+				
 				// delete everything in theme upload/
 				delete_files( $config['upload_path'].'/'.$theme_dir, true );
+				
 				// delete theme/
 				rmdir( $config['upload_path'].'/'.$theme_dir );
+				
 				return true;
 			}
 		}
@@ -103,36 +119,45 @@ class themes_model extends CI_Model {
 	
 	function delete_theme( $theme_system_name = '' ) {
 		if ( $theme_system_name == null ) {return false;}
+		
 		// check if theme is default in admin or front
 		if ( $this->is_default( $theme_system_name ) || $this->is_default( $theme_system_name, 'admin' ) ) {
 			return $this->lang->line( 'themes_delete_fail_enabled' );
 		}
+		
 		// check if enabled
 		if ( $this->is_enabled( $theme_system_name ) ) {
 			return $this->lang->line( 'themes_delete_fail_enabled' );
 		}
+		
 		// change theme that used by posts to default.
 		$this->db->set( 'theme_system_name', null );
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		$this->db->update( 'posts' );
+		
 		// change theme that used by taxterm to default.
 		$this->db->set( 'theme_system_name', null );
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		$this->db->update( 'taxonomy_term_data' );
+		
 		// delete from blocks db
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		$this->db->delete( 'blocks' );
+		
 		// delete from db.
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		$this->db->delete( 'themes' );
+		
 		// may delete theme_system_name from other table if there is.
 		// delete theme file
 		$this->load->helper( 'file' );
 		delete_files( $this->theme_dir.$theme_system_name, true );
 		rmdir( $this->theme_dir.$theme_system_name );
+		
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
 		return true;
 	}// delete_theme
 	
@@ -144,16 +169,20 @@ class themes_model extends CI_Model {
 	 */
 	function do_disable( $theme_system_name = '' ) {
 		if ( $theme_system_name == null ) {return false;}
+		
 		// check if theme is default in admin or front
 		if ( $this->is_default( $theme_system_name ) || $this->is_default( $theme_system_name, 'admin' ) ) {
 			return false;
 		}
+		
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		$this->db->set( 'theme_enable', '0' );
 		$this->db->update( 'themes' );
+		
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
 		return true;
 	}// do_disable
 	
@@ -165,10 +194,12 @@ class themes_model extends CI_Model {
 	 */
 	function do_enable( $theme_system_name = '' ) {
 		if ( $theme_system_name == null ) {return false;}
+		
 		// check if there is front folder or site-admin folder for this theme
 		if ( !file_exists( $this->theme_dir.$theme_system_name.'/site-admin' ) && !file_exists( $this->theme_dir.$theme_system_name.'/front' ) ) {
 			return false;
 		}
+		
 		// check if is in db?
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		if ( $this->db->count_all_results( 'themes' ) <= 0 ) {
@@ -210,9 +241,11 @@ class themes_model extends CI_Model {
 				return false;
 			}
 		}
+		
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
 		return true;
 	}// do_enable
 	
@@ -309,37 +342,9 @@ class themes_model extends CI_Model {
 	 */
 	function list_all_themes() {
 		$dir = $this->scan_theme_dir();
-		/*if ( is_array( $dir ) )
-			$pages = array_chunk( $dir, 20 );
-		// pagination
-		$pgkey = (int)$this->input->get( 'per_page' );
-		if ( $pgkey > 0 ) {$pgkey = ($pgkey-1);}
-		// pagination-----------------------------
-		$this->load->library( 'pagination' );
-		$config['base_url'] = site_url( $this->uri->uri_string() ).'?';
-		$config['total_rows'] = count($dir);
-		$config['per_page'] = 20;
-		$config['num_links'] = 5;
-		$config['use_page_numbers'] = true;
-		$config['page_query_string'] = true;
-		$config['full_tag_open'] = '<div class="pagination">';
-		$config['full_tag_close'] = "</div>\n";
-		$config['first_tag_close'] = '';
-		$config['last_tag_open'] = '';
-		$config['first_link'] = '|&lt;';
-		$config['last_link'] = '&gt;|';
-		$this->pagination->initialize( $config);
-		//you may need this in view if you call this in controller or model --> $this->pagination->create_links();
-		// end pagination-----------------------------
-		//
-		$output['total'] = count($dir);
-		if ( is_array( $dir ) ) {
-			$output['items'] = $pages[$pgkey];
-		} else {
-			$output['items'] = null;
-		}*/// not use pagination.
+		
 		$output['items'] = $dir;
-		//$output['pagination'] = $pagination;
+		
 		return $output;
 	}// list_all_themes
 	
@@ -347,18 +352,23 @@ class themes_model extends CI_Model {
 	function list_areas( $theme_system_name = '' ) {
 		// load helper
 		$this->load->helper( 'file' );
+		
 		// get theme info.
 		$p_data = read_file( $this->theme_dir.$theme_system_name.'/'.$theme_system_name.'.info' );
 		preg_match_all( '|areas\[(?P<area_system_name>.*)\] = (?P<area_name>.*)$|mi', $p_data, $matches );
+		
 		// reformat array
 		$areas = array();
+		
 		if ( is_array( $matches ) ) {
 			foreach ( $matches['area_system_name'] as $key => $item ) {
 				$areas[$key]['area_system_name'] = $item;
 				$areas[$key]['area_name'] = $matches['area_name'][$key];
 			}
 		}
+		
 		unset( $matches );
+		
 		return $areas;
 	}// list_areas
 	
@@ -370,14 +380,18 @@ class themes_model extends CI_Model {
 	function list_enabled_themes() {
 		$this->db->where( 'theme_enable', '1' );
 		$this->db->order_by( 'theme_name', 'asc' );
+		
 		$query = $this->db->get( 'themes' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $query->num_rows();
 			$output['items'] = $query->result();
 			$query->free_result();
 			return $output;
 		}
+		
 		$query->free_result();
+		
 		return null;
 	}// list_enabled_themes
 	
@@ -389,19 +403,23 @@ class themes_model extends CI_Model {
 	 */
 	function read_theme_metadata( $theme_item = '' ) {
 		if ( empty( $theme_item ) ) {return null;}
+		
 		// load helper
 		$this->load->helper( 'file' );
+		
 		// get theme info.
 		$p_data = read_file( $this->theme_dir.$theme_item );
 		preg_match ( '|Theme Name:(.*)$|mi', $p_data, $name );
 		preg_match ( '|Theme URL:(.*)$|mi', $p_data, $url );
 		preg_match ( '|Version:(.*)|i', $p_data, $version );
 		preg_match ( '|Description:(.*)$|mi', $p_data, $description );
+		
 		$output['name'] = ( isset( $name[1] ) ? trim($name[1]) : '' );
 		$output['url'] = ( isset( $url[1] ) ? trim($url[1]) : '' );
 		$output['version'] = ( isset( $version[1] ) ? trim($version[1]) : '' );
 		$output['description'] = ( isset( $description[1] ) ? trim($description[1]) : '' );
 		unset( $p_data, $name, $url, $version, $description, $author_name, $author_url );
+		
 		return $output;
 	}// read_theme_metadata
 	
@@ -522,6 +540,7 @@ class themes_model extends CI_Model {
 	 */
 	function set_default( $theme_system_name = '', $set_for = 'front' ) {
 		if ( $theme_system_name == null ) {return false;}
+		
 		// check if theme was enabled
 		if ( $this->is_enabled( $theme_system_name ) ) {
 			// theme was enabled, update to default below.
@@ -530,30 +549,25 @@ class themes_model extends CI_Model {
 				return false;
 			}
 		}
+		
 		// check if there is front folder or site-admin folder for this theme
 		if ( $set_for == 'admin' ) {
 			if ( !file_exists( $this->theme_dir.$theme_system_name.'/site-admin' ) ) {return false;}
 		} else {
 			if ( !file_exists( $this->theme_dir.$theme_system_name.'/front' ) ) {return false;}
 		}
-		// loop unset default for all other themes
+		
+		// unset default for all other themes
 		$this->db->where( 'theme_system_name !=', $theme_system_name );
 		if ( $set_for == 'admin' ) {
 			$this->db->where( 'theme_default_admin', '1' );
+			$this->db->set( 'theme_default_admin', '0' );
 		} else {
 			$this->db->where( 'theme_default', '1' );
+			$this->db->set( 'theme_default', '0' );
 		}
-		$query = $this->db->get( 'themes' );
-		foreach ( $query->result() as $row ) {
-			if ( $set_for == 'admin' ) {
-				$this->db->set( 'theme_default_admin', '0' );
-			} else {
-				$this->db->set( 'theme_default', '0' );
-			}
-			$this->db->where( 'theme_system_name', $row->theme_system_name );
-			$this->db->update( 'themes' );
-		}
-		$query->free_result();
+		$this->db->update( 'themes' );
+		
 		// update to default
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		if ( $set_for == 'admin' ) {
@@ -562,9 +576,11 @@ class themes_model extends CI_Model {
 			$this->db->set( 'theme_default', '1' );
 		}
 		$this->db->update( 'themes' );
+		
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
 		// done
 		return true;
 	}// set_default
