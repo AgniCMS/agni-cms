@@ -23,15 +23,14 @@ class blocks_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function add_to_area( $data = array() ) {
-		$this->db->set( 'theme_system_name', $data['theme_system_name'] );
-		$this->db->set( 'area_name', $data['area_name'] );
-		$this->db->set( 'position', $this->get_latest_position( $data['theme_system_name'], $data['area_name'] ) );
-		$this->db->set( 'language', $this->lang->get_current_lang() );
-		$this->db->set( 'block_name', $data['block_name'] );
-		$this->db->set( 'block_file', $data['block_file'] );
-		$this->db->set( 'block_status', $data['block_status'] );
-		$this->db->insert( 'blocks' );
-		//
+		// set additional data for insert to db
+		$data['position'] = $this->get_latest_position( $data['theme_system_name'], $data['area_name'] );
+		$data['language'] = $this->lang->get_current_lang();
+		
+		// insert into table
+		$this->db->insert( 'blocks', $data );
+		
+		// done, set result and insert_id.
 		$output['result'] = true;
 		$output['id'] = $this->db->insert_id();
 		return $output;
@@ -44,21 +43,40 @@ class blocks_model extends CI_Model {
 	 * @return boolean 
 	 */
 	function edit( $data = array() ) {
+		// set 'block_values' field data.----------------------
 		$value = array();
 		foreach ( $this->input->post() as $key => $item ) {
 			if ( !key_exists( $key, $data ) ) {
 				$value[$key] = $item;
 			}
 		}
-		// update to db
-		$this->db->set( 'block_values', serialize( $value ) );
-		$this->db->set( 'block_status', $data['block_status'] );
-		$this->db->set( 'block_except_uri', $data['block_except_uri'] );
-		$this->db->set( 'block_only_uri', $data['block_only_uri'] );
+		if ( !empty( $value ) ) {
+			$data['block_values'] = serialize( $value );
+		}
+		// end set 'block_values' field data.----------------------
+		
 		$this->db->where( 'block_id', $data['block_id'] );
-		$this->db->update( 'blocks' );
+		$this->db->update( 'blocks', $data );
+		
+		// done
 		return true;
 	}// edit
+	
+	
+	/**
+	 *  get blocks data from db
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_block_db( $data = array() ) {
+		if ( !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
+		$query = $this->db->get( 'blocks' );
+		
+		return $query->row();
+	}// get_block_db
 	
 	
 	/**
@@ -70,14 +88,21 @@ class blocks_model extends CI_Model {
 	 */
 	function get_block_data( $block_name = '', $block_file = '', $datatype = 'title' ) {
 		if ( file_exists( $this->config->item( 'modules_uri' ).$block_file ) ) {
+			// load helper
 			$this->load->helper( 'widget' );
+			
+			// include module block file.
 			include_once( $this->config->item( 'modules_uri' ).$block_file );
+			
+			// initiate new class
 			$fileobj = new $block_name;
+			
 			if ( property_exists( $fileobj, $datatype ) ) {
 				$output = $fileobj->$datatype;
 			} else {
 				$output = $block_name;
 			}
+			
 			return $output;
 		}
 	}// get_block_data
@@ -91,18 +116,22 @@ class blocks_model extends CI_Model {
 	 */
 	function get_latest_position( $theme_system_name = '', $area_name = '' ) {
 		if ( empty( $theme_system_name ) || empty( $area_name ) ) {return 1;}
+		
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		$this->db->where( 'area_name', $area_name );
 		$this->db->where( 'language', $this->lang->get_current_lang() );
 		$this->db->order_by( 'position', 'desc' );
 		$query = $this->db->get( 'blocks' );
+		
 		if ( $query->num_rows() <= 0 ) {
 			$output = 1;
 		} else {
 			$row = $query->row();
 			$output = ( $row->position+1 );
 		}
+		
 		unset( $row );
+		
 		return $output;
 	}// get_latest_position
 	
@@ -115,8 +144,10 @@ class blocks_model extends CI_Model {
 	function list_blocks_in_areas( $theme_system_name = '' ) {
 		// get all areas in this theme
 		$list_areas = $this->themes_model->list_areas( $theme_system_name );
+		
 		// preset output
 		$output = null;
+		
 		if ( is_array( $list_areas ) ) {
 			foreach ( $list_areas as $area ) {
 				$this->db->where( 'theme_system_name', $theme_system_name );
@@ -124,11 +155,13 @@ class blocks_model extends CI_Model {
 				$this->db->where( 'language', $this->lang->get_current_lang() );
 				$this->db->order_by( 'position', 'asc' );
 				$query = $this->db->get( 'blocks' );
-				//
+				
+				// set results
 				$output[$area['area_system_name']] = $query->result();
 				$query->free_result();
 			}
 		}
+		
 		return $output;
 	}// list_blocks_in_areas
 	

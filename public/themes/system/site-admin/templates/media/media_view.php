@@ -3,7 +3,7 @@
 <div class="cmds">
 	<div class="cmd-left">
 		<?php echo sprintf( lang( 'admin_total' ), $list_item['total'] ); ?> 
-		| <?php echo anchor( 'site-admin/media?orders='.$orders.'&amp;sort='.$cur_sort.'&amp;filter=f.account_id&amp;filter_val='.$my_account_id, lang( 'media_my_file_only' ) ); ?> 
+		| <?php echo anchor( 'site-admin/media?orders='.$orders.'&amp;sort='.$cur_sort.'&amp;filter=files.account_id&amp;filter_val='.$my_account_id, lang( 'media_my_file_only' ) ); ?> 
 		
 		
 		<?php if ( $this->account_model->check_admin_permission( 'media_perm', 'media_upload_perm' ) ): ?> 

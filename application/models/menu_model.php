@@ -17,8 +17,10 @@ class menu_model extends CI_Model {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// set language
 		$this->language = $this->lang->get_current_lang();
+		
 		// for do some very hard thing like nlevel
 		$this->fields = array('id'     => 'mi_id', 'parent' => 'parent_id' );
 	}// __construct
@@ -30,10 +32,10 @@ class menu_model extends CI_Model {
 	 * @return boolean 
 	 */
 	function add_group( $data = array() ) {
-		$this->db->set( 'mg_name', $data['mg_name'] );
-		$this->db->set( 'mg_description', $data['mg_description'] );
-		$this->db->set( 'language', $this->language );
-		$this->db->insert( 'menu_groups' );
+		// set additional data
+		$data['language'] = $this->language;
+		
+		$this->db->insert( 'menu_groups', $data );
 		return true;
 	}// add_group
 	
@@ -44,50 +46,19 @@ class menu_model extends CI_Model {
 	 * @return boolean
 	 */
 	function add_item( $data = array() ) {
+		// set additional data for insert to db.
+		$data['position'] = $this->get_mi_newposition( $data['mg_id'], $this->language );
+		$data['language'] = $this->language;
+		
 		if ( !is_array( $data['type_id'] ) ) {
-			// prepare data for menu type (even if it is post, term)
-			switch ( $data['mi_type'] ) {
-				case 'category':
-				case 'tag':
-					if ( $data['type_id'] == null ) {return lang( 'menu_please_select_something' );}
-					$this->db->where( 't_type', $data['mi_type'] );
-					$this->db->where( 'tid', $data['type_id'] );
-					$query = $this->db->get( 'taxonomy_term_data' );
-					if ( $query->num_rows() > 0 ) {
-						$row = $query->row();
-						$data['link_text'] = $row->t_name;
-						$data['link_url'] = $row->t_uris;
-					}
-					$query->free_result();
-					break;
-				case 'article':
-				case 'page':
-					if ( $data['type_id'] == null ) {return lang( 'menu_please_select_something' );}
-					$this->db->where( 'post_type', $data['mi_type'] );
-					$this->db->where( 'post_id', $data['type_id'] );
-					$query = $this->db->get( 'posts' );
-					if ( $query->num_rows() > 0 ) {
-						$row = $query->row();
-						$data['link_text'] = $row->post_name;
-						$data['link_url'] = $row->post_uri_encoded;
-					}
-					$query->free_result();
-					break;
-				default:
-					break;
-			}
-			unset( $query, $row );
-			$this->db->set( 'mg_id', $data['mg_id'] );
-			$this->db->set( 'position', $this->get_mi_newposition( $data['mg_id'], $this->language ) );
-			$this->db->set( 'language', $this->language );
-			$this->db->set( 'mi_type', $data['mi_type'] );
-			$this->db->set( 'type_id', $data['type_id'] );
-			$this->db->set( 'link_url', $data['link_url'] );
-			$this->db->set( 'link_text', $data['link_text'] );
-			$this->db->set( 'custom_link', $data['custom_link'] );
-			$this->db->insert( 'menu_items' );
+			$data['type_id'] = array( $data['type_id'] );
+			return $this->add_item( $data );
 		} elseif ( is_array( $data['type_id'] ) ) {
+			
 			foreach ( $data['type_id'] as $type_id ) {
+				// set type_id for insert to db.
+				$data['type_id'] = $type_id;
+				
 				// prepare data for menu type (even if it is post, term)
 				switch ( $data['mi_type'] ) {
 					case 'category':
@@ -118,17 +89,12 @@ class menu_model extends CI_Model {
 						break;
 				}
 				unset( $query, $row );
-				$this->db->set( 'mg_id', $data['mg_id'] );
-				$this->db->set( 'position', $this->get_mi_newposition( $data['mg_id'], $this->language ) );
-				$this->db->set( 'language', $this->language );
-				$this->db->set( 'mi_type', $data['mi_type'] );
-				$this->db->set( 'type_id', $type_id );
-				$this->db->set( 'link_url', $data['link_url'] );
-				$this->db->set( 'link_text', $data['link_text'] );
-				$this->db->set( 'custom_link', $data['custom_link'] );
-				$this->db->insert( 'menu_items' );
+				
+				$this->db->insert( 'menu_items', $data );
 			}
+			
 		}
+		
 		// done. rebuild nlevel
 		$this->rebuild();
 		return true;
@@ -142,18 +108,21 @@ class menu_model extends CI_Model {
 	 */
 	function delete_group( $mg_id = '' ) {
 		if ( !is_numeric( $mg_id ) ) {return false;}
+		
 		// delete from menu items table
 		$this->db->where( 'mg_id', $mg_id );
 		$this->db->delete( 'menu_items' );
+		
 		// delete from menu groups table
 		$this->db->where( 'mg_id', $mg_id );
 		$this->db->delete( 'menu_groups' );
+		
 		return true;
 	}// delete_group
 	
 	
 	function delete_item( $mi_id = '' ) {
-		// delete from comments table
+		// delete children items
 		$this->db->where( 'parent_id', $mi_id );
 		$this->db->where( 'language', $this->language );
 		$query = $this->db->get( 'menu_items' );
@@ -163,10 +132,12 @@ class menu_model extends CI_Model {
 			}
 		}
 		$query->free_result();
+		
 		// delete now
 		$this->db->where( 'mi_id', $mi_id );
 		$this->db->where( 'language', $this->language );
 		$this->db->delete( 'menu_items' );
+		
 		// done
 		return true;
 	}// delete_item
@@ -178,13 +149,60 @@ class menu_model extends CI_Model {
 	 * @return boolean 
 	 */
 	function edit_group( $data = array() ) {
-		$this->db->set( 'mg_name', $data['mg_name'] );
-		$this->db->set( 'mg_description', $data['mg_description'] );
 		$this->db->where( 'language', $this->language );
 		$this->db->where( 'mg_id', $data['mg_id'] );
-		$this->db->update( 'menu_groups' );
+		$this->db->update( 'menu_groups', $data );
+		
 		return true;
 	}// edit_group
+	
+	
+	/**
+	 * edit menu item
+	 * @param array $data
+	 * @return boolean
+	 */
+	function edit_item( $data = array() ) {
+		if ( isset( $data['mi_id'] ) ) {
+			$this->db->where( 'mi_id', $data['mi_id'] );
+		}
+		$this->db->update( 'menu_items', $data );
+		
+		// done
+		return true;
+	}// edit_item
+	
+	
+	/**
+	 * get menu group data from db
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_mg_data_db( $data = array() ) {
+		if ( !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
+		$query = $this->db->get( 'menu_groups' );
+		
+		return $query->row();
+	}// get_mg_data_db
+	
+	
+	/**
+	 * get menu item data from db
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_mi_data_db( $data = array() ) {
+		if ( !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
+		$query = $this->db->get( 'menu_items' );
+		
+		return $query->row();
+	}// get_mi_data_db
 	
 	
 	/**
@@ -197,7 +215,9 @@ class menu_model extends CI_Model {
 		$this->db->where( 'mg_id', $mg_id );
 		$this->db->where( 'language', $language );
 		$this->db->order_by( 'position', 'desc' );
+		
 		$query = $this->db->get( 'menu_items' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			$query->free_result();
@@ -215,19 +235,28 @@ class menu_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_group( $limit = true ) {
-		$sql = 'select * from '.$this->db->dbprefix( 'menu_groups' );
-		$sql .= ' where language = '.$this->db->escape( $this->language );
+		$this->db->where( 'language', $this->language );
+		
 		// orders & sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders == null ? 'mg_name' : $orders );
 		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
 		$sort = ( $sort == null ? 'asc' : $sort );
-		$sql .= ' order by '.$orders.' '.$sort;
+		$this->db->order_by( $orders, $sort );
+		
 		if ( $limit == true ) {
+			// clone object before run $this->db->get()
+			$this_db = clone $this->db;
+			
 			// query for count total
-			$query = $this->db->query( $sql );
+			$query = $this->db->get( 'menu_groups' );
 			$total = $query->num_rows();
 			$query->free_result();
+			
+			// restore $this->db object
+			$this->db = $this_db;
+			unset( $this_db );
+			
 			// pagination-----------------------------
 			$this->load->library( 'pagination' );
 			$config['base_url'] = site_url( $this->uri->uri_string() ).'?orders='.$orders.'&amp;sort='.$sort;
@@ -256,15 +285,20 @@ class menu_model extends CI_Model {
 			$this->pagination->initialize( $config );
 			// pagination create links in controller or view. $this->pagination->create_links();
 			// end pagination-----------------------------
-			$sql .= ' limit '.( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ).', '.$config['per_page'].';';
+			
+			// limit query
+			$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
 		}
-		$query = $this->db->query( $sql);
+		
+		$query = $this->db->get( 'menu_groups' );
+		
 		if ( $query->num_rows() > 0 ) {
 			if ( isset( $total ) ) {$output['total'] = $total;}
 			$output['items'] = $query->result();
 			$query->free_result();
 			return $output;
 		}
+		
 		$query->free_result();
 		return null;
 	}// list_group
@@ -277,10 +311,12 @@ class menu_model extends CI_Model {
 	 */
 	function list_item( $mg_id = '' ) {
 		if ( !is_numeric( $mg_id ) ) {return null;}
+		
 		$this->db->where( 'mg_id', $mg_id );
 		$this->db->where( 'language', $this->language );
 		$this->db->order_by( 'position', 'asc' );
 		$query = $this->db->get( 'menu_items' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$output = array();
 			foreach ( $query->result() as $row )
@@ -290,6 +326,7 @@ class menu_model extends CI_Model {
 			$output = $output[0];// this is important for prevent duplicate items
 			return $output;
 		}
+		
 		$query->free_result();
 		return null;
 	}// list_item

@@ -490,7 +490,7 @@ class page extends admin_controller {
 		
 		// list item
 		if ( $this->input->get( 'orders' ) == null ) {
-			$_GET['orders'] = 'p.post_id';
+			$_GET['orders'] = 'posts.post_id';
 		}
 		$output['list_item'] = $this->posts_model->list_item( 'admin' );
 		if ( is_array( $output['list_item'] ) ) {
