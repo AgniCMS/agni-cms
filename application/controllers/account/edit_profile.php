@@ -74,11 +74,12 @@ class edit_profile extends MY_Controller {
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		
 		// check from db
-		$this->db->where( 'account_id', $cm_account['id'] );
-		$this->db->where( 'account_username', $cm_account['username'] );
-		$query = $this->db->get( 'accounts' );
-		if ( $query->num_rows() > 0 ) {
-			$row = $query->row();
+		$data['account_id'] = $cm_account['id'];
+		$data['account_username'] = $cm_account['username'];
+		$row = $this->account_model->get_account_data( $data );
+		unset( $data );
+		
+		if ( $row != null ) {
 			$output['row'] = $row;
 			$output['account_id'] = $row->account_id;
 			$output['account_username'] = $row->account_username;
@@ -89,11 +90,9 @@ class edit_profile extends MY_Controller {
 			$output['account_timezone'] = $row->account_timezone;
 		} else {
 			// not found.
-			$query->free_result();
-			unset( $cm_account, $query, $output );
+			unset( $cm_account, $output );
 			redirect( site_url() );
 		}
-		$query->free_result();
 		
 		// save action
 		if ( $this->input->post() ) {

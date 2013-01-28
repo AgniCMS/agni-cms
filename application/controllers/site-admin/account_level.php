@@ -111,7 +111,7 @@ class account_level extends admin_controller {
 		if ( !is_numeric( $level_group_id ) ) {redirect( 'site-admin/account-level' );}
 		
 		// load data for form
-		$row = $this->account_model->get_data_account_level_group( array( 'level_group_id' => $level_group_id ) );
+		$row = $this->account_model->get_account_level_group_data( array( 'level_group_id' => $level_group_id ) );
 		if ( $row != null ) {
 			$output['level_name'] = $row->level_name;
 			$output['level_description'] = $row->level_description;

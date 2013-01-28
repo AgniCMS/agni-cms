@@ -812,7 +812,7 @@ class account_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_data_account( $data = array() ) {
+	function get_account_data( $data = array() ) {
 		if ( !is_array( $data ) || ( is_array( $data ) && !isset( $data['accounts.account_id'] ) && !isset( $data['account_id'] ) && !isset( $data['account_username'] ) && !isset( $data['account_email'] ) ) ) {
 			return false;
 		}
@@ -830,7 +830,7 @@ class account_model extends CI_Model {
 		$query = $this->db->get( 'accounts' );
 		
 		return $query->row();
-	}// get_data_account
+	}// get_account_data
 	
 	
 	/**
@@ -838,7 +838,7 @@ class account_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_data_account_level_group( $data = array() ) {
+	function get_account_level_group_data( $data = array() ) {
 		if ( !isset( $data['level_group_id'] ) && !isset( $data['level_priority'] ) ) {
 			return false;
 		}
@@ -847,7 +847,7 @@ class account_model extends CI_Model {
 		$query = $this->db->get( 'account_level_group' );
 		
 		return $query->row();
-	}// get_data_account_level_group
+	}// get_account_level_group_data
 	
 	
 	
