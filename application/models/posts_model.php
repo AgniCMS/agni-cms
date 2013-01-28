@@ -512,9 +512,10 @@ class posts_model extends CI_Model {
 	/**
 	 * list item
 	 * @param admin|front $list_for
+	 * @param array $data
 	 * @return mixed 
 	 */
-	function list_item( $list_for = 'front' ) {
+	function list_item( $list_for = 'front', $data = array() ) {
 		$this->db->join( 'taxonomy_index', 'taxonomy_index.post_id = posts.post_id', 'left outer' );
 		$this->db->join( 'accounts', 'accounts.account_id = posts.account_id', 'left' );
 		$this->db->join( 'post_revision', 'post_revision.post_id = posts.post_id', 'inner' );
@@ -526,6 +527,9 @@ class posts_model extends CI_Model {
 		$tid = trim( $this->input->get( 'tid' ) );
 		if ( $tid != null && is_numeric( $tid ) ) {
 			$this->db->where( 'taxonomy_index.tid', $tid );
+		}
+		if ( isset( $data['account_username'] ) ) {
+			$this->db->where( 'accounts.account_username', $data['account_username'] );
 		}
 		$q = trim( $this->input->get( 'q' ) );
 		if ( $q != null && $q != 'none' ) {
