@@ -179,7 +179,7 @@ class account extends admin_controller {
 		unset( $ca_account );
 		
 		// load data for form
-		$row = $this->account_model->get_data_account( array( 'account_id' => $account_id ) );
+		$row = $this->account_model->get_account_data( array( 'account_id' => $account_id ) );
 		
 		if ( $row == null ) {
 			// not found selected account_id.
