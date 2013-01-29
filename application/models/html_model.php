@@ -37,6 +37,8 @@ class html_model extends CI_Model {
 			$class .= ' logged-in';
 		}
 		
+		$class .= ' '.str_replace( '/', '_', ltrim( urldecode( $this->uri->uri_string() ), '/' ) );
+		
 		// plugins here
 		$class .= ' '.$this->modules_plug->do_action( 'front_html_body_class' );
 		

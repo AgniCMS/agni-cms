@@ -19,10 +19,13 @@ class comment extends MY_Controller {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// load model
 		$this->load->model( array( 'comments_model' ) );
+		
 		// load helper
 		$this->load->helper( array( 'account', 'date', 'form', 'language' ) );
+		
 		// load language
 		$this->lang->load( 'comment' );
 	}// __construct
@@ -44,6 +47,7 @@ class comment extends MY_Controller {
 	function comment_view( $comments = '', $mode = 'thread' ) {
 		
 		if ( !isset( $comments['items'] ) ) {return '<p class="list-comment-no-comment no-comment">'.$this->lang->line( 'comment_no_comment' ).'</p>';}
+		
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		$account_id = $cm_account['id'];
 		if ( $account_id == null ) {$account_id = '0';}
@@ -144,7 +148,7 @@ class comment extends MY_Controller {
 		$account_id = ( isset( $cm_account['id'] ) ? $cm_account['id'] : '0' );
 		unset( $cm_account );
 		
-		// NO GUEST EDIT/DELETE COMMENT.
+		// NOT ALLOW GUEST EDIT/DELETE COMMENT.
 		if ( $account_id == '0' ) {redirect();}
 		
 		// check whole permission
@@ -159,13 +163,12 @@ class comment extends MY_Controller {
 			$output['go_to'] = $this->input->get( 'rdr' );
 		}
 		
-		// sql
-		$this->db->join( 'posts', 'comments.post_id = posts.post_id', 'left' );
-		$this->db->join( 'accounts', 'comments.account_id = accounts.account_id', 'left' );
-		$this->db->where( 'comment_id', $comment_id );
-		$query = $this->db->get( 'comments' );
-		if ( $query->num_rows() <= 0 ) { $query->free_result(); redirect(); }// not found.
-		$row = $query->row();
+		// get comment data
+		$data['comment_id'] = $comment_id;
+		$row = $this->comments_model->get_comment_data_db( $data );
+		
+		// not found a comment.
+		if ( $row == null ) { redirect(); }
 		
 		// check permissions
 		if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_own_perm', $account_id ) && $row->account_id != $account_id ) {
@@ -188,9 +191,16 @@ class comment extends MY_Controller {
 		
 		// delete action
 		if ( $this->input->post('confirm' ) == 'yes' ) {
+			// delete comment
 			$this->comments_model->delete( $comment_id );
+			
+			// load posts model
 			$this->load->model( 'posts_model' );
+			
+			// update total comment.
 			$this->posts_model->update_total_comment( $row->post_id );
+			
+			// end. go back to post page.
 			if ( isset( $output['go_to'] ) ) {
 				redirect( $output['go_to'] );
 			} else {
@@ -207,6 +217,7 @@ class comment extends MY_Controller {
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'front/templates/comment/comment_delete_view', $output );
 	}// delete
@@ -220,7 +231,7 @@ class comment extends MY_Controller {
 		$account_id = ( isset( $cm_account['id'] ) ? $cm_account['id'] : '0' );
 		unset( $cm_account );
 		
-		// NO GUEST EDIT/DELETE COMMENT.
+		// NOT ALLOW GUEST EDIT/DELETE COMMENT.
 		if ( $account_id == '0' ) {redirect();}
 		
 		// check whole permission
@@ -235,13 +246,12 @@ class comment extends MY_Controller {
 			$output['go_to'] = $this->input->get( 'rdr' );
 		}
 		
-		// sql
-		$this->db->join( 'posts', 'comments.post_id = posts.post_id', 'left' );
-		$this->db->join( 'accounts', 'comments.account_id = accounts.account_id', 'left' );
-		$this->db->where( 'comment_id', $comment_id );
-		$query = $this->db->get( 'comments' );
-		if ( $query->num_rows() <= 0 ) { $query->free_result(); redirect(); }// not found.
-		$row = $query->row();
+		// get comment data
+		$data['comment_id'] = $comment_id;
+		$row = $this->comments_model->get_comment_data_db( $data );
+		
+		// not found a comment.
+		if ( $row == null ) { redirect(); }
 		
 		// check permissions
 		if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_own_perm', $account_id ) && $row->account_id != $account_id ) {
@@ -264,21 +274,26 @@ class comment extends MY_Controller {
 		
 		// save action
 		if ( $this->input->post() ) {
+			
 			$data['comment_id'] = $comment_id;
 			$data['name'] = htmlspecialchars( trim( $this->input->post( 'name' ) ), ENT_QUOTES, config_item( 'charset' ) );
 			$data['subject'] = htmlspecialchars( trim( $this->input->post( 'subject' ) ), ENT_QUOTES, config_item( 'charset' ) );
 			$data['comment_body_value'] = trim( $this->input->post( 'comment_body_value', true ) );
 				if ( $data['subject'] == null ) {$data['subject'] = mb_strimwidth( strip_tags( $this->input->post( 'comment_body_value' ) ), 0, 70, '...' );}
+			
 			// load form validation
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'name', 'lang:comment_name', 'trim|required|xss_clean' );
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
+			
 			if ( $this->form_validation->run() == false ) {
 				return validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				$result = $this->comments_model->edit( $data );
+				
 				if ( $result === true ) {
 					$gotopage = $this->comments_model->get_comment_display_page( $comment_id, $this->mode );
+					
 					if ( isset( $output['go_to'] ) ) {
 						redirect( $output['go_to'] );
 					} else {
@@ -288,6 +303,7 @@ class comment extends MY_Controller {
 					return '<div class="txt_error alert alert-error">'.$result.'</div>';
 				}
 			}
+			
 		}
 		
 		// head tags output ##############################
@@ -299,6 +315,7 @@ class comment extends MY_Controller {
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'front/templates/comment/comment_edit_view', $output );
 	}// edit
@@ -306,8 +323,11 @@ class comment extends MY_Controller {
 	
 	function list_comments( $comment_allow = '', $post_id = '', $comment_id = '' ) {
 		if ( !is_numeric( $comment_allow ) || !is_numeric( $post_id ) ) {return false;}
+		
+		// set output post_id and comment_id
 		$output['post_id'] = $post_id;
 		$output['comment_id'] = $comment_id;
+		
 		if ( $this->input->get( 'replyto' ) != null ) {
 			$output['comment_id'] = strip_tags( trim( $this->input->get( 'replyto' ) ) );
 		}
@@ -339,15 +359,16 @@ class comment extends MY_Controller {
 		$this->load->helper( 'cookie' );
 		$output['name'] = htmlspecialchars( trim( get_cookie( 'comment_name', true ) ) );
 		
-		// is going to reply comment
 		$output['comment_add_title'] = lang( 'comment_post_comment' );
+		
 		if ( $this->input->get( 'replyto' ) != null ) {
 			// get comment info from db for reply form.
-			$this->db->where( 'comment_id', $output['comment_id'] );
-			$this->db->where( 'post_id', $post_id );
-			$query = $this->db->get( 'comments' );
-			if ( $query->num_rows() > 0 ) {
-				$row = $query->row();
+			$data['comment_id'] = $output['comment_id'];
+			$data['posts.post_id'] = $post_id;
+			$row = $this->comments_model->get_comment_data_db( $data );
+			unset( $data );
+			
+			if ( $row != null ) {
 				$output['comment_add_title'] = sprintf( lang( 'comment_reply_comment' ), $row->subject );
 				if ( strpos( $row->subject, sprintf( lang( 'comment_re' ), '' ) ) === false ) {
 					// prevent re: re: subject (multiple re:)
@@ -356,12 +377,12 @@ class comment extends MY_Controller {
 					$output['subject'] = $row->subject;
 				}
 			}
-			$query->free_result();
 		}
 		
 		// post method, new comment posting
 		if ( $this->input->post() ) {
 			$output['form_status'] = $this->post_comment();
+			
 			// re-populate form
 			$output['name'] = htmlspecialchars( trim( $this->input->post( 'name' ) ) );
 			$output['subject'] = htmlspecialchars( trim( $this->input->post( 'subject' ) ) );
@@ -389,11 +410,12 @@ class comment extends MY_Controller {
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'name', 'lang:comment_name', 'trim|required|xss_clean' );
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
+			
 			if ( $this->form_validation->run() == false ) {
 				return validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
 			} else {
 				
-				// recieve post and modify, check
+				// set data for insert
 				$data['parent_id'] = trim( $this->input->post( 'parent_id' ) );
 					if ( !is_numeric( $data['parent_id'] ) ) {$data['parent_id'] = '0';}
 				$data['post_id'] = (int)trim( $this->input->post( 'post_id' ) );
@@ -409,6 +431,7 @@ class comment extends MY_Controller {
 					$data['comment_spam_status'] = 'normal';
 				} else {
 					$data['comment_status'] = (int) 0;
+					
 					// any api check spam add here.
 					$data['permalink_url'] = urldecode( current_url() );
 					$spam_result = $this->modules_plug->do_action( 'comment_spam_check', $data );
@@ -416,6 +439,8 @@ class comment extends MY_Controller {
 					if ( !is_string( $spam_result ) ) {
 						$data['comment_spam_status'] = 'normal';
 					}
+					
+					unset( $data['permalink_url'] );
 				}
 				
 				// calculate thread.----------------------------------------------------------------------------
@@ -442,6 +467,7 @@ class comment extends MY_Controller {
 					$row = $query->row();
 					$parent_thread = (string) rtrim( (string) $row->thread, '/' );
 					$query->free_result();
+					
 					// get max value in this thread
 					$this->db->select_max( 'thread', 'max' );
 					$this->db->like( 'thread', $parent_thread.'.' );
@@ -466,6 +492,7 @@ class comment extends MY_Controller {
 				
 				// insert comment to db-------------------------------------------------------------------------
 				$result = $this->comments_model->add( $data );
+				
 				if ( isset( $result['result'] ) && $result['result'] === true ) {
 					if ( $data['comment_status'] == '1' ) {
 						$gotopage = $this->comments_model->get_comment_display_page( $result['id'], $this->mode );

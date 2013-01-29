@@ -26,14 +26,34 @@ class comments_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function add( $data = array() ) {
-		// get post name and url and check post exists.
-		$this->db->where( 'post_id', $data['post_id'] );
-		$query = $this->db->get( 'posts' );
-		if ( $query->num_rows() <= 0 ) {$query->free_result(); return $this->lang->line( 'comment_post_not_exists' );}
-		$row = $query->row();
-		$query->free_result();
+		// load posts model
+		$this->load->model( 'posts_model' );
 		
-		$this->db->set( 'parent_id', $data['parent_id'] );
+		// get post data and check post exists.
+		$data_post['post_id'] = $data['post_id'];
+		$row = $this->posts_model->get_post_data( $data_post );
+		unset( $data_post );
+		
+		// post not exists
+		if ( $row == null ) {
+			return $this->lang->line( 'comment_post_not_exists' );
+		}
+		
+		/*$this->db->where( 'post_id', $data['post_id'] );
+		$query = $this->db->get( 'posts' );
+		if ( $query->num_rows() <= 0 ) {$query->free_result(); }
+		$row = $query->row();
+		$query->free_result();*/
+		
+		// additional data for insert to db
+		$data['ip_address'] = $this->input->ip_address();
+		$data['user_agent'] = $this->input->user_agent();
+		$data['comment_add'] = time();
+		$data['comment_add_gmt'] = local_to_gmt( time() );
+		$data['comment_update'] = time();
+		$data['comment_update_gmt'] = local_to_gmt( time() );
+		
+		/*$this->db->set( 'parent_id', $data['parent_id'] );
 		$this->db->set( 'post_id', $data['post_id'] );
 		$this->db->set( 'account_id', $data['account_id'] );
 		$this->db->set( 'name', $data['name'] );
@@ -53,8 +73,8 @@ class comments_model extends CI_Model {
 		$this->db->set( 'comment_add_gmt', local_to_gmt( time() ) );
 		$this->db->set( 'comment_update', time() );
 		$this->db->set( 'comment_update_gmt', local_to_gmt( time() ) );
-		$this->db->set( 'thread', $data['thread'] );
-		$this->db->insert( 'comments' );
+		$this->db->set( 'thread', $data['thread'] );*/
+		$this->db->insert( 'comments', $data );
 		
 		// get insert id
 		$data['comment_id'] = $this->db->insert_id();
@@ -87,14 +107,17 @@ class comments_model extends CI_Model {
 			$email_content = str_replace( "%user_agent%", $this->input->user_agent(), $email_content );
 			$email_content = str_replace( "%comment_status%", ($data['comment_status'] == '1' ? lang( 'comment_approved' ) : lang( 'comment_notyet_approve' )), $email_content );
 			$email_content = str_replace( "%site_url%", site_url(), $email_content );
+			
 			$this->email->from( $cfg_val['mail_sender_email']['value'] );
 			$this->email->to( $cfg_val['comment_admin_notify_emails']['value'] );
 			$this->email->subject( $this->lang->line( 'comment_new_comment_notify' ) );
 			$this->email->message( $email_content );
 			$this->email->set_alt_message( str_replace( "\t", '', strip_tags( $email_content) ) );
+			
 			if ( $this->email->send() == false ) {
 				log_message( 'error', 'Could not send email to user.' );
 			}
+			
 			unset( $email_content, $user_email );
 		}
 		
@@ -219,8 +242,12 @@ class comments_model extends CI_Model {
 	 * @return mixed
 	 */
 	function get_comment_data_db( $data = array() ) {
+		$this->db->join( 'posts', 'comments.post_id = posts.post_id', 'left' );
 		$this->db->join( 'accounts', 'comments.account_id = accounts.account_id', 'left outer' );
-		$this->db->where( $data );
+		
+		if ( !empty( $data ) ) {
+			$this->db->where( $data );
+		}
 		
 		$query = $this->db->get( 'comments' );
 		

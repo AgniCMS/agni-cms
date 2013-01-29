@@ -35,6 +35,7 @@ class modules_plug {
 	function do_action( $action = '', $data = '' ) {
 		// set $data to property
 		$this->ci->data = $data;
+		
 		foreach ( $this->modules as $key => $item ) {
 			include_once( config_item( 'agni_plugins_path' ).$item['module_system_name'].'/'.$item['module_system_name'].'_module.php' );
 			$module_plug = $item['module_system_name'].'_module';
@@ -45,6 +46,7 @@ class modules_plug {
 				}
 			}
 		}
+		
 		return $this->ci->data;
 	}// do_action
 	
@@ -57,9 +59,11 @@ class modules_plug {
 		$this->ci->db->where( 'module_enable', '1' );
 		$query = $this->ci->db->get( 'modules' );
 		$output = array();
+		
 		foreach ( $query->result() as $row ) {
 			$output[]['module_system_name'] = $row->module_system_name;
 		}
+		
 		$query->free_result();
 		$this->modules = $output;
 		return true;

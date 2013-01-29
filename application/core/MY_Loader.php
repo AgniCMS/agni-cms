@@ -97,6 +97,7 @@ class MY_Loader extends MX_Loader {
 			$this->_ci_view_paths = array( $path => TRUE ) + $this->_ci_view_paths;
 			$ci_view = $view;
 		}
+		
 		unset( $view_path, $use_theme, $default_theme );
 		return $this->_ci_load(array('_ci_view' => $ci_view, '_ci_vars' => $this->_ci_object_to_array($vars), '_ci_return' => $return));
 	}// view

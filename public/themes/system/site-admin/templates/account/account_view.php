@@ -21,26 +21,26 @@
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
-				<th><?php echo anchor( current_url().'?orders=acc.account_id&amp;sort='.$sort, 'ID' ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=accounts.account_id&amp;sort='.$sort, 'ID' ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=account_username&amp;sort='.$sort, lang( 'account_username' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=account_email&amp;sort='.$sort, lang( 'account_email' ) ); ?></th>
 				<th><?php echo lang( 'account_level' ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_create', lang( 'account_registered_since' ) ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_last_login', lang( 'account_last_login' ) ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_status', lang( 'account_status' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_create&amp;sort='.$sort, lang( 'account_registered_since' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_last_login&amp;sort='.$sort, lang( 'account_last_login' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_status&amp;sort='.$sort, lang( 'account_status' ) ); ?></th>
 				<th></th>
 			</tr>
 		</thead>
 		<tfoot>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
-				<th><?php echo anchor( current_url().'?orders=acc.account_id&amp;sort='.$sort, 'ID' ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=accounts.account_id&amp;sort='.$sort, 'ID' ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=account_username&amp;sort='.$sort, lang( 'account_username' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=account_email&amp;sort='.$sort, lang( 'account_email' ) ); ?></th>
 				<th><?php echo lang( 'account_level' ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_create', lang( 'account_registered_since' ) ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_last_login', lang( 'account_last_login' ) ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_status', lang( 'account_status' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_create&amp;sort='.$sort, lang( 'account_registered_since' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_last_login&amp;sort='.$sort, lang( 'account_last_login' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_status&amp;sort='.$sort, lang( 'account_status' ) ); ?></th>
 				<th></th>
 			</tr>
 		</tfoot>

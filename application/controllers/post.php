@@ -14,10 +14,13 @@ class post extends MY_Controller {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// load model
 		$this->load->model( array( 'posts_model', 'taxonomy_model' ) );
+		
 		// load helper
 		$this->load->helper( array( 'date', 'language' ) );
+		
 		// load language
 		$this->lang->load( 'category' );
 		$this->lang->load( 'tag' );
@@ -38,6 +41,8 @@ class post extends MY_Controller {
 	
 	function preview() {
 		if ( ! $this->input->post() ) {return null;}
+		
+		// get POST data.
 		$data['theme_system_name'] = trim( $this->input->post( 'theme_system_name' ) );
 			$data['theme_system_name'] = ( $data['theme_system_name'] == null ? null : $data['theme_system_name'] );
 		$data['post_name'] = htmlspecialchars( trim( $this->input->post( 'post_name' ) ), ENT_QUOTES, config_item( 'charset' ) );
@@ -54,7 +59,8 @@ class post extends MY_Controller {
 			$data['meta_keywords'] = ( $data['meta_keywords'] == null ? null : $data['meta_keywords'] );
 		$data['header_value'] = trim( $this->input->post( 'header_value' ) );
 		$data['body_value'] = trim( $this->input->post( 'body_value' ) );
-		// send date to output
+		
+		// send data to output
 		$output = $data;
 		$row = new stdClass($data);
 		foreach ( $data as $key => $item ) {
@@ -64,16 +70,19 @@ class post extends MY_Controller {
 		$row->post_publish_date_gmt = local_to_gmt( time() );
 		$output['row'] = $row;
 		unset( $data );
+		
 		// set custom theme (if specified)---------------------------------
 		if ( $row->theme_system_name != null ) {
 			$this->theme_path = base_url().config_item( 'agni_theme_path' ).$row->theme_system_name.'/';// for use in css
 			$this->theme_system_name = $row->theme_system_name;// for template file.
 		}
+		
 		// load display settings from config
 		$content_setting = $this->config_model->load( array( 'content_show_title', 'content_show_time', 'content_show_author' ) );
 		$output['content_show_title'] = $content_setting['content_show_title']['value'];
 		$output['content_show_time'] = $content_setting['content_show_time']['value'];
 		$output['content_show_author'] = $content_setting['content_show_author']['value'];
+		
 		// display settings (override)
 		if ( $this->input->post( 'content_show_title' ) != null )
 			$output['content_show_title'] = $this->input->post( 'content_show_title' );
@@ -81,6 +90,7 @@ class post extends MY_Controller {
 			$output['content_show_time'] = $this->input->post( 'content_show_time' );
 		if ( $this->input->post( 'content_show_author' ) != null )
 			$output['content_show_author'] = $this->input->post( 'content_show_author' );
+		
 		// 
 		$output['body_value'] = $this->posts_model->modify_content( $output['body_value'], 'article' );
 		$output['list_category'] = '';
@@ -88,6 +98,7 @@ class post extends MY_Controller {
 		$output['comment_allow'] = $output['post_comment'];
 		$output['post_publish_date_gmt'] = date( 'Y-m-d H:i:s' );
 		$output['post_author'] = lang( 'post_preview' );
+		
 		// head tags output ##############################
 		if ( $output['meta_title'] != null ) {
 			$output['page_title'] = $output['meta_title'];
@@ -111,6 +122,7 @@ class post extends MY_Controller {
 			$output['in_head_elements'] = $output['header_value'];
 		}
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'front/templates/post/post_view', $output );
 	}// preview
@@ -120,24 +132,21 @@ class post extends MY_Controller {
 		if ( !isset( $arr[0] ) && !isset( $arr[1] ) ) {redirect();}
 		$post_id = $arr[0];
 		$revision_id = $arr[1];
-		//
-		$this->db->join( 'post_fields', 'post_revision.post_id = post_fields.post_id', 'left outer' );
-		$this->db->join( 'accounts', 'post_revision.account_id = accounts.account_id', 'left' );
-		$this->db->join( 'posts', 'post_revision.post_id = posts.post_id', 'inner' );
-		$this->db->where( 'post_revision.revision_id', $revision_id );
-		$this->db->where( 'post_revision.post_id', $post_id );
-		$query = $this->db->get( 'post_revision' );
-		if ( $query->num_rows() <= 0 ) {
-			// not found
-			$query->free_result();
-			unset( $query );
+		
+		// get "revision" data from db.
+		$data['post_revision.revision_id'] = $revision_id;
+		$data['post_revision.post_id'] = $post_id;
+		$row = $this->posts_model->get_post_revision_data( $data );
+		unset( $data );
+		
+		// not found
+		if ( $row == null ) {
 			redirect();
 		}
-		//
-		$row = $query->row();
-		$query->free_result();
+		
 		// set row for custom use
 		$output['row'] = $row;
+		
 		// preset values---------------------------------------------------------
 		$output['post_name'] = $this->modules_plug->do_action( 'post_postname', $row->post_name );
 		$output['post_publish_date_gmt'] = $this->modules_plug->do_action( 'post_publish_date_gmt', $row->post_publish_date_gmt );
@@ -145,16 +154,19 @@ class post extends MY_Controller {
 		$output['post_author'] = $this->modules_plug->do_action( 'post_postauthor', array( $row->account_username, $row->account_id ) );
 		if ( is_array( $output['post_author'] ) ) {$output['post_author'] = anchor( 'author/'.$row->account_username, $row->account_username, array( 'rel' => 'author' ) );}
 		$output['body_value'] = $this->posts_model->modify_content( $row->body_value, $row->post_type );
+		
 		// set custom theme (if specified)---------------------------------
 		if ( $row->theme_system_name != null ) {
 			$this->theme_path = base_url().config_item( 'agni_theme_path' ).$row->theme_system_name.'/';// for use in css
 			$this->theme_system_name = $row->theme_system_name;// for template file.
 		}
+		
 		// load default content settings from config----------------------------
 		$content_setting = $this->config_model->load( array( 'content_show_title', 'content_show_time', 'content_show_author' ) );
 		$output['content_show_title'] = $content_setting['content_show_title']['value'];
 		$output['content_show_time'] = $content_setting['content_show_time']['value'];
 		$output['content_show_author'] = $content_setting['content_show_author']['value'];
+		
 		// load post's content settings to override.
 		if ( $row->content_settings != null ) {
 			// unserialize settings
@@ -165,6 +177,7 @@ class post extends MY_Controller {
 				}
 			}
 		}
+		
 		// load comment setting------------------------
 		$output['comment_allow'] = $row->post_comment;
 		$global_comment_setting = $this->config_model->load_single( 'comment_allow' );
@@ -172,12 +185,15 @@ class post extends MY_Controller {
 			$output['comment_allow'] = $global_comment_setting;
 		}
 		unset( $global_comment_setting );
+		
 		// list category for this page-------------------------------------------
 		$this->taxonomy_model->tax_type = 'category';
 		$output['list_category'] = $this->taxonomy_model->list_taxterm_index( $row->post_id, true );
+		
 		// list tag for this page------------------------------------------------
 		$this->taxonomy_model->tax_type = 'tag';
 		$output['list_tag'] = $this->taxonomy_model->list_taxterm_index( $row->post_id );
+		
 		// head tags output ##############################
 		if ( $row->meta_title != null ) {
 			$output['page_title'] = $row->meta_title;
@@ -212,6 +228,7 @@ class post extends MY_Controller {
 			$output['in_head_elements'] = $row->header_value;
 		}
 		// end head tags output ##############################
+		
 		// output
 		if ( $row->post_type == 'page' ) {
 			$this->generate_page( 'front/templates/post/page_view', $output );
@@ -223,24 +240,19 @@ class post extends MY_Controller {
 	
 	function view( $post_uri = '' ) {
 		// load post from db by uri
-		$this->db->join( 'post_fields', 'posts.post_id = post_fields.post_id', 'left outer' );
-		$this->db->join( 'accounts', 'posts.account_id = accounts.account_id', 'left' );
-		$this->db->join( 'post_revision', 'posts.revision_id = post_revision.revision_id', 'inner' );
-		$this->db->where( 'language', $this->lang->get_current_lang() );
-		$this->db->where( 'posts.post_uri_encoded', $post_uri );
-		$this->db->where( 'posts.post_status', '1' );
-		$this->db->group_by( 'posts.post_id' );
-		$query = $this->db->get( 'posts' );
-		if ( $query->num_rows() <= 0 ) {
-			// not found.
-			$query->free_result();
-			unset( $query );
+		$data['posts.post_uri_encoded'] = $post_uri;
+		$data['posts_status'] = '1';
+		$row = $this->posts_model->get_post_data( $data );
+		unset( $data );
+		
+		// post not found.
+		if ( $row == null ) {
 			show_404();
 		}
-		$row = $query->row();
-		$query->free_result();
+		
 		// set row for custom use
 		$output['row'] = $row;
+		
 		// preset values---------------------------------------------------------
 		$output['post_name'] = $this->modules_plug->do_action( 'post_postname', $row->post_name );
 		$output['post_publish_date_gmt'] = $this->modules_plug->do_action( 'post_publish_date_gmt', $row->post_publish_date_gmt );
@@ -248,6 +260,7 @@ class post extends MY_Controller {
 		$output['post_author'] = $this->modules_plug->do_action( 'post_postauthor', array( $row->account_username, $row->account_id ) );
 		if ( is_array( $output['post_author'] ) ) {$output['post_author'] = anchor( 'author/'.$row->account_username, $row->account_username, array( 'rel' => 'author' ) );}
 		$output['body_value'] = $this->posts_model->modify_content( $row->body_value, $row->post_type );
+		
 		// set custom theme (if specified)---------------------------------
 		if ( $row->theme_system_name != null ) {
 			$this->theme_path = base_url().config_item( 'agni_theme_path' ).$row->theme_system_name.'/';// for use in css
@@ -267,11 +280,13 @@ class post extends MY_Controller {
 			$query2->free_result();
 			unset( $taxterm_uri, $query2, $row2 );
 		}
+		
 		// load default content settings from config----------------------------
 		$content_setting = $this->config_model->load( array( 'content_show_title', 'content_show_time', 'content_show_author' ) );
 		$output['content_show_title'] = $content_setting['content_show_title']['value'];
 		$output['content_show_time'] = $content_setting['content_show_time']['value'];
 		$output['content_show_author'] = $content_setting['content_show_author']['value'];
+		
 		// load post's content settings to override.
 		if ( $row->content_settings != null ) {
 			// unserialize settings
@@ -282,6 +297,7 @@ class post extends MY_Controller {
 				}
 			}
 		}
+		
 		// load comment setting------------------------
 		$output['comment_allow'] = $row->post_comment;
 		$global_comment_setting = $this->config_model->load_single( 'comment_allow' );
@@ -289,15 +305,18 @@ class post extends MY_Controller {
 			$output['comment_allow'] = $global_comment_setting;
 		}
 		unset( $global_comment_setting );
+		
 		// list category and tag
 		if ( $row->post_type == 'article' ) {
 			// list category for this page-------------------------------------------
 			$this->taxonomy_model->tax_type = 'category';
 			$output['list_category'] = $this->taxonomy_model->list_taxterm_index( $row->post_id, true );
+			
 			// list tag for this page------------------------------------------------
 			$this->taxonomy_model->tax_type = 'tag';
 			$output['list_tag'] = $this->taxonomy_model->list_taxterm_index( $row->post_id );
 		}
+		
 		// head tags output ##############################
 		if ( $row->meta_title != null ) {
 			$output['page_title'] = $row->meta_title;
@@ -332,6 +351,7 @@ class post extends MY_Controller {
 			$output['in_head_elements'] = $row->header_value;
 		}
 		// end head tags output ##############################
+		
 		// output
 		if ( $row->post_type == 'page' ) {
 			$this->generate_page( 'front/templates/post/page_view', $output );

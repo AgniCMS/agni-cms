@@ -14,14 +14,19 @@ class admin_controller extends MY_Controller {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// check admin login
 		if ( ! $this->account_model->is_admin_login() ) {redirect( 'site-admin/login?rdr='.urlencode( current_url() ) );}
+		
 		// load model
 		$this->load->model( array( 'modules_model' ) );
+		
 		// load helper
 		$this->load->helper( array( 'language' ) );
+		
 		// load language
 		$this->lang->load( 'admin' );
+		
 		// get default admin theme name and set new theme_path
 		$theme_system_name = $this->themes_model->get_default_theme( 'admin' );
 		$this->theme_path = $this->base_url.config_item( 'agni_theme_path' ).$theme_system_name.'/';
