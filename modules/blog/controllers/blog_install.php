@@ -30,7 +30,8 @@ class blog_install extends admin_controller {
 			echo 'Installed.';
 			return null;
 		}
-		// install module.
+		
+		// install module table.
 		if ( !$this->db->table_exists( 'blog' ) ) {
 			$sql = 'CREATE TABLE `'.$this->db->dbprefix('blog').'` (
 			`blog_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -41,9 +42,15 @@ class blog_install extends admin_controller {
 			) ENGINE = InnoDB;';
 			$this->db->query( $sql );
 		}
+		
+		// install module to system
 		$this->db->set( 'module_install', '1' );
 		$this->db->where( 'module_system_name', $this->module_system_name );
 		$this->db->update( 'modules' );
+		
+		// done
+		$this->load->library( 'session' );
+		$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'blog_install_completed' ).'</div>' );
 		// go back
 		redirect( 'site-admin/module' );
 	}
