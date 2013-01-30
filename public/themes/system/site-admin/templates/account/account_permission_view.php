@@ -2,7 +2,7 @@
 
 <div class="cmds">
 	<div class="cmd-left">
-		<button type="button" class="bb-button red" id="reset-permission"><?php echo lang( 'account_permission_reset' ); ?></button>
+		<button type="button" class="bb-button red btn btn-danger" id="reset-permission"><?php echo lang( 'account_permission_reset' ); ?></button>
 	</div>
 	<div class="clear"></div>
 </div>
@@ -53,7 +53,7 @@
 		</tbody>
 	</table>
 	
-	<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
+	<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
 <?php echo form_close(); ?> 
 
 <script type="text/javascript">

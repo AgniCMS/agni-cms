@@ -87,7 +87,7 @@ class MY_Loader extends MX_Loader {
 			// มองหาใน public/themes/system/view_name.php แล้วเจอ
 			$this->_ci_view_paths = array($view_path.$default_theme.'/' => TRUE);
 			$ci_view = $view;
-		} elseif ( file_exists( $view_path.$use_theme.'/'.$this->_module.'/'.$view.'.php' ) ) {
+		} elseif ( file_exists( $view_path.$use_theme.'/modules/'.$this->_module.'/'.$view.'.php' ) ) {
 			// มองหาใน public/themes/theme_name/modules/module_name/view_name.php แล้วเจอ
 			$this->_ci_view_paths = array( $view_path.$use_theme.'/modules/'.$this->_module.'/' => TRUE );
 			$ci_view = $view;
@@ -97,6 +97,7 @@ class MY_Loader extends MX_Loader {
 			$this->_ci_view_paths = array( $path => TRUE ) + $this->_ci_view_paths;
 			$ci_view = $view;
 		}
+		
 		unset( $view_path, $use_theme, $default_theme );
 		return $this->_ci_load(array('_ci_view' => $ci_view, '_ci_vars' => $this->_ci_object_to_array($vars), '_ci_return' => $return));
 	}// view

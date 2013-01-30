@@ -14,10 +14,17 @@ class tag extends MY_Controller {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// load model
-		$this->load->model( array( 'posts_model' ) );
+		$this->load->model( array( 'posts_model', 'taxonomy_model' ) );
+		
+		// set post type and taxonomy type
+		$this->posts_model->post_type = 'article';
+		$this->taxonomy_model->tax_type = 'tag';
+		
 		// load helper
 		$this->load->helper( array( 'date', 'language' ) );
+		
 		// load language
 		$this->lang->load( 'post' );
 	}// __construct
@@ -29,10 +36,22 @@ class tag extends MY_Controller {
 	
 	
 	function index( $uri = '', $att2 = '' ) {
-		if ( !empty( $att2 ) ) {show_404(); exit;}// prevent duplicate content (localhost/tag/tagname and localhost/tag/tagname/aaa can be same result, just 404 it). good for seo.
+		// prevent duplicate content (localhost/tag/tagname and localhost/tag/tagname/aaa can be same result, just 404 it). good for seo.
+		if ( !empty( $att2 ) ) {show_404(); exit;}
 		
-		// load category for title, metas
-		$this->db->where( 't_uri_encoded', $uri );
+		// load tag data for title, metas
+		$data['t_uri_encoded'] = $uri;
+		$data['language'] = $this->lang->get_current_lang();
+		$row = $this->taxonomy_model->get_taxonomy_term_data_db( $data );
+		unset( $data );
+		
+		if ( $row == null ) {
+			// not found tag
+			show_404();
+			exit;
+		}
+		
+		/*$this->db->where( 't_uri_encoded', $uri );
 		$this->db->where( 'language', $this->lang->get_current_lang() );
 		$this->db->where( 't_type', 'tag' );
 		$query = $this->db->get( 'taxonomy_term_data' );
@@ -43,7 +62,7 @@ class tag extends MY_Controller {
 			exit;
 		}
 		$row = $query->row();
-		$query->free_result();
+		$query->free_result();*/
 		
 		// set cat (tag) object for use in views
 		$output['cat'] = $row;
@@ -57,61 +76,12 @@ class tag extends MY_Controller {
 		unset( $query );
 		
 		// list posts---------------------------------------------------------------
-		$sql = 'select * from '.$this->db->dbprefix( 'posts' ).' as p';
-		$sql .= ' left outer join '.$this->db->dbprefix( 'taxonomy_index' ).' as ti';
-		$sql .= ' on p.post_id = ti.post_id';
-		$sql .= ' left join '.$this->db->dbprefix( 'accounts' ).' as a';
-		$sql .= ' on p.account_id = a.account_id';
-		$sql .= ' inner join '.$this->db->dbprefix( 'post_revision' ).' as pr';
-		$sql .= ' on p.post_id = pr.post_id';
-		$sql .= ' where post_type = '.$this->db->escape( 'article' );
-		$sql .= ' and language = '.$this->db->escape( $this->lang->get_current_lang() );
-		$sql .= ' and post_status = 1';
-		$sql .= ' and ti.tid = '.$this->db->escape( $row->tid );
-		$sql .= ' group by p.post_id';
-		// order and sort
-		$sql .= ' order by position desc, post_update desc';
-		// query for count total
-		$query = $this->db->query( $sql );
-		$total = $query->num_rows();
-		$query->free_result();
-		// pagination-----------------------------
-		$this->load->library( 'pagination' );
-		$config['base_url'] = site_url( $this->uri->uri_string() ).'?';
-		$config['per_page'] = $this->config_model->load_single( 'content_items_perpage' );
-		$config['total_rows'] = $total;
-		$config['query_string_segment'] = 'start';
-		// pagination tags customize for bootstrap css framework
-		$config['num_links'] = 3;
-		$config['page_query_string'] = true;
-		$config['full_tag_open'] = '<div class="pagination"><ul>';
-		$config['full_tag_close'] = "</ul></div>\n";
-		$config['first_tag_open'] = '<li>';
-		$config['first_tag_close'] = '</li>';
-		$config['last_tag_open'] = '<li>';
-		$config['last_tag_close'] = '</li>';
-		$config['next_tag_open'] = '<li>';
-		$config['next_tag_close'] = '</li>';
-		$config['prev_tag_open'] = '<li>';
-		$config['prev_tag_close'] = '</li>';
-		$config['cur_tag_open'] = '<li class="active"><a>';
-		$config['cur_tag_close'] = '</a></li>';
-		$config['num_tag_open'] = '<li>';
-		$config['num_tag_close'] = '</li>';
-		// end customize for bootstrap
-		$config['first_link'] = '|&lt;';
-		$config['last_link'] = '&gt;|';
-		$this->pagination->initialize( $config );
-		// pagination create links in controller or view. $this->pagination->create_links();
-		// end pagination-----------------------------
-		$sql .= ' limit '.( $this->input->get( 'start' ) == null ? '0' : $this->input->get( 'start' ) ).', '.$config['per_page'].';';
-		$query = $this->db->query( $sql);
-		if ( $query->num_rows() > 0 ) {
-			$output['list_item']['items'] = $query->result();
+		$_GET['tid'] = $row->tid;
+		$output['list_item'] = $this->posts_model->list_item( 'front' );
+		
+		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
-			$query->free_result();
 		}
-		$query->free_result();
 		// endlist posts---------------------------------------------------------------
 		
 		// head tags output ##############################
@@ -133,6 +103,7 @@ class tag extends MY_Controller {
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'front/templates/taxterm/tag_view', $output );
 	}// index

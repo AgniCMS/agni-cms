@@ -151,9 +151,11 @@ class taxonomy_model extends CI_Model {
 		
 		// check uri
 		$data['t_uri'] = $this->nodup_uri( $data['t_uri'], true, $data['tid'] );
+		$data_ua['uri'] = $this->nodup_uri( $data_ua['uri'], true, $data['tid'] );
 		
 		// additional data for taxonomy_term_data table
 		$data['t_uri_encoded'] = urlencode( $data['t_uri'] );
+		$data_ua['uri_encoded'] = urlencode( $data_ua['uri'] );
 		
 		// update
 		$this->db->where( 'tid', $data['tid'] );
@@ -223,6 +225,10 @@ class taxonomy_model extends CI_Model {
 	 * @return mixed
 	 */
 	function get_taxonomy_term_data_db( $data = array() ) {
+		if ( $this->tax_type != null ) {
+			$this->db->where( 't_type', $this->tax_type );
+		}
+		
 		if ( !empty( $data ) ) {
 			$this->db->where( $data );
 		}

@@ -18,6 +18,7 @@
  */
 function easy_filesize( $filesize = 0 ) {
 	if ( !is_numeric( $filesize ) ) {$filesize = 0;}
+	
 	//
 	if ( $filesize <= 1 ) {
 		$output = $filesize.' B';
@@ -38,6 +39,7 @@ function easy_filesize( $filesize = 0 ) {
 	} else {
 		$output = number_format( $filesize/'1180591620717411303424', 2 ).' ZB';
 	}
+	
 	return str_replace( '.00', '', $output );
 }// easy_filesize
 
@@ -62,9 +64,11 @@ function makeAll($dir, $mode = 0777, $recursive = true) {
 	if (is_dir($dir) || $dir === "/") {
 		return TRUE;
 	}
+	
 	if (makeAll(dirname($dir), $mode, $recursive)) {
 		return mkdir($dir, $mode);
 	}
+	
 	return FALSE;
 }// makeAll
 

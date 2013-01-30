@@ -17,22 +17,30 @@ class MY_Controller extends MX_Controller {
 	
 	function __construct() {
 		parent::__construct();
+		
 		//if ( !$this->input->is_ajax_request() )
 		//	$this->output->enable_profiler(TRUE);
+		
 		// load config
 		$this->config->load( 'agni' );
-		// set pathes
+		
+		// set paths
 		$this->base_url = config_item( 'base_url' );
 		$this->modules_path = $this->base_url.config_item( 'modules_uri' );
 		$this->plugins_path = $this->base_url.config_item( 'agni_plugins_path' );
+		
 		// get default theme name
 		$this->load->model( 'themes_model' );
 		$theme_system_name = $this->themes_model->get_default_theme();
+		
+		// set theme path and theme name.
 		$this->theme_path = $this->base_url.config_item( 'agni_theme_path' ).$theme_system_name.'/';
 		$this->theme_system_name = $theme_system_name;
 		unset( $theme_system_name );
+		
 		// load model
 		$this->load->model( array( 'account_model', 'blocks_model', 'config_model', 'html_model' ) );
+		
 		// load helper
 		$this->load->helper( array( 'block' ) );
 	}// __construct
@@ -46,6 +54,7 @@ class MY_Controller extends MX_Controller {
 	function generate_page( $page = '', $output = '', $theme = '' ) {
 		// re-set theme system name (some content use different theme.)
 		$this->themes_model->theme_system_name = $this->theme_system_name;
+		
 		//
 		$output['page_content'] = $this->load->view( $page, $output, true, $theme );
 		$this->load->view( 'front/template', $output, false, $theme );

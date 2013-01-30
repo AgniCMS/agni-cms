@@ -18,7 +18,8 @@
 						<a href="#" onclick="$('.captcha').attr( 'src', '<?php echo base_url(); ?>public/images/securimage_show.php?' + Math.random() ); return false" tabindex="-1"><img src="<?php echo base_url(); ?>public/images/reload.gif" alt="" /></a>
 						<input type="text" name="captcha" value="<?php if ( isset( $captcha ) ) {echo $captcha;} ?>" class="input-captcha" />
 					</label>
-					<button type="submit" class="bb-button orange login-button"><?php echo lang( 'account_login' ); ?></button>
+					<button type="submit" class="bb-button orange login-button btn btn-primary"><?php echo lang( 'account_login' ); ?></button>
+					<span class="ajax_status"></span>
 					
 				<?php echo form_close(); ?> 
 				<?php echo $this->modules_plug->do_action( 'admin_login_page' ); ?>
@@ -41,7 +42,8 @@
 						<a href="#" onclick="$('.captcha').attr( 'src', '<?php echo base_url(); ?>public/images/securimage_show.php?' + Math.random() ); return false" tabindex="-1"><img src="<?php echo base_url(); ?>public/images/reload.gif" alt="" /></a>
 						<input type="text" name="captcha" value="<?php if ( isset( $captcha ) ) {echo $captcha;} ?>" class="input-captcha captcha-fpw" />
 					</label>
-					<button type="submit" class="bb-button standard fpw-button"><?php echo lang( 'admin_submit' ); ?></button>
+					<button type="submit" class="bb-button standard fpw-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
+					<span class="ajax_fpw_status"></span>
 				<?php echo form_close(); ?> 
 			</div>
 		</div>

@@ -4,7 +4,7 @@
 			<div class="comment-author">
 				<img src="<?php echo $comment_avatar; ?>" alt="" class="comment-avatar" />
 				<?php if ( $comment->account_id != null || $comment->account_id != '0' ) {
-					echo '<a href="#'.$comment->c1_account_id.'">'.$comment->name.'</a>';
+					echo '<a href="#comment-id-'.$comment->comment_id/*$comment->c1_account_id*/.'">'.$comment->name.'</a>';
 				} else {
 					echo $comment->name;
 				} ?> 

@@ -18,6 +18,7 @@ class themes_model extends CI_Model {
 	
 	function __construct() {
 		parent::__construct();
+		
 		$this->_setup_module_dir();
 	}// __construct
 	
@@ -432,16 +433,20 @@ class themes_model extends CI_Model {
 	function render_area( $area_name = '' ) {
 		// load widget class
 		$this->load->helper( 'widget' );
+		
 		// query blocks
 		$this->db->where( 'theme_system_name', $this->theme_system_name );
 		$this->db->where( 'area_name', $area_name );
 		$this->db->where( 'language', $this->lang->get_current_lang() );
 		$this->db->where( 'block_status', '1' );
 		$this->db->order_by( 'position', 'asc' );
+		
 		$query = $this->db->get( 'blocks' );
+		
 		if ( $query->num_rows() > 0 && strpos( current_url(), site_url( 'area/demo' ) ) === false ) {
 			// list blocks in area and NOT in area demo
 			$current_uri = urldecode( substr( $this->uri->uri_string(), 1 ) );
+			
 			// loop to cut out the blocks that are in except uri------------------------------------
 			$results = $query->result();
 			$i = 0;
@@ -453,6 +458,7 @@ class themes_model extends CI_Model {
 				$i++;
 			}
 			// end cut except uri---------------------------------------------------------------------
+			
 			// loop cut to show only uri--------------------------------------------------------------
 			$i = 0;
 			foreach ( $results as $row ) {
@@ -463,7 +469,9 @@ class themes_model extends CI_Model {
 				$i++;
 			}
 			// end loop cut to show only uri---------------------------------------------------------
+			
 			$output = null;
+			
 			if ( !empty( $results ) ) {
 				// results not empty, start loop display blocks.
 				$output = '<div class="area-'.$area_name.'">';
@@ -483,6 +491,7 @@ class themes_model extends CI_Model {
 		} elseif ( strpos( current_url(), site_url( 'area/demo' ) ) !== false ) {
 			// display area demo
 			$this->load->helper( 'array' );
+			
 			$areas = $this->list_areas( $this->theme_system_name );
 			$key = recursive_array_search( $area_name, $areas );
 			$output = '<div class="area-'.$area_name.' demo-area">'.$areas[$key]['area_name'].'</div>';
@@ -490,6 +499,7 @@ class themes_model extends CI_Model {
 			// something wrong, return nothing
 			$output = null;
 		}
+		
 		$query->free_result();
 		return $output;
 	}// render_area
@@ -501,12 +511,15 @@ class themes_model extends CI_Model {
 	 */
 	function scan_theme_dir() {
 		$map = scandir( $this->theme_dir );
+		
 		if ( is_array( $map ) && !empty( $map ) ) {
 			// sort
 			natsort( $map );
+			
 			// prepare
 			$dir = null;
 			$i = 0;
+			
 			foreach ( $map as $key => $item ) {
 				if ( $item != '.' && $item != '..' && $item != 'index.html' && strpos( $item, ' ' ) === false ) {
 					//if ( preg_match( "/[^a-zA-Z0-9_]/", $item ) ) {continue;}
@@ -527,6 +540,7 @@ class themes_model extends CI_Model {
 					$i++;
 				}
 			}
+			
 			return $dir;
 		}
 	}// scan_theme_dir

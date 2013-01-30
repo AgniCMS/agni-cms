@@ -85,9 +85,13 @@ class account_model extends CI_Model {
 		$this->db->where( 'level_priority !=', '999' );
 		$this->db->where( 'level_priority !=', '1000' );
 		$this->db->order_by( 'level_priority', 'desc' );
+		
 		$query = $this->db->get( 'account_level_group' );
+		
 		$row = $query->row();
+		
 		$data['level_priority'] = ( $row->level_priority+1 );
+		
 		$query->free_result();
 		
 		// add to db
@@ -107,9 +111,12 @@ class account_model extends CI_Model {
 		
 		$this->db->where( 'account_username', $data['username'] );
 		$this->db->where( 'account_password', $this->encrypt_password( $data['password'] ) );
+		
 		$query = $this->db->get( 'accounts' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
+			
 			if ( $row->account_status == '1' ) {
 				if ( $this->check_admin_permission( 'account_admin_login', 'account_admin_login', $row->account_id ) == true ) {
 					$this->load->library( 'session' );
@@ -192,14 +199,17 @@ class account_model extends CI_Model {
 				return $this->lang->line( 'account_disabled' ) . ': ' . $row->account_status_text;
 			}
 		}
+		
 		$query->free_result();
 		
 		// login failed.
 		$query = $this->db->get_where( 'accounts', array( 'account_username' => $data['username'] ) );
+		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			$this->admin_login_record( $row->account_id, '0', 'Wrong username or password' );
 		}
+		
 		$query->free_result();
 		
 		return $this->lang->line( 'account_wrong_username_or_password' );
@@ -492,24 +502,38 @@ class account_model extends CI_Model {
 	
 	
 	/**
-	 * count_login_fail
+	 * count_login_fail 
+	 * count continuous log in fail.
 	 * @param string $username
 	 * @return mixed 
 	 */
 	function count_login_fail( $username = '' ) {
 		if ( empty( $username ) ) {return false;}
 		
+		// get account data from username
 		$this->db->where( 'account_username', $username );
+		
 		$query = $this->db->get( 'accounts' );
-		if ( $query->num_rows() <= 0 ) {$query->free_result(); return false;}
+		
+		// not found this username.
+		if ( $query->num_rows() <= 0 ) {
+			$query->free_result(); 
+			return false;
+		}
+		
 		$row = $query->row();
+		
 		$account_id = $row->account_id;
+		
 		$query->free_result();
 		unset( $query, $row );
 		
+		// get account logins data from account id.
 		$this->db->where( 'account_id', $account_id );
 		$this->db->order_by( 'account_login_id', 'desc' );
+		
 		$query = $this->db->get( 'account_logins' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$i = 0;
 			foreach ( $query->result() as $row ) {
@@ -522,6 +546,7 @@ class account_model extends CI_Model {
 			$query->free_result();
 			return $i;
 		}
+		
 		$query->free_result();
 		return false;
 	}// count_login_fail
@@ -894,13 +919,30 @@ class account_model extends CI_Model {
 	 */
 	function list_account( $list_for = 'front' ) {
 		// query sql
-		$sql = 'select * from ' . $this->db->dbprefix( 'accounts' ) . ' as acc';
+		$this->db->join( 'account_level', 'account_level.account_id = accounts.account_id', 'left' );
+		$this->db->join( 'account_level_group', 'account_level_group.level_group_id = account_level.level_group_id', 'left' );
+		$q = trim( $this->input->get( 'q' ) );
+		if ( $q != null && $q != 'none' ) {
+			$like_data[0]['field'] = 'accounts.account_username';
+			$like_data[0]['match'] = $q;
+			$like_data[1]['field'] = 'accounts.account_email';
+			$like_data[1]['match'] = $q;
+			$like_data[2]['field'] = 'accounts.account_fullname';
+			$like_data[2]['match'] = $q;
+			$like_data[3]['field'] = 'accounts.account_status_text';
+			$like_data[3]['match'] = $q;
+			$this->db->like_group( $like_data );
+			unset( $like_data );
+		}
+		$this->db->group_by( 'accounts.account_id' );
+		
+		/*$sql = 'select * from ' . $this->db->dbprefix( 'accounts' ) . ' as acc';
 		$sql .= ' left join ' . $this->db->dbprefix( 'account_level' ) . ' as al';
 		$sql .= ' on acc.account_id = al.account_id';
 		$sql .= ' left join ' . $this->db->dbprefix( 'account_level_group' ) . ' as alg';
 		$sql .= ' on al.level_group_id = alg.level_group_id';
 		$sql .= ' where 1';
-		$q = htmlspecialchars( trim( $this->input->get( 'q' ) ) );
+		$q = trim( $this->input->get( 'q' ) );
 		if ( $q != null && $q != 'none' ) {
 			$sql .= ' and (';
 			$sql .= " account_username like '%" . $this->db->escape_like_str( $q ) . "%'";
@@ -909,19 +951,30 @@ class account_model extends CI_Model {
 			$sql .= " or account_status_text like '%" . $this->db->escape_like_str( $q ) . "%'";
 			$sql .= ')';
 		}
-		$sql .= ' group by acc.account_id';
+		$sql .= ' group by acc.account_id';*/
 		
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders != null ? $orders : 'account_username' );
 		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
 		$sort = ( $sort != null ? $sort : 'asc' );
-		$sql .= ' order by '.$orders.' '.$sort;
+		$this->db->order_by( $orders, $sort );
+		//$sql .= ' order by '.$orders.' '.$sort;
+		
+		// clone object before run $this->db->get()
+		$this_db = clone $this->db;
 		
 		// query for count total
-		$query = $this->db->query( $sql );
+		$query = $this->db->get( 'accounts' );
 		$total = $query->num_rows();
 		$query->free_result();
+		
+		// restore $this->db object
+		$this->db = $this_db;
+		unset( $this_db );
+		
+		// html encode for links.
+		$q = urlencode( htmlspecialchars( $q ) );
 		
 		// pagination-----------------------------
 		$this->load->library( 'pagination' );
@@ -952,8 +1005,9 @@ class account_model extends CI_Model {
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
 		
-		$sql .= ' limit '.( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ).', '.$config['per_page'].';';
-		$query = $this->db->query( $sql);
+		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
+		//$sql .= ' limit '.( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ).', '.$config['per_page'].';';
+		$query = $this->db->get( 'accounts' );
 		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $total;
@@ -976,18 +1030,26 @@ class account_model extends CI_Model {
 		if ( !is_numeric( $account_id ) ) {return null;}
 		
 		// query sql
-		$sql = 'select * from ' . $this->db->dbprefix( 'account_logins' ) . ' where account_id = ' . $account_id;
+		$this->db->where( 'account_id', $account_id );
 		
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders != null ? $orders : 'account_login_id' );
 		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
 		$sort = ( $sort != null ? $sort : 'desc' );
-		$sql .= ' order by '.$orders.' '.$sort;
+		$this->db->order_by( $orders, $sort );
+		
+		// clone object before run $this->db->get()
+		$this_db = clone $this->db;
 		
 		// query for count total
-		$query = $this->db->query( $sql );
+		$query = $this->db->get( 'account_logins' );
 		$total = $query->num_rows();
+		$query->free_result();
+		
+		// restore $this->db object
+		$this->db = $this_db;
+		unset( $this_db );
 		
 		// pagination-----------------------------
 		$this->load->library( 'pagination' );
@@ -1018,8 +1080,8 @@ class account_model extends CI_Model {
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
 		
-		$sql .= ' limit '.( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ).', '.$config['per_page'].';';
-		$query = $this->db->query( $sql);
+		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
+		$query = $this->db->get( 'account_logins' );
 		
 		if ( $query->num_rows() > 0 ) {
 			$output['total'] = $total;
@@ -1043,6 +1105,7 @@ class account_model extends CI_Model {
 			$this->db->where( 'level_group_id !=', '4' );
 		}
 		$this->db->order_by( 'level_priority', 'asc' );
+		
 		$query = $this->db->get( 'account_level_group' );
 		
 		if ( $query->num_rows() > 0 ) {
@@ -1064,18 +1127,27 @@ class account_model extends CI_Model {
 	function login_fail_last_time( $username = '' ) {
 		if ( empty( $username ) ) {return false;}
 		
+		// get account id from username
 		$this->db->where( 'account_username', $username );
 		$query = $this->db->get( 'accounts' );
 		
-		if ( $query->num_rows() <= 0 ) {$query->free_result(); return false;}
+		if ( $query->num_rows() <= 0 ) {
+			$query->free_result(); 
+			return false;
+		}
+		
 		$row = $query->row();
 		$account_id = $row->account_id;
+		
 		$query->free_result();
 		unset( $query, $row );
 		
+		// get account login fail last time.
 		$this->db->where( 'account_id', $account_id );
 		$this->db->order_by( 'account_login_id', 'desc' );
+		
 		$query = $this->db->get( 'account_logins' );
+		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			$query->free_result();

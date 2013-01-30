@@ -69,7 +69,7 @@ class login extends MY_Controller {
 		// read account error. eg. duplicate login error from check_login() in account model.
 		$account_error = $this->session->flashdata( 'account_error' );
 		if ( $account_error != null ) {
-			$output['form_status'] = '<div class="txt_error alert alert-error">' . $account_error . '</div>';
+			$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $account_error . '</div>';
 		}
 		unset( $account_error );
 		
@@ -97,7 +97,7 @@ class login extends MY_Controller {
 			$this->form_validation->set_rules( 'username', 'lang:account_username', 'trim|required' );
 			$this->form_validation->set_rules( 'password', 'lang:account_password', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				$login_fail_last_time = $this->account_model->login_fail_last_time( $data['username'] );
 				$count_login_fail = $this->account_model->count_login_fail( $data['username'] );
@@ -151,7 +151,7 @@ class login extends MY_Controller {
 						$this->session->set_userdata( 'show_captcha', true );
 					}
 					
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
 				}
 				unset( $login_fail_last_time, $count_login_fail );
 			}
@@ -201,10 +201,10 @@ class login extends MY_Controller {
 			// check result
 			if ( $result === true ) {
 				$output['result'] = true;
-				$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_please_check_email_confirm_resetpw' ) . '</div>';
+				$output['form_status'] = '<div class="txt_success alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $this->lang->line( 'account_please_check_email_confirm_resetpw' ) . '</div>';
 			} else {
 				$output['result'] = false;
-				$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $result . '</div>';
 			}
 			unset( $email, $result );
 		}

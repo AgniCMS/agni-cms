@@ -420,10 +420,19 @@ class posts_model extends CI_Model {
 		$this->db->join( 'post_fields', 'posts.post_id = post_fields.post_id', 'left outer' );
 		$this->db->join( 'accounts', 'posts.account_id = accounts.account_id', 'left' );
 		$this->db->join( 'post_revision', 'posts.revision_id = post_revision.revision_id', 'inner' );
-		$this->db->where( 'post_type', $this->posts_model->post_type );
+		if ( $this->post_type != null ) {
+			$this->db->where( 'post_type', $this->posts_model->post_type );
+		}
 		$this->db->where( 'language', $this->posts_model->language );
 		if ( isset( $data['post_id'] ) ) {
 			$this->db->where( 'posts.post_id', $data['post_id'] );
+		}
+		if ( isset( $data['post_uri_encoded'] ) || isset( $data['posts.post_uri_encoded'] ) ) {
+			if ( isset( $data['posts.post_uri_encoded'] ) ) {
+				$data['post_uri_encoded'] = $data['posts.post_uri_encoded'];
+				unset( $data['posts.post_uri_encoded'] );
+			}
+			$this->db->where( 'posts.post_uri_encoded', $data['post_uri_encoded'] );
 		}
 		if ( isset( $data['post_status'] ) ) {
 			$this->db->where( 'posts.post_status', $data['post_status'] );
@@ -439,6 +448,31 @@ class posts_model extends CI_Model {
 		// there is no selected post
 		return null;
 	}// get_post_data
+	
+	
+	/**
+	 * get data from revision table
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_post_revision_data( $data = array() ) {
+		$this->db->join( 'post_fields', 'post_fields.post_id = post_revision.post_id', 'left outer' );
+		$this->db->join( 'accounts', 'accounts.account_id = post_revision.account_id', 'left' );
+		$this->db->join( 'posts', 'posts.post_id = post_revision.post_id', 'inner' );
+		
+		if ( !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
+		$query = $this->db->get( 'post_revision' );
+		
+		if ( $query->num_rows() > 0 ) {
+			return $query->row();
+		}
+		
+		$query->free_result();
+		return null;
+	}// get_post_revision_data
 	
 	
 	/**
@@ -518,8 +552,11 @@ class posts_model extends CI_Model {
 	function list_item( $list_for = 'front', $data = array() ) {
 		$this->db->join( 'taxonomy_index', 'taxonomy_index.post_id = posts.post_id', 'left outer' );
 		$this->db->join( 'accounts', 'accounts.account_id = posts.account_id', 'left' );
+		$this->db->join( 'post_fields', 'post_fields.post_id = posts.post_id', 'left outer' );
 		$this->db->join( 'post_revision', 'post_revision.post_id = posts.post_id', 'inner' );
-		$this->db->where( 'post_type', $this->post_type );
+		if ( $this->post_type != null ) {
+			$this->db->where( 'post_type', $this->post_type );
+		}
 		$this->db->where( 'language', $this->language );
 		if ( $list_for == 'front' ) {
 			$this->db->where( 'post_status', '1' );

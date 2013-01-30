@@ -13,17 +13,20 @@
 if ( !function_exists( 'language_switch' ) ) {
 	function language_switch() {
 		$CI =& get_instance();
+		
 		if ( $CI->config->item( 'lang_ignore' ) ) {
 			$user_lang = $_COOKIE[$CI->config->item( 'cookie_prefix' ).'user_lang'];
 		} else {
 			$user_lang = $CI->config->item( 'language_abbr' );
 		}
 		$langs = $CI->config->item( 'lang_uri_abbr' );
+		
 		//
 		//$querystring = http_build_query( $_GET, '', '&amp;' );// because of the line below, we will not use any querystring. just change langauge and go to root web.
 		$querystring = null;
 		$output = $langs[$user_lang];
 		$output .= '<ul class="lang-switch">';
+		
 		foreach ( $langs as $key => $item ) {
 			if ( $key != $user_lang ) {
 				//$switch_link = site_url( $key.$CI->uri->uri_string() );// this one will change language with current url (http://localhost/post/post-name to http://localhost/en/post/post-name) which cause 404 error in many pages.
@@ -34,7 +37,9 @@ if ( !function_exists( 'language_switch' ) ) {
 				$output .= '<li class="language-item language-'.$item.' lang-'.$key.'">'.anchor( $switch_link.($querystring != null ? '?' : '').$querystring, $item ).'</li>';
 			}
 		}
+		
 		$output .= '</ul>';
+		
 		// clear unuse items
 		unset( $user_lang, $langs, $switch_link, $key, $item, $CI );
 		return $output;
@@ -45,17 +50,20 @@ if ( !function_exists( 'language_switch' ) ) {
 if ( !function_exists( 'language_switch_admin' ) ) {
 	function language_switch_admin() {
 		$CI =& get_instance();
+		
 		if ( $CI->config->item( 'lang_ignore' ) ) {
 			$user_lang = $_COOKIE[$CI->config->item( 'cookie_prefix' ).'user_lang'];
 		} else {
 			$user_lang = $CI->config->item( 'language_abbr' );
 		}
 		$langs = $CI->config->item( 'lang_uri_abbr' );
+		
 		//
 		//$querystring = http_build_query( $_GET, '', '&amp;' );// because of the line below, we will not use any querystring. just change langauge and go to root web.
 		$querystring = null;
 		$output = $langs[$user_lang];
 		$output .= '<ul class="lang-switch">';
+		
 		foreach ( $langs as $key => $item ) {
 			if ( $key != $user_lang ) {
 				//$switch_link = site_url( $key.$CI->uri->uri_string() );// this one will change language with current url (http://localhost/post/post-name to http://localhost/en/post/post-name) which cause 404 error in many pages.
@@ -66,7 +74,9 @@ if ( !function_exists( 'language_switch_admin' ) ) {
 				$output .= '<li class="language-item language-'.$item.' lang-'.$key.'">'.anchor( $switch_link.($querystring != null ? '?' : '').$querystring, $item ).'</li>';
 			}
 		}
+		
 		$output .= '</ul>';
+		
 		// clear unuse items
 		unset( $user_lang, $langs, $switch_link, $key, $item, $CI );
 		return $output;
@@ -83,6 +93,7 @@ if ( !function_exists( 'url_title' ) ) {
 			$search = '-';
 			$replace = '_';
 		}
+		
 		$trans = array(
 				'&\#\d+?;'				=> '',
 				'&\S+?;'				=> '',
@@ -94,12 +105,15 @@ if ( !function_exists( 'url_title' ) ) {
 				'\.+$'					=> ''
 			);
 		$str = strip_tags( $str );
+		
 		foreach ($trans as $key => $val) {
 			$str = preg_replace("#".$key."#ui", $val, $str);
 		}
+		
 		if ( $lowercase === true ) {
 			$str = mb_strtolower( $str );
 		}
+		
 		// remove unuse var
 		unset( $search, $replace, $trans );
 		return trim( stripslashes( $str ) );
@@ -110,11 +124,14 @@ if ( !function_exists( 'url_title' ) ) {
 if ( !function_exists( 'urlencode_except_slash' ) ) {
 	function urlencode_except_slash( $url = '' ) {
 		if ( $url == null ) {return null;}
+		
 		//
 		$url_raw = explode( '/', $url );
 		if ( !is_array( $url_raw ) ) {return $url;}
+		
 		//
 		$output = '';
+		
 		//
 		foreach ( $url_raw as $uri ) {
 			if ( mb_strpos( $uri, 'http:' ) !== false || mb_strpos( $uri, 'https:' ) !== false || mb_strpos( $uri, 'ftp:' ) !== false || mb_strpos( $uri, ':' ) !== false ) {
@@ -128,6 +145,7 @@ if ( !function_exists( 'urlencode_except_slash' ) ) {
 				$output .= '/';
 			}
 		}
+		
 		return $output;
 	}// urlencode_except_slash
 }

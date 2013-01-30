@@ -42,7 +42,7 @@ class register extends MY_Controller {
 			$this->form_validation->set_rules( 'account_password', 'lang:account_password', 'trim|required' );
 			$this->form_validation->set_rules( 'account_confirm_password', 'lang:account_confirm_password', 'trim|required|matches[account_password]' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// check plugin captcha
 				if ( $output['plugin_captcha'] != null ) {

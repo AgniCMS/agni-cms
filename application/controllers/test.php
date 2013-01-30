@@ -36,6 +36,7 @@ class test extends MY_Controller {
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'front/templates/index/index_view', $output, 'quick-start' );
 	}// index

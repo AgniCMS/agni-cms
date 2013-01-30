@@ -15,7 +15,7 @@
 			<div id="upload-msg"></div>
 			
 			<input type="file" name="file" id="file-selector" />
-			<button type="submit" class="bb-button media-upload-button" id="upload-button"><?php echo lang( 'media_upload' ); ?></button>
+			<button type="submit" class="bb-button media-upload-button btn btn-primary" id="upload-button"><?php echo lang( 'media_upload' ); ?></button>
 			
 			<span class="txt_comment">&lt; <?php echo ini_get('upload_max_filesize'); ?></span>
 			
@@ -30,7 +30,7 @@
 			<input type="hidden" name="filter" value="<?php echo $filter; ?>" />
 			<input type="hidden" name="filter_val" value="<?php echo $filter_val; ?>" />
 			<input type="text" name="q" value="<?php echo $q; ?>" maxlength="255" />
-			<button type="submit" class="bb-button search-button"><?php echo lang( 'media_search' ); ?></button>
+			<button type="submit" class="bb-button search-button btn"><?php echo lang( 'media_search' ); ?></button>
 		</form>
 	</div>
 	<div class="clear"></div>
@@ -46,13 +46,14 @@
 	</div>
 	<div class="clear"></div>
 </div>
-<script type="text/javascript" src="<?php echo base_url(); ?>public/js/tiny_mce/tiny_mce_custom_popup.js"></script>
+
+<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce_custom_popup.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		// remove tinymce class and stylesheet
 		$('html, body').removeClass( 'forceColors' );
 		var styleSheets = document.styleSheets;
-		var href = base_url+'public/js/tiny_mce/themes/advanced/skins/default/dialog.css';
+		var href = '<?php echo $this->theme_path; ?>share-js/tiny_mce/themes/advanced/skins/default/dialog.css';
 		for (var i = 0; i < styleSheets.length; i++) {
 			if (styleSheets[i].href == href) {
 				// go away tinymce stylesheet.

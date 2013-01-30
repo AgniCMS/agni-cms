@@ -52,7 +52,7 @@ class urls extends admin_controller {
 			$this->form_validation->set_rules( 'redirect_to', 'lang:urls_redirect_to', 'trim|required|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save
 				$result = $this->url_model->add_redirect( $data );
@@ -63,7 +63,7 @@ class urls extends admin_controller {
 					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/urls' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
 				}
 			}
 			
@@ -136,7 +136,7 @@ class urls extends admin_controller {
 			$this->form_validation->set_rules( 'redirect_to', 'lang:urls_redirect_to', 'trim|required|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save
 				$result = $this->url_model->edit_redirect( $data );
@@ -147,7 +147,7 @@ class urls extends admin_controller {
 					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/urls' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
 				}
 			}
 			

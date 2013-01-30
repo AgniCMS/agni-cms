@@ -62,7 +62,7 @@ class resetpw2 extends MY_Controller {
 						$this->form_validation->set_rules('new_password', 'lang:account_new_password', 'trim|required|matches[conf_new_password]');
 						$this->form_validation->set_rules('conf_new_password', 'lang:account_confirm_new_password', 'trim|required');
 						if ( $this->form_validation->run() == false ) {
-							$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+							$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 						} else {
 							// update new password
 							$this->db->set( 'account_password', $this->account_model->encrypt_password( $data['new_password'] ) );

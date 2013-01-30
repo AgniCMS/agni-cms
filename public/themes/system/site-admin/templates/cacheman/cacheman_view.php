@@ -11,7 +11,7 @@
 					<option value=""></option>
 					<option value="clear"><?php echo lang( 'cache_clear_all' ); ?></option>
 				</select>
-				<button type="submit" class="bb-button"><?php echo lang( 'admin_submit' ); ?></button>
+				<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 			</div>
 		</div>
 		

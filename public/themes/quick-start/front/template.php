@@ -9,12 +9,12 @@
 			<script src="<?php echo $this->base_url; ?>public/js/html5.js"></script>
 		<![endif]-->
 		
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960/reset.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960/text.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960/960.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>960/reset.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>960/text.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>960/960.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/form.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/style.css" media="all" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/beauty-buttons/beauty-buttons.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>beauty-buttons/beauty-buttons.css" media="all" />
 		<?php if ( isset( $page_link ) ) {echo $page_link;} ?> 
 		<script src="<?php echo $this->base_url; ?>public/js/jquery.min.js" type="text/javascript"></script>
 		<?php if ( isset( $page_script ) ) {echo $page_script;} ?> 
