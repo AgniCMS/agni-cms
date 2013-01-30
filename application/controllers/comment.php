@@ -287,7 +287,7 @@ class comment extends MY_Controller {
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				return validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				return '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				$result = $this->comments_model->edit( $data );
 				
@@ -412,7 +412,7 @@ class comment extends MY_Controller {
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				return validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				return '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				
 				// set data for insert

@@ -34,7 +34,7 @@ class forgotpw extends MY_Controller {
 			$this->load->library( array( 'form_validation', 'securimage/securimage' ) );
 			$this->form_validation->set_rules( 'account_email', 'lang:account_email', 'trim|required|valid_email' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// check captcha
 				if ( $output['plugin_captcha'] != null ) {

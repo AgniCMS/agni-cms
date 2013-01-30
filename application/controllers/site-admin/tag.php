@@ -66,7 +66,7 @@ class tag extends admin_controller {
 			$this->form_validation->set_rules("t_name", "lang:tag_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} elseif ( $this->taxonomy_model->show_taxterm_info( $data['t_name'], 't_name', 'tid' ) != null ) {
 				$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'tag_name_exists' ).'</div>';
 			} else {
@@ -202,7 +202,7 @@ class tag extends admin_controller {
 			$this->form_validation->set_rules("t_name", "lang:tag_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				$check_result = $this->taxonomy_model->show_taxterm_info( $data['t_name'], 't_name', 'tid' );
 				

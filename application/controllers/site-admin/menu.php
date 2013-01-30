@@ -61,7 +61,7 @@ class menu extends admin_controller {
 			$this->form_validation->set_rules( 'mg_name', 'lang:menu_group_name', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				$result = $this->menu_model->add_group( $data );
 				
@@ -125,7 +125,7 @@ class menu extends admin_controller {
 			
 			if ( $this->form_validation->run() == false ) {
 				$output['result'] = false;
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 				
 				// log error in ajax help developer found the problem easier.
 				log_message( 'error', $output['form_status'] );
@@ -215,7 +215,7 @@ class menu extends admin_controller {
 				}
 				
 				if ( $this->form_validation->run() == false ) {
-					echo validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+					echo '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 					exit;
 				} else {
 					// update menu item
@@ -361,7 +361,7 @@ class menu extends admin_controller {
 			$this->form_validation->set_rules( 'mg_name', 'lang:menu_group_name', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				$result = $this->menu_model->edit_group( $data );
 				if ( $result === true ) {
@@ -462,11 +462,6 @@ class menu extends admin_controller {
 		// meta tags
 		// link tags
 		// script tags
-		$script = array(
-			'<script type="text/javascript" src="'.$this->base_url.'public/js/jquery.mjs.nestedSortable.js"></script>'
-		);
-		$output['page_script'] = $this->html_model->gen_tags( $script );
-		unset( $script );
 		// end head tags output ##############################
 		
 		// output

@@ -121,7 +121,7 @@ class article extends admin_controller {
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save result
 				$result = $this->posts_model->add( $data_posts, $data_post_revision, $data_tax_index );
@@ -130,7 +130,7 @@ class article extends admin_controller {
 					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
 					redirect( 'site-admin/article' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $result . '</div>';
 				}
 			}
 			
@@ -155,9 +155,6 @@ class article extends admin_controller {
 		// meta tags
 		// link tags
 		// script tags
-		$script_tags[] = '<script src="'.$this->base_url.'public/js/jquery.textarea.js"></script>';
-		$output['page_script'] = $this->html_model->gen_tags( $script_tags );
-		unset( $script_tags );
 		// end head tags output ##############################
 		
 		// output
@@ -490,7 +487,7 @@ class article extends admin_controller {
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save result
 				$result = $this->posts_model->edit( $data_posts, $data_post_revision, $data_tax_index, $data );
@@ -499,7 +496,7 @@ class article extends admin_controller {
 					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
 					redirect( 'site-admin/article' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $result . '</div>';
 				}
 			}
 			
@@ -528,9 +525,6 @@ class article extends admin_controller {
 		// meta tags
 		// link tags
 		// script tags
-		$script_tags[] = '<script src="'.$this->base_url.'public/js/jquery.textarea.js"></script>';
-		$output['page_script'] = $this->html_model->gen_tags( $script_tags );
-		unset( $script_tags );
 		// end head tags output ##############################
 		
 		// output
