@@ -9,7 +9,7 @@
 		<form class="add-source item-category">
 			<h2><?php echo lang( 'menu_source_category' ); ?></h2>
 			<?php echo show_category_check( $list_category ); ?> 
-			<button type="button" class="bb-button" onclick="add_content_item_array( $(this).parent().serialize(), 'category' )"><?php echo lang( 'admin_add' ); ?></button>
+			<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parent().serialize(), 'category' )"><?php echo lang( 'admin_add' ); ?></button>
 		</form>
 		<div class="add-source item-article">
 			<h2><?php echo lang( 'menu_source_article' ); ?></h2>
@@ -26,7 +26,7 @@
 			<?php endif; ?> 
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?> 
 			<?php unset( $list_page, $row ); ?> 
-			<button type="button" class="bb-button" onclick="add_content_item_array( $(this).parent().serialize(), 'page' )"><?php echo lang( 'admin_add' ); ?></button>
+			<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parent().serialize(), 'page' )"><?php echo lang( 'admin_add' ); ?></button>
 		</form>
 		<div class="add-source item-tag">
 			<h2><?php echo lang( 'menu_source_tag' ); ?></h2>
@@ -36,12 +36,12 @@
 			<h2><?php echo lang( 'menu_source_link' ); ?></h2>
 			<label><?php echo lang( 'menu_link_text' ); ?>: <input type="text" name="link_text" value="" maxlength="255" /></label>
 			<label><?php echo lang( 'menu_link_url' ); ?>: <input type="text" name="link_url" value="" maxlength="255" /></label>
-			<button type="button" class="bb-button" onclick="add_content_item_link( $(this).parent().serialize(), 'link' )"><?php echo lang( 'admin_add' ); ?></button>
+			<button type="button" class="bb-button btn btn-small" onclick="add_content_item_link( $(this).parent().serialize(), 'link' )"><?php echo lang( 'admin_add' ); ?></button>
 		</form>
 		<form class="add-source item-customlink">
 			<h2><?php echo lang( 'menu_custom_link' ); ?></h2>
 			<textarea name="custom_link" placeholder="&lt;a href=&quot;http://link&quot;&gt;text&lt;/a&gt;"></textarea>
-			<button type="button" class="bb-button" onclick="add_content_item_link( $(this).parent().serialize(), 'custom_link' )"><?php echo lang( 'admin_add' ); ?></button>
+			<button type="button" class="bb-button btn btn-small" onclick="add_content_item_link( $(this).parent().serialize(), 'custom_link' )"><?php echo lang( 'admin_add' ); ?></button>
 		</form>
 	</div>
 	<div class="list-menu-items">

@@ -1,7 +1,5 @@
 /**
  * 
- * PHP version 5
- * 
  * @package agni cms
  * @author vee w.
  * @license http://www.opensource.org/licenses/GPL-3.0
@@ -11,7 +9,13 @@
 
 function ajax_admin_fpw( thisobj ) {
 	var serialize_val = thisobj.serialize();
+	
+	// disable submit button
 	$( '.fpw-button' ).attr( 'disabled', 'disabled' );
+	
+	// set loading status
+	$('.ajax_fpw_status').html('<img src="'+base_url+'public/themes/system/site-admin/images/loading.gif" alt="" />');
+	
 	$.ajax({
 		url: site_url+'site-admin/login/resetpw',
 		type: 'POST',
@@ -19,6 +23,7 @@ function ajax_admin_fpw( thisobj ) {
 		dataType: 'json',
 		success: function( data ) {
 			$( '.fpw-button' ).removeAttr( 'disabled' );
+			$( '.ajax_fpw_status' ).html( '' );
 			$( '.form-status-fpw' ).html(data.form_status);
 			if ( data.result == true ) {
 				$( '.form-fpw' ).hide( 'fade', {}, 'fast' );
@@ -37,7 +42,13 @@ function ajax_admin_fpw( thisobj ) {
 
 function ajax_admin_login( thisobj ) {
 	var serialize_val = thisobj.serialize();
+	
+	// disable submit button.
 	$( '.login-button' ).attr( 'disabled', 'disabled' );
+	
+	// set loading status
+	$('.ajax_status').html('<img src="'+base_url+'public/themes/system/site-admin/images/loading.gif" alt="" />');
+	
 	$.ajax({
 		url: thisobj.attr('action'),
 		type: 'POST',
@@ -48,7 +59,9 @@ function ajax_admin_login( thisobj ) {
 				window.location = data.go_to;
 			} else {
 				$( '.login-button' ).removeAttr( 'disabled' );
+				$( '.ajax_status' ).html( '' );
 				$( '.form-status' ).html(data.form_status);
+				
 				$('.captcha').attr( 'src', base_url+'public/images/securimage_show.php?' + Math.random() );
 				$('.login-username').focus();
 				if ( data.show_captcha == true ) {

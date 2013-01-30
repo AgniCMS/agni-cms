@@ -43,12 +43,12 @@
 			<?php if ( $row->body_summary != null ) {
 				echo $row->body_summary;
 			} else {
-				echo mb_strimwidth( nl2br( strip_tags( $row->body_value ) ), 0, 255, '...' );
+				echo nl2br( mb_strimwidth( strip_tags( $row->body_value ), 0, 255, '...' ) );
 			} ?>
 		</div>
 		<div class="clear"></div>
 		<?php if ( !empty( $row->comment_count ) ): ?><div><?php echo anchor( $post_url.'#list-comments', sprintf( lang( 'post_total_comment' ), $row->comment_count ) ); ?></div><?php endif; ?> 
-	</div>
+	</div><!--.each-post-->
 		<?php
 			$column++;
 			if ( $column >= 4 ) {

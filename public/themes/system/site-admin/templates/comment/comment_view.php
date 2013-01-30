@@ -14,7 +14,7 @@
 			<input type="hidden" name="filter" value="<?php echo $filter; ?>" />
 			<input type="hidden" name="filter_val" value="<?php echo $filter_val; ?>" />
 			<input type="text" name="q" value="<?php echo $q; ?>" maxlength="255" />
-			<button type="submit" class="bb-button standard"><?php echo lang( 'comment_search' ); ?></button>
+			<button type="submit" class="bb-button standard btn"><?php echo lang( 'comment_search' ); ?></button>
 		</form>
 	</div>
 	<div class="clear"></div>
@@ -91,7 +91,7 @@
 				<?php endif; ?> 
 				<option value="del"><?php echo lang( 'admin_delete' ); ?></option>
 			</select>
-			<button type="submit" class="bb-button"><?php echo lang( 'admin_submit' ); ?></button>
+			<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 		</div>
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>

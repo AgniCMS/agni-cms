@@ -11,7 +11,7 @@
 			<div id="upload-msg"></div>
 			
 			<input type="file" name="file" id="file-selector" />
-			<button type="submit" class="bb-button media-upload-button" id="upload-button"><?php echo lang( 'media_upload' ); ?></button>
+			<button type="submit" class="bb-button media-upload-button btn btn-primary" id="upload-button"><?php echo lang( 'media_upload' ); ?></button>
 			
 			<span class="txt_comment">&lt; <?php echo ini_get('upload_max_filesize'); ?></span>
 			
@@ -26,7 +26,7 @@
 			<input type="hidden" name="filter" value="<?php echo $filter; ?>" />
 			<input type="hidden" name="filter_val" value="<?php echo $filter_val; ?>" />
 			<input type="text" name="q" value="<?php echo $q; ?>" maxlength="255" />
-			<button type="submit" class="bb-button search-button"><?php echo lang( 'media_search' ); ?></button>
+			<button type="submit" class="bb-button search-button btn"><?php echo lang( 'media_search' ); ?></button>
 		</form>
 	</div>
 	<div class="clear"></div>
@@ -45,7 +45,7 @@
 				<option value="" selected="selected"></option>
 				<option value="del"><?php echo lang( 'admin_delete' ); ?></option>
 			</select>
-			<button type="submit" class="bb-button"><?php echo lang( 'admin_submit' ); ?></button>
+			<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 		</div>
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>

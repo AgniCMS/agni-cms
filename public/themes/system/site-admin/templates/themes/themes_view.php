@@ -2,7 +2,7 @@
 
 <div class="cmds">
 	<div class="cmd-left">
-		<button type="button" class="bb-button" onclick="window.location=site_url+'site-admin/themes/add';"><?php echo lang( 'admin_add' ); ?></button>
+		<button type="button" class="bb-button btn" onclick="window.location=site_url+'site-admin/themes/add';"><?php echo lang( 'admin_add' ); ?></button>
 	</div>
 	<div class="clear"></div>
 </div>
@@ -73,7 +73,7 @@
 			<?php endforeach; ?> 
 			<?php endif; ?> 
 		</select>
-		<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
+		<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
 	
 </fieldset>
 <?php echo form_close(); ?> 

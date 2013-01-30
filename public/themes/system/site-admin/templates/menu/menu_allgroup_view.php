@@ -2,7 +2,7 @@
 
 <div class="cmds">
 	<div class="cmd-left">
-		<button type="button" class="bb-button" onclick="window.location=site_url+'site-admin/menu/addgroup'"><?php echo lang( 'menu_add_group' ); ?></button>
+		<button type="button" class="bb-button btn" onclick="window.location=site_url+'site-admin/menu/addgroup'"><?php echo lang( 'menu_add_group' ); ?></button>
 	</div>
 	<div class="clear"></div>
 </div>
@@ -50,7 +50,7 @@
 				<option value="" selected="selected"></option>
 				<option value="del"><?php echo lang( 'admin_delete' ); ?></option>
 			</select>
-			<button type="submit" class="bb-button"><?php echo lang( 'admin_submit' ); ?></button>
+			<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 		</div>
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
