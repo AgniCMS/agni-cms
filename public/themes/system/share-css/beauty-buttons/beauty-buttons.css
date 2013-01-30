@@ -1,0 +1,52 @@
+/**
+* beauty buttons
+* author: mr.v
+* @copyright http://www.okvee.net
+*/
+.bb-button:active {top: 1px;}
+.bb-button:disabled:active {top: 0;}
+.bb-button {
+	background:url(img/button-standard-normal.png) repeat-x;
+	height:24px; 
+	border:none;
+	border-bottom:1px solid rgba(0,0,0,0.5);
+	border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px; 
+	color:#333;
+	cursor: pointer;
+	display:inline-block;
+	font-size:12px; 
+	line-height:25px;
+	padding: 0 10px;
+	position:relative;
+	text-decoration: none;
+	text-shadow:1px 1px #efefef;
+	top: 0;
+}
+
+.big.bb-button {font-size: 15px; height:35px; line-height:35px;}
+
+.bb-button, .bb-button.standard {background-color: #dedede;}
+.bb-button:hover, .bb-button.standard:hover {background-color:#eeeded;}
+
+.bb-button.blue {background-color:#2e67c5; color:#fff; text-shadow:0 -1px 1px #333;}
+.bb-button.blue:hover {background-color:#3d7ce3;}
+
+.bb-button.green {background-color:#65CA60; color:#fff; text-shadow:0 -1px 1px #333;}
+.bb-button.green:hover {background-color:#87e582;}
+
+.bb-button.grey {background-color:#444; color:#fff; text-shadow: 0 -1px 1px #222;}
+.bb-button.grey:hover {background-color:#5a5a5a;}
+
+.bb-button.orange {background-color:#ffa800; color:#fff; text-shadow:0 -1px 1px #333;}
+.bb-button.orange:hover {background-color:#ffc045;}
+
+.bb-button.pink {background-color:#f73e7f; color:#fff; text-shadow:0 -1px 1px #333;}
+.bb-button.pink:hover {background-color:#f87ca7;}
+
+.bb-button.red {background-color:#df2727; color:#fff; text-shadow:0 -1px 1px #333;}
+.bb-button.red:hover {background-color:#e64e4e;}
+
+.bb-button.white {background-color:#F7F7F7;}
+
+.bb-button.whiteblue {background-color:#44bbff; color:#fff; text-shadow:0 -1px 1px #333;}
+.bb-button.whiteblue:hover {background-color:#62c6ff;}
