@@ -594,3 +594,25 @@ CREATE TABLE IF NOT EXISTS `an_url_alias` (
 -- Dumping data for table `an_url_alias`
 --
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_sites` (
+  `site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `site_name` varchar(255) DEFAULT NULL,
+  `site_domain` varchar(255) DEFAULT NULL COMMENT 'ex. domain.com, sub.domain.com with out http://',
+  `site_status` int(1) NOT NULL DEFAULT '0' COMMENT '0=disable, 1=enable',
+  `site_create` bigint(20) DEFAULT NULL,
+  `site_create_gmt` bigint(20) DEFAULT NULL,
+  `site_update` bigint(20) DEFAULT NULL,
+  `site_update_gmt` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`site_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_sites`
+--
+
