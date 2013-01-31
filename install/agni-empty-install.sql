@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS `an_account_level_permission` (
 CREATE TABLE IF NOT EXISTS `an_account_logins` (
   `account_login_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT NULL,
   `login_ua` varchar(255) DEFAULT NULL,
   `login_os` varchar(255) DEFAULT NULL,
   `login_browser` varchar(255) DEFAULT NULL,
@@ -411,6 +412,25 @@ INSERT INTO `an_modules` (`module_id`, `module_system_name`, `module_name`, `mod
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `an_module_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_module_sites` (
+  `module_site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `module_id` int(11) NOT NULL,
+  `site_id` int(11) DEFAULT NULL,
+  `module_enable` int(1) NOT NULL DEFAULT '0',
+  `module_install` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`module_site_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_module_sites`
+--
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `an_posts`
 --
 
@@ -574,6 +594,27 @@ INSERT INTO `an_themes` (`theme_id`, `theme_system_name`, `theme_name`, `theme_u
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `an_theme_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_theme_sites` (
+  `theme_site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `theme_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT NULL,
+  `theme_enable` int(1) NOT NULL DEFAULT '0',
+  `theme_default` int(1) NOT NULL DEFAULT '0',
+  `theme_default_admin` int(11) NOT NULL DEFAULT '0',
+  `theme_settings` text,
+  PRIMARY KEY (`theme_site_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_theme_sites`
+--
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `an_url_alias`
 --
 
@@ -592,5 +633,27 @@ CREATE TABLE IF NOT EXISTS `an_url_alias` (
 
 --
 -- Dumping data for table `an_url_alias`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_sites` (
+  `site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `site_name` varchar(255) DEFAULT NULL,
+  `site_domain` varchar(255) DEFAULT NULL COMMENT 'ex. domain.com, sub.domain.com with out http://',
+  `site_status` int(1) NOT NULL DEFAULT '0' COMMENT '0=disable, 1=enable',
+  `site_create` bigint(20) DEFAULT NULL,
+  `site_create_gmt` bigint(20) DEFAULT NULL,
+  `site_update` bigint(20) DEFAULT NULL,
+  `site_update_gmt` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`site_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_sites`
 --
 
