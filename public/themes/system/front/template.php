@@ -10,17 +10,17 @@
 			<script src="<?php echo $this->base_url; ?>public/js/html5.js"></script>
 		<![endif]-->
 		
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960adapt/css/master.css" />
-		<noscript><link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/960adapt/css/960.min.css" /></noscript>
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-css/960adapt/css/master.css" />
+		<noscript><link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-css/960adapt/css/960.min.css" /></noscript>
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/form.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/style.css" />
-		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/beauty-buttons/beauty-buttons.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-css/beauty-buttons/beauty-buttons.css" />
 		<?php if ( isset( $page_link ) ) {echo $page_link;} ?> 
 		<script src="<?php echo $this->base_url; ?>public/js/jquery.min.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			var ADAPT_CONFIG = {
 				// Where is your CSS?
-				path: '<?php echo $this->base_url; ?>public/css-fw/960adapt/css/',
+				path: '<?php echo $this->theme_path; ?>share-css/960adapt/css/',
 				
 				// false = Only run once, when page first loads.
 				// true = Change on window resize and page tilt.
@@ -40,7 +40,7 @@
 				]
 			};
 		</script>
-		<script src="<?php echo $this->base_url; ?>public/css-fw/960adapt/js/adapt.min.js" type="text/javascript"></script>
+		<script src="<?php echo $this->theme_path; ?>share-css/960adapt/js/adapt.min.js" type="text/javascript"></script>
 		<?php if ( isset( $page_script ) ) {echo $page_script;} ?> 
 		<script type="text/javascript">
 			// declare variable for use in .js file

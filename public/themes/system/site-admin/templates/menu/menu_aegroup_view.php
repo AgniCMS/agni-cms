@@ -9,7 +9,7 @@
 		</label>
 		<label><?php echo lang( 'menu_group_description' ); ?>: <input type="text" name="mg_description" value="<?php echo $mg_description; ?>" maxlength="255" /></label>
 		
-		<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
+		<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
 	</div>
 
 <?php echo form_close(); ?> 

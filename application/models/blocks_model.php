@@ -121,6 +121,7 @@ class blocks_model extends CI_Model {
 		$this->db->where( 'area_name', $area_name );
 		$this->db->where( 'language', $this->lang->get_current_lang() );
 		$this->db->order_by( 'position', 'desc' );
+		
 		$query = $this->db->get( 'blocks' );
 		
 		if ( $query->num_rows() <= 0 ) {
@@ -154,6 +155,7 @@ class blocks_model extends CI_Model {
 				$this->db->where( 'area_name', $area['area_system_name'] );
 				$this->db->where( 'language', $this->lang->get_current_lang() );
 				$this->db->order_by( 'position', 'asc' );
+				
 				$query = $this->db->get( 'blocks' );
 				
 				// set results

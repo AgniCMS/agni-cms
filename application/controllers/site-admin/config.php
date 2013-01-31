@@ -128,7 +128,7 @@ class config extends admin_controller {
 			$this->form_validation->set_rules( 'comment_perpage', 'lang:config_comment_perpage', 'trim|required|integer|xss_clean' );
 			$this->form_validation->set_rules( 'comment_admin_notify_emails', 'lang:config_comment_admin_notify_emails', 'trim|required|valid_email|xss_clean' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save config
 				$result = $this->config_model->save( $data );

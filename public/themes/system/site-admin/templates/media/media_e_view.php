@@ -14,7 +14,7 @@
 			<label class="edit-width-height"><?php echo lang( 'media_width' ); ?>: <input type="text" name="width" value="<?php echo $width; ?>" class="newwidth" /></label>
 			<label class="edit-width-height"><?php echo lang( 'media_height' ); ?>: <input type="text" name="height" value="<?php echo $height; ?>" class="newheight" /></label>
 			<label class="edit-width-height"><input type="checkbox" name="aspect_ratio" value="yes" checked="checked" class="resize-ratio" /><?php echo lang( 'media_aspect_ratio' ); ?></label>
-			<button type="button" class="bb-button resize-image" onclick="ajax_resize( <?php echo $row->file_id; ?> );"><?php echo lang( 'media_resize_now' ); ?></button>
+			<button type="button" class="bb-button resize-image btn" onclick="ajax_resize( <?php echo $row->file_id; ?> );"><?php echo lang( 'media_resize_now' ); ?></button>
 		</div>
 		<?php else: ?>
 		<?php $this->modules_plug->do_action( 'media_review', $row->file_id ); ?> 
@@ -26,7 +26,7 @@
 		<label><?php echo lang( 'media_name' ); ?>: <input type="text" name="media_name" value="<?php echo $media_name; ?>" maxlength="255" /></label>
 		<label><?php echo lang( 'media_description' ); ?>: <textarea name="media_description" cols="30" rows="7"><?php echo $media_description; ?></textarea></label>
 		<label><?php echo lang( 'media_keywords' ); ?>: <input type="text" name="media_keywords" value="<?php echo $media_keywords; ?>" maxlength="255" /></label>
-		<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
+		<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
 	<?php echo form_close(); ?> 
 
 </div>

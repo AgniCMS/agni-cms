@@ -114,7 +114,7 @@ class page extends admin_controller {
 			$this->form_validation->set_rules( 'post_uri', 'lang:admin_uri', 'trim|min_length[3]|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save result
 				$result = $this->posts_model->add( $data_posts, $data_post_revision );
@@ -147,9 +147,6 @@ class page extends admin_controller {
 		// meta tags
 		// link tags
 		// script tags
-		$script_tags[] = '<script src="'.$this->base_url.'public/js/jquery.textarea.js"></script>';
-		$output['page_script'] = $this->html_model->gen_tags( $script_tags );
-		unset( $script_tags );
 		// end head tags output ##############################
 		
 		// output
@@ -424,7 +421,7 @@ class page extends admin_controller {
 			$this->form_validation->set_rules( 'post_uri', 'lang:admin_uri', 'trim|min_length[3]|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save result
 				$result = $this->posts_model->edit( $data_posts, $data_post_revision, '', $data );
@@ -461,9 +458,6 @@ class page extends admin_controller {
 		// meta tags
 		// link tags
 		// script tags
-		$script_tags[] = '<script src="'.$this->base_url.'public/js/jquery.textarea.js"></script>';
-		$output['page_script'] = $this->html_model->gen_tags( $script_tags );
-		unset( $script_tags );
 		// end head tags output ##############################
 		
 		// output

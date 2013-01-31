@@ -9,5 +9,5 @@
 		<span class="txt_require">*</span>
 		<span class="txt_comment">&lt;= <?php echo ini_get( 'upload_max_filesize' ); ?>; <?php echo lang( 'modules_add_comment' ); ?></span>
 	</label>
-	<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
+	<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
 <?php echo form_close(); ?> 

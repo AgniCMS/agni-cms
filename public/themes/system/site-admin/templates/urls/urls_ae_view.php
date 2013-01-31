@@ -19,7 +19,7 @@
 				<option value="303"<?php if ( isset( $redirect_code ) && $redirect_code == '303' ) {echo ' selected="selected"';} ?>><?php echo lang( 'urls_redirect_303' ); ?></option>
 			</select>
 		</label>
-		<button type="submit" class="bb-button standard"><?php echo lang( 'admin_save' ); ?></button>
+		<button type="submit" class="bb-button standard btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
 	</div>
 	
 <?php echo form_close(); ?> 

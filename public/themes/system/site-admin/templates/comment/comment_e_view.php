@@ -13,7 +13,7 @@
 		<label><?php echo lang( 'comment_comment' ); ?>: <span class="txt_require">*</span>
 			<textarea name="comment_body_value" cols="30" rows="10"><?php echo htmlspecialchars( $comment_body_value, ENT_QUOTES, config_item( 'charset' ) ); ?></textarea>
 		</label>
-		<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
+		<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
 	</div>
 
 <?php echo form_close(); ?> 

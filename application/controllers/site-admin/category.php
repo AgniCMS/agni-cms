@@ -69,7 +69,7 @@ class category extends admin_controller {
 			$this->form_validation->set_rules("t_name", "lang:category_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				$result = $this->taxonomy_model->add( $data );
 				
@@ -79,7 +79,7 @@ class category extends admin_controller {
 					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/category' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
 				}
 			}
 			
@@ -151,7 +151,7 @@ class category extends admin_controller {
 			// rebuild tree.
 			$this->taxonomy_model->rebuild();
 			
-			echo '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>';
+			echo '<div class="txt_success alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$this->lang->line( 'admin_saved' ).'</div>';
 		}
 	}// ajax_sort
 	
@@ -227,7 +227,7 @@ class category extends admin_controller {
 			$this->form_validation->set_rules("t_name", "lang:category_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				$result = $this->taxonomy_model->edit( $data, $data_ua, $data_mi );
 				
@@ -238,7 +238,7 @@ class category extends admin_controller {
 					
 					redirect( 'site-admin/category' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
 				}
 			}
 			
@@ -294,11 +294,6 @@ class category extends admin_controller {
 		// meta tags
 		// link tags
 		// script tags
-		$script = array(
-			'<script type="text/javascript" src="'.$this->base_url.'public/js/jquery.mjs.nestedSortable.js"></script>'
-		);
-		$output['page_script'] = $this->html_model->gen_tags( $script );
-		unset( $script );
 		// end head tags output ##############################
 		
 		// output

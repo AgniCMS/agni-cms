@@ -1,5 +1,4 @@
-<div class="page-add-edit block-edit">
-	<?php 
+<?php 
 	include_once( config_item( 'modules_uri' ).$row->block_file );
 	$block_title = ucfirst( $row->block_name );
 	if ( class_exists( $row->block_name ) ) {
@@ -9,11 +8,13 @@
 		}
 	}
 	?> 
-	<h1><?php echo lang( 'block_block' ) . ': ' . $block_title; ?></h1>
+<h1><?php echo lang( 'block_block' ) . ': ' . $block_title; ?></h1>
+
+<div class="page-add-edit block-edit">
 	
 	<div class="cmds">
 		<div class="cmd-left">
-			<button type="button" class="bb-button" onclick="window.location='<?php echo site_url( 'site-admin/block?theme_system_name='.$row->theme_system_name ); ?>';"><?php echo lang( 'block_go_back' ); ?></button>
+			<button type="button" class="bb-button btn" onclick="window.location='<?php echo site_url( 'site-admin/block?theme_system_name='.$row->theme_system_name ); ?>';"><?php echo lang( 'block_go_back' ); ?></button>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -45,7 +46,7 @@
 				<span class="txt_comment"><?php echo lang( 'block_only_uri_comment' ); ?></span>
 			</div>
 		</div>
-		<button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button>
+		<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
 
 	<?php echo form_close(); ?> 
 	

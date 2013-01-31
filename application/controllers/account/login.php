@@ -65,7 +65,7 @@ class login extends MY_Controller {
 			$this->form_validation->set_rules( 'account_username', 'lang:account_username', 'trim|required' );
 			$this->form_validation->set_rules( 'account_password', 'lang:account_password', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				$login_fail_last_time = $this->account_model->login_fail_last_time( $data['account_username'] );
 				$count_login_fail = $this->account_model->count_login_fail( $data['account_username'] );

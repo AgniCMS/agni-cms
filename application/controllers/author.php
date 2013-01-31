@@ -16,8 +16,13 @@ class author extends MY_Controller {
 		parent::__construct();
 		// load model
 		$this->load->model( array( 'posts_model' ) );
+		
+		// set posts_model post_type
+		$this->posts_model->post_type = 'article';
+		
 		// load helper
 		$this->load->helper( array( 'date', 'language' ) );
+		
 		// load language
 		$this->lang->load( 'post' );
 	}// __construct
@@ -45,60 +50,13 @@ class author extends MY_Controller {
 		$output['username'] = $username;
 		
 		// list posts
-		$sql = 'select * from '.$this->db->dbprefix( 'posts' ).' as p';
-		$sql .= ' inner join '.$this->db->dbprefix( 'accounts' ).' as a';
-		$sql .= ' on p.account_id = a.account_id';
-		$sql .= ' inner join '.$this->db->dbprefix( 'post_revision' ).' as pr';
-		$sql .= ' on p.post_id = pr.post_id';
-		$sql .= ' where post_type = '.$this->db->escape( 'article' );
-		$sql .= ' and language = '.$this->db->escape( $this->lang->get_current_lang() );
-		$sql .= ' and post_status = 1';
-		$sql .= ' and account_username = '.$this->db->escape( $username );
-		$sql .= ' group by p.post_id';
-		// order and sort
-		$sql .= ' order by p.post_id desc';
-		// query for count total
-		$query = $this->db->query( $sql );
-		$total = $query->num_rows();
-		$query->free_result();
-		// pagination-----------------------------
-		$this->load->library( 'pagination' );
-		$config['base_url'] = site_url( $this->uri->uri_string() ).'?';
-		$config['per_page'] = $this->config_model->load_single( 'content_items_perpage' );
-		$config['total_rows'] = $total;
-		$config['query_string_segment'] = 'start';
-		// pagination tags customize for bootstrap css framework
-		$config['num_links'] = 3;
-		$config['page_query_string'] = true;
-		$config['full_tag_open'] = '<div class="pagination"><ul>';
-		$config['full_tag_close'] = "</ul></div>\n";
-		$config['first_tag_open'] = '<li>';
-		$config['first_tag_close'] = '</li>';
-		$config['last_tag_open'] = '<li>';
-		$config['last_tag_close'] = '</li>';
-		$config['next_tag_open'] = '<li>';
-		$config['next_tag_close'] = '</li>';
-		$config['prev_tag_open'] = '<li>';
-		$config['prev_tag_close'] = '</li>';
-		$config['cur_tag_open'] = '<li class="active"><a>';
-		$config['cur_tag_close'] = '</a></li>';
-		$config['num_tag_open'] = '<li>';
-		$config['num_tag_close'] = '</li>';
-		// end customize for bootstrap
-		$config['first_link'] = '|&lt;';
-		$config['last_link'] = '&gt;|';
-		$this->pagination->initialize( $config );
-		// pagination create links in controller or view. $this->pagination->create_links();
-		// end pagination-----------------------------
-		$sql .= ' limit '.( $this->input->get( 'start' ) == null ? '0' : $this->input->get( 'start' ) ).', '.$config['per_page'].';';
-		$query = $this->db->query( $sql);
-		if ( $query->num_rows() > 0 ) {
-			$output['list_item']['items'] = $query->result();
+		$data['account_username'] = $username;
+		$output['list_item'] = $this->posts_model->list_item( 'front', $data );
+		unset( $data );
+		
+		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
-			$query->free_result();
 		}
-		$query->free_result();
-		// endlist posts---------------------------------------------------------------
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( sprintf( lang( 'post_article_by_' ), $username ) );

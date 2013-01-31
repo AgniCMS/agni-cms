@@ -106,7 +106,7 @@ class comment extends admin_controller {
 			$this->form_validation->set_rules( 'email', 'lang:comment_email', 'trim|valid_email|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save result
 				$result = $this->comments_model->edit( $data );

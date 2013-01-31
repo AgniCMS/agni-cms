@@ -132,7 +132,7 @@
 		</div>
 		
 		
-		<div class="ui-tabs-panel button-panel"><button type="submit" class="bb-button"><?php echo lang( 'admin_save' ); ?></button></div>
+		<div class="ui-tabs-panel button-panel"><button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button></div>
 	</div>
 <?php echo form_close(); ?>
 

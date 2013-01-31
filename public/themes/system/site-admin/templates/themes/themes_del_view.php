@@ -6,6 +6,6 @@
 
 <?php echo form_open(); ?> 
 	<input type="hidden" name="confirm" value="yes" />
-	<button type="submit" class="bb-button red"><?php echo lang( 'themes_yes' ); ?></button>
-	<button type="button" class="bb-button" onclick="window.location='<?php echo site_url( 'site-admin/themes' ); ?>';"><?php echo lang( 'themes_no' ); ?></button>
+	<button type="submit" class="bb-button red btn btn-danger"><?php echo lang( 'themes_yes' ); ?></button>
+	<button type="button" class="bb-button btn" onclick="window.location='<?php echo site_url( 'site-admin/themes' ); ?>';"><?php echo lang( 'themes_no' ); ?></button>
 <?php echo form_close(); ?> 

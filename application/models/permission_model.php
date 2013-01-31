@@ -20,6 +20,7 @@ class permission_model extends CI_Model {
 	
 	function __construct() {
 		parent::__construct();
+		
 		$this->app_admin = APPPATH.'controllers/site-admin/';// always end with slash trail.
 		$this->mx_path = MODULE_PATH;// always end with slash trail.
 	}// __construct
