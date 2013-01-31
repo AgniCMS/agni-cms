@@ -42,6 +42,7 @@ $lang['admin_nav_media_mgr'] = 'Media manager';
 $lang['admin_nav_menu'] = 'Menu';
 $lang['admin_nav_menuandblock'] = 'Menu &amp; Block';
 $lang['admin_nav_modules_manager'] = 'Modules manager';
+$lang['admin_nav_multisite_manager'] = 'Multi site manager';
 $lang['admin_nav_pages'] = 'Pages';
 $lang['admin_nav_permissions'] = 'Permissions';
 $lang['admin_nav_roles'] = 'Roles';

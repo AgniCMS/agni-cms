@@ -1,7 +1,7 @@
 <h1><?php echo ( $this->uri->segment(3) == 'add' ? lang( 'tag_add' ) : lang( 'tag_edit' ) ); ?></h1>
 
 <?php echo form_open(); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?>
+	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 	
 	<div id="tabs" class="page-tabs tag-tabs">
 		<ul>

@@ -42,6 +42,7 @@ $lang['admin_nav_media_mgr'] = 'จัดการสื่อ';
 $lang['admin_nav_menu'] = 'เมนู';
 $lang['admin_nav_menuandblock'] = 'เมนู &amp; บล็อค';
 $lang['admin_nav_modules_manager'] = 'ระบบจัดการโมดูล';
+$lang['admin_nav_multisite_manager'] = 'ระบบจัดการเว็บไซต์ย่อย';
 $lang['admin_nav_pages'] = 'หน้า';
 $lang['admin_nav_permissions'] = 'การอนุญาต';
 $lang['admin_nav_roles'] = 'หน้าที่';
