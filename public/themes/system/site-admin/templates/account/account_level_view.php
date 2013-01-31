@@ -2,7 +2,7 @@
 
 <div class="cmds">
 	<div class="cmd-left">
-		<button type="button" onclick="window.location=site_url+'site-admin/account-level/add';" class="bb-button standard"><?php echo lang( 'admin_add' ); ?></button>
+		<button type="button" onclick="window.location=site_url+'site-admin/account-level/add';" class="bb-button standard btn"><?php echo lang( 'admin_add' ); ?></button>
 	</div>
 	<div class="clear"></div>
 </div>
@@ -54,7 +54,7 @@
 				<option value="" selected="selected"></option>
 				<option value="del"><?php echo lang( 'admin_delete' ); ?></option>
 			</select>
-			<button type="submit" class="bb-button"><?php echo lang( 'admin_submit' ); ?></button>
+			<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -73,7 +73,8 @@
 		// sort level
 		$("#sortable tbody").sortable({
 			helper: fixHelper,
-			start: function(event, ui) {ui.placeholder.html("<td colspan='5'>&nbsp;</td>")},
+			stop: function(event, ui) {$('.form-result').html('');},
+			start: function(event, ui) {ui.placeholder.html("<td colspan='5'>&nbsp;</td>"); $('.form-result').html('<img src="'+base_url+'public/themes/system/site-admin/images/loading.gif" alt="" />');},
 			placeholder: "ui-state-highlight",
 			items: "tr:not(.ui-state-disabled)",
 			update : function () {

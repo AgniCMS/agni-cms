@@ -59,7 +59,7 @@ class account extends admin_controller {
 			$this->form_validation->set_rules( 'account_status', 'lang:account_status', 'trim|required' );
 			$this->form_validation->set_rules( 'level_group_id', 'lang:account_level', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save
 				$result = $this->account_model->add_account( $data );
@@ -70,7 +70,7 @@ class account extends admin_controller {
 					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/account' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
 				}
 			}
 			
@@ -179,7 +179,7 @@ class account extends admin_controller {
 		unset( $ca_account );
 		
 		// load data for form
-		$row = $this->account_model->get_data_account( array( 'account_id' => $account_id ) );
+		$row = $this->account_model->get_account_data( array( 'account_id' => $account_id ) );
 		
 		if ( $row == null ) {
 			// not found selected account_id.
@@ -238,7 +238,7 @@ class account extends admin_controller {
 			$this->form_validation->set_rules( 'account_status', 'lang:account_status', 'trim|required' );
 			$this->form_validation->set_rules( 'level_group_id', 'lang:account_level', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
 			} else {
 				// save
 				$result = $this->account_model->edit_account( $data );
@@ -249,7 +249,7 @@ class account extends admin_controller {
 					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
 					redirect( 'site-admin/account' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
 				}
 			}
 			

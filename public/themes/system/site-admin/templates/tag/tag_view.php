@@ -2,13 +2,13 @@
 
 <div class="cmds">
 	<div class="cmd-left">
-		<button type="button" class="bb-button" onclick="window.location=site_url+'site-admin/tag/add';"><?php echo lang( 'admin_add' ); ?></button>
+		<button type="button" class="bb-button btn" onclick="window.location=site_url+'site-admin/tag/add';"><?php echo lang( 'admin_add' ); ?></button>
 		| <?php echo sprintf( lang( 'admin_total' ), $list_item['total'] ); ?>
 	</div>
 	<div class="cmd-right">
 		<form method="get" class="search">
 			<input type="search" name="q" value="<?php echo $q; ?>" />
-			<button type="submit" class="bb-button"><?php echo lang( 'tag_search' ); ?></button>
+			<button type="submit" class="bb-button btn"><?php echo lang( 'tag_search' ); ?></button>
 		</form>
 	</div>
 	<div class="clear"></div>
@@ -68,7 +68,7 @@
 				<option value="" selected="selected"></option>
 				<option value="del"><?php echo lang( 'admin_delete' ); ?></option>
 			</select>
-			<button type="submit" class="bb-button"><?php echo lang( 'admin_submit' ); ?></button>
+			<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 		</div>
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>

@@ -31,7 +31,7 @@ class view_logins extends MY_Controller {
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		
 		// load accounts table
-		$row = $this->account_model->get_data_account( array( 'account_id' => $cm_account['id'] ) );
+		$row = $this->account_model->get_account_data( array( 'account_id' => $cm_account['id'] ) );
 		if ( $row == null ) {
 			redirect( site_url() );
 		}

@@ -127,6 +127,7 @@ class modules_model extends CI_Model {
 			$this->db->where( 'module_system_name', $module_system_name );
 			$this->db->set( 'module_enable', '1' );
 			$this->db->update( 'modules' );
+			
 			// do silent uninstall
 			ob_start();
 			$module_uninstall = $module_system_name.'_uninstall';

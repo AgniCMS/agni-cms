@@ -10,9 +10,11 @@ $lang['blog_by'] = 'by';
 $lang['blog_content'] = 'Content';
 $lang['blog_date'] = 'Date';
 $lang['blog_insert_media'] = 'Insert media';
+$lang['blog_install_completed'] = 'Installation completed.';
 $lang['blog_manage_posts'] = 'Manage posts';
 $lang['blog_new_post'] = 'New post';
 $lang['blog_title'] = 'Title';
+$lang['blog_uninstall_completed'] = 'Uninstallation completed.';
 
 $lang['blog_add_post'] = 'New post';
 $lang['blog_add_remove'] = 'Install/Uninstall';

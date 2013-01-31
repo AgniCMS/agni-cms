@@ -31,10 +31,15 @@ class akismet_install extends admin_controller {
 			$this->db->insert( 'config' );
 		}
 		$query->free_result();
+		
 		// update module install to 1
 		$this->db->set( 'module_install', '1' );
 		$this->db->where( 'module_system_name', $this->module_system_name );
 		$this->db->update( 'modules' );
+		
+		// done
+		$this->load->library( 'session' );
+		$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'akismet_install_completed' ).'</div>' );
 		// go back
 		redirect( 'site-admin/module' );
 	}// index

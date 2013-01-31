@@ -2,13 +2,13 @@
 
 <div class="cmds">
 	<div class="cmd-left">
-		<button type="button" onclick="window.location=site_url+'site-admin/account/add';" class="bb-button standard"><?php echo lang( 'admin_add' ); ?></button>
+		<button type="button" onclick="window.location=site_url+'site-admin/account/add';" class="bb-button standard btn"><?php echo lang( 'admin_add' ); ?></button>
 		| <?php echo sprintf( lang( 'admin_total' ), $list_item['total'] ); ?> 
 	</div>
 	<div class="cmd-right">
 		<form method="get" class="search">
 			<input type="text" name="q" value="<?php echo htmlspecialchars( trim( $this->input->get( 'q' ) ) ); ?>" maxlength="255" />
-			<button type="submit" class="bb-button standard"><?php echo lang( 'account_search' ); ?></button>
+			<button type="submit" class="bb-button standard btn"><?php echo lang( 'account_search' ); ?></button>
 		</form>
 	</div>
 	<div class="clear"></div>
@@ -21,26 +21,26 @@
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
-				<th><?php echo anchor( current_url().'?orders=acc.account_id&amp;sort='.$sort, 'ID' ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=accounts.account_id&amp;sort='.$sort, 'ID' ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=account_username&amp;sort='.$sort, lang( 'account_username' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=account_email&amp;sort='.$sort, lang( 'account_email' ) ); ?></th>
 				<th><?php echo lang( 'account_level' ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_create', lang( 'account_registered_since' ) ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_last_login', lang( 'account_last_login' ) ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_status', lang( 'account_status' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_create&amp;sort='.$sort, lang( 'account_registered_since' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_last_login&amp;sort='.$sort, lang( 'account_last_login' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_status&amp;sort='.$sort, lang( 'account_status' ) ); ?></th>
 				<th></th>
 			</tr>
 		</thead>
 		<tfoot>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
-				<th><?php echo anchor( current_url().'?orders=acc.account_id&amp;sort='.$sort, 'ID' ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=accounts.account_id&amp;sort='.$sort, 'ID' ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=account_username&amp;sort='.$sort, lang( 'account_username' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=account_email&amp;sort='.$sort, lang( 'account_email' ) ); ?></th>
 				<th><?php echo lang( 'account_level' ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_create', lang( 'account_registered_since' ) ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_last_login', lang( 'account_last_login' ) ); ?></th>
-				<th><?php echo anchor( current_url().'?orders=account_status', lang( 'account_status' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_create&amp;sort='.$sort, lang( 'account_registered_since' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_last_login&amp;sort='.$sort, lang( 'account_last_login' ) ); ?></th>
+				<th><?php echo anchor( current_url().'?orders=account_status&amp;sort='.$sort, lang( 'account_status' ) ); ?></th>
 				<th></th>
 			</tr>
 		</tfoot>
@@ -79,7 +79,7 @@
 				<option value="" selected="selected"></option>
 				<option value="del"><?php echo lang( 'admin_delete' ); ?></option>
 			</select>
-			<button type="submit" class="bb-button"><?php echo lang( 'admin_submit' ); ?></button>
+			<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 		</div>
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>

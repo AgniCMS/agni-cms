@@ -18,6 +18,7 @@ class url_model extends CI_Model {
 	
 	function __construct() {
 		parent::__construct();
+		
 		// set language
 		$this->language = $this->lang->get_current_lang();
 	}// __construct
@@ -97,6 +98,7 @@ class url_model extends CI_Model {
 	 */
 	function encode_redirect_to( $redirect_to = '' ) {
 		if ( $redirect_to == null ) {return null;}
+		
 		return urlencode_except_slash( $redirect_to );
 	}// encode_redirect_to
 	

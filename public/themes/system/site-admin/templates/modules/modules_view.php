@@ -2,7 +2,7 @@
 
 <div class="cmds">
 	<div class="cmd-left">
-		<button type="button" class="bb-button standard" onclick="window.location=site_url+'site-admin/module/add';"><?php echo lang( 'admin_add' ); ?></button>
+		<button type="button" class="bb-button standard btn" onclick="window.location=site_url+'site-admin/module/add';"><?php echo lang( 'admin_add' ); ?></button>
 		| <?php echo sprintf( lang( 'modules_all' ), $list_item['total'] ); ?>
 		| <?php echo sprintf( lang( 'modules_inactive' ), ($list_item['total']-$this->db->count_all_results( 'modules' )) ); ?>
 	</div>
@@ -71,7 +71,7 @@
 				<option value="deactivate"><?php echo lang( 'modules_deactivate' ); ?></option>
 				<option value="del"><?php echo lang( 'admin_delete' ); ?></option>
 			</select>
-			<button type="submit" class="bb-button"><?php echo lang( 'admin_submit' ); ?></button>
+			<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 		</div>
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- *author: mr.v automatic
+ *author: mr.v
  *website: www.okvee.net
  *
  *การใช้งานจะแยกเป็น 3 ส่วนหลักๆ คือ modify(crop/no_resize/resize/resize_crop/resize_no_ratio/zoom_crop) addon(watermark/watermark_easy) และ display(save/show)

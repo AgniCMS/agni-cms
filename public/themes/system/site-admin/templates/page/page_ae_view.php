@@ -192,8 +192,8 @@
 		
 		
 		<div class="ui-tabs-panel button-panel">
-			<button type="submit" class="bb-button" name="button" value="save"><?php echo lang( 'admin_save' ); ?></button>&nbsp;
-			<button type="button" class="bb-button" name="button" value="preview" id="preview_button" onclick="preview_post($(this));"><?php echo lang( 'post_preview' ); ?></button>
+			<button type="submit" class="bb-button btn btn-primary" name="button" value="save"><?php echo lang( 'admin_save' ); ?></button>&nbsp;
+			<button type="button" class="bb-button btn" name="button" value="preview" id="preview_button" onclick="preview_post($(this));"><?php echo lang( 'post_preview' ); ?></button>
 		</div>
 	</div>
 	
