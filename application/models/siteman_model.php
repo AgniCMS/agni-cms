@@ -83,6 +83,27 @@ class siteman_model extends CI_Model {
 	}// copy_newsite_table
 	
 	
+	function delete_site( $site_id = '' ) {
+		// do not allow admin/user delete first site.
+		if ( $site_id == '1' ) {
+			return false;
+		}
+		
+		$this->load->dbforge();
+		
+		// drop site tables
+		foreach ( $this->core_tables as $table ) {
+			$this->dbforge->drop_table( $site_id.'_'.$table );
+		}
+		
+		// delete site from db
+		$this->db->delete( 'sites', array( 'site_id' => $site_id ) );
+		
+		// done 
+		return true;
+	}// delete_site
+	
+	
 	/**
 	 * edit site
 	 * @param array $data
