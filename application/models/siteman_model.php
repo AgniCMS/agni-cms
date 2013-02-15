@@ -4,7 +4,7 @@ class siteman_model extends CI_Model {
 	
 	
 	// this is core tables that require to copy when create new site.
-	private $core_tables = array(
+	public $core_tables = array(
 							'account_level',
 							'account_level_group', // this table require base level data.
 							'account_level_permission',
@@ -71,9 +71,9 @@ class siteman_model extends CI_Model {
 		foreach ( $this->core_tables as $table ) {
 			if ( $table == 'account_level_group' || $table == 'config' ) {
 				// this table needs to copy data
-				$sql = 'CREATE TABLE '.$this->db->dbprefix( $site_id.'_'.$table ).' SELECT * FROM '.$this->db->dbprefix( $table );
+				$sql = 'CREATE TABLE IF NOT EXISTS '.$this->db->dbprefix( $site_id.'_'.$table ).' SELECT * FROM '.$this->db->dbprefix( $table );
 			} else {
-				$sql = 'CREATE TABLE '.$this->db->dbprefix( $site_id.'_'.$table ).' LIKE '.$this->db->dbprefix( $table );
+				$sql = 'CREATE TABLE IF NOT EXISTS '.$this->db->dbprefix( $site_id.'_'.$table ).' LIKE '.$this->db->dbprefix( $table );
 			}
 			$this->db->query( $sql );
 		}
