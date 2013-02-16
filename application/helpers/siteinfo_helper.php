@@ -14,3 +14,30 @@ function config_load( $cfg_name = '', $return_field = 'config_value' ) {
 	$CI->load->model( 'config_model' );
 	return $CI->config_model->load_single( $cfg_name, $return_field );
 }// config_load
+
+
+function set_site_table() {
+	$CI =& get_instance();
+	
+	// load model
+	$CI->load->model( array( 'siteman_model' ) );
+	
+	// get domain name.
+	$site_domain = $CI->input->server( 'HTTP_HOST' );
+	
+	// get site info eg site_id.
+	$data['site_domain'] = $site_domain;
+	$data['site_status'] = '1';
+	$site = $CI->siteman_model->get_site_data_db( $data );
+	unset( $data );
+	
+	// if no site data in db or site_id = 1
+	if ( $site == null || ( $site != null && $site->site_id == '1' && $site->site_status == '1' ) ) {
+		define( 'SITE_TABLE', '' );
+		return false;
+	}
+	
+	define( 'SITE_TABLE', $site->site_id.'_' );
+	return true;
+}// site_table
+
