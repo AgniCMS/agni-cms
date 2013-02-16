@@ -31,7 +31,8 @@ function set_site_table() {
 	$site = $CI->siteman_model->get_site_data_db( $data );
 	unset( $data );
 	
-	if ( $site == null ) {
+	// if no site data in db or site_id = 1
+	if ( $site == null || ( $site != null && $site->site_id == '1' && $site->site_status == '1' ) ) {
 		define( 'SITE_TABLE', '' );
 		return false;
 	}

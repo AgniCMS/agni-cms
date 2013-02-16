@@ -203,7 +203,6 @@ class account extends admin_controller {
 		// check if editing higher level?
 		if ( !$this->account_model->can_i_add_edit_account( $output['level_group_id'] ) ) {
 			// you cannot edit this user because he/she has higher role than you
-			$query->free_result();
 			$this->load->library( 'session' );
 			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_cannot_edit_account_higher_your_level' ).'</div>' );
 			redirect( 'site-admin/account' );

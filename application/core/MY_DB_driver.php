@@ -1363,9 +1363,15 @@ class CI_DB_driver {
 					* add prefix for Agni CMS multisite.
 					* what will do here is generate table name like this code > $parts[$i] = $this->dbprefix.SITE_TABLE.$parts[$i];
 					* and result from this posts to this an_2_posts.
-					 * @todo continue working dbprefix multisite.
 					*/
-					$parts[$i] = $this->dbprefix.$parts[$i];
+					$CI =& get_instance();
+					$CI->load->model( 'siteman_model' );
+					$site_wide_tables = $CI->siteman_model->site_wide_tables;
+					if ( !in_array( $parts[$i], $site_wide_tables ) ) { 
+						$parts[$i] = $this->dbprefix.SITE_TABLE.$parts[$i];
+					} else {
+						$parts[$i] = $this->dbprefix.$parts[$i];
+					}
 				}
 
 				// Put the parts back together
@@ -1392,7 +1398,19 @@ class CI_DB_driver {
 			// Do we prefix an item with no segments?
 			if ($prefix_single == TRUE AND substr($item, 0, strlen($this->dbprefix)) != $this->dbprefix)
 			{
-				$item = $this->dbprefix.$item;
+				/**
+				* add prefix for Agni CMS multisite.
+				* what will do here is generate table name like this code > $parts[$i] = $this->dbprefix.SITE_TABLE.$parts[$i];
+				* and result from this posts to this an_2_posts.
+				*/
+				$CI =& get_instance();
+				$CI->load->model( 'siteman_model' );
+				$site_wide_tables = $CI->siteman_model->site_wide_tables;
+				if ( !in_array( $item, $site_wide_tables ) ) {
+					$item = $this->dbprefix.SITE_TABLE.$item;
+				} else {
+					$item = $this->dbprefix.$item;
+				}
 			}
 		}
 
