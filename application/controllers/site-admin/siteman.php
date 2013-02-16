@@ -184,6 +184,28 @@ class siteman extends admin_controller {
 		// output
 		$this->generate_page( 'site-admin/templates/siteman/siteman_view', $output );
 	}// index
+	
+	
+	function multiple() {
+		$id = $this->input->post( 'id' );
+		if ( !is_array( $id ) ) {redirect( 'site-admin/siteman' );}
+		$act = trim( $this->input->post( 'act' ) );
+		
+		if ( $act == 'del' ) {
+			if ( $this->account_model->check_admin_permission( 'siteman_perm', 'siteman_delete_perm' ) != true ) {redirect( 'site-admin' );}
+			foreach ( $id as $an_id ) {
+				$this->siteman_model->delete_site( $an_id );
+			}
+		}
+		
+		// go back
+		$this->load->library( 'user_agent' );
+		if ( $this->agent->is_referral() ) {
+			redirect( $this->agent->referrer() );
+		} else {
+			redirect( 'site-admin/siteman' );
+		}
+	}// multiple
 
 
 }

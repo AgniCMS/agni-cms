@@ -4,30 +4,42 @@ class siteman_model extends CI_Model {
 	
 	
 	// this is core tables that require to copy when create new site.
-	private $core_tables = array(
-							'account_level',
-							'account_level_group', // this table require base level data.
-							'account_level_permission',
-							
-							'blocks',
-		
-							'comments',
-		
-							'config', // this table require base config data
-							
-							'frontpage_category',
-							
-							'menu_groups',
-							'menu_items',
-							
-							'posts',
-							'post_fields',
-							'post_revision',
-							
-							'taxonomy_index',
-							'taxonomy_term_data',
-							
-							'url_alias'
+	public $core_tables = array(
+						'account_level',// this table require data.
+						'account_level_group', // this table require base level data.
+						'account_level_permission',
+
+						'blocks',
+
+						'comments',
+
+						'config', // this table require base config data
+
+						'frontpage_category',
+
+						'menu_groups',
+						'menu_items',
+
+						'posts',
+						'post_fields',
+						'post_revision',
+
+						'taxonomy_index',
+						'taxonomy_term_data',
+
+						'url_alias'
+					);
+	// site wide tables is tables that do not copy when new site created.
+	public $site_wide_tables = array(
+						'accounts',
+						'account_logins',
+						'ci_sessions',
+						'files',
+						'modules',
+						'module_sites',
+						'sites',
+						'themes',
+						'theme_sites'
 					);
 
 
@@ -57,6 +69,12 @@ class siteman_model extends CI_Model {
 		// start copy tables
 		$this->copy_newsite_table( $site_id );
 		
+		// set config for new site.
+		$config_site['config_value'] = $data['site_name'];
+		$this->db->where( 'config_name', 'site_name' );
+		$this->db->update( $this->db->dbprefix( $site_id.'_config' ), $config_site );
+		unset( $config_site );
+		
 		return true;
 	}// add_site
 	
@@ -69,18 +87,45 @@ class siteman_model extends CI_Model {
 	 */
 	function copy_newsite_table( $site_id = '' ) {
 		foreach ( $this->core_tables as $table ) {
-			if ( $table == 'account_level_group' || $table == 'config' ) {
+			if ( $table == 'account_level' || $table == 'account_level_group' || $table == 'config' ) {
 				// this table needs to copy data
-				$sql = 'CREATE TABLE '.$this->db->dbprefix( $site_id.'_'.$table ).' SELECT * FROM '.$this->db->dbprefix( $table );
+				$sql = 'CREATE TABLE IF NOT EXISTS '.$this->db->dbprefix( $site_id.'_'.$table ).' SELECT * FROM '.$this->db->dbprefix( $table );
 			} else {
-				$sql = 'CREATE TABLE '.$this->db->dbprefix( $site_id.'_'.$table ).' LIKE '.$this->db->dbprefix( $table );
+				$sql = 'CREATE TABLE IF NOT EXISTS '.$this->db->dbprefix( $site_id.'_'.$table ).' LIKE '.$this->db->dbprefix( $table );
 			}
 			$this->db->query( $sql );
 		}
 		
+		// change all accounts level to member (except admin and guest).
+		$this->db->where( 'account_id != 0' );
+		$this->db->where( 'account_id != 1' );
+		$this->db->set( 'level_group_id', '3' );
+		$this->db->update( $this->db->dbprefix( $site_id.'_account_level' ) );
+		
 		// done
 		return true;
 	}// copy_newsite_table
+	
+	
+	function delete_site( $site_id = '' ) {
+		// do not allow admin/user delete first site.
+		if ( $site_id == '1' ) {
+			return false;
+		}
+		
+		$this->load->dbforge();
+		
+		// drop site tables
+		foreach ( $this->core_tables as $table ) {
+			$this->dbforge->drop_table( $site_id.'_'.$table );
+		}
+		
+		// delete site from db
+		$this->db->delete( 'sites', array( 'site_id' => $site_id ) );
+		
+		// done 
+		return true;
+	}// delete_site
 	
 	
 	/**
@@ -96,6 +141,12 @@ class siteman_model extends CI_Model {
 		// update to db
 		$this->db->where( 'site_id', $data['site_id'] );
 		$this->db->update( 'sites', $data );
+		
+		// set config for new site.
+		$config_site['config_value'] = $data['site_name'];
+		$this->db->where( 'config_name', 'site_name' );
+		$this->db->update( $this->db->dbprefix( $data['site_id'].'_config' ), $config_site );
+		unset( $config_site );
 		
 		// done
 		return true;

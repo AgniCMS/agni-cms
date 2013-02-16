@@ -59,6 +59,9 @@ class MY_Loader extends MX_Loader {
 
 		// Load the DB class
 		$CI->db =& DB($params, $active_record);
+		
+		// set site table prefix (Agni cms multi site)
+		set_site_table();
 	}
 	
 	

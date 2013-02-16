@@ -102,16 +102,20 @@ function &DB($params = '', $active_record_override = NULL)
 	{
 		$active_record = $active_record_override;
 	}
+	
+	// get the CI instance (custom code)
+	$CI = & get_instance();
+	$prefix = $CI->config->item('subclass_prefix');
 
-	require_once(BASEPATH.'database/DB_driver.php');
+	if ( file_exists( APPPATH.'core/'.$prefix.'DB_driver.php' ) ) {
+		require_once( APPPATH.'core/'.$prefix.'DB_driver.php' );
+	} else {
+		require_once(BASEPATH.'database/DB_driver.php');
+	}
 
 	if ( ! isset($active_record) OR $active_record == TRUE)
 	{
 		require_once(BASEPATH.'database/DB_active_rec.php');
-		
-		// get the CI instance (custom code)
-		$CI = & get_instance();
-		$prefix = $CI->config->item('subclass_prefix');
 
 		if (file_exists(APPPATH.'core/'.$prefix.'DB_active_rec.php'))
 		{
