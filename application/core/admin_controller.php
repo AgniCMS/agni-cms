@@ -19,7 +19,7 @@ class admin_controller extends MY_Controller {
 		if ( ! $this->account_model->is_admin_login() ) {redirect( 'site-admin/login?rdr='.urlencode( current_url() ) );}
 		
 		// load model
-		$this->load->model( array( 'modules_model' ) );
+		$this->load->model( array( 'modules_model', 'siteman_model' ) );
 		
 		// load helper
 		$this->load->helper( array( 'language' ) );
@@ -43,6 +43,19 @@ class admin_controller extends MY_Controller {
 	 * @param string $output 
 	 */
 	function generate_page( $page = '', $output = '' ) {
+		// get current site data for check
+		$sdata['site_domain'] = $this->input->server( 'HTTP_HOST' );
+		$current_site = $this->siteman_model->get_site_data_db( $sdata );
+		unset( $sdata );
+		
+		if ( $current_site->site_id != '1' ) {
+			// get sites to list in admin page 
+			$sdata['site_status'] = '1';
+			$output['agni_list_sites'] = $this->siteman_model->list_websites_all( $sdata );
+			unset( $sdata );
+		}
+		unset( $current_site );
+		
 		//
 		$output['page_content'] = $this->load->view( $page, $output, true );
 		$output['cookie'] = $this->account_model->get_account_cookie( 'admin' );

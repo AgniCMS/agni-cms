@@ -90,7 +90,7 @@ class config_model extends CI_Model {
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
 		
 		// check cached
-		if ( false === $cfg_val = $this->cache->get( 'cfgload_'.$config_name.'_'.$return_field ) ) {
+		if ( false === $cfg_val = $this->cache->get( 'cfgload_'.SITE_TABLE.$config_name.'_'.$return_field ) ) {
 			if ( $config_name == 'content_frontpage_category' ) {
 				$this->db->where( 'language', $this->lang->get_current_lang() );
 				$query = $this->db->get( 'frontpage_category' );
@@ -100,7 +100,7 @@ class config_model extends CI_Model {
 					$query->free_result();
 					unset( $query );
 					
-					$this->cache->save( 'cfgload_'.$config_name.'_'.$return_field, $row->tid, 2678400 );
+					$this->cache->save( 'cfgload_'.SITE_TABLE.$config_name.'_'.$return_field, $row->tid, 2678400 );
 					
 					return $row->tid;
 				}
@@ -116,7 +116,7 @@ class config_model extends CI_Model {
 					$query->free_result();
 					unset( $query );
 					
-					$this->cache->save( 'cfgload_'.$config_name.'_'.$return_field, $row->$return_field, 2678400 );
+					$this->cache->save( 'cfgload_'.SITE_TABLE.$config_name.'_'.$return_field, $row->$return_field, 2678400 );
 					
 					return $row->$return_field;
 				}
@@ -143,7 +143,7 @@ class config_model extends CI_Model {
 		$this->save_frontpage_category( $data );
 		
 		// clear cfgload cache
-		$this->delete_cache( 'cfgload_' );
+		$this->delete_cache( 'cfgload_'.SITE_TABLE );
 		$this->delete_cache( 'chkacc_' );
 		
 		// done
