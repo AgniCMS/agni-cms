@@ -31,12 +31,11 @@ class module extends admin_controller {
 	}// _define_permission
 	
 	
-	function activate() {
+	function activate( $module_system_name = '' ) {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_activate_deactivate_perm' ) != true ) {redirect( 'site-admin' );}
 		
 		// get module sys name
-		$module_system_name = trim( $this->input->get( 'id' ) );
 		$result = $this->modules_model->do_activate( $module_system_name );
 		
 		// load session
@@ -82,12 +81,11 @@ class module extends admin_controller {
 	}// add
 	
 	
-	function deactivate() {
+	function deactivate( $module_system_name = '' ) {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_activate_deactivate_perm' ) != true ) {redirect( 'site-admin' );}
 		
 		// get module sys name
-		$module_system_name = trim( $this->input->get( 'id' ) );
 		$result = $this->modules_model->do_deactivate( $module_system_name );
 		
 		// load session

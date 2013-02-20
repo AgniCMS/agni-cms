@@ -36,13 +36,13 @@
 					<strong><?php if ( !empty( $key['module_name'] ) ): ?><?php echo $key['module_name']; ?><?php else: ?><em title="<?php echo lang( 'modules_no_name' ); ?>"><?php echo $key['module_system_name']; ?></em><?php endif; ?></strong>
 					<div>
 					<?php if ( $key['module_activated'] == 'yes' ): ?> 
-						<?php echo anchor( 'site-admin/module/deactivate?id='.$key['module_system_name'], lang( 'modules_deactivate' ) ); ?> 
+						<?php echo anchor( 'site-admin/module/deactivate/'.$key['module_system_name'], lang( 'modules_deactivate' ) ); ?> 
 						<?php $find_install = Modules::find($key['module_system_name'].'_uninstall', $key['module_system_name'], 'controllers/');
 						if ( isset( $find_install[0] ) && $find_install[0] != null ): ?>
 							| <?php echo anchor( $key['module_system_name'].'/'.$key['module_system_name'].'_uninstall', lang( 'modules_uninstall' ), array( 'onclick' => 'return confirm(\''.sprintf( lang( 'module_are_you_sure_uninstall' ), $key['module_name'] ).'\');' ) ); ?>
 						<?php endif; ?>
 					<?php else: ?> 
-						<?php echo anchor( 'site-admin/module/activate?id='.$key['module_system_name'], lang( 'modules_activate' ) ); ?> 
+						<?php echo anchor( 'site-admin/module/activate/'.$key['module_system_name'], lang( 'modules_activate' ) ); ?> 
 					<?php endif; ?>
 					</div>
 				</td>

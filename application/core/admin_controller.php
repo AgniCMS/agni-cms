@@ -48,7 +48,7 @@ class admin_controller extends MY_Controller {
 		$current_site = $this->siteman_model->get_site_data_db( $sdata );
 		unset( $sdata );
 		
-		if ( $current_site->site_id != '1' ) {
+		if ( count( $current_site ) <= '1' ) {
 			// get sites to list in admin page 
 			$sdata['site_status'] = '1';
 			$output['agni_list_sites'] = $this->siteman_model->list_websites_all( $sdata );
