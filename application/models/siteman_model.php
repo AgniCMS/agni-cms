@@ -107,6 +107,11 @@ class siteman_model extends CI_Model {
 	}// copy_newsite_table
 	
 	
+	/**
+	 * delete_site
+	 * @param integer $site_id
+	 * @return boolean
+	 */
 	function delete_site( $site_id = '' ) {
 		// do not allow admin/user delete first site.
 		if ( $site_id == '1' ) {
@@ -180,6 +185,10 @@ class siteman_model extends CI_Model {
 	 * @return mixed
 	 */
 	function list_websites( $data = array() ) {
+		if ( is_array( $data ) && !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
 		$q = trim( $this->input->get( 'q' ) );
 		if ( $q != null && $q != 'none' ) {
 			$like_data[0]['field'] = 'sites.site_id';
@@ -260,6 +269,32 @@ class siteman_model extends CI_Model {
 		$query->free_result();
 		return null;
 	}// list_websites
+	
+	
+	function list_websites_all( $data = array() ) {
+		if ( is_array( $data ) && !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
+		// order and sort
+		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
+		$orders = ( $orders != null ? $orders : 'site_name' );
+		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
+		$sort = ( $sort != null ? $sort : 'asc' );
+		$this->db->order_by( $orders, $sort );
+		
+		$query = $this->db->get( 'sites' );
+		
+		if ( $query->num_rows() > 0 ) {
+			$output['total'] = $query->num_rows();
+			$output['items'] = $query->result();
+			$query->free_result();
+			return $output;
+		}
+		
+		$query->free_result();
+		return null;
+	}// list_websites_all
 
 
 }
