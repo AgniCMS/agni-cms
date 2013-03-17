@@ -22,8 +22,30 @@
 					<ul class="primary sf-menu">
 						<li><?php echo anchor( '#', lang( 'admin_nav_website' ), array( 'onclick' => 'return false;' ) ); ?> 
 							<ul>
-								<li><?php echo anchor( 'site-admin', lang( 'admin_home' ) ); ?></li>
-								<li><?php echo anchor( site_url(), lang( 'admin_nav_visit_site' ) ); ?></li>
+								<li>
+									<?php echo anchor( 'site-admin', lang( 'admin_home' ) ); ?> 
+									<?php if ( isset( $agni_list_sites['items'] ) && is_array( $agni_list_sites['items'] ) && !empty( $agni_list_sites['items'] ) ) { ?> 
+									<ul class="list_multi_sites">
+										<?php foreach ( $agni_list_sites['items'] as $agni_site ) { ?> 
+										<li>
+											<?php echo anchor( current_protocol().$agni_site->site_domain.site_path( 'site-admin' ), $agni_site->site_name ); ?> 
+										</li>
+										<?php } // endforeach; ?> 
+									</ul>
+									<?php } // endif; ?> 
+								</li>
+								<li>
+									<?php echo anchor( site_url(), lang( 'admin_nav_visit_site' ) ); ?> 
+									<?php if ( isset( $agni_list_sites['items'] ) && is_array( $agni_list_sites['items'] ) && !empty( $agni_list_sites['items'] ) ) { ?> 
+									<ul class="list_multi_sites">
+										<?php foreach ( $agni_list_sites['items'] as $agni_site ) { ?> 
+										<li>
+											<?php echo anchor( current_protocol().$agni_site->site_domain.site_path(), $agni_site->site_name ); ?> 
+										</li>
+										<?php } // endforeach; ?> 
+									</ul>
+									<?php } // endif; ?> 
+								</li>
 								<?php if ( check_admin_permission( 'config_global', 'config_global' ) ): ?><li><?php echo anchor( 'site-admin/config', lang( 'admin_nav_global_config' ) ); ?></li><?php endif; ?> 
 								<li><?php echo anchor( '#', lang( 'admin_nav_tools' ), array( 'onclick' => 'return false;' ) ); ?>
 									<?php if ( check_admin_permission( 'urls_perm', 'urls_perm_view_all' ) ): ?> 

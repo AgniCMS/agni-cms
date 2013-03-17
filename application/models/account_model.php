@@ -454,7 +454,7 @@ class account_model extends CI_Model {
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
 		
 		// check cached
-		if ( false === $check_admin_permission = $this->cache->get( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id ) ) {
+		if ( false === $check_admin_permission = $this->cache->get( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id ) ) {
 			$this->db->where( 'account_id', $account_id );
 			$query = $this->db->get( 'account_level' );
 			
@@ -464,7 +464,7 @@ class account_model extends CI_Model {
 					if ( $row->level_group_id == '1' ) {
 						// super admin group allow all by default.
 						$query->free_result();
-						$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
+						$this->cache->save( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
 						return true;
 					}
 					
@@ -476,19 +476,19 @@ class account_model extends CI_Model {
 					if ( $query2->num_rows() > 0 ) {
 						$query->free_result();
 						$query2->free_result();
-						$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
+						$this->cache->save( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
 						return true;
 					}
 					$query2->free_result();
 				}
 				$query->free_result();
 				
-				$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'false', 600 );
+				$this->cache->save( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id, 'false', 600 );
 				return false;
 			}
 			$query->free_result();
 			
-			$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'false', 600 );
+			$this->cache->save( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id, 'false', 600 );
 			return false;
 		}
 		
@@ -660,7 +660,7 @@ class account_model extends CI_Model {
 		$this->db->where( 'level_group_id', $level_group_id )->delete( 'account_level_group' );
 		
 		// delete cache
-		$this->config_model->delete_cache( 'alg_'.$level_group_id );
+		$this->config_model->delete_cache( 'alg_'.SITE_TABLE.$level_group_id );
 		
 		return true;
 	}// delete_level_group
@@ -790,7 +790,7 @@ class account_model extends CI_Model {
 		$this->db->update( 'account_level_group', $data );
 		
 		// delete cache
-		$this->config_model->delete_cache( 'alg_' );
+		$this->config_model->delete_cache( 'alg_'.SITE_TABLE );
 		
 		return true;
 	}// edit_level_group
@@ -1617,14 +1617,14 @@ class account_model extends CI_Model {
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
 		
 		// check cached
-		if ( ! $alg_val = $this->cache->get( 'alg_'.$lv_group_id.'_'.$return_field ) ) {
+		if ( ! $alg_val = $this->cache->get( 'alg_'.SITE_TABLE.$lv_group_id.'_'.$return_field ) ) {
 			$this->db->where( 'level_group_id', $lv_group_id );
 			$query = $this->db->get( 'account_level_group' );
 			
 			if ( $query->num_rows() > 0 ) {
 				$row = $query->row();
 				$query->free_result();
-				$this->cache->save( 'alg_'.$lv_group_id.'_'.$return_field, $row->$return_field, 3600 );
+				$this->cache->save( 'alg_'.SITE_TABLE.$lv_group_id.'_'.$return_field, $row->$return_field, 3600 );
 				return $row->$return_field;
 			}
 			

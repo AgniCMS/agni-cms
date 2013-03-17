@@ -10,6 +10,57 @@
  */
 
 
+/**
+ * anchor_path
+ * same as CI anchor(), but return only path. domain is not included
+ * @param string $uri
+ * @param string $title
+ * @param array $attributes
+ * @return string
+ */
+function anchor_path( $uri = '', $title = '', $attributes = '' ) {
+	$anchor =  anchor( $uri, $title, $attributes );
+	
+	$domain = ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://' ).$_SERVER['HTTP_HOST'];
+	
+	return preg_replace( '#href="'.$domain.'(.*)"#', 'href="$1"', $anchor );
+}// anchor
+
+
+/**
+ * get base path without domain. works like Codeigniter's base_url().
+ * @param string $uri
+ * @return string
+ */
+function base_path( $uri = '' ) {
+	$base_url = base_url( $uri );
+	
+	$domain = ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://' ).$_SERVER['HTTP_HOST'];
+	
+	return str_replace( $domain, '', $base_url );
+}// base_path
+
+
+/**
+ * current_protocol
+ * check current protocol and return.
+ * @return string
+ */
+if ( !function_exists( 'current_protocol' ) ) {
+	function current_protocol() {
+		$CI =& get_instance();
+		
+		$server_port = $CI->input->server( 'SERVER_PORT' );
+		
+		if ( $server_port == '443' ) {
+			return 'https://';
+		} else {
+			return 'http://';
+		}
+	}// current_protocol
+}
+
+
 if ( !function_exists( 'language_switch' ) ) {
 	function language_switch() {
 		$CI =& get_instance();
@@ -82,6 +133,20 @@ if ( !function_exists( 'language_switch_admin' ) ) {
 		return $output;
 	}// language_switch_admin
 }
+
+
+/**
+ * get site path without domain. works like Codeigniter's site_url().
+ * @param type $uri
+ * @return type
+ */
+function site_path( $uri = '' ) {
+	$site_url = site_url( $uri );
+	
+	$domain = ( isset( $_SERVER['SERVER_PORT'] ) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://' ).$_SERVER['HTTP_HOST'];
+	
+	return str_replace( $domain, '', $site_url );
+}// site_path
 
 
 if ( !function_exists( 'url_title' ) ) {
