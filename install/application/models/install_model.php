@@ -56,6 +56,7 @@ class install_model extends CI_Model {
 		$this->db->set( 'config_value', $data['account_email'] );
 		$this->db->where( 'config_name', 'comment_admin_notify_emails' );
 		$this->db->update( 'config' );
+		
 		// set super admin account value-----------------------------------------------------------------------------
 		$this->db->set( 'account_username', $data['account_username'] );
 		$this->db->set( 'account_email', $data['account_email'] );
@@ -63,6 +64,17 @@ class install_model extends CI_Model {
 		$this->db->set( 'account_timezone', $data['timezones'] );
 		$this->db->where( 'account_id', '1' );
 		$this->db->update( 'accounts' );
+		
+		// install site on sites table -------------------------------------------------------------------------------------
+		$this->db->set( 'site_name', $data['site_name'] )
+				->set( 'site_domain', $_SERVER['HTTP_HOST'] )
+				->set( 'site_status', '1' )
+				->set( 'site_create', time() )
+				->set( 'site_create_gmt', local_to_gmt( time() ) )
+				->set( 'site_update', time() )
+				->set( 'site_update_gmt', local_to_gmt( time() ) )
+				->insert( 'sites' );
+		
 		// done
 		$output['result'] = true;
 		return $output;
