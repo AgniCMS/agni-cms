@@ -32,12 +32,19 @@ class siteman_model extends CI_Model {
 	// site wide tables is tables that do not copy when new site created.
 	public $site_wide_tables = array(
 						'accounts',
+						'account_fields',
 						'account_logins',
+						'account_sites',
+
 						'ci_sessions',
+
 						'files',
+
 						'modules',
 						'module_sites',
+
 						'sites',
+
 						'themes',
 						'theme_sites'
 					);
@@ -118,12 +125,25 @@ class siteman_model extends CI_Model {
 			return false;
 		}
 		
+		// delete related _sites table ----------------------------------------------------------------------------------------------------
+		// delete from account_sites table
+		$this->db->where( 'site_id', $site_id )->delete( 'account_sites' );
+		
+		// delete from module_sites table
+		$this->db->where( 'site_id', $site_id )->delete( 'module_sites' );
+		
+		// delete from theme_sites table
+		$this->db->where( 'site_id', $site_id )->delete( 'theme_sites' );
+		// delete related _sites table ----------------------------------------------------------------------------------------------------
+		
+		// drop siteNumber_ tables ------------------------------------------------------------------------------------------------------
 		$this->load->dbforge();
 		
 		// drop site tables
 		foreach ( $this->core_tables as $table ) {
 			$this->dbforge->drop_table( $site_id.'_'.$table );
 		}
+		// drop siteNumber_ tables ------------------------------------------------------------------------------------------------------
 		
 		// delete site from db
 		$this->db->delete( 'sites', array( 'site_id' => $site_id ) );

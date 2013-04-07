@@ -595,8 +595,10 @@ class account_model extends CI_Model {
 		unset( $query );
 		
 		// delete account
+		$this->db->where( 'account_id', $account_id )->delete( 'account_fields' );
 		$this->db->where( 'account_id', $account_id )->delete( 'account_level' );
 		$this->db->where( 'account_id', $account_id )->delete( 'account_logins' );
+		$this->db->where( 'account_id', $account_id )->delete( 'account_sites' );
 		$this->db->where( 'account_id', $account_id )->delete( 'accounts' );
 		
 		// delete cache.

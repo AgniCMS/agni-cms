@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `an_accounts` (
   `account_create_gmt` datetime DEFAULT NULL COMMENT 'gmt0, utc0',
   `account_last_login` datetime DEFAULT NULL,
   `account_last_login_gmt` datetime DEFAULT NULL,
-  `account_online_code` varchar(255) DEFAULT NULL COMMENT 'store session code for check dubplicate log in if enabled.',
+  `account_online_code` varchar(255) DEFAULT NULL COMMENT 'store session code for check dubplicate log in if enabled. deprecated',
   `account_status` int(1) NOT NULL DEFAULT '0' COMMENT '0=disable, 1=enable',
   `account_status_text` varchar(255) DEFAULT NULL,
   `account_new_email` varchar(255) DEFAULT NULL,
@@ -56,6 +56,23 @@ CREATE TABLE IF NOT EXISTS `an_accounts` (
 INSERT INTO `an_accounts` (`account_id`, `account_username`, `account_email`, `account_password`, `account_fullname`, `account_birthdate`, `account_avatar`, `account_signature`, `account_timezone`, `account_language`, `account_create`, `account_create_gmt`, `account_last_login`, `account_last_login_gmt`, `account_online_code`, `account_status`, `account_status_text`, `account_new_email`, `account_new_password`, `account_confirm_code`) VALUES
 (0, 'Guest', 'none@localhost', NULL, 'Guest', NULL, NULL, NULL, 'UP7', NULL, '2012-04-03 19:25:44', '2012-04-03 12:25:44', NULL, NULL, NULL, 0, 'You can''t login with this account.', NULL, NULL, NULL),
 (1, 'admin', 'admin@localhost.com', '6e6f59d20ef87183781895cb20d13c6663f3890c', NULL, NULL, NULL, NULL, 'UP7', NULL, '2011-04-20 19:20:04', '2011-04-20 12:20:04', '2012-06-16 17:09:17', '2012-06-16 10:09:17', 'e2135bb4faf4fb999e3bbebe86ed1cdf', 1, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_account_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `an_account_fields` (
+  `account_id` int(11) NOT NULL COMMENT 'refer to accounts.account_id',
+  `field_name` varchar(255) DEFAULT NULL,
+  `field_value` text,
+  KEY `account_id` (`account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `an_account_fields`
+--
 
 -- --------------------------------------------------------
 
@@ -148,6 +165,27 @@ CREATE TABLE IF NOT EXISTS `an_account_logins` (
 
 --
 -- Dumping data for table `an_account_logins`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_account_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_account_sites` (
+  `account_site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) DEFAULT NULL COMMENT 'refer to accounts.account_id',
+  `site_id` int(11) DEFAULT NULL COMMENT 'refer to sites.site_id',
+  `account_last_login` bigint(20) DEFAULT NULL,
+  `account_last_login_gmt` bigint(20) DEFAULT NULL,
+  `account_online_code` varchar(255) DEFAULT NULL COMMENT 'store session code for check dubplicate log in if enabled.',
+  PRIMARY KEY (`account_site_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_account_sites`
 --
 
 
@@ -397,7 +435,7 @@ CREATE TABLE IF NOT EXISTS `an_modules` (
   `module_author` varchar(255) DEFAULT NULL,
   `module_author_url` varchar(255) DEFAULT NULL,
   `module_enable` int(1) NOT NULL DEFAULT '0',
-  `module_install` int(1) NOT NULL DEFAULT '0',
+  `module_install` int(1) NOT NULL DEFAULT '0' COMMENT 'use when the module want to install db, script or anything.',
   PRIMARY KEY (`module_id`),
   UNIQUE KEY `module_system_name` (`module_system_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
