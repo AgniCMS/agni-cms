@@ -452,9 +452,28 @@ class themes_model extends CI_Model {
 			$i = 0;
 			foreach ( $results as $row ) {
 				$block_except_uri = explode( "\n", $row->block_except_uri );
-				if ( ( $row->block_except_uri != null && in_array( $current_uri, $block_except_uri ) ) ) {
-					unset( $results[$i] );
+				
+				if ( strpos( $row->block_except_uri, '*' ) !== false && is_array( $block_except_uri ) ) {
+					// remove exception uri /* eg. book/* including book, book/magazine, book/comic/action
+					$unset = false;
+					
+					foreach ( $block_except_uri as $uri ) {
+						$uri = str_replace( array( '/*', '*' ), '', $uri );
+						if ( strpos( $current_uri, $uri ) !== false ) {
+							$unset = true;
+						}
+					}
+					
+					if ( $unset === true ) {
+						unset( $results[$i], $unset, $uri );
+					}
+				} else {
+					if ( ( $row->block_except_uri != null && in_array( $current_uri, $block_except_uri ) ) ) {
+						unset( $results[$i] );
+					}
 				}
+				
+				unset( $row, $block_except_uri );
 				$i++;
 			}
 			// end cut except uri---------------------------------------------------------------------
@@ -463,9 +482,28 @@ class themes_model extends CI_Model {
 			$i = 0;
 			foreach ( $results as $row ) {
 				$block_only_uri = explode( "\n", $row->block_only_uri );
-				if ( $row->block_only_uri != null && !in_array( $current_uri, $block_only_uri ) ) {
-					unset( $results[$i] );
+				
+				if ( strpos( $row->block_only_uri, '*' ) !== false && is_array( $block_only_uri ) ) {
+					// remove show only uri /* eg. book/* including book, book/magazine, book/comic/action
+					$unset = false;
+					
+					foreach ( $block_only_uri as $uri ) {
+						$uri = str_replace( array( '/*', '*' ), '', $uri );
+						if ( strpos( $current_uri, $uri ) === false ) {
+							$unset = true;
+						}
+					}
+					
+					if ( $unset === true ) {
+						unset( $results[$i], $unset, $uri );
+					}
+				} else {
+					if ( $row->block_only_uri != null && !in_array( $current_uri, $block_only_uri ) ) {
+						unset( $results[$i] );
+					}
 				}
+				
+				unset( $row, $block_only_uri );
 				$i++;
 			}
 			// end loop cut to show only uri---------------------------------------------------------
