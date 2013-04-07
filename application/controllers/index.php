@@ -37,15 +37,6 @@ class index extends MY_Controller {
 	
 	
 	function index() {
-		$cm = $this->account_model->get_account_cookie( 'member' );
-		echo 'member<pre>';
-		print_r( $cm );
-		echo '</pre>';
-		$ca = $this->account_model->get_account_cookie( 'admin' );
-		echo 'admin<pre>';
-		print_r( $ca );
-		echo '</pre>';
-		
 		// get frontpage category from config
 		$fp_category = $this->config_model->load_single( 'content_frontpage_category', $this->lang->get_current_lang() );
 		
