@@ -200,6 +200,30 @@ class siteman_model extends CI_Model {
 	
 	
 	/**
+	 * get site id
+	 * @param boolean $enabled_only
+	 * @return integer
+	 */
+	function get_site_id( $enabled_only = true ) {
+		$site_domain = $this->input->server( 'HTTP_HOST' );
+		
+		// get site info from db
+		$data['site_domain'] = $site_domain;
+		if ( $enabled_only === true ) {
+			$data['site_status'] = '1';
+		}
+		$site = $this->get_site_data_db( $data );
+		unset( $data );
+		
+		if ( $site != null ) {
+			return $site->site_id;
+		}
+		
+		return '1';
+	}// get_site_id
+	
+	
+	/**
 	 * list websites
 	 * @param array $data
 	 * @return mixed

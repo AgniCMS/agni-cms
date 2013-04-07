@@ -102,6 +102,40 @@ class account_model extends CI_Model {
 	
 	
 	/**
+	 * add multisite login session
+	 * @param array $data
+	 */
+	function add_login_session( $data = array() ) {
+		// load model
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+
+		$query = $this->db->where( 'account_id', $data['account_id'] )->where( 'site_id', $site_id )->get( 'account_sites' );
+		if ( $query->num_rows() <= 0 ) {
+			// use insert
+			$this->db->set( 'account_id', $data['account_id'] )
+				   ->set( 'site_id', $site_id )
+				   ->set( 'account_last_login', time() )
+				   ->set( 'account_last_login_gmt', local_to_gmt( time() ) );
+			if ( isset( $data['session_id'] ) ) {
+				$this->db->set( 'account_online_code', $data['session_id'] );
+			}
+			$this->db->insert( 'account_sites' );
+		} else {
+			// use update
+			$this->db->set( 'account_last_login', time() )
+				   ->set( 'account_last_login_gmt', local_to_gmt( time() ) );
+			if ( isset( $data['session_id'] ) ) {
+				$this->db->set( 'account_online_code', $data['session_id'] );
+			}
+			$this->db->where( 'account_id', $data['account_id'] )
+				   ->where( 'site_id', $site_id );
+			$this->db->update( 'account_sites' );
+		}
+	}// add_login_session
+	
+	
+	/**
 	 * admin_login
 	 * @param array $data
 	 * @return mixed 
@@ -159,16 +193,28 @@ class account_model extends CI_Model {
 					// load date helper for gmt
 					$this->load->helper( 'date' );
 					if ( $need_update_session === true ) {
-						$this->db->set( 'account_online_code', $session_id );
+						//$this->db->set( 'account_online_code', $session_id );// deprecated
 						$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
 						$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
 						$this->db->where( 'account_id', $row->account_id );
 						$this->db->update( 'accounts' );
+						
+						// add online code for multisite check ------------------------------------------------
+						$session_data['account_id'] = $row->account_id;
+						$session_data['session_id'] = $session_id;
+						$this->add_login_session( $session_data );
+						unset( $session_data );
+						// add online code for multisite check ------------------------------------------------
 					} else {
 						$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
 						$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
 						$this->db->where( 'account_id', $row->account_id );
 						$this->db->update( 'accounts' );
+						// add online code for multisite check ------------------------------------------------
+						$session_data['account_id'] = $row->account_id;
+						$this->add_login_session( $session_data );
+						unset( $session_data );
+						// add online code for multisite check ------------------------------------------------
 					}
 					
 					// record log in
@@ -341,8 +387,11 @@ class account_model extends CI_Model {
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
 		
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
 		// check cached
-		if ( false === $account_val = $this->cache->get( 'chkacc_'.$id.'_'.$username.$password ) ) {
+		if ( false === $account_val = $this->cache->get( 'chkacc_'.$id.'_'.$site_id.'_'.$username.$password ) ) {
 			// check with db
 			$this->db->where( 'account_id', $id );
 			$this->db->where( 'account_username', $username );
@@ -357,10 +406,10 @@ class account_model extends CI_Model {
 					
 					// check if globa config not allow duplicate login
 					if ( $this->config_model->load_single( 'duplicate_login' ) == '0' ) {
-						if ( $row->account_online_code != $onlinecode ) {
+						if ( $this->is_duplicate_login( $id, $onlinecode ) === true ) {
 							// dup log in detected.
 							$query->free_result();
-							$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+							$this->config_model->delete_cache( 'chkacc_'.$id.'_'.$site_id.'_' );
 							
 							// log out
 							$this->logout();
@@ -378,14 +427,14 @@ class account_model extends CI_Model {
 					$query->free_result();
 					
 					// save to cache and return true
-					$this->cache->save( 'chkacc_'.$id.'_'.$username.$password, $row->account_online_code, 3600 );
+					$this->cache->save( 'chkacc_'.$id.'_'.$site_id.'_'.$username.$password, $this->get_account_online_code( $row->account_id, $site_id ), 3600 );
 					return true;
 				} else {
 					// account was disabled
 					$query->free_result();
 					
 					// delete cache
-					$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+					$this->config_model->delete_cache( 'chkacc_'.$id.'_'.$site_id.'_' );
 					
 					// log out
 					$this->logout();
@@ -396,7 +445,7 @@ class account_model extends CI_Model {
 			$query->free_result();
 			
 			// delete cache
-			$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+			$this->config_model->delete_cache( 'chkacc_'.$id.'_'.$site_id.'_' );
 			
 			// log out
 			$this->logout();
@@ -877,6 +926,29 @@ class account_model extends CI_Model {
 	}// get_account_level_group_data
 	
 	
+	/**
+	 * get_account_online_code
+	 * @param integer $account_id
+	 * @param integer $site_id
+	 * @return string
+	 */
+	function get_account_online_code( $account_id = '', $site_id = '' ) {
+		$this->db->where( 'account_id', $account_id )
+			   ->where( 'site_id', $site_id );
+		$query = $this->db->get( 'account_sites' );
+		
+		if ( $query->num_rows() > 0 ) {
+			$row = $query->row();
+			$query->free_result();
+			
+			return $row->account_online_code;
+		}
+		
+		$query->free_result();
+		return null;
+	}// get_account_online_code
+	
+	
 	
 	/**
 	 * check is admin login
@@ -894,6 +966,48 @@ class account_model extends CI_Model {
 		// check again in database
 		return $this->check_account();
 	}// is_admin_login
+	
+	
+	/**
+	 * is_duplicate_login
+	 * @param string $onlinecode
+	 * @return boolean
+	 */
+	function is_duplicate_login( $account_id = '', $onlinecode = '' ) {
+		// if not set online code.
+		if ( $onlinecode == null ) {
+			$cm_account = $this->get_account_cookie( 'member' );
+			
+			if ( !isset( $cm_account['onlinecode'] ) ) {
+				return false;
+			}
+			
+			$onlinecode = $cm_account['onlinecode'];
+		}
+		
+		// load model
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
+		$this->db->where( 'account_id', $account_id )
+			   ->where( 'site_id', $site_id )
+			   ->where( 'account_online_code', $onlinecode );
+		$query = $this->db->get( 'account_sites' );
+		
+		if ( $query->num_rows() > 0 ) {
+			$row = $query->row();
+			$query->free_result();
+			
+			if ( $row->account_online_code == $onlinecode ) {
+				// NOT duplicate login
+				return false;
+			}
+			return true;
+		}
+		
+		$query->free_result();
+		return false;
+	}// is_duplicate_login
 	
 	
 	/**
@@ -1317,11 +1431,18 @@ class account_model extends CI_Model {
 				
 				// update session
 				$this->load->helper( 'date' );
-				$this->db->set( 'account_online_code', $session_id );
+				//$this->db->set( 'account_online_code', $session_id );// deprecated
 				$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
 				$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
 				$this->db->where( 'account_id', $row->account_id );
 				$this->db->update( 'accounts' );
+				
+				// add online code for multisite check ------------------------------------------------
+				$session_data['account_id'] = $row->account_id;
+				$session_data['session_id'] = $session_id;
+				$this->add_login_session( $session_data );
+				unset( $session_data );
+				// add online code for multisite check ------------------------------------------------
 				
 				// record log in
 				$this->admin_login_record( $row->account_id, '1', 'Success' );
