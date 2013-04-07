@@ -66,14 +66,26 @@ class install_model extends CI_Model {
 		$this->db->update( 'accounts' );
 		
 		// install site on sites table -------------------------------------------------------------------------------------
-		$this->db->set( 'site_name', $data['site_name'] )
-				->set( 'site_domain', $_SERVER['HTTP_HOST'] )
-				->set( 'site_status', '1' )
-				->set( 'site_create', time() )
-				->set( 'site_create_gmt', local_to_gmt( time() ) )
-				->set( 'site_update', time() )
-				->set( 'site_update_gmt', local_to_gmt( time() ) )
-				->insert( 'sites' );
+		$query = $this->db->where( 'site_id', '1' )->get( 'sites' );
+		if ( $query->num_rows() <= 0 ) {
+			$this->db->set( 'site_name', $data['site_name'] )
+					->set( 'site_domain', $_SERVER['HTTP_HOST'] )
+					->set( 'site_status', '1' )
+					->set( 'site_create', time() )
+					->set( 'site_create_gmt', local_to_gmt( time() ) )
+					->set( 'site_update', time() )
+					->set( 'site_update_gmt', local_to_gmt( time() ) )
+					->insert( 'sites' );
+		} else {
+			$this->db->set( 'site_name', $data['site_name'] )
+					->set( 'site_domain', $_SERVER['HTTP_HOST'] )
+					->set( 'site_status', '1' )
+					->set( 'site_update', time() )
+					->set( 'site_update_gmt', local_to_gmt( time() ) )
+					->where( 'site_id', '1' )
+					->update( 'sites' );
+		}
+		$query->free_result();
 		
 		// done
 		$output['result'] = true;
