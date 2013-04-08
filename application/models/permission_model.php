@@ -58,7 +58,8 @@ class permission_model extends CI_Model {
 		// fetch _define_permission from modules
 		// ปรับแต่งใหม่จาก Web Start ให้โหลดค่า _define_permission จากโมดูลที่เปิดใช้งานเท่านั้น.
 		if ( is_dir( $this->mx_path) ) {
-			$this->db->where( 'module_enable', '1' );
+			$this->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' );
+			$this->db->where( 'module_sites.module_enable', '1' );
 			$this->db->order_by( 'module_system_name', 'asc' );
 			$query = $this->db->get( 'modules' );
 			

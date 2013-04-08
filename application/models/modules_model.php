@@ -132,7 +132,9 @@ class modules_model extends CI_Model {
 			ob_start();
 			$module_uninstall = $module_system_name.'_uninstall';
 			$this->load->module( $module_system_name.'/'.$module_uninstall );
-			$this->$module_uninstall->index();
+			if ( method_exists( $this->$module_uninstall, 'index' ) ) {
+				$this->$module_uninstall->index();
+			}
 			$output = ob_get_contents();
 			ob_end_clean();
 		}
@@ -186,7 +188,6 @@ class modules_model extends CI_Model {
 		// check if module is inserted
 		$this->db->where( 'module_system_name', $module_system_name );
 		$query = $this->db->get( 'modules' );
-		$row = $query->row();
 		
 		// set data for insert/update
 		$this->db->set( 'module_name', ( empty($pdata['name']) ? $module_system_name : $pdata['name'] ) );
@@ -204,6 +205,8 @@ class modules_model extends CI_Model {
 			$this->db->where( 'module_system_name', $module_system_name );
 			$this->db->update( 'modules' );
 		}
+		
+		$row = $query->row();
 		
 		// check if module is in modules_sites
 		$this->db->where( 'module_id', $row->module_id )
@@ -310,7 +313,13 @@ class modules_model extends CI_Model {
 		
 		$find_uninstall = Modules::find($module_system_name.'_uninstall', $module_system_name, 'controllers/');
 		if ( isset( $find_uninstall[0] ) && $find_uninstall[0] != null ) {
-			redirect( $module_system_name.'/'.$module_system_name.'_uninstall?site_id='.$site_id );
+			if ( $this->input->is_ajax_request() ) {
+				ob_start();
+				redirect( $module_system_name.'/'.$module_system_name.'_uninstall?site_id='.$site_id );
+				ob_end_clean();
+			} else {
+				redirect( $module_system_name.'/'.$module_system_name.'_uninstall?site_id='.$site_id );
+			}
 		}
 		
 		return true;
@@ -487,7 +496,8 @@ class modules_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_all_widgets() {
-		$this->db->where( 'module_enable', '1' );
+		$this->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' );
+		$this->db->where( 'module_sites.module_enable', '1' );
 		$query = $this->db->get( 'modules' );
 		
 		// load helper
@@ -544,7 +554,8 @@ class modules_model extends CI_Model {
 	 */
 	function load_admin_nav() {
 		// load enabled module
-		$this->db->where( 'module_enable', '1' );
+		$this->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' );
+		$this->db->where( 'module_sites.module_enable', '1' );
 		$this->db->order_by( 'module_system_name', 'asc' );
 		
 		$query = $this->db->get( 'modules' );

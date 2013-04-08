@@ -38,7 +38,7 @@
 						<?php if ( $current_site_id == '1' ) { ?> 
 						
 						<div class="btn-group">
-							<a href="#" class="btn btn-mini dropdown-toggle" data-toggle="dropdown"><?php echo lang( 'modules_activate_deactivate' ); ?><span class="caret"></span></a>
+							<a href="#" class="btn btn-mini dropdown-toggle" data-toggle="dropdown"><?php echo lang( 'modules_activate_deactivate' ); ?> <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<?php if ( isset( $sites['items'] ) && is_array( $sites['items'] ) ) { ?> 
 									<?php foreach ( $sites['items'] as $site ) { ?> 
@@ -55,12 +55,12 @@
 						<?php $find_uninstall = Modules::find($key['module_system_name'].'_uninstall', $key['module_system_name'], 'controllers/');
 							if ( isset( $find_uninstall[0] ) && $find_uninstall[0] != null ) { ?> 
 						<div class="btn-group">
-							<a href="#" class="btn btn-mini btn-danger dropdown-toggle" data-toggle="dropdown"><?php echo lang( 'modules_uninstall' ); ?><span class="caret"></span></a>
+							<a href="#" class="btn btn-mini btn-danger dropdown-toggle" data-toggle="dropdown"><?php echo lang( 'modules_uninstall' ); ?> <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<?php if ( isset( $sites['items'] ) && is_array( $sites['items'] ) ) { ?> 
 									<?php foreach ( $sites['items'] as $site ) { ?> 
 									<?php if ( $this->modules_model->is_installed( $key['module_system_name'], $site->site_id ) === true ) { ?> 
-									<li><?php echo anchor( 'site-admin/module/uninstall/'.$key['module_system_name'].'/'.$site->site_id, $site->site_name, array( 'onclick' => 'return confirm(\''.sprintf( lang( 'module_are_you_sure_uninstall' ), $key['module_name'] ).'\');' ) ); ?></li>
+									<li><?php echo anchor( 'site-admin/module/uninstall/'.$key['module_system_name'].'/'.$site->site_id, $site->site_name, array( 'onclick' => 'return ajax_uninstall_module(\''.sprintf( lang( 'module_are_you_sure_uninstall' ), $key['module_name'] ).'\', $(this));' ) ); ?></li>
 									<?php } // endif; ?> 
 									<?php } // endforeach; ?> 
 								<?php } // endif; ?> 
@@ -77,7 +77,7 @@
 							<?php echo anchor( 'site-admin/module/deactivate/'.$key['module_system_name'].'/'.$current_site_id, lang( 'modules_deactivate' ), array( 'class' => 'btn btn-mini' ) ); ?>
 							<?php $find_uninstall = Modules::find($key['module_system_name'].'_uninstall', $key['module_system_name'], 'controllers/');
 								if ( isset( $find_uninstall[0] ) && $find_uninstall[0] != null ) { ?> 
-								<?php echo anchor( 'site-admin/module/uninstall/'.$key['module_system_name'].'/'.$current_site_id, lang( 'modules_uninstall' ), array( 'onclick' => 'return confirm(\''.sprintf( lang( 'module_are_you_sure_uninstall' ), $key['module_name'] ).'\');', 'class' => 'btn btn-mini btn-danger' ) ); ?> 
+								<?php echo anchor( 'site-admin/module/uninstall/'.$key['module_system_name'].'/'.$current_site_id, lang( 'modules_uninstall' ), array( 'onclick' => 'return ajax_uninstall_module(\''.sprintf( lang( 'module_are_you_sure_uninstall' ), $key['module_name'] ).'\', $(this));', 'class' => 'btn btn-mini btn-danger' ) ); ?> 
 								<?php } //endif; ?>
 							<?php } // endif; ?> 
 						
@@ -117,3 +117,25 @@
 		<div class="clear"></div>
 	</div>
 <?php echo form_close(); ?> 
+
+
+<script type="text/javascript">
+	function ajax_uninstall_module( confirm_msg, thisobj ) {
+		var confirmval = confirm( confirm_msg );
+		var thislink = thisobj.attr( 'href' );
+		
+		if ( confirmval === true ) {
+			$.ajax({
+				url: thislink,
+				type: 'POST',
+				data: csrf_name+'='+csrf_value+'',
+				dataType: 'html',
+				success: function(data) {
+					window.location.reload();
+				}
+			});
+		}
+		
+		return false;
+	}// ajax_uninstall_module
+</script>

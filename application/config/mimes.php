@@ -200,7 +200,7 @@ $mimes = array (
 			'xlsx' => array( 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip' ),
 			'xml' => 'text/xml',
 			'xsl' => 'text/xml',
-			'zip' => array( 'application/x-zip', 'application/x-zip-compressed', 'application/zip' ),
+			'zip' => array( 'application/x-zip', 'application/x-zip-compressed', 'application/zip', 'application/octet-stream' ),
 	);
 /*
  * use this code to write mimes

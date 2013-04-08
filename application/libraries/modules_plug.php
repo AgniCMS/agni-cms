@@ -56,7 +56,12 @@ class modules_plug {
 	 * @return boolean 
 	 */
 	function load_modules() {
-		$this->ci->db->where( 'module_enable', '1' );
+		$this->ci->load->model( 'siteman_model' );
+		$site_id = $this->ci->siteman_model->get_site_id();
+		
+		$this->ci->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' );
+		$this->ci->db->where( 'module_sites.site_id', $site_id );
+		$this->ci->db->where( 'module_sites.module_enable', '1' );
 		$query = $this->ci->db->get( 'modules' );
 		$output = array();
 		

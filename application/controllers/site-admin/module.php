@@ -126,6 +126,9 @@ class module extends admin_controller {
 		
 		// load session for show last flashed session
 		$this->load->library( 'session' );
+		if ( $this->input->is_ajax_request() ) {
+			$this->session->keep_flashdata( 'form_status' );
+		}
 		$form_status = $this->session->flashdata( 'form_status' );
 		if ( $form_status != null ) {
 			$output['form_status'] = $form_status;
@@ -164,16 +167,17 @@ class module extends admin_controller {
 		$id = $this->input->post( 'id' );
 		if ( !is_array( $id ) ) {redirect( 'site-admin/module' );}
 		$act = trim( $this->input->post( 'act' ) );
+		$site_id = $this->siteman_model->get_site_id();
 		
 		// load library
 		$this->load->library( 'session' );
 		
 		if ( $act == 'activate' ) {
 			// check permission
-			if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_activate_perm' ) != true ) {redirect( 'site-admin' );}
+			if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_activate_deactivate_perm' ) != true ) {redirect( 'site-admin' );}
 			
 			foreach ( $id as $an_id ) {
-				$result = $this->modules_model->do_activate( $an_id );
+				$result = $this->modules_model->do_activate( $an_id, $site_id );
 				if ( $result === false ) {
 					$fail_activate = true;
 				}
@@ -188,10 +192,10 @@ class module extends admin_controller {
 			unset( $fail_activate, $result );
 		} elseif ( $act == 'deactivate' ) {
 			// check permission
-			if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_deactivate_perm' ) != true ) {redirect( 'site-admin' );}
+			if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_activate_deactivate_perm' ) != true ) {redirect( 'site-admin' );}
 			
 			foreach ( $id as $an_id ) {
-				$result = $this->modules_model->do_deactivate( $an_id );
+				$result = $this->modules_model->do_deactivate( $an_id, $site_id );
 				if ( $result === false ) {
 					$fail_deactivate = true;
 				}
@@ -238,6 +242,10 @@ class module extends admin_controller {
 	function uninstall( $module_system_name = '', $site_id = '' ) {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_uninstall_perm' ) != true ) {redirect( 'site-admin' );}
+		
+		if ( strtolower( $this->input->server( 'REQUEST_METHOD' ) ) != 'post' ) {
+			redirect( 'site-admin' );
+		}
 		
 		// uninstall
 		$result = $this->modules_model->do_uninstall( $module_system_name, $site_id );
