@@ -15,14 +15,14 @@
 	<table class="list-items">
 		<thead>
 			<tr>
-				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
+				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked);" /></th>
 				<th><?php echo lang( 'modules_name' ); ?></th>
 				<th><?php echo lang( 'modules_description' ); ?></th>
 			</tr>
 		</thead>
 		<tfoot>
 			<tr>
-				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
+				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked);" /></th>
 				<th><?php echo lang( 'modules_name' ); ?></th>
 				<th><?php echo lang( 'modules_description' ); ?></th>
 			</tr>
@@ -35,15 +35,53 @@
 				<td>
 					<strong><?php if ( !empty( $key['module_name'] ) ): ?><?php echo $key['module_name']; ?><?php else: ?><em title="<?php echo lang( 'modules_no_name' ); ?>"><?php echo $key['module_system_name']; ?></em><?php endif; ?></strong>
 					<div>
-					<?php if ( $key['module_activated'] == 'yes' ): ?> 
-						<?php echo anchor( 'site-admin/module/deactivate/'.$key['module_system_name'], lang( 'modules_deactivate' ) ); ?> 
-						<?php $find_install = Modules::find($key['module_system_name'].'_uninstall', $key['module_system_name'], 'controllers/');
-						if ( isset( $find_install[0] ) && $find_install[0] != null ): ?>
-							| <?php echo anchor( $key['module_system_name'].'/'.$key['module_system_name'].'_uninstall', lang( 'modules_uninstall' ), array( 'onclick' => 'return confirm(\''.sprintf( lang( 'module_are_you_sure_uninstall' ), $key['module_name'] ).'\');' ) ); ?>
-						<?php endif; ?>
-					<?php else: ?> 
-						<?php echo anchor( 'site-admin/module/activate/'.$key['module_system_name'], lang( 'modules_activate' ) ); ?> 
-					<?php endif; ?>
+						<?php if ( $current_site_id == '1' ) { ?> 
+						
+						<div class="btn-group">
+							<a href="#" class="btn btn-mini dropdown-toggle" data-toggle="dropdown"><?php echo lang( 'modules_activate_deactivate' ); ?><span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<?php if ( isset( $sites['items'] ) && is_array( $sites['items'] ) ) { ?> 
+									<?php foreach ( $sites['items'] as $site ) { ?> 
+										<?php if ( $this->modules_model->is_activated( $key['module_system_name'], $site->site_id ) === false ) { ?> 
+										<li title="<?php echo lang( 'modules_is_deactivate_in_this_site' ); ?>"><?php echo anchor( 'site-admin/module/activate/'.$key['module_system_name'].'/'.$site->site_id, '<span class="icon-remove"></span> '.$site->site_name ); ?></li>
+										<?php } else { ?> 
+										<li title="<?php echo lang( 'module_is_activate_in_this_site' ); ?>"><?php echo anchor( 'site-admin/module/deactivate/'.$key['module_system_name'].'/'.$site->site_id, '<span class="icon-ok"></span> '.$site->site_name ); ?></li>
+										<?php } // endif; ?> 
+									<?php } // endforeach; ?> 
+								<?php } // endif; ?> 
+							</ul>
+						</div>
+						<?php if ( $this->modules_model->is_activated_one( $key['module_system_name'] ) == true ) { ?> 
+						<?php $find_uninstall = Modules::find($key['module_system_name'].'_uninstall', $key['module_system_name'], 'controllers/');
+							if ( isset( $find_uninstall[0] ) && $find_uninstall[0] != null ) { ?> 
+						<div class="btn-group">
+							<a href="#" class="btn btn-mini btn-danger dropdown-toggle" data-toggle="dropdown"><?php echo lang( 'modules_uninstall' ); ?><span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<?php if ( isset( $sites['items'] ) && is_array( $sites['items'] ) ) { ?> 
+									<?php foreach ( $sites['items'] as $site ) { ?> 
+									<?php if ( $this->modules_model->is_installed( $key['module_system_name'], $site->site_id ) === true ) { ?> 
+									<li><?php echo anchor( 'site-admin/module/uninstall/'.$key['module_system_name'].'/'.$site->site_id, $site->site_name, array( 'onclick' => 'return confirm(\''.sprintf( lang( 'module_are_you_sure_uninstall' ), $key['module_name'] ).'\');' ) ); ?></li>
+									<?php } // endif; ?> 
+									<?php } // endforeach; ?> 
+								<?php } // endif; ?> 
+							</ul>
+						</div>
+						<?php } //endif; ?>
+						<?php } // endif; is_activated_one ?> 
+						
+						<?php } else { ?> 
+						
+							<?php if ( $this->modules_model->is_activated( $key['module_system_name'], $current_site_id ) === false ) { ?> 
+							<?php echo anchor( 'site-admin/module/activate/'.$key['module_system_name'].'/'.$current_site_id, lang( 'modules_activate' ), array( 'class' => 'btn btn-mini' ) ); ?>
+							<?php } else { ?> 
+							<?php echo anchor( 'site-admin/module/deactivate/'.$key['module_system_name'].'/'.$current_site_id, lang( 'modules_deactivate' ), array( 'class' => 'btn btn-mini' ) ); ?>
+							<?php $find_uninstall = Modules::find($key['module_system_name'].'_uninstall', $key['module_system_name'], 'controllers/');
+								if ( isset( $find_uninstall[0] ) && $find_uninstall[0] != null ) { ?> 
+								<?php echo anchor( 'site-admin/module/uninstall/'.$key['module_system_name'].'/'.$current_site_id, lang( 'modules_uninstall' ), array( 'onclick' => 'return confirm(\''.sprintf( lang( 'module_are_you_sure_uninstall' ), $key['module_name'] ).'\');', 'class' => 'btn btn-mini btn-danger' ) ); ?> 
+								<?php } //endif; ?>
+							<?php } // endif; ?> 
+						
+						<?php } // endif; get_site_id() == '1' ?> 
 					</div>
 				</td>
 				<td>

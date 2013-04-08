@@ -110,6 +110,7 @@ function &DB($params = '', $active_record_override = NULL)
 	if ( file_exists( APPPATH.'core/'.$prefix.'DB_driver.php' ) ) {
 		require_once( APPPATH.'core/'.$prefix.'DB_driver.php' );
 	} else {
+		// this is CI original code
 		require_once(BASEPATH.'database/DB_driver.php');
 	}
 
@@ -117,6 +118,7 @@ function &DB($params = '', $active_record_override = NULL)
 	{
 		require_once(BASEPATH.'database/DB_active_rec.php');
 
+		// custom code
 		if (file_exists(APPPATH.'core/'.$prefix.'DB_active_rec.php'))
 		{
 			require_once(APPPATH.'core/'.$prefix.'DB_active_rec.php');
@@ -129,6 +131,7 @@ function &DB($params = '', $active_record_override = NULL)
 		{
 			if ( ! class_exists('CI_DB'))
 			{
+				// CI original code
 				eval('class CI_DB extends CI_DB_active_record { }');
 			}
 		}
@@ -137,6 +140,7 @@ function &DB($params = '', $active_record_override = NULL)
 			eval('class CI_DB extends CI_DB_active_record { }');
 		}*/// CI original code
 	}
+	// CI original code
 	else
 	{
 		if ( ! class_exists('CI_DB'))

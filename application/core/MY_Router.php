@@ -37,7 +37,7 @@ class MY_Router extends MX_Router {
 			/* module exists? */
 			if (is_dir($source = $location.$module.'/controllers/')) {
 				
-				/* ADD AGNICMS MODULE CHECK */
+				/* ADD AGNI CMS MODULE CHECK */
 				// ใน router core ใช้ get_instance ไม่ได้ จึงใช้ $ci->db->get() ไม่ได้ เลยต้อง hardcode เอง.
 				require_once( APPPATH.'config/database.php' );
 				if ( !isset( $db ) ) {
@@ -48,7 +48,17 @@ class MY_Router extends MX_Router {
 				mysql_query( 'SET character_set_results='.$db['default']['char_set'] );
 				mysql_query( 'SET character_set_client='.$db['default']['char_set'] );
 				mysql_query( 'SET character_set_connection='.$db['default']['char_set'] );
-				$result = mysql_query( 'select * from '.$db['default']['dbprefix'].'modules where module_system_name = \''.$module.'\' and module_enable = 1');
+				// get site_id
+				$site_id = ( isset( $_GET['site_id'] ) ? $_GET['site_id'] : '' );
+				if ( $site_id == null ) {
+					$result = mysql_query( 'SELECT * FROM '.$db['default']['dbprefix'].'sites WHERE site_domain = \''.mysql_real_escape_string( $_SERVER['HTTP_HOST'] ).'\'' );
+					$row = mysql_fetch_object( $result );
+					$site_id = $row->site_id;
+					mysql_free_result( $result );
+					unset( $result, $row );
+				}
+				// check if this module in this site id is enable
+				$result = mysql_query( 'select * from '.$db['default']['dbprefix'].'modules INNER JOIN '.$db['default']['dbprefix'].'module_sites ON '.$db['default']['dbprefix'].'module_sites.module_id = '.$db['default']['dbprefix'].'modules.module_id where module_system_name = \''.$module.'\' AND '.$db['default']['dbprefix'].'module_sites.site_id = '.$site_id.' and '.$db['default']['dbprefix'].'module_sites.module_enable = 1');
 				if ( mysql_num_rows($result) <= 0 ) {
 					mysql_free_result( $result );
 					mysql_close( $link );
@@ -58,7 +68,7 @@ class MY_Router extends MX_Router {
 				mysql_free_result( $result );
 				mysql_close( $link );
 				unset( $link, $db_selected );
-				/* END ADD AGNICMS MODULE CHECK */
+				/* END ADD AGNI CMS MODULE CHECK */
 				
 				$this->module = $module;
 				$this->directory = $offset.$module.'/controllers/';

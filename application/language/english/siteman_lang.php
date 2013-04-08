@@ -16,4 +16,5 @@ $lang['siteman_siteman'] = 'Website manager';
 $lang['siteman_add_perm'] = 'Add website';
 $lang['siteman_delete_perm'] = 'Delete website';
 $lang['siteman_edit_perm'] = 'Edit website';
+$lang['siteman_manage_perm'] = 'Manage websites';
 $lang['siteman_perm'] = 'websites';

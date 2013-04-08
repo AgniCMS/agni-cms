@@ -27,16 +27,16 @@ class module extends admin_controller {
 	
 	
 	function _define_permission() {
-		return array( 'modules_manage_perm' => array( 'modules_viewall_perm', 'modules_add_perm', 'modules_activate_deactivate_perm', 'modules_delete_perm' ) );
+		return array( 'modules_manage_perm' => array( 'modules_viewall_perm', 'modules_add_perm', 'modules_activate_deactivate_perm', 'modules_uninstall_perm', 'modules_delete_perm' ) );
 	}// _define_permission
 	
 	
-	function activate( $module_system_name = '' ) {
+	function activate( $module_system_name = '', $site_id = '' ) {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_activate_deactivate_perm' ) != true ) {redirect( 'site-admin' );}
 		
-		// get module sys name
-		$result = $this->modules_model->do_activate( $module_system_name );
+		// do activate
+		$result = $this->modules_model->do_activate( $module_system_name, $site_id );
 		
 		// load session
 		$this->load->library( 'session' );
@@ -81,12 +81,12 @@ class module extends admin_controller {
 	}// add
 	
 	
-	function deactivate( $module_system_name = '' ) {
+	function deactivate( $module_system_name = '', $site_id = '' ) {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_activate_deactivate_perm' ) != true ) {redirect( 'site-admin' );}
 		
-		// get module sys name
-		$result = $this->modules_model->do_deactivate( $module_system_name );
+		// do deactivate
+		$result = $this->modules_model->do_deactivate( $module_system_name, $site_id );
 		
 		// load session
 		$this->load->library( 'session' );
@@ -137,6 +137,16 @@ class module extends admin_controller {
 		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
+		
+		// list sites
+		$this->load->model( 'siteman_model' );
+		$temp_get_orders = $this->input->get( 'orders' );
+		$_GET['orders'] = 'site_id';
+		$output['sites'] = $this->siteman_model->list_websites_all();
+		$_GET['orders'] = $temp_get_orders;
+		unset( $temp_get_orders );
+		
+		$output['current_site_id'] = $this->siteman_model->get_site_id();
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'modules_modules' ) );
@@ -223,6 +233,25 @@ class module extends admin_controller {
 			redirect( 'site-admin/module' );
 		}
 	}// process_bulk
+	
+	
+	function uninstall( $module_system_name = '', $site_id = '' ) {
+		// check permission
+		if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_uninstall_perm' ) != true ) {redirect( 'site-admin' );}
+		
+		// uninstall
+		$result = $this->modules_model->do_uninstall( $module_system_name, $site_id );
+		
+		// load session
+		$this->load->library( 'session' );
+		if ( $result === true ) {
+			$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.lang( 'modules_uninstalled' ).'</div>' );
+		} else {
+			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.lang( 'modules_uninstall_fail' ).'</div>' );
+		}
+		
+		redirect( 'site-admin/module' );
+	}// uninstall
 	
 
 }

@@ -132,7 +132,7 @@ textarea {border: 1px solid #ddd; border-radius: 3px; display: block; clear: lef
 
 .list-item-avatar {max-height: 20px; max-width: 20px;}
 
-.list-items {border:1px solid #eee; border-collapse: separate; margin-bottom: 10px; overflow: hidden; width: 100%;}
+.list-items {border:1px solid #eee; border-collapse: separate; margin-bottom: 10px; width: 100%;}
 .list-items * {word-wrap: break-word;}
 .list-items td {border-bottom: 1px solid #eee; border-top: 1px solid #fff; font-size: 12px; padding: 2px; text-align: left; vertical-align: top;}
 .list-items td p {margin: 0 0 5px 0;}
