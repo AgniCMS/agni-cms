@@ -250,6 +250,7 @@ class siteman_model extends CI_Model {
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders != null ? $orders : 'site_id' );
+		$orders = ( !in_array( $orders, array( 'site_id', 'site_name', 'site_domain', 'site_status' ) ) ? 'site_id' : $orders );
 		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
 		$sort = ( $sort != null ? $sort : 'asc' );
 		$this->db->order_by( $orders, $sort );
@@ -323,6 +324,7 @@ class siteman_model extends CI_Model {
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders != null ? $orders : 'site_name' );
+		$orders = ( !in_array( $orders, array( 'site_id', 'site_name', 'site_domain', 'site_status' ) ) ? 'site_name' : $orders );
 		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
 		$sort = ( $sort != null ? $sort : 'asc' );
 		$this->db->order_by( $orders, $sort );

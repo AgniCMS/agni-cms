@@ -113,6 +113,9 @@ class themes extends admin_controller {
 		
 		$output['theme_name'] = ( $pdata['name'] != null ? $pdata['name'] : $theme_system_name );
 		
+		// list used theme in sites.
+		$output['theme_use_in_site'] = $this->themes_model->list_theme_use_in_sites( $theme_system_name );
+		
 		// delete action
 		if ( $this->input->post() ) {
 			if ( $this->input->post( 'confirm' ) == 'yes' ) {

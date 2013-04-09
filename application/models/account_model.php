@@ -1052,23 +1052,6 @@ class account_model extends CI_Model {
 		}
 		$this->db->group_by( 'accounts.account_id' );
 		
-		/*$sql = 'select * from ' . $this->db->dbprefix( 'accounts' ) . ' as acc';
-		$sql .= ' left join ' . $this->db->dbprefix( 'account_level' ) . ' as al';
-		$sql .= ' on acc.account_id = al.account_id';
-		$sql .= ' left join ' . $this->db->dbprefix( 'account_level_group' ) . ' as alg';
-		$sql .= ' on al.level_group_id = alg.level_group_id';
-		$sql .= ' where 1';
-		$q = trim( $this->input->get( 'q' ) );
-		if ( $q != null && $q != 'none' ) {
-			$sql .= ' and (';
-			$sql .= " account_username like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or account_email like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or account_fullname like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or account_status_text like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= ')';
-		}
-		$sql .= ' group by acc.account_id';*/
-		
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
 		$orders = ( $orders != null ? $orders : 'account_username' );
