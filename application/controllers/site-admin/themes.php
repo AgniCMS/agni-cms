@@ -200,9 +200,6 @@ class themes extends admin_controller {
 		
 		// list themes
 		$output['list_item'] = $this->themes_model->list_all_themes();
-		//if ( is_array( $output['list_item'] ) ) {
-		//	$output['pagination'] = $this->pagination->create_links();
-		//}
 		
 		// default admin theme is...
 		$output['theme_admin_name'] = '';

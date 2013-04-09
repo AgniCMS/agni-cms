@@ -19,17 +19,17 @@ class themes_model extends CI_Model {
 	function __construct() {
 		parent::__construct();
 		
-		$this->_setup_module_dir();
+		$this->_setup_theme_dir();
 	}// __construct
 	
 	
 	/**
-	 * _setup_module_dir
+	 * _setup_theme_dir
 	 */
-	function _setup_module_dir() {
+	function _setup_theme_dir() {
 		$this->config->load( 'agni' );
 		$this->theme_dir = $this->config->item( 'agni_theme_path' );
-	}// _setup_module_dir
+	}// _setup_theme_dir
 	
 	
 	/**
@@ -122,12 +122,12 @@ class themes_model extends CI_Model {
 		if ( $theme_system_name == null ) {return false;}
 		
 		// check if theme is default in admin or front
-		if ( $this->is_default( $theme_system_name ) || $this->is_default( $theme_system_name, 'admin' ) ) {
+		if ( $this->is_default_one( $theme_system_name ) || $this->is_default_one( $theme_system_name, 'admin' ) ) {
 			return $this->lang->line( 'themes_delete_fail_enabled' );
 		}
 		
 		// check if enabled
-		if ( $this->is_enabled( $theme_system_name ) ) {
+		if ( $this->is_enabled_one( $theme_system_name ) ) {
 			return $this->lang->line( 'themes_delete_fail_enabled' );
 		}
 		
@@ -295,17 +295,53 @@ class themes_model extends CI_Model {
 	 */
 	function is_default( $theme_system_name = '', $check_for = 'front' ) {
 		if ( $theme_system_name == null ) {return false;}
+		
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
+		$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+		$this->db->where( 'site_id', $site_id );
 		$this->db->where( 'theme_system_name', $theme_system_name );
+		
 		if ( $check_for == 'admin' ) {
-			$this->db->where( 'theme_default_admin', '1' );
+			$this->db->where( 'theme_sites.theme_default_admin', '1' );
 		} else {
-			$this->db->where( 'theme_default', '1' );
+			$this->db->where( 'theme_sites.theme_default', '1' );
 		}
+		
 		if ( $this->db->count_all_results( 'themes' ) ) {
 			return true;
 		}
+		
 		return false;
 	}// is_default
+	
+	
+	/**
+	 * is_default_one
+	 * check this theme is default atleast one site.
+	 * @param string $theme_system_name
+	 * @param admin|front $check_for
+	 * @return boolean 
+	 */
+	function is_default_one( $theme_system_name = '', $check_for = 'front' ) {
+		if ( $theme_system_name == null ) {return false;}
+		
+		$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+		$this->db->where( 'theme_system_name', $theme_system_name );
+		
+		if ( $check_for == 'admin' ) {
+			$this->db->where( 'theme_sites.theme_default_admin', '1' );
+		} else {
+			$this->db->where( 'theme_sites.theme_default', '1' );
+		}
+		
+		if ( $this->db->count_all_results( 'themes' ) ) {
+			return true;
+		}
+		
+		return false;
+	}// is_default_one
 	
 	
 	/**
@@ -315,19 +351,27 @@ class themes_model extends CI_Model {
 	 */
 	function is_enabled( $theme_system_name = '' ) {
 		if ( $theme_system_name == null ) {return false;}
+		
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
+		
 		// check cached
-		if ( false === $theme_val = $this->cache->get( 'isthemeenable_'.$theme_system_name ) ) {
+		if ( false === $theme_val = $this->cache->get( 'isthemeenable_'.$theme_system_name.'_'.$site_id ) ) {
+			$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
 			$this->db->where( 'theme_system_name', $theme_system_name );
-			$this->db->where( 'theme_enable', '1' );
+			$this->db->where( 'site_id', $site_id );
+			$this->db->where( 'theme_sites.theme_enable', '1' );
 			if ( $this->db->count_all_results( 'themes' ) ) {
-				$this->cache->save( 'isthemeenable_'.$theme_system_name, 'true', 2678400 );// 31 days (ควรจะนานยิ่งนานยิ่งดีเพราะมันถูกเรียกจาก loop ซึ่งถ้าไม่นานมันจะทำงานหนักมากเป็นช่วงๆ)
+				$this->cache->save( 'isthemeenable_'.$theme_system_name.'_'.$site_id, 'true', 2678400 );// 31 days (ควรจะนานยิ่งนานยิ่งดีเพราะมันถูกเรียกจาก loop ซึ่งถ้าไม่นานมันจะทำงานหนักมากเป็นช่วงๆ)
 				return true;
 			}
-			$this->cache->save( 'isthemeenable_'.$theme_system_name, 'false', 2678400 );
+			$this->cache->save( 'isthemeenable_'.$theme_system_name.'_'.$site_id, 'false', 2678400 );
 			return false;
 		}
+		
 		// return cache
 		if ( $theme_val == 'true' ) {
 			return true;
@@ -335,6 +379,27 @@ class themes_model extends CI_Model {
 			return false;
 		}
 	}// is_enabled
+	
+	
+	/**
+	 * is_enabled_one
+	 * check this theme is enabled atleast one site
+	 * @param string $theme_system_name
+	 * @return boolean 
+	 */
+	function is_enabled_one( $theme_system_name = '' ) {
+		if ( $theme_system_name == null ) {return false;}
+		
+		$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+		$this->db->where( 'theme_system_name', $theme_system_name );
+		$this->db->where( 'theme_sites.theme_enable', '1' );
+		
+		if ( $this->db->count_all_results( 'themes' ) ) {
+			return true;
+		}
+		
+		return false;
+	}// is_enabled_one
 	
 	
 	/**
@@ -379,7 +444,8 @@ class themes_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_enabled_themes() {
-		$this->db->where( 'theme_enable', '1' );
+		$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+		$this->db->where( 'theme_sites.theme_enable', '1' );
 		$this->db->order_by( 'theme_name', 'asc' );
 		
 		$query = $this->db->get( 'themes' );
