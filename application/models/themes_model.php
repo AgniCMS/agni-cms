@@ -219,7 +219,7 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean 
 	 */
-	function do_enable( $theme_system_name = '' ) {
+	function do_enable( $theme_system_name = '', $site_id = '' ) {
 		if ( $theme_system_name == null ) {return false;}
 		
 		// check if there is front folder or site-admin folder for this theme
@@ -227,9 +227,11 @@ class themes_model extends CI_Model {
 			return false;
 		}
 		
-		// get site_id
-		$this->load->model( 'siteman_model' );
-		$site_id = $this->siteman_model->get_site_id();
+		if ( $site_id == null ) {
+			// get site_id
+			$this->load->model( 'siteman_model' );
+			$site_id = $this->siteman_model->get_site_id();
+		}
 		
 		// check if is in db?
 		$this->db->where( 'theme_system_name', $theme_system_name );
@@ -427,12 +429,14 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean 
 	 */
-	function is_enabled( $theme_system_name = '' ) {
+	function is_enabled( $theme_system_name = '', $site_id = '' ) {
 		if ( $theme_system_name == null ) {return false;}
 		
-		// get site id
-		$this->load->model( 'siteman_model' );
-		$site_id = $this->siteman_model->get_site_id();
+		if ( $site_id == null ) {
+			// get site id
+			$this->load->model( 'siteman_model' );
+			$site_id = $this->siteman_model->get_site_id();
+		}
 		
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
@@ -770,14 +774,14 @@ class themes_model extends CI_Model {
 	 * @param admin|front $set_for
 	 * @return boolean 
 	 */
-	function set_default( $theme_system_name = '', $set_for = 'front' ) {
+	function set_default( $theme_system_name = '', $set_for = 'front', $site_id = '' ) {
 		if ( $theme_system_name == null ) {return false;}
 		
 		// check if theme was enabled
-		if ( $this->is_enabled( $theme_system_name ) ) {
+		if ( $this->is_enabled( $theme_system_name, $site_id ) ) {
 			// theme was enabled, update to default below.
 		} else {
-			if ( !$this->do_enable( $theme_system_name ) ) {
+			if ( !$this->do_enable( $theme_system_name, $site_id ) ) {
 				return false;
 			}
 		}
@@ -789,9 +793,11 @@ class themes_model extends CI_Model {
 			if ( !file_exists( $this->theme_dir.$theme_system_name.'/front' ) ) {return false;}
 		}
 		
-		// get site id
-		$this->load->model( 'siteman_model' );
-		$site_id = $this->siteman_model->get_site_id();
+		if ( $site_id == null ) {
+			// get site id
+			$this->load->model( 'siteman_model' );
+			$site_id = $this->siteman_model->get_site_id();
+		}
 		
 		// get theme data
 		$theme_db = $this->get_themes_data( array( 'theme_system_name' => $theme_system_name ) );

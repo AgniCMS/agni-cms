@@ -76,6 +76,18 @@ class siteman_model extends CI_Model {
 		// start copy tables
 		$this->copy_newsite_table( $site_id );
 		
+		// add new theme to new site -------------------------------------------------------------------------------------------------
+		$this->load->model( 'themes_model' );
+		
+		$default_theme = $this->themes_model->get_default_theme();
+		$default_theme_admin = $this->themes_model->get_default_theme( 'admin' );
+		
+		$this->themes_model->set_default( $default_theme, 'front', $site_id );
+		$this->themes_model->set_default( $default_theme_admin, 'admin', $site_id );
+		
+		unset( $default_theme, $default_theme_admin );
+		// add new theme to new site -------------------------------------------------------------------------------------------------
+		
 		// set config for new site.
 		$config_site['config_value'] = $data['site_name'];
 		$this->db->where( 'config_name', 'site_name' );

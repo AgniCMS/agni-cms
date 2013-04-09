@@ -440,8 +440,6 @@ CREATE TABLE IF NOT EXISTS `an_modules` (
   `module_description` text,
   `module_author` varchar(255) DEFAULT NULL,
   `module_author_url` varchar(255) DEFAULT NULL,
-  `module_enable` int(1) NOT NULL DEFAULT '0',
-  `module_install` int(1) NOT NULL DEFAULT '0' COMMENT 'use when the module want to install db, script or anything.',
   PRIMARY KEY (`module_id`),
   UNIQUE KEY `module_system_name` (`module_system_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
@@ -464,7 +462,7 @@ CREATE TABLE IF NOT EXISTS `an_module_sites` (
   `module_id` int(11) NOT NULL,
   `site_id` int(11) DEFAULT NULL,
   `module_enable` int(1) NOT NULL DEFAULT '0',
-  `module_install` int(1) NOT NULL DEFAULT '0',
+  `module_install` int(1) NOT NULL DEFAULT '0' COMMENT 'use when the module want to install db, script or anything.',
   PRIMARY KEY (`module_site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -631,10 +629,6 @@ CREATE TABLE IF NOT EXISTS `an_themes` (
   `theme_url` varchar(255) DEFAULT NULL,
   `theme_version` varchar(30) DEFAULT NULL,
   `theme_description` text,
-  `theme_enable` int(1) NOT NULL DEFAULT '0',
-  `theme_default` int(1) NOT NULL DEFAULT '0',
-  `theme_default_admin` int(1) NOT NULL DEFAULT '0',
-  `theme_settings` text,
   PRIMARY KEY (`theme_id`),
   UNIQUE KEY `theme_system_name` (`theme_system_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
