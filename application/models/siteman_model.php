@@ -171,9 +171,15 @@ class siteman_model extends CI_Model {
 	 * @return mixed
 	 */
 	function edit_site( $data = array() ) {
-		// additional data for inserting
+		// additional data for updating
 		$data['site_update'] = time();
 		$data['site_update_gmt'] = local_to_gmt( time() );
+		
+		// filter data before update
+		if ( $data['site_id'] == '1' ) {
+			// site 1 always enabled.
+			$data['site_status'] = '1';
+		}
 		
 		// update to db
 		$this->db->where( 'site_id', $data['site_id'] );
@@ -181,8 +187,13 @@ class siteman_model extends CI_Model {
 		
 		// set config for new site.
 		$config_site['config_value'] = $data['site_name'];
+		if ( $data['site_id'] == '1' ) {
+			$config_table = 'config';
+		} else {
+			$config_table = $data['site_id'].'_config';
+		}
 		$this->db->where( 'config_name', 'site_name' );
-		$this->db->update( $this->db->dbprefix( $data['site_id'].'_config' ), $config_site );
+		$this->db->update( $this->db->dbprefix( $config_table ), $config_site );
 		unset( $config_site );
 		
 		// done
