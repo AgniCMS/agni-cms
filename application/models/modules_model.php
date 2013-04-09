@@ -708,6 +708,9 @@ class modules_model extends CI_Model {
 			return true;
 		}
 		
+		// delete cache
+		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
+		
 		$query->free_result();
 		return false;
 	}// set_install_module
