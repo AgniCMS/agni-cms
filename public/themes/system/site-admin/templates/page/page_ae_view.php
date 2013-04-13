@@ -75,7 +75,7 @@
 						<?php $this->load->module( 'site-admin/media' );
 						echo $this->media->get_img( $post_feature_image ); ?> 
 						<div>
-							<a href="#" onclick="return remove_feature_image()"><?php echo lang( 'post_remove' ); ?></a>
+							<a href="#" onclick="return remove_feature_image();"><?php echo lang( 'post_remove' ); ?></a>
 						</div>
 						<?php endif; ?> 
 					</div>
@@ -199,7 +199,7 @@
 	
 <?php echo form_close(); ?> 
 
-<script type="text/javascript" src="<?php echo base_url(); ?>public/js/tiny_mce/jquery.tinymce.js"></script>
+<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/tiny_mce/jquery.tinymce.js"></script>
 <script type="text/javascript">
 	make_tabs();
 	
@@ -230,7 +230,7 @@
 		
 		$('.post-summary').tinymce({
 			// Location of TinyMCE script
-			script_url : base_url+'public/js/tiny_mce/tiny_mce.js',
+			script_url : '<?php echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
 			content_css : '<?php echo $this->theme_path; ?>front/style.css',
 			// fix bug when open and tinymce not show in first time.
 			height: '150px',
@@ -247,7 +247,7 @@
 		});// tinymce summary
 		$('.post-body').tinymce({
 			// Location of TinyMCE script
-			script_url : base_url+'public/js/tiny_mce/tiny_mce.js',
+			script_url : '<?php echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
 			apply_source_formatting : true,
 			content_css : '<?php echo $this->theme_path; ?>front/style.css',
 			convert_urls : false,

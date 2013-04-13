@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<?php if ( isset( $page_meta ) ) {echo $page_meta;} ?> 
 		<!--[if lt IE 9]>
-			<script src="<?php echo $this->base_url; ?>public/js/html5.js"></script>
+			<script src="<?php echo $this->theme_path; ?>share-js/html5.js"></script>
 		<![endif]-->
 		
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-css/960adapt/css/master.css" />
@@ -15,8 +15,15 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/form.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/style.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-css/beauty-buttons/beauty-buttons.css" />
+		<?php if ( in_array( $this->uri->uri_string(), array( '/account/edit-profile' ) ) ) { ?> 
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-js/jquery-ui/css/smoothness/jquery-ui.css" />
+		<?php } // endif; ?> 
 		<?php if ( isset( $page_link ) ) {echo $page_link;} ?> 
-		<script src="<?php echo $this->base_url; ?>public/js/jquery.min.js" type="text/javascript"></script>
+		
+		<script src="<?php echo $this->theme_path; ?>share-js/jquery.min.js" type="text/javascript"></script>
+		<?php if ( in_array( $this->uri->uri_string(), array( '/account/edit-profile' ) ) ) { ?> 
+		<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/jquery-ui/jquery-ui.min.js"></script>
+		<?php } // endif; ?> 
 		<script type="text/javascript">
 			var ADAPT_CONFIG = {
 				// Where is your CSS?
@@ -42,6 +49,7 @@
 		</script>
 		<script src="<?php echo $this->theme_path; ?>share-css/960adapt/js/adapt.min.js" type="text/javascript"></script>
 		<?php if ( isset( $page_script ) ) {echo $page_script;} ?> 
+		
 		<script type="text/javascript">
 			// declare variable for use in .js file
 			var base_url = '<?php echo $this->base_url; ?>';

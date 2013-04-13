@@ -38,11 +38,11 @@
 	
 <?php echo form_close(); ?> 
 
-<script type="text/javascript" src="<?php echo base_url(); ?>public/js/tiny_mce/jquery.tinymce.js"></script>
+<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/tiny_mce/jquery.tinymce.js"></script>
 <script type="text/javascript">
 	$('.blog-content').tinymce({
 			// Location of TinyMCE script
-			script_url : base_url+'public/js/tiny_mce/tiny_mce.js',
+			script_url : '<?php echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
 			apply_source_formatting : true,
 			content_css : '<?php echo $this->theme_path; ?>front/style.css',
 			convert_urls : false,

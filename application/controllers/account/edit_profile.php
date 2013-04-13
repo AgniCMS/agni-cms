@@ -141,17 +141,7 @@ class edit_profile extends MY_Controller {
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_edit_profile' ) );
 		// meta tags
 		// link tags
-		$link = array(
-			'<link rel="stylesheet" type="text/css" href="'.$this->base_url.'public/js/jquery-ui/css/smoothness/jquery-ui.css" media="all" />'
-			);
-		$output['page_link'] = $this->html_model->gen_tags( $link );
-		unset( $link );
 		// script tags
-		$script = array(
-			'<script src="'.$this->base_url.'public/js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>'
-			);
-		$output['page_script'] = $this->html_model->gen_tags( $script );
-		unset( $script );
 		// end head tags output ##############################
 		
 		// output

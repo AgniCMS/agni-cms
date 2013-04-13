@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<?php if ( isset( $page_meta ) ) {echo $page_meta;} ?> 
 		<!--[if lt IE 9]>
-			<script src="<?php echo $this->base_url; ?>public/js/html5.js"></script>
+			<script src="<?php echo $this->theme_path; ?>share-js/html5.js"></script>
 		<![endif]-->
 		
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>960/reset.css" media="all" />
@@ -16,7 +16,7 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/style.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>beauty-buttons/beauty-buttons.css" media="all" />
 		<?php if ( isset( $page_link ) ) {echo $page_link;} ?> 
-		<script src="<?php echo $this->base_url; ?>public/js/jquery.min.js" type="text/javascript"></script>
+		<script src="<?php echo $this->theme_path; ?>share-js/jquery.min.js" type="text/javascript"></script>
 		<?php if ( isset( $page_script ) ) {echo $page_script;} ?> 
 		<script type="text/javascript">
 			// declare variable for use in .js file

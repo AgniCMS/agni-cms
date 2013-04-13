@@ -54,7 +54,7 @@ class blog extends admin_controller {
 		// meta tags
 		// link tags
 		// script tags
-		$script_tags[] = '<script src="'.$this->base_url.'public/js/jquery.textarea.js"></script>';
+		$script_tags[] = '<script src="'.$this->theme_path.'share-js/jquery.textarea.js"></script>';
 		$output['page_script'] = $this->html_model->gen_tags( $script_tags );
 		unset( $script_tags );
 		// end head tags output ##############################
