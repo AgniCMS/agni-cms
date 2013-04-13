@@ -26,8 +26,8 @@
 			</div>
 			
 			<div class="requirement-check">
-				<span><?php echo lang( 'admin_webbrowser' ); ?>: <small class="ico-<?php if ( isset( $browser_check ) ) {echo $browser_check;} ?>"></small></span>
-				<span><?php echo lang( 'admin_javascript' ); ?>: <small class="ico-no" id="js-check"></small></span>
+				<span><?php echo lang( 'admin_webbrowser' ); ?>: <small class="icon-<?php if ( isset( $browser_check ) ) {echo str_replace( array( 'yes', 'no', 'unknow' ), array( 'ok', 'remove', 'exclamation-sign' ), $browser_check );} ?>"></small></span>
+				<span><?php echo lang( 'admin_javascript' ); ?>: <small class="icon-remove" id="js-check"></small></span>
 			</div>
 			
 			<span class="forget-toggle"><?php echo lang( 'account_forget_userpass' ); ?></span>

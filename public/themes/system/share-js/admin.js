@@ -234,7 +234,7 @@ var delay = (function(){
 $(document).ready(function() {
 	$('.login-username').focus();// auto focus at input username [login page]
 	
-	$('#js-check').removeClass('ico-no').addClass('ico-yes');// jquery checked javascript requirement at login page
+	$('#js-check').removeClass('icon-remove').addClass('icon-ok');// jquery checked javascript requirement at login page
 	
 	$('.forget-toggle').click(function() {
 		$('.forget-form').toggle('fade');

@@ -272,7 +272,7 @@
 		$('.post-summary').tinymce({
 			// Location of TinyMCE script
 			script_url : '<?php echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
-			content_css : '<?php echo $this->theme_path; ?>front/style.css',
+			content_css : '<?php echo $this->theme_path; ?>share-css/bootstrap/css/bootstrap.min.css',
 			// fix bug when open and tinymce not show in first time.
 			height: '150px',
 			width: '100%',
@@ -290,7 +290,7 @@
 			// Location of TinyMCE script
 			script_url : '<?php echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
 			apply_source_formatting : true,
-			content_css : '<?php echo $this->theme_path; ?>front/style.css',
+			content_css : '<?php echo $this->theme_path; ?>share-css/bootstrap/css/bootstrap.min.css',
 			convert_urls : false,
 			document_base_url : base_url,
 			inline_styles : true,
