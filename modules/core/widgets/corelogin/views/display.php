@@ -28,7 +28,7 @@ if ( isset( $values['block_title'] ) && $values['block_title'] != null ) {
 	<label class="form-label"><?php echo lang( 'account_username' ); ?>: <input type="text" name="account_username" value="" /></label>
 	<label class="form-label"><?php echo lang( 'account_password' ); ?>: <input type="password" name="account_password" value="" /></label>
 	<label class="form-label"><input type="checkbox" name="remember" value="yes" /> <?php echo lang( 'account_remember_my_login' ); ?></label>
-	<button type="submit" class="bb-button"><?php echo lang( 'account_login' ); ?></button>
+	<button type="submit" class="btn btn-small"><?php echo lang( 'account_login' ); ?></button>
 	<?php echo anchor( 'account/register', lang( 'account_register' ) ); ?> 
 	<?php echo form_close(); ?> 
 <?php endif; ?> 

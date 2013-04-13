@@ -101,7 +101,44 @@ if ( !function_exists( 'show_menuitem_nested' ) ) {
 		
 		foreach ($array as $item) {
 
-			$output .= '<li id="list_'.$item->mi_id.'">';
+			$output .= '<li id="list_'.$item->mi_id.'"';
+			$output .= ' class=" link-item';
+			// check for active link
+			if ( $item->custom_link != null ) {
+				if ( strpos( $item->custom_link, current_url() ) !== false ) {
+					$output .= ' active current';
+				}
+			} else {
+				switch ( $item->mi_type ) {
+					case 'category':
+						if ( current_url() == site_url( $item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+					case 'tag':
+						if ( current_url() == site_url( 'tag/'.$item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+					case 'article':
+						if ( current_url() == site_url( 'post/'.$item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+					case 'page':
+						if ( current_url() == site_url( $item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+					default:
+						if ( current_url() == site_url( $item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+				}
+			}
+			$output .= '"';
+			$output .= '>';
 			if ( $item->custom_link != null ) {
 				$output .= $item->custom_link;
 			} else {
