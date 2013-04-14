@@ -303,7 +303,9 @@ class comments_model extends CI_Model {
 		$this->db->join( 'accounts', 'accounts.account_id = comments.account_id', 'left outer' );
 		$this->db->join( 'posts', 'posts.post_id = comments.post_id', 'left outer' );
 		
-		// sql query
+		$this->db->where( 'comments.language', $this->lang->get_current_lang() );
+		
+		// sql filter
 		$filter = strip_tags( trim( $this->input->get( 'filter' ) ) );
 		$filter_val = strip_tags( trim( $this->input->get( 'filter_val' ) ) );
 		if ( $list_for == 'front' && !$this->account_model->check_admin_permission( 'comment_perm', 'comment_viewall_perm' ) ) {

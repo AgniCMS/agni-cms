@@ -418,6 +418,7 @@ class comment extends MY_Controller {
 				// set data for insert
 				$data['parent_id'] = trim( $this->input->post( 'parent_id' ) );
 					if ( !is_numeric( $data['parent_id'] ) ) {$data['parent_id'] = '0';}
+				$data['language'] = $this->lang->get_current_lang();
 				$data['post_id'] = (int)trim( $this->input->post( 'post_id' ) );
 				$data['account_id'] = $account_id;
 				$data['name'] = htmlspecialchars( trim( $this->input->post( 'name' ) ), ENT_QUOTES, config_item( 'charset' ) );

@@ -119,7 +119,7 @@
 								<?php endif; ?> 
 								<?php if ( check_admin_permission( 'comment_perm', 'comment_viewall_perm' ) ): ?> 
 								<li><?php 
-									$count_comment = $this->db->where( 'comment_status', '0' )->where( 'comment_spam_status', 'normal' )->count_all_results( 'comments' );
+									$count_comment = $this->db->where( 'language',$this->lang->get_current_lang() )->where( 'comment_status', '0' )->where( 'comment_spam_status', 'normal' )->count_all_results( 'comments' );
 									echo anchor( 'site-admin/comment', lang( 'admin_nav_comment' ).( $count_comment > 0 ? ' '.'<span class="badge badge-important">'.$count_comment.'</span>' : '' ) );
 									?> 
 								<?php endif; ?> 

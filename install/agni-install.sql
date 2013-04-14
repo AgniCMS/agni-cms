@@ -250,6 +250,7 @@ CREATE TABLE IF NOT EXISTS `an_ci_sessions` (
 CREATE TABLE IF NOT EXISTS `an_comments` (
   `comment_id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) NOT NULL DEFAULT '0',
+  `language` varchar(5) DEFAULT NULL,
   `post_id` int(11) DEFAULT NULL,
   `account_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL COMMENT 'comment author''s name',
