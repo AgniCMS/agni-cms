@@ -30,7 +30,7 @@ if ( !function_exists( 'show_menuitem_nested_sortable' ) ) {
 		
 		foreach ($array as $item) {
 
-			$output .= '<li id="list_'.$item->mi_id.'"><div><span class="sort-handle">&nbsp;</span> <span class="item-name">';
+			$output .= '<li id="list_'.$item->mi_id.'"><div><span class="sort-handle icon-move"></span> <span class="item-name">';
 			
 			if ( $item->custom_link != null ) {
 				$output .= $item->custom_link;
@@ -58,7 +58,7 @@ if ( !function_exists( 'show_menuitem_nested_sortable' ) ) {
 			$output .= ' &nbsp; &nbsp; <span class="item-actions">';
 			
 			if ( $ci->account_model->check_admin_permission( 'menu_perm', 'menu_edit_perm' ) ) {
-				$output .= '<a href="#" class="ico16-edit" title="'.lang( 'admin_edit' ).'" onclick="return edit_menu_item(\''.$item->mi_id.'\');">'.lang( 'admin_edit' ).'</a>';
+				$output .= '<a href="#" title="'.lang( 'admin_edit' ).'" onclick="return edit_menu_item(\''.$item->mi_id.'\');"><i class="icon-pencil"></i> '.lang( 'admin_edit' ).'</a>';
 			}
 			
 			if ( $ci->account_model->check_admin_permission( 'menu_perm', 'menu_edit_perm' ) && $ci->account_model->check_admin_permission( 'menu_perm', 'menu_delete_perm' ) ) {
@@ -66,7 +66,7 @@ if ( !function_exists( 'show_menuitem_nested_sortable' ) ) {
 			}
 			
 			if ( $ci->account_model->check_admin_permission( 'menu_perm', 'menu_delete_perm' ) ) {
-				$output .= '<a href="#" class="ico16-delete" title="'.lang( 'admin_delete' ).'" onclick="return delete_menu_item(\''.$item->mi_id.'\');">'.lang( 'admin_delete' ).'</a>';
+				$output .= '<a href="#" title="'.lang( 'admin_delete' ).'" onclick="return delete_menu_item(\''.$item->mi_id.'\');"><i class="icon-trash"></i> '.lang( 'admin_delete' ).'</a>';
 			}
 			
 			$output .= '</span>';

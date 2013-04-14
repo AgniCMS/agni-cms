@@ -10,20 +10,20 @@
 		<?php echo $this->modules_plug->do_action( 'comment_admin_index_top' ); ?> 
 	</div>
 	<div class="cmd-right">
-		<form method="get" class="search">
+		<form method="get" class="form-search">
 			<input type="hidden" name="filter" value="<?php echo $filter; ?>" />
 			<input type="hidden" name="filter_val" value="<?php echo $filter_val; ?>" />
 			<input type="text" name="q" value="<?php echo $q; ?>" maxlength="255" />
 			<button type="submit" class="bb-button standard btn"><?php echo lang( 'comment_search' ); ?></button>
 		</form>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/comment/process_bulk' ); ?> 
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 
-	<table class="list-items">
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
@@ -51,6 +51,7 @@
 					<div class="comment-account-info">
 						<img src="<?php echo ( $row->account_avatar != null ? base_url().$row->account_avatar : base_url().'public/images/default-avatar.png' ); ?>" alt="" class="avatar" />
 						<?php echo ( $row->c1_account_id != '0' && $row->c1_account_id != null ? anchor( 'site-admin/account/edit/'.$row->c1_account_id, $row->name ) : $row->name ); ?> 
+						<div class="clearfix"></div>
 					</div>
 					<div class="comment-user-data"><?php echo $row->ip_address; ?><br />
 					<?php echo $row->user_agent; ?></div>
@@ -96,7 +97,7 @@
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 
 <?php echo form_close(); ?> 

@@ -14,7 +14,7 @@
 		if ( is_array( $list_item['items'] ) ) {
 			$i = 1;
 		?> 
-		<table class="list-items">
+		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
 					<th><?php echo lang( 'post_article_name' ); ?></th>

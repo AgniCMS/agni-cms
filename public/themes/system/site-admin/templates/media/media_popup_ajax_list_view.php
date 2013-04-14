@@ -1,4 +1,4 @@
-<table class="list-items media-list-items">
+<table class="table table-striped table-hover media-list-items">
 	<thead>
 		<tr>
 			<th><?php echo anchor( current_url().'?orders=file_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_name' ) ); ?></th>
@@ -27,7 +27,7 @@
 				<?php endif; ?> 
 				<?php echo anchor( base_url().$row->file, $row->media_name, array( 'title' => $row->file_client_name, 'target' => '_fullview' ) ); ?><br />
 				<?php echo anchor( site_url( 'site-admin/media/edit/'.$row->file_id ), lang( 'admin_edit' ), array( 'target' => '_edit' ) ); ?> 
-				<div class="clear"></div>
+				<div class="clearfix"></div>
 			</td>
 			<td><?php $size = get_file_info( $row->file, 'size' ); 
 				echo easy_filesize( $size['size'] ); 

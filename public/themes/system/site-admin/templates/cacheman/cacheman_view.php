@@ -4,14 +4,21 @@
 	<?php echo form_open( 'site-admin/cacheman/do_action' ); ?> 
 		<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 		
-		<div class="form-label">
-			<?php echo lang( 'cache_please_select_action' ); ?>:
-			<div>
-				<select name="cache_act" class="select-inline">
-					<option value=""></option>
-					<option value="clear"><?php echo lang( 'cache_clear_all' ); ?></option>
-				</select>
-				<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
+		<div class="form-cache-container">
+			<div class="control-group">
+				<div class="control-label"><?php echo lang( 'cache_please_select_action' ); ?>: </div>
+				<div class="controls">
+					<select name="cache_act" class="select-inline">
+						<option value=""></option>
+						<option value="clear"><?php echo lang( 'cache_clear_all' ); ?></option>
+					</select>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
+				</div>
 			</div>
 		</div>
 		

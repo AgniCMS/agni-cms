@@ -6,13 +6,13 @@
 		<button type="button" class="bb-button btn" onclick="window.location=site_url+'site-admin/siteman/add';"><?php echo lang( 'admin_add' ); ?></button>
 		<?php } ?> 
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/siteman/multiple' ); ?> 
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 
-	<table class="list-items">
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
@@ -73,7 +73,7 @@
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 
 <?php echo form_close(); ?> 

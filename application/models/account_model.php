@@ -275,6 +275,10 @@ class account_model extends CI_Model {
 		
 		if ( $attempt_text == null ) {$attempt_text = null;}
 		
+		// load model
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
 		// load library
 		$this->load->library( array( 'Browser' ) );
 		
@@ -283,6 +287,7 @@ class account_model extends CI_Model {
 		
 		// sql insert log
 		$this->db->set( 'account_id', $account_id );
+		$this->db->set( 'site_id', $site_id );
 		$this->db->set( 'login_ua', $this->browser->getUserAgent() );
 		$this->db->set( 'login_os', $this->browser->getPlatform() );
 		$this->db->set( 'login_browser', $this->browser->getBrowser() . ' ' . $this->browser->getVersion() );

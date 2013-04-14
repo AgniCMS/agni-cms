@@ -1,4 +1,4 @@
-<table class="list-items media-list-items">
+<table class="table table-striped table-hover media-list-items">
 	<thead>
 		<tr>
 			<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
@@ -36,7 +36,7 @@
 				<?php echo $width; ?> x <?php echo $height; ?><br />
 				<?php endif; ?> 
 				<?php echo anchor( base_url().$row->file, $row->file_name, array( 'title' => $row->file_client_name ) ); ?>
-				<div class="clear"></div>
+				<div class="clearfix"></div>
 			</td>
 			<td><?php echo $row->media_name; ?></td>
 			<td><?php echo $row->file_mime_type; ?></td>

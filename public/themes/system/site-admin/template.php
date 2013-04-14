@@ -1,7 +1,11 @@
 <?php $this->load->view( 'site-admin/inc_html_head' ); ?> 
 		
+
 		<div class="page-container">
+			
+			
 			<div class="header">
+				<div class="cms-logo"><img src="<?php echo $this->theme_path; ?>site-admin/images/logo.png" alt="Agni CMS" /></div>
 				<div class="site-name"><?php echo $this->config_model->load_single( 'site_name' ); ?></div>
 				<div class="user">
 					<?php if ( !isset( $cookie ) ) {
@@ -14,7 +18,9 @@
 					</ul>
 					<div class="clear"></div>
 				</div>
-				<div class="clear"></div>
+				<div class="clearfix"></div>
+				
+				
 				<div class="navigations">
 					<?php // load helper
 					$this->load->helper( 'account' ); 
@@ -112,9 +118,10 @@
 								<li><?php echo anchor( 'site-admin/media', lang( 'admin_nav_media_mgr' ) ); ?></li>
 								<?php endif; ?> 
 								<?php if ( check_admin_permission( 'comment_perm', 'comment_viewall_perm' ) ): ?> 
-								<li><?php echo anchor( 'site-admin/comment', lang( 'admin_nav_comment' ) );
+								<li><?php 
 									$count_comment = $this->db->where( 'comment_status', '0' )->where( 'comment_spam_status', 'normal' )->count_all_results( 'comments' );
-									?> <?php if ( $count_comment > 0 ): ?><span class="count-unpublish-comment"><?php echo $count_comment; ?></span><?php endif; unset( $count_comment ); ?></li>
+									echo anchor( 'site-admin/comment', lang( 'admin_nav_comment' ).( $count_comment > 0 ? ' '.'<span class="badge badge-important">'.$count_comment.'</span>' : '' ) );
+									?> 
 								<?php endif; ?> 
 							</ul>
 						</li>
@@ -139,17 +146,25 @@
 							<?php endif; ?> 
 						</li>
 					</ul>
-					<div class="clear"></div>
-				</div>
-			</div>
+					<div class="clearfix"></div>
+				</div><!--.navigations-->
+			</div><!--.header-->
+			
+			
 			<div class="body-wrap">
 				
 				<?php if ( isset( $page_content ) ) {echo $page_content;} ?> 
 				
-			</div>
+			</div><!--.body-wrap-->
+			
+			
 		</div>
+
+
+
 		<div class="footer">
 			<?php echo lang( 'admin_credit' ); ?> 
-		</div>
+		</div><!--.footer-->
+		
 		
 <?php $this->load->view( 'site-admin/inc_html_foot' ); ?>

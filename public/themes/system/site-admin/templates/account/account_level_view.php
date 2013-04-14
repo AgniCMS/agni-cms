@@ -4,13 +4,13 @@
 	<div class="cmd-left">
 		<button type="button" onclick="window.location=site_url+'site-admin/account-level/add';" class="bb-button standard btn"><?php echo lang( 'admin_add' ); ?></button>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/account-level/process_bulk' ); ?> 
 	<div class="form-result"><?php if ( isset( $form_status ) ) {echo $form_status;} ?></div>
 	
-	<table class="list-items" id="sortable">
+	<table class="table table-striped table-hover" id="sortable">
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
@@ -56,7 +56,7 @@
 			</select>
 			<button type="submit" class="bb-button btn btn-warning"><?php echo lang( 'admin_submit' ); ?></button>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 <?php echo form_close(); ?> 
 

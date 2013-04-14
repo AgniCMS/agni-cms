@@ -6,13 +6,14 @@
 		| <?php echo sprintf( lang( 'modules_all' ), $list_item['total'] ); ?>
 		| <?php echo sprintf( lang( 'modules_inactive' ), ($list_item['total']-$this->db->count_all_results( 'modules' )) ); ?>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/module/process_bulk' ); ?>
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?>
 	
-	<table class="list-items">
+
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked);" /></th>
@@ -33,7 +34,11 @@
 			<tr>
 				<td class="check-column"><?php echo form_checkbox( 'id[]', $key['module_system_name']); ?></td>
 				<td>
-					<strong><?php if ( !empty( $key['module_name'] ) ): ?><?php echo $key['module_name']; ?><?php else: ?><em title="<?php echo lang( 'modules_no_name' ); ?>"><?php echo $key['module_system_name']; ?></em><?php endif; ?></strong>
+					<p>
+						<strong>
+							<?php if ( !empty( $key['module_name'] ) ): ?><?php echo $key['module_name']; ?><?php else: ?><em title="<?php echo lang( 'modules_no_name' ); ?>"><?php echo $key['module_system_name']; ?></em><?php endif; ?>
+						</strong>
+					</p>
 					<div>
 						<?php if ( $current_site_id == '1' ) { ?> 
 						
@@ -101,6 +106,7 @@
 		<?php endif; ?> 
 	</table>
 	
+
 	<div class="cmds">
 		<div class="cmd-left">
 			<select name="act">
@@ -114,7 +120,7 @@
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 <?php echo form_close(); ?> 
 

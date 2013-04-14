@@ -1,26 +1,39 @@
 <h1><?php echo ( $this->uri->segment(3) == 'add' ? lang( 'siteman_add' ) : lang( 'siteman_edit' ) ); ?></h1>
 
-<?php echo form_open(); ?> 
+<?php echo form_open( '', array( 'class' => 'form-horizontal' ) ); ?> 
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 
 	<div class=" page-add-edit page-siteman-ae">
-		<label><?php echo lang( 'siteman_site_name' ); ?>: <span class="txt_require">*</span>
-			<input type="text" name="site_name" value="<?php if ( isset( $site_name ) ) {echo $site_name;} ?>" maxlength="255" />
-		</label>
+		<div class="control-group">
+			<label class="control-label" for="site_name"><?php echo lang( 'siteman_site_name' ); ?>: <span class="txt_require">*</span></label>
+			<div class="controls">
+				<input type="text" name="site_name" value="<?php if ( isset( $site_name ) ) {echo $site_name;} ?>" maxlength="255" id="site_name" class="input-block-level" />
+			</div>
+		</div>
 		
-		<label><?php echo lang( 'siteman_site_domain' ); ?>: <span class="txt_require">*</span>
-			<input type="text" name="site_domain" value="<?php if ( isset( $site_domain ) ) {echo $site_domain;} ?>" maxlength="255" placeholder="domain.tld" />
-			<span class="txt_comment"><?php echo lang( 'siteman_domain_comment' ); ?></span>
-		</label>
+		<div class="control-group">
+			<label class="control-label" for="site_domain"><?php echo lang( 'siteman_site_domain' ); ?>: <span class="txt_require">*</span></label>
+			<div class="controls">
+				<input type="text" name="site_domain" value="<?php if ( isset( $site_domain ) ) {echo $site_domain;} ?>" maxlength="255" placeholder="domain.tld" id="site_domain" class="input-block-level" />
+				<span class="help-block"><?php echo lang( 'siteman_domain_comment' ); ?></span>
+			</div>
+		</div>
 		
-		<label><?php echo lang( 'siteman_site_status' ); ?>: 
-			<select name="site_status">
-				<option value="0"<?php if ( isset( $site_status ) && $site_status == '0' ) { ?> selected="selected"<?php } ?>><?php echo lang( 'siteman_disable' ); ?></option>
-				<option value="1"<?php if ( isset( $site_status ) && $site_status == '1' ) { ?> selected="selected"<?php } ?>><?php echo lang( 'siteman_enable' ); ?></option>
-			</select>
-		</label>
+		<div class="control-group">
+			<label class="control-label"><?php echo lang( 'siteman_site_status' ); ?>: </label>
+			<div class="controls">
+				<select name="site_status" class="input-block-level">
+					<option value="0"<?php if ( isset( $site_status ) && $site_status == '0' ) { ?> selected="selected"<?php } ?>><?php echo lang( 'siteman_disable' ); ?></option>
+					<option value="1"<?php if ( isset( $site_status ) && $site_status == '1' ) { ?> selected="selected"<?php } ?>><?php echo lang( 'siteman_enable' ); ?></option>
+				</select>
+			</div>
+		</div>
 		
-		<button type="submit" class="bb-button standard btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
+		<div class="control-group">
+			<div class="controls">
+				<button typebutton="submit" class="bb-button standard btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
+			</div>
+		</div>
 	</div>
 
 <?php echo form_close(); ?> 

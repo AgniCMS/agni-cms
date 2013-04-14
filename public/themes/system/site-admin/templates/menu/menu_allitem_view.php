@@ -1,61 +1,100 @@
 <h1><?php echo lang( 'menu_menu' ); ?>: <?php echo $mg->mg_name; ?></h1>
+
 <?php if ( $mg->mg_description ): ?><p><?php echo $mg->mg_description; ?></p><?php endif; ?> 
+
 <input type="hidden" name="mg_id" value="<?php echo $mg_id; ?>" id="mg_id" />
 
 <div class="form-result"></div>
 
-<div class="page-menu-items">
-	<div class="add-menu-item">
-		<form class="add-source item-category">
-			<h2><?php echo lang( 'menu_source_category' ); ?></h2>
-			<?php echo show_category_check( $list_category ); ?> 
-			<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parent().serialize(), 'category' )"><?php echo lang( 'admin_add' ); ?></button>
+<div class="row-fluid page-menu-items">
+	
+	
+	<div class="span3 add-menu-item">
+		
+		<form class="add-source">
+			<div class="item-category">
+				<h2><?php echo lang( 'menu_source_category' ); ?></h2>
+				<?php echo show_category_check( $list_category ); ?> 
+			</div>
+			<div class="button-row">
+				<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parent().serialize(), 'category' )"><?php echo lang( 'admin_add' ); ?></button>
+			</div>
 		</form>
+		
 		<div class="add-source item-article">
 			<h2><?php echo lang( 'menu_source_article' ); ?></h2>
-			<input type="text" name="article" value="" class="input-add-articles" placeholder="<?php echo lang( 'menu_search_article_to_add' ); ?>" />
+			<input type="text" name="article" value="" class="input-add-articles input-block-level" placeholder="<?php echo lang( 'menu_search_article_to_add' ); ?>" />
 		</div>
-		<form class="add-source item-page">
-			<h2><?php echo lang( 'menu_source_page' ); ?></h2>
-			<?php if ( isset( $list_page['items'] ) && is_array( $list_page['items'] ) ): ?> 
-			<ul>
-				<?php foreach ( $list_page['items'] as $row ): ?> 
-				<li><label><input type="checkbox" name="type_id[]" value="<?php echo $row->post_id; ?>" /> <?php echo $row->post_name; ?></label></li>
-				<?php endforeach; ?> 
-			</ul>
-			<?php endif; ?> 
-			<?php if ( isset( $pagination ) ) {echo $pagination;} ?> 
-			<?php unset( $list_page, $row ); ?> 
-			<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parent().serialize(), 'page' )"><?php echo lang( 'admin_add' ); ?></button>
+		
+		<form class="add-source">
+			<div class="item-page">
+				<h2><?php echo lang( 'menu_source_page' ); ?></h2>
+				<?php if ( isset( $list_page['items'] ) && is_array( $list_page['items'] ) ): ?> 
+				<ul>
+					<?php foreach ( $list_page['items'] as $row ): ?> 
+					<li><label><input type="checkbox" name="type_id[]" value="<?php echo $row->post_id; ?>" /> <?php echo $row->post_name; ?></label></li>
+					<?php endforeach; ?> 
+				</ul>
+				<?php endif; ?> 
+				<?php if ( isset( $pagination ) ) {echo $pagination;} ?> 
+				<?php unset( $list_page, $row ); ?> 
+			</div>
+			<div class="button-row">
+				<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parent().serialize(), 'page' )"><?php echo lang( 'admin_add' ); ?></button>
+			</div>
 		</form>
+		
 		<div class="add-source item-tag">
 			<h2><?php echo lang( 'menu_source_tag' ); ?></h2>
-			<input type="text" name="tag" value="" class="input-add-tags" placeholder="<?php echo lang( 'menu_search_tag_to_add' ); ?>" />
+			<input type="text" name="tag" value="" class="input-add-tags input-block-level" placeholder="<?php echo lang( 'menu_search_tag_to_add' ); ?>" />
 		</div>
+		
 		<form class="add-source item-link">
 			<h2><?php echo lang( 'menu_source_link' ); ?></h2>
-			<label><?php echo lang( 'menu_link_text' ); ?>: <input type="text" name="link_text" value="" maxlength="255" /></label>
-			<label><?php echo lang( 'menu_link_url' ); ?>: <input type="text" name="link_url" value="" maxlength="255" /></label>
-			<button type="button" class="bb-button btn btn-small" onclick="add_content_item_link( $(this).parent().serialize(), 'link' )"><?php echo lang( 'admin_add' ); ?></button>
+			<div class="control-group">
+				<label class="control-label" for="link_text"><?php echo lang( 'menu_link_text' ); ?>: </label>
+				<div class="controls">
+					<input type="text" name="link_text" value="" maxlength="255" id="link_text" class="input-block-level" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="link_url"><?php echo lang( 'menu_link_url' ); ?>: </label>
+				<div class="controls">
+					<input type="text" name="link_url" value="" maxlength="255" id="link_url" class="input-block-level" />
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<button type="button" class="bb-button btn btn-small" onclick="add_content_item_link( $(this).parents( 'form' ).serialize(), 'link' );"><?php echo lang( 'admin_add' ); ?></button>
+				</div>
+			</div>
 		</form>
+		
 		<form class="add-source item-customlink">
 			<h2><?php echo lang( 'menu_custom_link' ); ?></h2>
-			<textarea name="custom_link" placeholder="&lt;a href=&quot;http://link&quot;&gt;text&lt;/a&gt;"></textarea>
-			<button type="button" class="bb-button btn btn-small" onclick="add_content_item_link( $(this).parent().serialize(), 'custom_link' )"><?php echo lang( 'admin_add' ); ?></button>
+			<textarea name="custom_link" placeholder="&lt;a href=&quot;http://link&quot;&gt;text&lt;/a&gt;" class="custom_link input-block-level"></textarea>
+			<div class="button-row">
+				<button type="button" class="bb-button btn btn-small" onclick="add_content_item_link( $(this).parents('form').serialize(), 'custom_link' );"><?php echo lang( 'admin_add' ); ?></button>
+			</div>
 		</form>
+		
 	</div>
-	<div class="list-menu-items">
+	
+	
+	<div class="span9 list-menu-items">
 		<div class="stored-items">
 			<?php echo show_menuitem_nested_sortable( $list_item );// this file is in menu_helper. ?> 
 		</div>
 	</div>
+	
+	
 </div>
 
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.menu-tree-sortable').nestedSortable({
 			forcePlaceholderSize: true,
-			handle: 'div',
+			handle: '.sort-handle',
 			helper: 'clone',
 			items: 'li',
 			placeholder: "ui-state-highlight",

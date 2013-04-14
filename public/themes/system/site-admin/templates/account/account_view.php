@@ -6,18 +6,18 @@
 		| <?php echo sprintf( lang( 'admin_total' ), $list_item['total'] ); ?> 
 	</div>
 	<div class="cmd-right">
-		<form method="get" class="search">
+		<form method="get" class="form-search">
 			<input type="text" name="q" value="<?php echo htmlspecialchars( trim( $this->input->get( 'q' ) ) ); ?>" maxlength="255" />
 			<button type="submit" class="bb-button standard btn"><?php echo lang( 'account_search' ); ?></button>
 		</form>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/account/process_bulk' ); ?> 
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 
-	<table class="list-items">
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
@@ -84,6 +84,6 @@
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 <?php echo form_close(); ?> 

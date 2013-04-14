@@ -48,6 +48,7 @@ $lang['post_revision_log_msg'] = 'Revision log message';
 $lang['post_script_or_stylesheet'] = 'Enter script or style sheet';
 $lang['post_script_style'] = 'Script and Style';
 $lang['post_search'] = 'Search';
+$lang['post_select_feature_image'] = 'Select feature image';
 $lang['post_status'] = 'Status';
 $lang['post_summary'] = 'Summary';
 $lang['post_tag_usage_comment'] = 'Enter tag name and select from auto complete, if not found just press enter.';

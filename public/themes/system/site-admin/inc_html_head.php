@@ -15,6 +15,9 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-js/jquery-ui/css/smoothness/jquery-ui.css" media="all">
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>site-admin/style.css" media="all">
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>site-admin/superfish.css" media="all">
+		<?php if ( $this->uri->uri_string() == '/site-admin/login' ) { ?> 
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>site-admin/style-login.css" media="all">
+		<?php } // endif; ?> 
 		<?php if ( isset( $page_link ) ) {echo $page_link;} ?> 
 		
 		<script src="<?php echo $this->theme_path; ?>share-js/jquery.min.js" type="text/javascript"></script>
@@ -39,10 +42,8 @@
 			// declare variable for use in .js file
 			var base_url = '<?php echo $this->base_url; ?>';
 			var site_url = '<?php echo site_url(); ?>/';
-			<?php //if ( config_item( 'csrf_protection' ) == true ): ?> 
 			var csrf_name = '<?php echo config_item( 'csrf_token_name' ); ?>';
 			var csrf_value = '<?php echo $this->security->get_csrf_hash(); ?>';
-			<?php //endif; ?> 
 		</script>
 		<?php echo $this->modules_plug->do_action( 'admin_html_head' ); ?> 
 	</head>

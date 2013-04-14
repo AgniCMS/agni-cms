@@ -12,7 +12,9 @@
 		</li>
 		<?php endforeach; ?> 
 	</ul>
-	<p><?php echo lang( 'comment_delete_will_delete_child' ); ?></p>
+	<blockquote>
+		<p><?php echo lang( 'comment_delete_will_delete_child' ); ?></p>
+	</blockquote>
 	<button type="submit" class="bb-button btn btn-danger"><?php echo lang( 'admin_yes' ); ?></button>
 	<button type="button" class="bb-button btn" onclick="window.location='<?php echo site_url( 'site-admin/comment' ); ?>';"><?php echo lang( 'admin_no' ); ?></button>
 <?php echo form_close(); ?> 

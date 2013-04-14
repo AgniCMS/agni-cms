@@ -3,7 +3,7 @@
 <?php echo form_open( 'site-admin/account/delete_log/'.$account_id ); ?> 
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 	
-	<table class="list-items">
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th><?php echo anchor( current_url().'?orders=login_ua&sort='.$sort, lang( 'account_useragent' ) ); ?></th>

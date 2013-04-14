@@ -4,13 +4,13 @@
 	<div class="cmd-left">
 		<button type="button" class="bb-button red btn btn-danger" id="reset-permission"><?php echo lang( 'account_permission_reset' ); ?></button>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( current_url().'/save' ); ?> 
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 
-	<table class="list-items-cells tableWithFloatingHeader">
+	<table class="table table-bordered table-hover tableWithFloatingHeader">
 		<thead>
 			<tr>
 				<th class="perm-page-cell-head"><?php echo lang( 'account_permission_page' ); ?></th>

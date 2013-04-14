@@ -4,13 +4,13 @@
 	<div class="cmd-left">
 		<button type="button" class="bb-button btn" onclick="window.location=site_url+'site-admin/menu/addgroup'"><?php echo lang( 'menu_add_group' ); ?></button>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/menu/process_group' ); ?> 
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
 
-	<table class="list-items">
+	<table class="table table-striped table-hover">
 		<thead>
 			<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
 			<th><?php echo anchor( current_url().'?orders=mg_name&amp;sort='.$sort, lang( 'menu_group_name' ) ); ?></th>
@@ -55,7 +55,7 @@
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 	
 <?php echo form_close(); ?> 

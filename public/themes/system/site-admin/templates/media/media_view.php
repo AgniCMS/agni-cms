@@ -22,14 +22,14 @@
 		
 	</div>
 	<div class="cmd-right">
-		<form method="get" class="search">
+		<form method="get" class="form-search">
 			<input type="hidden" name="filter" value="<?php echo $filter; ?>" />
 			<input type="hidden" name="filter_val" value="<?php echo $filter_val; ?>" />
 			<input type="text" name="q" value="<?php echo $q; ?>" maxlength="255" />
 			<button type="submit" class="bb-button search-button btn"><?php echo lang( 'media_search' ); ?></button>
 		</form>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/media/process_bulk' ); ?> 
@@ -50,7 +50,7 @@
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 
 <?php echo form_close(); ?> 
