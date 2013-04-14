@@ -498,6 +498,8 @@ class modules_model extends CI_Model {
 	function list_all_widgets() {
 		$this->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' );
 		$this->db->where( 'module_sites.module_enable', '1' );
+		$this->db->group_by( 'modules.module_id' );
+		
 		$query = $this->db->get( 'modules' );
 		
 		// load helper

@@ -41,8 +41,10 @@
 				<label class="control-label"><?php echo lang( 'account_avatar' ); ?>: </label>
 				<div class="controls">
 					<?php if ( isset( $account_avatar ) && $account_avatar != null ): ?> 
-						<?php echo anchor( '#', lang( 'account_delete_avatar' ), array( 'onclick' => 'return ajax_delete_avatar()' ) ); ?><br />
-						<div class="account-avatar-wrap"><img src="<?php echo $this->base_url.$account_avatar; ?>" alt="<?php echo lang( 'account_avatar' ); ?>" class="account-avatar account-avatar-edit" /></div>
+						<div class="account-avatar-wrap">
+							<?php echo anchor( '#', lang( 'account_delete_avatar' ), array( 'onclick' => 'return ajax_delete_avatar();' ) ); ?><span class="remove-status-container"></span><br />
+							<img src="<?php echo $this->base_url.$account_avatar; ?>" alt="<?php echo lang( 'account_avatar' ); ?>" class="account-avatar account-avatar-edit" />
+						</div>
 					<?php endif; ?> 
 					<input type="file" name="account_avatar" />
 					<span class="help-inline">&lt;= <?php echo $avatar_size; ?>KB. <?php echo str_replace( '|', ', ', $avatar_allowed_types ); ?></span>
@@ -97,7 +99,10 @@ $(document).ready(function() {
 
 function ajax_delete_avatar() {
 	$confirm = confirm( '<?php echo lang( 'account_are_you_sure_delete_avatar' ); ?>' );
+	
 	if ( $confirm == true ) {
+		$('.remove-status-container').html('<img src="<?php echo $this->theme_path; ?>site-admin/images/loading.gif" alt="" />');
+		
 		$.ajax({
 			url: site_url+'account/edit-profile/delete-avatar',
 			type: 'POST',
@@ -107,9 +112,11 @@ function ajax_delete_avatar() {
 				if ( data.result == true ) {
 					$('.account-avatar-wrap').remove();
 				}
+				$('.remove-status-container').html('');
 			},
 			error: function( data, status, e ) {
 				alert( e );
+				$('.remove-status-container').html('');
 			}
 		});
 		return false;
