@@ -62,7 +62,66 @@ class account_permission extends admin_controller {
 	}// index
 	
 	
+	function module( $module_system_name = '' ) {
+		// check permission
+		if ( $this->account_model->check_admin_permission( 'account_permission_perm', 'account_permission_manage_perm' ) != true ) {redirect( 'site-admin/modules' );}
+		
+		// check if module really has permission
+		if ( !$this->permission_model->has_permission( $module_system_name ) ) {redirect( 'site-admin/modules' );}
+		
+		// load module model for get module data
+		$this->load->model( 'modules_model' );
+		
+		// load session for flashdata
+		$this->load->library( 'session' );
+		$form_status = $this->session->flashdata( 'form_status' );
+		if ( $form_status != null ) {
+			$output['form_status'] = $form_status;
+		}
+		unset( $form_status );
+		
+		// get module data -----------------------------------------------------------------------------------------------------------------
+		$data['module_system_name'] = $module_system_name;
+		$module = $this->modules_model->get_modules_data( $data );
+		unset( $data );
+		
+		if ( $module == null ) {
+			redirect( 'site-admin/modules' );
+		}
+		
+		$output['module'] = $module;
+		// get module data -----------------------------------------------------------------------------------------------------------------
+		
+		$output['list_permissions'] = $this->permission_model->fetch_permissions_module( $module_system_name );
+		
+		// get permission page from module's permission
+		$permission_page = key( $output['list_permissions'] );
+		
+		$data['permission_page'] = $permission_page;
+		$output['list_permissions_check'] = $this->permission_model->list_permissions_check( $data );
+		unset( $data );
+		
+		$output['list_level_group'] = $this->account_model->list_level_group( false );
+		
+		// head tags output ##############################
+		$output['page_title'] = $this->html_model->gen_title( sprintf( $this->lang->line( 'account_permission_module' ), $module->module_name ) );
+		// meta tags
+		// link tags
+		// script tags
+		// end head tags output ##############################
+		
+		// output
+		$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+		$this->output->set_header( 'Pragma: no-cache' );
+		$this->generate_page( 'site-admin/templates/account/account_permission_module_view', $output );
+		unset( $output );
+	}// module
+	
+	
 	function reset() {
+		// filter method post only.
+		if ( strtolower( $this->input->server( 'REQUEST_METHOD' ) ) != 'post' ) {redirect( 'site-admin/account-permission' );}
+		
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'account_permission_perm', 'account_permission_manage_perm' ) != true ) {redirect( 'site-admin' );}
 		
@@ -76,28 +135,26 @@ class account_permission extends admin_controller {
 		
 		// save action
 		if ( $this->input->post() ) {
-			// remove all of previous settings
-			$this->permission_model->reset_permissions();
 			
 			// preset array post permissions.
-			$permission_page = $this->input->post( 'permission_page' );
-			$permission_action = $this->input->post( 'permission_action' );
+			$data['level_group_id'] = $this->input->post( 'level_group_id' );
+			$data['permission_page'] = $this->input->post( 'permission_page' );
+			$data['permission_action'] = $this->input->post( 'permission_action' );
 			
-			// loop insert settings.
-			foreach ( $this->input->post( 'level_group_id' ) as $key => $lv_groups ) {
-				foreach ( $lv_groups as $level_group_id ) {
-					$this->db->set( 'level_group_id', $level_group_id );
-					$this->db->set( 'permission_page', trim( $permission_page[$key] ) );
-					$this->db->set( 'permission_action', trim( $permission_action[$key] ) );
-					$this->db->insert( 'account_level_permission' );
-				}
-			}
+			$this->permission_model->save_permissions( $data );
 		}
 		
 		// set success msg and send back
 		$this->load->library( 'session' );
 		$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
-		redirect( 'site-admin/account-permission' );
+		
+		// go back
+		$this->load->library( 'user_agent' );
+		if ( $this->agent->is_referral() ) {
+			redirect( $this->agent->referrer() );
+		} else {
+			redirect( 'site-admin/account-permission' );
+		}
 	}// save
 	
 

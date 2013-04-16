@@ -87,6 +87,10 @@
 							<?php } // endif; ?> 
 						
 						<?php } // endif; get_site_id() == '1' ?> 
+						
+						<?php if ( $this->modules_model->is_activated( $key['module_system_name'], $current_site_id ) === true && $this->permission_model->has_permission( $key['module_system_name'] ) ) { ?> 
+						<?php echo anchor( 'site-admin/account-permission/module/'.urlencode( $key['module_system_name'] ), lang( 'modules_set_permission' ), array( 'class' => 'btn btn-mini' ) ); ?> 
+						<?php } // endif; ?> 
 					</div>
 				</td>
 				<td>

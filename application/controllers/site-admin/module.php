@@ -121,8 +121,13 @@ class module extends admin_controller {
 	
 	
 	function index() {
-		// check permission
-		if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_viewall_perm' ) != true ) {redirect( 'site-admin' );}
+		// check permission 
+		// special! to allow admin go to manage module's permission, we need to check at least 1 of these 2 permission.
+		if ( $this->account_model->check_admin_permission( 'modules_manage_perm', 'modules_viewall_perm' ) != true
+			   && $this->account_model->check_admin_permission( 'account_permission_perm', 'account_permission_manage_perm' ) != true ) {redirect( 'site-admin' );}
+		
+		// load permission model for check module has permission.
+		$this->load->model( 'permission_model' );
 		
 		// load session for show last flashed session
 		$this->load->library( 'session' );

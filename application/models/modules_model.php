@@ -161,7 +161,8 @@ class modules_model extends CI_Model {
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache( 'ismodactive_' );
+		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name );
+		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
 		
 		// load file helper for delete folder recursive
 		$this->load->helper( 'file' );
@@ -231,6 +232,7 @@ class modules_model extends CI_Model {
 		
 		// delete cache
 		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name.'_'.$site_id );
+		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
 		
 		// if module have install action?
 		$this->load->module( array( $module_system_name.'_install' ) );
@@ -278,11 +280,18 @@ class modules_model extends CI_Model {
 		
 		// delete cache
 		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name.'_'.$site_id );
+		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
 		
 		return true;
 	}// do_deactivate
 	
 	
+	/**
+	 * do_uninstall
+	 * @param string $module_system_name
+	 * @param integer $site_id
+	 * @return boolean
+	 */
 	function do_uninstall( $module_system_name = '', $site_id = '' ) {
 		$this->db->trans_start();
 		
@@ -310,6 +319,7 @@ class modules_model extends CI_Model {
 		
 		// delete cache
 		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
+		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
 		
 		$find_uninstall = Modules::find($module_system_name.'_uninstall', $module_system_name, 'controllers/');
 		if ( isset( $find_uninstall[0] ) && $find_uninstall[0] != null ) {
@@ -324,6 +334,22 @@ class modules_model extends CI_Model {
 		
 		return true;
 	}// do_uninstall
+	
+	
+	/**
+	 * get_modules_data
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_modules_data( $data = array() ) {
+		if ( is_array( $data ) && !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
+		$query = $this->db->get( 'modules' );
+		
+		return $query->row();
+	}// get_modules_data
 	
 	
 	/**

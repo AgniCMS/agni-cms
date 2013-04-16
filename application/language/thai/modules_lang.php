@@ -27,6 +27,7 @@ $lang['modules_modules'] = 'โมดูล';
 $lang['modules_name'] = 'ชื่อโมดูล';
 $lang['modules_no_name'] = 'ไม่มีชื่อ';
 $lang['modules_select_file'] = 'เลือกไฟล์';
+$lang['modules_set_permission'] = 'กำหนดการอนุญาต';
 $lang['modules_settings'] = 'ตั้งค่า';
 $lang['modules_uninstall'] = 'ถอนการติดตั้ง';
 $lang['modules_uninstall_fail'] = 'ล้มเหลวในการถอนการติดตั้ง.';

@@ -27,6 +27,7 @@ $lang['modules_modules'] = 'Modules';
 $lang['modules_name'] = 'Module name';
 $lang['modules_no_name'] = 'No name';
 $lang['modules_select_file'] = 'Select a file';
+$lang['modules_set_permission'] = 'Set permission';
 $lang['modules_settings'] = 'Settings';
 $lang['modules_uninstall'] = 'Uninstall';
 $lang['modules_uninstall_fail'] = 'Failed to uninstall.';
