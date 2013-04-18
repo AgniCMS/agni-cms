@@ -638,8 +638,8 @@ CREATE TABLE IF NOT EXISTS `an_themes` (
 -- Dumping data for table `an_themes`
 --
 
-INSERT INTO `an_themes` (`theme_id`, `theme_system_name`, `theme_name`, `theme_url`, `theme_version`, `theme_description`, `theme_enable`, `theme_default`, `theme_default_admin`, `theme_settings`) VALUES
-(1, 'system', 'System', 'http://www.agnicms.org', '1.0', 'Agni system theme.', 1, 1, 1, NULL);
+INSERT INTO `an_themes` (`theme_id`, `theme_system_name`, `theme_name`, `theme_url`, `theme_version`, `theme_description`) VALUES
+(1, 'system', 'System', 'http://www.agnicms.org', '1.0', 'Agni system theme.');
 
 -- --------------------------------------------------------
 
@@ -656,11 +656,14 @@ CREATE TABLE IF NOT EXISTS `an_theme_sites` (
   `theme_default_admin` int(11) NOT NULL DEFAULT '0',
   `theme_settings` text,
   PRIMARY KEY (`theme_site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `an_theme_sites`
 --
+
+INSERT INTO `an_theme_sites` (`theme_site_id`, `theme_id`, `site_id`, `theme_enable`, `theme_default`, `theme_default_admin`, `theme_settings`) VALUES
+(1, 1, 1, 1, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
