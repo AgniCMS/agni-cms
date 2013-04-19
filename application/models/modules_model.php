@@ -187,8 +187,7 @@ class modules_model extends CI_Model {
 		$pdata = $this->read_module_metadata( $module_system_name.'/'.$module_system_name.'_module.php'  );
 		
 		// check if module is inserted
-		$this->db->where( 'module_system_name', $module_system_name );
-		$query = $this->db->get( 'modules' );
+		$row = $this->get_modules_data( array( 'module_system_name' => $module_system_name ) );
 		
 		// set data for insert/update
 		$this->db->set( 'module_name', ( empty($pdata['name']) ? $module_system_name : $pdata['name'] ) );
@@ -198,16 +197,17 @@ class modules_model extends CI_Model {
 		$this->db->set( 'module_author', ( !empty($pdata['author_name']) ? $pdata['author_name'] : null ) );
 		$this->db->set( 'module_author_url', ( !empty($pdata['author_url']) ? $pdata['author_url'] : null ) );
 		
-		if ( $query->num_rows() <= 0 ) {
+		if ( $row == null ) {
 			// never install, use insert.
 			$this->db->set( 'module_system_name', $module_system_name );
 			$this->db->insert( 'modules' );
+			
+			// inserted, get modules data again
+			$row = $this->get_modules_data( array( 'module_system_name' => $module_system_name ) );
 		} else {
 			$this->db->where( 'module_system_name', $module_system_name );
 			$this->db->update( 'modules' );
 		}
-		
-		$row = $query->row();
 		
 		// check if module is in modules_sites
 		$this->db->where( 'module_id', $row->module_id )
@@ -227,8 +227,7 @@ class modules_model extends CI_Model {
 		}
 		
 		// clear memory usage
-		$query->free_result();
-		unset( $query, $row, $pdata );
+		unset( $row, $pdata );
 		
 		// delete cache
 		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name.'_'.$site_id );

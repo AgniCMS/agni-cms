@@ -277,9 +277,26 @@ CREATE TABLE IF NOT EXISTS `an_comments` (
 -- Dumping data for table `an_comments`
 --
 
-INSERT INTO `an_comments` (`comment_id`, `parent_id`, `post_id`, `account_id`, `name`, `subject`, `comment_body_value`, `email`, `homepage`, `comment_status`, `comment_spam_status`, `ip_address`, `user_agent`, `comment_add`, `comment_add_gmt`, `comment_update`, `comment_update_gmt`, `thread`) VALUES
-(1, 0, 1, 1, 'admin', 'ความคิดเห็นแรก', 'นี่คือความคิดเห็น.\r\n\r\nคุณสามารถจัดการแก้ไขหรือลบได้ โดยการบันทึกเข้ามาทางหน้าผู้ดูแล และจัดการตามต้องการ.', NULL, NULL, 1, 'normal', '::1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1', 1341748213, 1341723013, 1341748487, 1341723287, '01/'),
-(2, 0, 2, 1, 'admin', 'First comment', 'This is comment.\r\n\r\nYou can edit or delete comment by log in to site admin page.', NULL, NULL, 1, 'normal', '::1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1', 1341748481, 1341723281, 1341748481, 1341723281, '01/');
+INSERT INTO `an_comments` (`comment_id`, `parent_id`, `language`, `post_id`, `account_id`, `name`, `subject`, `comment_body_value`, `email`, `homepage`, `comment_status`, `comment_spam_status`, `ip_address`, `user_agent`, `comment_add`, `comment_add_gmt`, `comment_update`, `comment_update_gmt`, `thread`) VALUES
+(1, 0, 'th', 1, 1, 'admin', 'ความคิดเห็นแรก', 'นี่คือความคิดเห็น.\r\n\r\nคุณสามารถจัดการแก้ไขหรือลบได้ โดยการบันทึกเข้ามาทางหน้าผู้ดูแล และจัดการตามต้องการ.', NULL, NULL, 1, 'normal', '::1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1', 1341748213, 1341723013, 1341748487, 1341723287, '01/'),
+(2, 0, 'en', 2, 1, 'admin', 'First comment', 'This is comment.\r\n\r\nYou can edit or delete comment by log in to site admin page.', NULL, NULL, 1, 'normal', '::1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0.1', 1341748481, 1341723281, 1341748481, 1341723281, '01/');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_comment_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `an_comment_fields` (
+  `comment_id` int(11) NOT NULL,
+  `field_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `field_value` text COLLATE utf8_unicode_ci,
+  KEY `comment_id` (`comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `an_comment_fields`
+--
 
 -- --------------------------------------------------------
 
@@ -449,8 +466,8 @@ CREATE TABLE IF NOT EXISTS `an_modules` (
 -- Dumping data for table `an_modules`
 --
 
-INSERT INTO `an_modules` (`module_id`, `module_system_name`, `module_name`, `module_url`, `module_version`, `module_description`, `module_author`, `module_author_url`, `module_enable`, `module_install`) VALUES
-(1, 'core', 'Agni core module.', 'http://www.agnicms.org', NULL, 'Agni cms core module.', 'vee w.', 'http://okvee.net', 1, 0);
+INSERT INTO `an_modules` (`module_id`, `module_system_name`, `module_name`, `module_url`, `module_version`, `module_description`, `module_author`, `module_author_url`) VALUES
+(1, 'core', 'Agni core module.', 'http://www.agnicms.org', NULL, 'Agni cms core module.', 'vee w.', 'http://okvee.net');
 
 -- --------------------------------------------------------
 
@@ -470,6 +487,9 @@ CREATE TABLE IF NOT EXISTS `an_module_sites` (
 --
 -- Dumping data for table `an_module_sites`
 --
+
+INSERT INTO `an_module_sites` (`module_site_id`, `module_id`, `site_id`, `module_enable`, `module_install`) VALUES
+(1, 1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -587,6 +607,23 @@ INSERT INTO `an_taxonomy_index` (`index_id`, `post_id`, `tid`, `position`, `crea
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `an_taxonomy_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `an_taxonomy_fields` (
+  `tid` int(11) NOT NULL AUTO_INCREMENT,
+  `field_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `field_value` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`tid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_taxonomy_fields`
+--
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `an_taxonomy_term_data`
 --
 
@@ -601,21 +638,23 @@ CREATE TABLE IF NOT EXISTS `an_taxonomy_term_data` (
   `t_uri` tinytext,
   `t_uri_encoded` text,
   `t_uris` longtext COMMENT 'full path of uri, eg. animal/4legs/cat (no end slash and must uri encoded)',
+  `t_position` int(9) NOT NULL DEFAULT '0' COMMENT 'for use as position order when some module need it.',
+  `t_status` int(1) NOT NULL DEFAULT '1' COMMENT '0=not publish, 1=publish',
   `meta_title` varchar(255) DEFAULT NULL,
   `meta_description` varchar(255) DEFAULT NULL,
   `meta_keywords` varchar(255) DEFAULT NULL,
   `theme_system_name` varchar(255) DEFAULT NULL,
   `nlevel` int(10) NOT NULL DEFAULT '1',
   PRIMARY KEY (`tid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `an_taxonomy_term_data`
 --
 
-INSERT INTO `an_taxonomy_term_data` (`tid`, `parent_id`, `language`, `t_type`, `t_total`, `t_name`, `t_description`, `t_uri`, `t_uri_encoded`, `t_uris`, `meta_title`, `meta_description`, `meta_keywords`, `theme_system_name`, `nlevel`) VALUES
-(1, 0, 'th', 'category', 1, 'หน้าแรก', NULL, 'home-th', 'home-th', 'home-th', NULL, NULL, NULL, NULL, 1),
-(2, 0, 'en', 'category', 1, 'Home', NULL, 'home-en', 'home-en', 'home-en', NULL, NULL, NULL, NULL, 1);
+INSERT INTO `an_taxonomy_term_data` (`tid`, `parent_id`, `language`, `t_type`, `t_total`, `t_name`, `t_description`, `t_uri`, `t_uri_encoded`, `t_uris`, `t_position`, `t_status`, `meta_title`, `meta_description`, `meta_keywords`, `theme_system_name`, `nlevel`) VALUES
+(1, 0, 'th', 'category', 1, 'หน้าแรก', NULL, 'home-th', 'home-th', 'home-th', 0, 1, NULL, NULL, NULL, NULL, 1),
+(2, 0, 'en', 'category', 1, 'Home', NULL, 'home-en', 'home-en', 'home-en', 0, 1, NULL, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 

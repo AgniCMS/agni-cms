@@ -281,6 +281,24 @@ CREATE TABLE IF NOT EXISTS `an_comments` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `an_comment_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `an_comment_fields` (
+  `comment_id` int(11) NOT NULL,
+  `field_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `field_value` text COLLATE utf8_unicode_ci,
+  KEY `comment_id` (`comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `an_comment_fields`
+--
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `an_config`
 --
 
@@ -443,8 +461,8 @@ CREATE TABLE IF NOT EXISTS `an_modules` (
 -- Dumping data for table `an_modules`
 --
 
-INSERT INTO `an_modules` (`module_id`, `module_system_name`, `module_name`, `module_url`, `module_version`, `module_description`, `module_author`, `module_author_url`, `module_enable`, `module_install`) VALUES
-(1, 'core', 'Agni core module.', 'http://www.agnicms.org', NULL, 'Agni cms core module.', 'vee w.', 'http://okvee.net', 1, 0);
+INSERT INTO `an_modules` (`module_id`, `module_system_name`, `module_name`, `module_url`, `module_version`, `module_description`, `module_author`, `module_author_url`) VALUES
+(1, 'core', 'Agni core module.', 'http://www.agnicms.org', NULL, 'Agni cms core module.', 'vee w.', 'http://okvee.net');
 
 -- --------------------------------------------------------
 
@@ -464,6 +482,9 @@ CREATE TABLE IF NOT EXISTS `an_module_sites` (
 --
 -- Dumping data for table `an_module_sites`
 --
+
+INSERT INTO `an_module_sites` (`module_site_id`, `module_id`, `site_id`, `module_enable`, `module_install`) VALUES
+(1, 1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -568,6 +589,23 @@ CREATE TABLE IF NOT EXISTS `an_taxonomy_index` (
 -- Dumping data for table `an_taxonomy_index`
 --
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_taxonomy_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `an_taxonomy_fields` (
+  `tid` int(11) NOT NULL AUTO_INCREMENT,
+  `field_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `field_value` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`tid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_taxonomy_fields`
+--
+
 
 -- --------------------------------------------------------
 
@@ -586,6 +624,8 @@ CREATE TABLE IF NOT EXISTS `an_taxonomy_term_data` (
   `t_uri` tinytext,
   `t_uri_encoded` text,
   `t_uris` longtext COMMENT 'full path of uri, eg. animal/4legs/cat (no end slash and must uri encoded)',
+  `t_position` int(9) NOT NULL DEFAULT '0' COMMENT 'for use as position order when some module need it.',
+  `t_status` int(1) NOT NULL DEFAULT '1' COMMENT '0=not publish, 1=publish',
   `meta_title` varchar(255) DEFAULT NULL,
   `meta_description` varchar(255) DEFAULT NULL,
   `meta_keywords` varchar(255) DEFAULT NULL,
