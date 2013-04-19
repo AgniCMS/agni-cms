@@ -163,6 +163,7 @@ class install_model extends CI_Model {
 		// generate hash text in config file----------------------------------------------------------------------------
 		$this->load->helper( 'string' );
 		$new_encryption_key = random_string( 'alnum', 9 );
+		$new_cookie_prefix = random_string( 'alpha', 3 ).'_';
 		$new_csrf_token = random_string( 'alpha', 5 ).'_token';
 		$new_csrf_cookie = random_string( 'alpha', 5 ).'_cookie';
 		// read config.php.bak
@@ -171,6 +172,7 @@ class install_model extends CI_Model {
 		$config_php = preg_replace( "#\\\$config\['language_abbr'\] = '(.*)';#", '\$config[\'language_abbr\'] = \''.$this->lang->get_current_lang( false ).'\';', $config_php );
 		$config_php = preg_replace( "#\\\$config\['log_threshold'\] = (\d);#", '\$config[\'log_threshold\'] = 0;', $config_php );
 		$config_php = preg_replace( "#\\\$config\['encryption_key'\] = '(.*)';#", '\$config[\'encryption_key\'] = \''.$new_encryption_key.'\';', $config_php );
+		$config_php = preg_replace( "#\\\$config\['cookie_prefix\'] = '(.*)';#", '\$config[\'cookie_prefix\'] = \''.$new_cookie_prefix.'\';', $config_php );
 		$config_php = preg_replace( "#\\\$config\['csrf_token_name'\] = '(.*)';#", '\$config[\'csrf_token_name\'] = \''.$new_csrf_token.'\';', $config_php );
 		$config_php = preg_replace( "#\\\$config\['csrf_cookie_name'\] = '(.*)';#", '\$config[\'csrf_cookie_name\'] = \''.$new_csrf_cookie.'\';', $config_php );
 		// write to config.php
