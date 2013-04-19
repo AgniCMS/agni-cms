@@ -17,7 +17,7 @@
 				<?php echo show_category_check( $list_category ); ?> 
 			</div>
 			<div class="button-row">
-				<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parent().serialize(), 'category' )"><?php echo lang( 'admin_add' ); ?></button>
+				<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parents('form').serialize(), 'category' )"><?php echo lang( 'admin_add' ); ?></button>
 			</div>
 		</form>
 		
@@ -40,7 +40,7 @@
 				<?php unset( $list_page, $row ); ?> 
 			</div>
 			<div class="button-row">
-				<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parent().serialize(), 'page' )"><?php echo lang( 'admin_add' ); ?></button>
+				<button type="button" class="bb-button btn btn-small" onclick="add_content_item_array( $(this).parents('form').serialize(), 'page' )"><?php echo lang( 'admin_add' ); ?></button>
 			</div>
 		</form>
 		
@@ -174,6 +174,7 @@
 	function add_content_item_array( values, mi_type_val ) {
 		values = values.replace( /tid/gi, 'type_id' );
 		var mg_id = $('#mg_id').val();
+		
 		$.ajax({
 			url: site_url+'site-admin/menu/ajax_additem',
 			type: 'POST',

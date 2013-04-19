@@ -11,6 +11,9 @@
  *
  */
 
+// current Agni CMS version. use for compare with auto update.
+$config['agni_version'] = '0.9';
+
 // enable auto update. recommended setting to 'true' for use auto update, but if you want manual update (core hacking or custom modification through core files) set to false.
 $config['angi_auto_update'] = true;
 

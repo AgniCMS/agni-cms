@@ -3,20 +3,14 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 16, 2012 at 09:27 PM
--- Server version: 5.5.23
--- PHP Version: 5.3.11
+-- Generation Time: Apr 19, 2013 at 10:16 AM
+-- Server version: 5.5.24
+-- PHP Version: 5.4.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
 --
--- Database: `v_agni`
+-- Database: `v_agnicms_multisite`
 --
 
 -- --------------------------------------------------------
@@ -73,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `an_account_fields` (
 --
 -- Dumping data for table `an_account_fields`
 --
+
 
 -- --------------------------------------------------------
 
@@ -237,9 +232,6 @@ CREATE TABLE IF NOT EXISTS `an_ci_sessions` (
 -- Dumping data for table `an_ci_sessions`
 --
 
-INSERT INTO `an_ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
-('3fb85808b26e02b8a9200198f048fb20', '::1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0', 1339856660, ''),
-('57142e7800ddc7aa73c54db2b1a6ebb2', '::1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0', 1339855628, 'a:1:{s:9:"user_data";s:0:"";}');
 
 -- --------------------------------------------------------
 
@@ -477,7 +469,7 @@ CREATE TABLE IF NOT EXISTS `an_module_sites` (
   `module_enable` int(1) NOT NULL DEFAULT '0',
   `module_install` int(1) NOT NULL DEFAULT '0' COMMENT 'use when the module want to install db, script or anything.',
   PRIMARY KEY (`module_site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `an_module_sites`
@@ -571,23 +563,27 @@ CREATE TABLE IF NOT EXISTS `an_post_revision` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `an_taxonomy_index`
+-- Table structure for table `an_sites`
 --
 
-CREATE TABLE IF NOT EXISTS `an_taxonomy_index` (
-  `index_id` int(11) NOT NULL AUTO_INCREMENT,
-  `post_id` int(11) NOT NULL DEFAULT '0' COMMENT 'post id',
-  `tid` int(11) NOT NULL DEFAULT '0' COMMENT 'term id',
-  `position` int(9) NOT NULL DEFAULT '1',
-  `create` bigint(20) DEFAULT NULL COMMENT 'local date time',
-  PRIMARY KEY (`index_id`),
-  KEY `post_id` (`post_id`),
-  KEY `tid` (`tid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='store id between taxonomy/posts' AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `an_sites` (
+  `site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `site_name` varchar(255) DEFAULT NULL,
+  `site_domain` varchar(255) DEFAULT NULL COMMENT 'ex. domain.com, sub.domain.com with out http://',
+  `site_status` int(1) NOT NULL DEFAULT '0' COMMENT '0=disable, 1=enable',
+  `site_create` bigint(20) DEFAULT NULL,
+  `site_create_gmt` bigint(20) DEFAULT NULL,
+  `site_update` bigint(20) DEFAULT NULL,
+  `site_update_gmt` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`site_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
--- Dumping data for table `an_taxonomy_index`
+-- Dumping data for table `an_sites`
 --
+
+INSERT INTO `an_sites` (`site_id`, `site_name`, `site_domain`, `site_status`, `site_create`, `site_create_gmt`, `site_update`, `site_update_gmt`) VALUES
+(1, 'Agni CMS', NULL, 1, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -604,6 +600,28 @@ CREATE TABLE IF NOT EXISTS `an_taxonomy_fields` (
 
 --
 -- Dumping data for table `an_taxonomy_fields`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_taxonomy_index`
+--
+
+CREATE TABLE IF NOT EXISTS `an_taxonomy_index` (
+  `index_id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_id` int(11) NOT NULL DEFAULT '0' COMMENT 'post id',
+  `tid` int(11) NOT NULL DEFAULT '0' COMMENT 'term id',
+  `position` int(9) NOT NULL DEFAULT '1',
+  `create` bigint(20) DEFAULT NULL COMMENT 'local date time',
+  PRIMARY KEY (`index_id`),
+  KEY `post_id` (`post_id`),
+  KEY `tid` (`tid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='store id between taxonomy/posts' AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_taxonomy_index`
 --
 
 
@@ -678,7 +696,7 @@ CREATE TABLE IF NOT EXISTS `an_theme_sites` (
   `theme_default_admin` int(11) NOT NULL DEFAULT '0',
   `theme_settings` text,
   PRIMARY KEY (`theme_site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `an_theme_sites`
@@ -700,35 +718,13 @@ CREATE TABLE IF NOT EXISTS `an_url_alias` (
   `uri` tinytext,
   `uri_encoded` text,
   `redirect_to` tinytext COMMENT 'for use in url redirect',
-  `redirect_to_encoded` text NULL DEFAULT NULL,
-  `redirect_code` INT( 5 ) NULL DEFAULT NULL COMMENT '301 permanent, 302 temporarily',
+  `redirect_to_encoded` text,
+  `redirect_code` int(5) DEFAULT NULL COMMENT '301 permanent, 302 temporarily',
   `language` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`alias_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `an_url_alias`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `an_sites`
---
-
-CREATE TABLE IF NOT EXISTS `an_sites` (
-  `site_id` int(11) NOT NULL AUTO_INCREMENT,
-  `site_name` varchar(255) DEFAULT NULL,
-  `site_domain` varchar(255) DEFAULT NULL COMMENT 'ex. domain.com, sub.domain.com with out http://',
-  `site_status` int(1) NOT NULL DEFAULT '0' COMMENT '0=disable, 1=enable',
-  `site_create` bigint(20) DEFAULT NULL,
-  `site_create_gmt` bigint(20) DEFAULT NULL,
-  `site_update` bigint(20) DEFAULT NULL,
-  `site_update_gmt` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`site_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Dumping data for table `an_sites`
 --
 

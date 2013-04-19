@@ -19,6 +19,27 @@ class index extends MY_Controller {
 	}// __construct
 	
 	
+	function ajax_install_sample_data() {
+		if ( !$this->input->is_ajax_request() ) {return false;}
+		
+		if ( $_POST ) {
+			$sample_data = $this->input->post( 'sample_data' );
+			
+			$result = $this->install_model->install_sample_data( $sample_data );
+			
+			if ( $result === true ) {
+				$output['result'] = true;
+			} else {
+				$output['result'] = false;
+				$output['result_text'] = $result;
+			}
+			
+			$this->output->set_content_type( 'application/json' );
+			$this->output->set_output( json_encode( $output ) );
+		}
+	}// ajax_install_sample_data
+	
+	
 	function ajax_test_db() {
 		if ( $_POST ) {
 			$db_name = trim( $this->input->post( 'db_name' ) );
@@ -216,6 +237,7 @@ class index extends MY_Controller {
 			delete_cookie( 'agni_install_verify' );
 			redirect( './' );
 		}
+		
 		//
 		if ( $_POST ) {
 			$db_name = trim( $this->input->post( 'db_name' ) );
@@ -274,21 +296,27 @@ class index extends MY_Controller {
 			delete_cookie( 'agni_install_verify' );
 			redirect( './' );
 		}
+		
 		// check step2
 		$step2 = get_cookie( 'agni_install_step2' );
 		if ( $step2 == null || $step2 != 'pass' ) {
 			delete_cookie( 'agni_install_step2' );
 			redirect( './' );
 		}
+		
 		// get configured from files
 		include_once( '../application/config/database.php' );
+		
 		// reformat config for manual connect db
 		foreach ( $db['default'] as $key => $item ) {
 			$db[$key] = $item;
 		}
+		
 		// this step connected to db. if fail or wrong settings, it should throw error.
 		$this->load->database( $db );
+		
 		include_once( '../application/config/config.php' );
+		
 		// set config on /install to match the main app (for easier to configure site)
 		$this->config->set_item( 'encryption_key', $config['encryption_key'] );
 		// 
