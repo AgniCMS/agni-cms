@@ -51,7 +51,7 @@ class MY_Router extends MX_Router {
 				// get site_id
 				$site_id = ( isset( $_GET['site_id'] ) ? $_GET['site_id'] : '' );
 				if ( $site_id == null ) {
-					$result = mysqli_query( $link, 'SELECT * FROM '.$db['default']['dbprefix'].'sites WHERE site_domain = \''.mysql_real_escape_string( $_SERVER['HTTP_HOST'] ).'\'' );
+					$result = mysqli_query( $link, 'SELECT * FROM '.$db['default']['dbprefix'].'sites WHERE site_domain = \''.mysqli_real_escape_string( $link, $_SERVER['HTTP_HOST'] ).'\'' );
 					$row = mysqli_fetch_object( $result );
 					if ( $row != null ) {
 						$site_id = $row->site_id;

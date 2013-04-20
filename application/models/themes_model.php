@@ -40,6 +40,13 @@ class themes_model extends CI_Model {
 		// load agni config
 		$this->config->load( 'agni' );
 		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Add new theme';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		// config upload
 		$config['upload_path'] = $this->config->item( 'agni_upload_path' ).'unzip';
 		$config['allowed_types'] = 'zip';
@@ -172,6 +179,13 @@ class themes_model extends CI_Model {
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
 		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Delete theme '.$theme_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		return true;
 	}// delete_theme
 	
@@ -209,6 +223,13 @@ class themes_model extends CI_Model {
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Disable theme '.$theme_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		return true;
 	}// do_disable
@@ -304,6 +325,13 @@ class themes_model extends CI_Model {
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Enable theme '.$theme_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		return true;
 	}// do_enable
@@ -832,6 +860,13 @@ class themes_model extends CI_Model {
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Set default theme '.$theme_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		// done
 		return true;

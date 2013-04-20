@@ -35,6 +35,13 @@ class modules_model extends CI_Model {
 		// load agni config
 		$this->config->load( 'agni' );
 		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Add new module';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		// config upload
 		$config['upload_path'] = $this->config->item( 'agni_upload_path' ).'unzip';
 		$config['allowed_types'] = 'zip';
@@ -164,6 +171,13 @@ class modules_model extends CI_Model {
 		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name );
 		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
 		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Delete module '.$module_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		// load file helper for delete folder recursive
 		$this->load->helper( 'file' );
 		
@@ -233,6 +247,13 @@ class modules_model extends CI_Model {
 		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name.'_'.$site_id );
 		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
 		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Enable module '.$module_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		// if module have install action?
 		$this->load->module( array( $module_system_name.'_install' ) );
 		$find_install = Modules::find($module_system_name.'_install', $module_system_name, 'controllers/');
@@ -281,6 +302,13 @@ class modules_model extends CI_Model {
 		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name.'_'.$site_id );
 		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
 		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Disable module '.$module_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		return true;
 	}// do_deactivate
 	
@@ -319,6 +347,13 @@ class modules_model extends CI_Model {
 		// delete cache
 		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
 		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
+		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Set module '.$module_system_name.' as uninstalled';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		$find_uninstall = Modules::find($module_system_name.'_uninstall', $module_system_name, 'controllers/');
 		if ( isset( $find_uninstall[0] ) && $find_uninstall[0] != null ) {
@@ -731,15 +766,20 @@ class modules_model extends CI_Model {
 				   ->update( 'module_sites' );
 			
 			unset( $row );
-			$query->free_result();
-			return true;
 		}
 		
 		// delete cache
 		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
 		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Set module '.$module_system_name.' as installed';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		$query->free_result();
-		return false;
+		return true;
 	}// set_install_module
 	
 	

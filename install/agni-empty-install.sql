@@ -588,6 +588,30 @@ INSERT INTO `an_sites` (`site_id`, `site_name`, `site_domain`, `site_status`, `s
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `an_syslog`
+--
+
+CREATE TABLE IF NOT EXISTS `an_syslog` (
+  `slid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'system log id',
+  `account_id` int(11) DEFAULT NULL,
+  `sl_type` varchar(100) DEFAULT NULL COMMENT 'log type. example system, user action',
+  `sl_message` text,
+  `sl_variables` longtext,
+  `sl_url` tinytext COMMENT 'url of event.',
+  `sl_referer` tinytext COMMENT 'url referer of event',
+  `sl_ipaddress` varchar(50) DEFAULT NULL,
+  `sl_datetime` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`slid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='contain system log.' AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_syslog`
+--
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `an_taxonomy_fields`
 --
 

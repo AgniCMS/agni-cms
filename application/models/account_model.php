@@ -1134,6 +1134,7 @@ class account_model extends CI_Model {
 		if ( !is_numeric( $account_id ) ) {return null;}
 		
 		// query sql
+		$this->db->join( 'sites', 'sites.site_id = account_logins.site_id', 'left' );
 		$this->db->where( 'account_id', $account_id );
 		
 		// order and sort

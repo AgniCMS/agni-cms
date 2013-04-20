@@ -199,6 +199,13 @@ class permission_model extends CI_Model {
 		// empty permissions db
 		$this->db->truncate( 'account_level_permission' );
 		
+		// system log
+		$log['sl_type'] = 'permission';
+		$log['sl_message'] = 'Reset permission';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		return true;
 	}// reset_permission
 	

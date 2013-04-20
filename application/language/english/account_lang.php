@@ -88,6 +88,7 @@ $lang['account_username'] = 'Username';
 $lang['account_username_already_exists'] = 'Sorry, this username is already exists.';
 $lang['account_view_logins'] = 'View logins';
 $lang['account_view_logins_of'] = 'View logins of %s';
+$lang['account_website'] = 'Website';
 $lang['account_wrong_captcha_code'] = 'You entered wrong captcha code!';
 $lang['account_wrong_password'] = 'Wrong password.';
 $lang['account_wrong_username_or_password'] = 'Sorry, wrong username or password.';

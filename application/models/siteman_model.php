@@ -94,6 +94,13 @@ class siteman_model extends CI_Model {
 		$this->db->update( $this->db->dbprefix( $site_id.'_config' ), $config_site );
 		unset( $config_site );
 		
+		// system log
+		$log['sl_type'] = 'multisite';
+		$log['sl_message'] = 'Add new site';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		return true;
 	}// add_site
 	
@@ -160,6 +167,13 @@ class siteman_model extends CI_Model {
 		// delete site from db
 		$this->db->delete( 'sites', array( 'site_id' => $site_id ) );
 		
+		// system log
+		$log['sl_type'] = 'multisite';
+		$log['sl_message'] = 'Delete site';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		// done 
 		return true;
 	}// delete_site
@@ -195,6 +209,13 @@ class siteman_model extends CI_Model {
 		$this->db->where( 'config_name', 'site_name' );
 		$this->db->update( $this->db->dbprefix( $config_table ), $config_site );
 		unset( $config_site );
+		
+		// system log
+		$log['sl_type'] = 'multisite';
+		$log['sl_message'] = 'Update site';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		// done
 		return true;

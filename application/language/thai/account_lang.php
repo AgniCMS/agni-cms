@@ -88,6 +88,7 @@ $lang['account_username'] = 'ชื่อผู้ใช้';
 $lang['account_username_already_exists'] = 'ชื่อผู้ใช้นี้ มีการใช้งานอยู่แล้ว.';
 $lang['account_view_logins'] = 'ดูการบันทึกเข้า';
 $lang['account_view_logins_of'] = 'ดูการบันทึกเข้าของ %s';
+$lang['account_website'] = 'เว็บไซต์';
 $lang['account_wrong_captcha_code'] = 'คุณกรอกตัวอักษรภาพผิด!';
 $lang['account_wrong_password'] = 'รหัสผ่านไม่ถูกต้อง.';
 $lang['account_wrong_username_or_password'] = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง.';
