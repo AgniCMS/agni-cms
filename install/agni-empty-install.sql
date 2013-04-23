@@ -592,8 +592,9 @@ INSERT INTO `an_sites` (`site_id`, `site_name`, `site_domain`, `site_status`, `s
 --
 
 CREATE TABLE IF NOT EXISTS `an_syslog` (
-  `slid` int(11) NOT NULL AUTO_INCREMENT COMMENT 'system log id',
+  `sl_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'system log id',
   `account_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT NULL,
   `sl_type` varchar(100) DEFAULT NULL COMMENT 'log type. example system, user action',
   `sl_message` text,
   `sl_variables` longtext,

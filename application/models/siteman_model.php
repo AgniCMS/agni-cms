@@ -12,6 +12,7 @@ class siteman_model extends CI_Model {
 						'blocks',
 
 						'comments',
+						'comment_fields',
 
 						'config', // this table require base config data
 
@@ -24,6 +25,7 @@ class siteman_model extends CI_Model {
 						'post_fields',
 						'post_revision',
 
+						'taxonomy_fields',
 						'taxonomy_index',
 						'taxonomy_term_data',
 
@@ -44,6 +46,8 @@ class siteman_model extends CI_Model {
 						'module_sites',
 
 						'sites',
+	    
+						'syslog',
 
 						'themes',
 						'theme_sites'
@@ -150,6 +154,9 @@ class siteman_model extends CI_Model {
 		
 		// delete from module_sites table
 		$this->db->where( 'site_id', $site_id )->delete( 'module_sites' );
+		
+		// delete from syslog table
+		$this->db->where( 'site_id', $site_id )->delete( 'syslog' );
 		
 		// delete from theme_sites table
 		$this->db->where( 'site_id', $site_id )->delete( 'theme_sites' );

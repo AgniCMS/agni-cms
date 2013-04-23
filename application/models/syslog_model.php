@@ -39,6 +39,15 @@ class syslog_model extends CI_Model {
 			unset( $ca_account, $cm_account );
 		}
 		
+		// if not set site_id
+		if ( !isset( $data['site_id'] ) ) {
+			$this->load->model( 'siteman_model' );
+			$site_id = $this->siteman_model->get_site_id();
+			
+			$data['site_id'] = $site_id;
+			unset( $site_id );
+		}
+		
 		// if not set sl_variables, collect all data and set
 		if ( !isset( $data['sl_variables'] ) ) {
 			$variables['server_variables'] = $_SERVER;
