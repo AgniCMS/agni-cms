@@ -259,11 +259,12 @@ class themes_model extends CI_Model {
 		if ( $this->db->count_all_results( 'themes' ) <= 0 ) {
 			// not in db, use insert.
 			$pdata = $this->read_theme_metadata( $theme_system_name.'/'.$theme_system_name.'.info'  );
+			
 			// check if enabled
 			if ( $this->is_enabled( $theme_system_name ) ) {
 				return true;
 			}
-			//
+			
 			$this->db->trans_start();
 			$this->db->set( 'theme_system_name', $theme_system_name );
 			$this->db->set( 'theme_name', ( empty($pdata['name']) ? $theme_system_name : $pdata['name'] ) );
@@ -272,12 +273,16 @@ class themes_model extends CI_Model {
 			$this->db->set( 'theme_description', ( !empty($pdata['description']) ? $pdata['description'] : null ) );
 			$this->db->insert( 'themes' );
 			$this->db->trans_complete();
+			
 			// check transaction
 			if ( $this->db->trans_status() === false ) {
 				$this->db->trans_rollback();
 				return false;
 			}
 		} else {
+			// get theme data from theme name.info
+			$pdata = $this->read_theme_metadata( $theme_system_name.'/'.$theme_system_name.'.info'  );
+			
 			// in db, use update
 			$this->db->trans_start();
 			$this->db->where( 'theme_system_name', $theme_system_name );
@@ -287,6 +292,7 @@ class themes_model extends CI_Model {
 			$this->db->set( 'theme_description', ( !empty($pdata['description']) ? $pdata['description'] : null ) );
 			$this->db->update( 'themes' );
 			$this->db->trans_complete();
+			
 			// check transaction
 			if ( $this->db->trans_status() === false ) {
 				$this->db->trans_rollback();
@@ -302,6 +308,7 @@ class themes_model extends CI_Model {
 			$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
 			$this->db->where( 'theme_system_name', $theme_system_name );
 			$this->db->where( 'site_id', $site_id );
+			
 			if ( $this->db->count_all_results( 'themes' ) <= 0 ) {
 				// not in table, insert
 				$data['theme_id'] = $theme_db->theme_id;

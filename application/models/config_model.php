@@ -138,6 +138,18 @@ class config_model extends CI_Model {
 			$this->db->set( 'config_value', $item );
 			$this->db->where( 'config_name', $key );
 			$this->db->update( 'config' );
+			
+			// if it is site name, update in sites table too
+			if ( $key == 'site_name' ) {
+				$this->load->model( 'siteman_model' );
+				
+				// set data for update
+				$data_site['site_id'] = $this->siteman_model->get_site_id( false );
+				$data_site['site_name'] = $item;
+				$this->siteman_model->edit_site( $data_site );
+				
+				unset( $data_site );
+			}
 		}
 		
 		$this->save_frontpage_category( $data );
