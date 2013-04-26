@@ -346,7 +346,7 @@ INSERT INTO `an_config` (`config_name`, `config_value`, `config_core`, `config_d
 CREATE TABLE IF NOT EXISTS `an_files` (
   `file_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) NOT NULL,
-  `language` varchar(5) DEFAULT NULL,
+  `folder` text COMMENT 'contain path to folder that store this file.',
   `file` varchar(255) DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
   `file_original_name` varchar(255) DEFAULT NULL,

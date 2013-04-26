@@ -21,6 +21,10 @@ class media extends admin_controller {
 		// load helper
 		$this->load->helper( array( 'date', 'file', 'form' ) );
 		
+		// load library
+		$this->load->library( array( 'filesys' ) );
+		$this->filesys->base_dir = $this->config->item( 'agni_upload_path' ).'media';
+		
 		// load language
 		$this->lang->load( 'media' );
 	}// __construct
@@ -31,6 +35,7 @@ class media extends admin_controller {
 			'media_perm' => 
 				array( 
 					'media_viewall_perm', 
+					'media_manage_folder',
 					'media_upload_perm', 
 					'media_copy_perm',
 					'media_edit_other_perm',
@@ -40,6 +45,92 @@ class media extends admin_controller {
 				) 
 			);
 	}// _define_permission
+	
+	
+	function ajax_delete_folder() {
+		// check permission
+		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_manage_folder' ) != true ) {redirect( 'site-admin/media' );}
+		// check both permission
+		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) != true && $this->account_model->check_admin_permission( 'media_perm', 'media_delete_other_perm' ) != true ) {redirect( 'site-admin/media' );}
+		
+		if ( !$this->input->is_ajax_request() ) {redirect( 'site-admin/media' );}
+		
+		$folder = $this->input->post( 'folder' ).'/';
+		
+		if ( !$this->filesys->is_over_limit_base( $this->filesys->base_dir, $folder ) ) {
+			// recursive delete folders and files in it.
+			$this->media_model->delete_folder( $folder );
+			
+			$output['result'] = true;
+		} else {
+			$output['result'] = false;
+		}
+		
+		// done, send output
+		$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+		$this->output->set_header( 'Pragma: no-cache' );
+		$this->output->set_content_type( 'application/json' );
+		$this->output->set_output( json_encode( $output ) );
+	}// ajax_delete_folder
+	
+	
+	function ajax_new_folder() {
+		// check permission
+		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_manage_folder' ) != true ) {redirect( 'site-admin/media' );}
+		
+		if ( !$this->input->is_ajax_request() ) {redirect( 'site-admin/media' );}
+		
+		$current_path = trim( $this->input->post( 'current_path' ) );
+		$folder_name = trim( $this->input->post( 'folder_name' ) );
+		
+		$result = $this->filesys->create_folder( $current_path.'/'.$folder_name, $folder_name );
+		
+		if ( $result === true ) {
+			$output['result'] = true;
+		} else {
+			$output['result'] = false;
+			$output['result_text'] = $result;
+		}
+		
+		unset( $current_path, $folder_name, $result );
+		
+		// done, send output
+		$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+		$this->output->set_header( 'Pragma: no-cache' );
+		$this->output->set_content_type( 'application/json' );
+		$this->output->set_output( json_encode( $output ) );
+	}// ajax_new_folder
+	
+	
+	function ajax_rename_folder() {
+		// check permission
+		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_manage_folder' ) != true ) {redirect( 'site-admin/media' );}
+		
+		if ( !$this->input->is_ajax_request() ) {redirect( 'site-admin/media' );}
+		
+		$current_path = trim( $this->input->post( 'current_path' ) );
+		$current_folder = trim( $this->input->post( 'current_folder' ) );
+		$folder_new_name = trim( $this->input->post( 'folder_new_name' ) );
+		
+		$result = $this->filesys->rename_folder( $current_path, $current_folder, $folder_new_name );
+		
+		if ( $result === true ) {
+			$output['result'] = true;
+			// rename in db too
+			$this->media_model->rename_folder( $current_path, $current_folder, $folder_new_name );
+		} else {
+			$output['result'] = false;
+			$output['result_text'] = $result;
+		}
+		
+		unset( $current_folder, $current_path, $folder_new_name, $result );
+		
+		// done, send output
+		$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+		$this->output->set_header( 'Pragma: no-cache' );
+		$this->output->set_content_type( 'application/json' );
+		$this->output->set_output( json_encode( $output ) );
+	}// ajax_rename_folder
 	
 	
 	function ajax_resize() {
@@ -188,7 +279,7 @@ class media extends admin_controller {
 		
 		// copy info
 		$data['account_id'] = $my_account_id;
-		$data['language'] = $row->language;
+		$data['folder'] = $row->folder;
 		$data['file'] = $file_name.$file_ext;
 		$data['file_name'] = $file_name_only.$file_ext;
 		$data['file_original_name'] = $row->file_original_name;
@@ -320,8 +411,20 @@ class media extends admin_controller {
 		$output['cur_sort'] = $this->input->get( 'sort', true );
 		$output['sort'] = ( $this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'desc' ? 'asc' : 'desc' );
 		
+		$current_path = ( $this->input->get( 'current_path' ) != null ? rtrim( $this->input->get( 'current_path' ), '/' ) : $this->filesys->base_dir );
+		$current_path = ( $this->filesys->is_over_limit_base( $this->filesys->base_dir, $current_path ) ? $this->filesys->base_dir : $current_path );
+		$output['current_path'] = $current_path;
+		
+		$output['output'] = $output;// send all values to $output array in views. this is very usefull in function.
+		
+		// list folders
+		$this->filesys->current_path = $current_path;
+		$output['list_folder'] = $this->filesys->list_dir_and_sub();
+		
 		// list item
-		$output['list_item'] = $this->media_model->list_item( 'admin' );
+		$data['folder'] = $current_path.'/';
+		$output['list_item'] = $this->media_model->list_item( 'admin', $data );
+		unset( $data );
 		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -343,6 +446,93 @@ class media extends admin_controller {
 			$this->generate_page( 'site-admin/templates/media/media_view', $output );
 		}
 	}// index
+	
+	
+	function move_file( $ids = '' ) {
+		// check both permission
+		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) != true && $this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) != true ) {redirect( 'site-admin' );}
+		
+		// get account id
+		$ca_account = $this->account_model->get_account_cookie( 'admin' );
+		$my_account_id = $ca_account['id'];
+		unset( $ca_account );
+		
+		if ( $ids == null ) {
+			$ids = $this->input->post( 'id' );
+		}
+		
+		if ( !is_array( $ids ) || empty( $ids ) ) {
+			redirect( 'site-admin/media' );
+		}
+		
+		// check permission each file and remove unallowed one.
+		foreach ( $ids as $key => $id ) {
+			$data['file_id'] = $id;
+				$row = $this->media_model->get_file_data_db( $data );
+				unset( $data );
+				
+				// file not found in db, skip it.
+				if ( $row == null ) {continue;}
+				
+				// check permissions-----------------------------------------------------------
+				if ( $this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) && $row->account_id != $my_account_id ) {
+					// this user has permission to delete own, but NOT delete own
+					if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_delete_other_perm' ) ) {
+						// this user has NOT permission to delete other's, but deleting other's
+						unset( $row, $ids[$key] );
+						$cannot_move_some_files = true;
+						continue;
+					}
+				} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) && $row->account_id == $my_account_id ) {
+					// this user has NOT permission to delete own, but deleting own.
+					unset( $row, $ids[$key] );
+					$cannot_move_some_files = true;
+					continue;
+				}
+				// end check permissions-----------------------------------------------------------
+		}
+		
+		// method post, move action
+		if ( $this->input->post() ) {
+			$data['ids'] = $this->input->post( 'id' );
+			$data['target_folder'] = trim( $this->input->post( 'target_folder' ) );
+			
+			if ( $data['target_folder'] == null ) {
+				$output['form_status'] = '<div class="alert alert-error">'.lang( 'media_please_select_target_folder' ).'</div>';
+			} else {
+				$result = $this->media_model->move_file( $data );
+				
+				if ( $result === true ) {
+					$this->load->library( 'session' );
+					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'media_files_moved_successfully' ) . '</div>' );
+					redirect( 'site-admin/media' );
+				}
+			}
+			
+			$output['target_folder'] = $data['target_folder'];
+		}
+		
+		$output['list_folder'] = $this->filesys->list_dir_and_sub();
+		$output['ids'] = $id;
+		
+		$query = $this->db->where_in( 'file_id', $id )
+			   ->get( 'files' );
+		$output['files'] = $query->result();
+		
+		if ( isset( $cannot_move_some_files ) && $cannot_move_some_files === true ) {
+			$output['form_status'] = '<div class="alert alert-error">'.lang( 'media_unable_to_move_some_file_due_to_system_permission' ).'</div>';
+		}
+		
+		// head tags output ##############################
+		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'media_media' ) );
+		// meta tags
+		// link tags
+		// script tags
+		// end head tags output ##############################
+		
+		// output
+		$this->generate_page( 'site-admin/templates/media/media_move_file_view', $output );
+	}// move_file
 	
 	
 	function popup() {
@@ -370,8 +560,20 @@ class media extends admin_controller {
 		$output['cur_sort'] = $this->input->get( 'sort', true );
 		$output['sort'] = ( $this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'desc' ? 'asc' : 'desc' );
 		
+		$current_path = ( $this->input->get( 'current_path' ) != null ? rtrim( $this->input->get( 'current_path' ), '/' ) : $this->filesys->base_dir );
+		$current_path = ( $this->filesys->is_over_limit_base( $this->filesys->base_dir, $current_path ) ? $this->filesys->base_dir : $current_path );
+		$output['current_path'] = $current_path;
+		
+		$output['output'] = $output;// send all values to $output array in views. this is very usefull in function.
+		
+		// list folders
+		$this->filesys->current_path = $current_path;
+		$output['list_folder'] = $this->filesys->list_dir_and_sub();
+		
 		// list item
-		$output['list_item'] = $this->media_model->list_item( 'admin' );
+		$data['folder'] = $current_path.'/';
+		$output['list_item'] = $this->media_model->list_item( 'admin', $data );
+		unset( $data );
 		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -436,6 +638,8 @@ class media extends admin_controller {
 				
 				$this->media_model->delete( $an_id );
 			}
+		} elseif ( $act == 'move_to_folder' ) {
+			return $this->move_file( $id );
 		}
 		
 		// go back

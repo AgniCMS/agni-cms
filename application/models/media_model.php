@@ -98,6 +98,30 @@ class media_model extends CI_Model {
 	
 	
 	/**
+	 * delete_folder
+	 * @param string $folder
+	 * @return boolean
+	 */
+	function delete_folder( $folder = '' ) {
+		$this->load->helper( array( 'directory', 'file' ) );
+		
+		// delete files in db that folder field contain folder value
+		$this->db->like( 'folder', $folder, 'after' );
+		$query = $this->db->delete( 'files' );
+		
+		if ( file_exists( $folder ) ) {
+			delete_files( $folder, true );
+			
+			if ( is_dir( $folder ) ) {
+				rmdir( $folder );
+			}
+		}
+		
+		return true;
+	}// delete_folder
+	
+	
+	/**
 	 * edit
 	 * @param array $data
 	 * @return boolean 
@@ -122,7 +146,6 @@ class media_model extends CI_Model {
 		if ( !empty( $data ) ) {
 			$this->db->where( $data );
 		}
-		$this->db->where( 'language', $this->lang->get_current_lang() );
 		
 		$query = $this->db->get( 'files' );
 		
@@ -174,9 +197,13 @@ class media_model extends CI_Model {
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	function list_item( $list_for = 'front' ) {
+	function list_item( $list_for = 'front', $data = array() ) {
 		$this->db->join( 'accounts', 'accounts.account_id = files.account_id', 'left' );
-		$this->db->where( 'language', $this->lang->get_current_lang() );
+		
+		if ( isset( $data['folder'] ) ) {
+			$this->db->where( 'folder', $data['folder'] );
+		}
+		
 		$q = trim( $this->input->get( 'q' ) );
 		// search
 		if ( $q != null ) {
@@ -277,6 +304,83 @@ class media_model extends CI_Model {
 	
 	
 	/**
+	 * move_file
+	 * @param array $data
+	 * @return mixed
+	 */
+	function move_file( $data = array() ) {
+		$this->load->library( 'filesys' );
+		
+		foreach ( $data['ids'] as $id ) {
+			$query = $this->db->where( 'file_id', $id )->get( 'files' );
+			
+			if ( $query->num_rows() > 0 ) {
+				$row = $query->row();
+				
+				$result = $this->filesys->move_file( $row->file, str_replace( $row->folder, $data['target_folder'].'/', $row->file ) );
+				
+				if ( $result == true ) {
+					$data_update['file_id'] = $id;
+					$data_update['folder'] = str_replace( $row->folder, $data['target_folder'].'/', $row->folder );
+					$data_update['file'] = str_replace( $row->folder, $data['target_folder'].'/', $row->file );
+					$this->edit( $data_update );
+					unset( $data_update );
+				}
+			}
+			
+			$query->free_result();
+			unset( $query, $row, $id );
+		}
+		
+		return true;
+	}// move_file
+	
+	
+	/**
+	 * rename_folder
+	 * @param string $current_path
+	 * @param string $current_folder
+	 * @param string $new_name
+	 * @return boolean
+	 */
+	function rename_folder( $current_path = '', $current_folder = '', $new_name = '' ) {
+		// prevent double slash
+		$current_path = rtrim( $current_path, '/' );
+		
+		$query = $this->db->where( 'folder', $current_path.'/' )
+					->get( 'files' );
+		
+		foreach ( $query->result() as $row ) {
+			// loop cut current folder and set new one. ---------------------------------------------
+			$current_path_exp = explode( '/', $current_path );
+			$new_folder_name_path = '';
+			foreach ( $current_path_exp as $path ) {
+				if ( $path != $current_folder ) {
+					$new_folder_name_path .= $path.'/';
+				}
+			}
+			$new_folder_name_path .= $new_name.'/';
+
+			unset( $current_path_exp, $path );
+			// loop cut current folder and set new one. ---------------------------------------------
+			
+			$data['file_id'] = $row->file_id;
+			$data['folder'] = $new_folder_name_path;
+			$data['file'] = str_replace( $row->folder, $new_folder_name_path, $row->file );
+			
+			$this->edit( $data );
+			
+			unset( $new_folder_name_path, $data );
+			
+		}
+		
+		$query->free_result();
+		
+		return true;
+	}// rename_folder
+	
+	
+	/**
 	 * upload_media
 	 * @return mixed 
 	 */
@@ -287,15 +391,22 @@ class media_model extends CI_Model {
 		$account_id = $ca_account['id'];
 		unset( $ca_account );
 		
+		$current_path = trim( $this->input->post( 'current_path' ) ).'/';
+		
+		if ( $this->filesys->is_over_limit_base( $this->filesys->base_dir, $current_path ) ) {
+			unset( $ca_account, $account_id, $current_path );
+			return 'Hack Attempt!';
+		}
+		
 		if ( isset( $_FILES['file']['name'] ) && $_FILES['file']['name'] != null ) {
 			
-			if ( !file_exists( $this->config->item( 'agni_upload_path' ).'media/'.$this->lang->get_current_lang().'/' ) ) {
+			if ( !file_exists( $current_path ) ) {
 				// directory not exists? create one.
-				mkdir( $this->config->item( 'agni_upload_path' ).'media/'.$this->lang->get_current_lang().'/', 0777, true );
+				mkdir( $current_path, 0777, true );
 			}
 			
 			// config
-			$config['upload_path'] = $this->config->item( 'agni_upload_path' ).'media/'.$this->lang->get_current_lang().'/';
+			$config['upload_path'] = $current_path;
 			$config['allowed_types'] = $this->config_model->load_single( 'media_allowed_types' );
 			
 			if ( !preg_match( "/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $_FILES['file']['name'] ) ) {
@@ -323,7 +434,7 @@ class media_model extends CI_Model {
 			
 			// insert into db
 			$data['account_id'] = $account_id;
-			$data['language'] = $this->lang->get_current_lang();
+			$data['folder'] = $current_path;
 			$data['file'] = $config['upload_path'].$filedata['raw_name'].$filedata['file_ext'];
 			$data['file_name'] = $filedata['file_name'];
 			$data['file_original_name'] = $filedata['orig_name'];

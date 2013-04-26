@@ -172,6 +172,9 @@ html, body {height: 100%;}
 	text-align: right; 
 	width: 45%;
 }
+.cmds .cmd-right-align {
+	text-align: right;
+}
 .cmds form {
 	margin: 0;
 }
@@ -344,6 +347,13 @@ html, body {height: 100%;}
 
 
 
+.list-item-avatar {
+	max-height: 50px;
+	max-width: 50px;
+}
+
+
+
 .list-themes {
 	overflow: hidden; 
 	width: 100%;
@@ -382,6 +392,47 @@ html, body {height: 100%;}
 
 
 
+.media-column-list-folder .list-folder-container {
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	margin: 10px 0;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height {
+	max-height: 500px;
+	min-height: 50px;
+	overflow: hidden;
+	overflow-y: auto;
+	padding: 5px;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul {
+	list-style: none;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul.list-folder-tree {
+	margin-left: 0;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul li {
+	padding: 2px 0;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul li.active > div.folder-item-container {
+	background: #ddd;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul li div.folder-item-container {
+	padding: 0 0 0 5px;
+	transition: all 0.5s ease;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul li div.folder-item-container:hover {
+	background: #eee;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul li div.folder-item-container a {
+	text-decoration: none;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul li div.folder-item-container .delete-folder {
+	padding: 0 3px;
+	transition: all 0.3s ease;
+}
+.media-column-list-folder .list-folder-container .list-folder-limit-height ul li div.folder-item-container .delete-folder:hover {
+	background: #FF6868;
+}
 .media-list-items .media-thumbnail {
 	float: left; 
 	margin: 0 10px 0 0; 
