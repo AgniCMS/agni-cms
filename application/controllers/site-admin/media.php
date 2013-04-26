@@ -515,8 +515,11 @@ class media extends admin_controller {
 		$output['list_folder'] = $this->filesys->list_dir_and_sub();
 		$output['ids'] = $id;
 		
-		$query = $this->db->where_in( 'file_id', $id )
-			   ->get( 'files' );
+		// get files information from db.
+		foreach ( $ids as $key => $id ) {
+			$this->db->or_where( 'file_id', $id );
+		}
+		$query = $this->db->get( 'files' );
 		$output['files'] = $query->result();
 		
 		if ( isset( $cannot_move_some_files ) && $cannot_move_some_files === true ) {
