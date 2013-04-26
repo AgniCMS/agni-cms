@@ -81,9 +81,6 @@
 		margin-bottom: 5px; 
 		text-align: center;
 	}
-	.login-container label {
-		width: 374px;
-	}
 	.login-container .captcha-field {
 		display: none;
 	}
