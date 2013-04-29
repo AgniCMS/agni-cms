@@ -58,6 +58,36 @@ if ( !function_exists( 'show_menuitem_nested_sortable' ) ) {
 			$output .= ' &nbsp; &nbsp; <span class="item-actions">';
 			
 			if ( $ci->account_model->check_admin_permission( 'menu_perm', 'menu_edit_perm' ) ) {
+				// show edit source link
+				// those category, tag, article, page are source and editable.
+				switch ( $item->mi_type ) {
+					case 'category':
+						$has_edit_source = true;
+						$edit_link = site_url( 'site-admin/category/edit/'. $item->type_id );
+						break;
+					case 'tag':
+						$has_edit_source = true;
+						$edit_link = site_url( 'site-admin/tag/edit/'. $item->type_id );
+						break;
+					case 'article':
+						$has_edit_source = true;
+						$edit_link = site_url( 'site-admin/article/edit/'. $item->type_id );
+						break;
+					case 'page':
+						$has_edit_source = true;
+						$edit_link = site_url( 'site-admin/page/edit/'. $item->type_id );
+						break;
+					default:
+						break;
+				}
+				
+				if ( isset( $has_edit_source ) && $has_edit_source === true ) {
+					$output .= '<a href="'.$edit_link.'" title="'.lang( 'admin_edit_source' ).'"><i class="icon-edit"></i> '.lang( 'admin_edit_source' ).'</a> | ';
+				}
+				// remove unused variables
+				unset( $has_edit_source, $edit_link );
+				
+				// show edit menu item link
 				$output .= '<a href="#" title="'.lang( 'admin_edit' ).'" onclick="return edit_menu_item(\''.$item->mi_id.'\');"><i class="icon-pencil"></i> '.lang( 'admin_edit' ).'</a>';
 			}
 			

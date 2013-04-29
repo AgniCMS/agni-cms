@@ -78,7 +78,7 @@
 	.login-container h1 {
 		font-size: 1.3em; 
 		font-weight: bold; 
-		margin-bottom: 5px; 
+		margin-bottom: auto; 
 		text-align: center;
 	}
 	.login-container .captcha-field {

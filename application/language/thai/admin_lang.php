@@ -1,9 +1,11 @@
 <?php
 
 $lang['admin_add'] = 'เพิ่ม';
+$lang['admin_cancel'] = 'ยกเลิก';
 $lang['admin_credit'] = 'เสริมพลังโดย <a href="http://www.agnicms.org">อัคนี CMS</a>';
 $lang['admin_delete'] = 'ลบ';
 $lang['admin_edit'] = 'แก้ไข';
+$lang['admin_edit_source'] = 'แก้ไขต้นทาง';
 $lang['admin_home'] = 'หน้าแรกผู้ดูแล';
 $lang['admin_html_allowed'] = 'อนุญาตให้ใช้ HTML.';
 $lang['admin_meta_description'] = 'Meta description';
