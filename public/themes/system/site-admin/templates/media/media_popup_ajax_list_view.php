@@ -34,23 +34,35 @@
 			?></td>
 			<td>
 				<?php
-				$is_image = false;
-				if ( (strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png') ) {
-					$is_image = true;
-					// image.
-					$insert_tag = '<img src="'.base_url().$row->file.'" alt="'.$row->media_name.'" />';
-				} else {
-					$insert_tag = $this->modules_plug->do_action( 'media_insert_tag', $row );
-					// check if modules plug works?
-					if ( is_object( $insert_tag ) ) {
-						$insert_tag = '<a href="'.base_url().$row->file.'">'.$row->file_name.'</a>';
+				$insert_tag = $this->modules_plug->do_action( 'media_insert_tag', $row );
+				if ( is_object( $insert_tag ) ) {
+					// insert_tag from modules_plug must be string. if not, means it has no modules_plug work with this. unset it.
+					unset( $insert_tag );
+					
+					$is_image = false;
+					if ( (strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png') ) {
+						$is_image = true;
+						// image.
+						$insert_tag = '<img src="'.base_url( $row->file ).'" alt="'.$row->media_name.'" />';
+					} else {
+						$insert_tag = '<a href="'.base_url( $row->file ).'">'.$row->file_name.'</a>';
 					}
 				}
 				?>
 				<ul class="actions-inline">
+					<?php 
+					$action_module_plug = $this->modules_plug->do_action( 'media_actions', $row );
+					if ( $action_module_plug !== $row ) {
+						echo $action_module_plug;
+					} else {
+					?> 
 					<li><a href="#" onclick="return insert_media('<?php echo htmlspecialchars( $insert_tag, ENT_QUOTES, config_item( 'charset' ) ); ?>');"><?php echo lang( 'media_insert' ); ?></a></li>
-					<?php if ( $is_image === true ): ?><li><a href="#" onclick="return set_feature_image( <?php echo $row->file_id; ?> );"><?php echo lang( 'media_set_as_feature' ); ?></a></li><?php endif; ?> 
+					<?php if ( isset( $is_image ) && $is_image === true ): ?><li><a href="#" onclick="return set_feature_image( <?php echo $row->file_id; ?> );"><?php echo lang( 'media_set_as_feature' ); ?></a></li><?php endif; ?> 
+					<?php
+					}
+					?> 
 				</ul>
+				<?php unset( $insert_tag, $is_image, $action_module_plug ); ?> 
 			</td>
 		</tr>
 	<?php endforeach; ?> 

@@ -1,2 +1,3 @@
 media_review		แสดง review ของสื่อ เช่นภาพ screenshot, video player โดยให้ echo ออกมา	ส่งค่า file_id เข้าไป
-media_insert_tag		แสดง element ที่จะ insert เข้าไปในช่องเนื้อหาของ post เช่น <video src="...file...">	ส่งค่า $row object ของ media เข้าไป
+media_insert_tag		แสดง element ที่จะ insert เข้าไปในช่องเนื้อหาของ post เช่น <video src="...file...">	ส่งค่า $row object ของ media เข้าไป	ต้องส่งค่ากลับมาเป็น string เช่น <video src="..">
+media_actions		แสดง action ที่จะให้กระทำในรายการสื่อนั้นๆ เช่น ให้เลือกไฟล์นี้	ส่งค่า $row object ของ media เข้าไป	ต้องส่งกลับมาเป็น string เช่น <li><a onclick="action('file.jpg');">select</a></li>
