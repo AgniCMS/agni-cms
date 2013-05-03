@@ -287,7 +287,7 @@ class category extends admin_controller {
 		}
 		
 		// count total items
-		$output['total_item'] = count( $output['list_item'] );
+		$output['total_item'] = $this->taxonomy_model->list_item_total();
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'category_category' ) );
