@@ -27,6 +27,22 @@ class admin_controller extends MY_Controller {
 		// load language
 		$this->lang->load( 'admin' );
 		
+		// call cron controller. --------------------------------------------------------------------------------------------------------------
+		// this is very useful when user's server has no cron job.
+		if ( $this->config->item( 'agni_system_cron' ) === true ) {
+			// user use agni system cron instead of real cron job.
+			// check last run.
+			$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
+			if ( false === $this->cache->get( 'agnicms_had_run_cron_job' ) ) {
+				$this->cache->save( 'agnicms_had_run_cron_job', 'true', 86400 );// 86400 seconds is 1 day
+				
+				// call cron controller.
+				$this->load->module( 'site-admin/cron' );
+				$this->cron->index();
+			}
+		}
+		// call cron controller. --------------------------------------------------------------------------------------------------------------
+		
 		// get default admin theme name and set new theme_path
 		$theme_system_name = $this->themes_model->get_default_theme( 'admin' );
 		$this->theme_path = $this->base_url.config_item( 'agni_theme_path' ).$theme_system_name.'/';
@@ -43,18 +59,26 @@ class admin_controller extends MY_Controller {
 	 * @param string $output 
 	 */
 	function generate_page( $page = '', $output = '' ) {
-		// get current site data for check
-		$sdata['site_domain'] = $this->input->server( 'HTTP_HOST' );
-		$current_site = $this->siteman_model->get_site_data_db( $sdata );
-		unset( $sdata );
-		
-		if ( count( $current_site ) <= '1' ) {
-			// get sites to list in admin page 
-			$sdata['site_status'] = '1';
-			$output['agni_list_sites'] = $this->siteman_model->list_websites_all( $sdata );
-			unset( $sdata );
+		// get sites to list in admin page 
+		$sdata['site_status'] = '1';
+		$list_sites = $this->siteman_model->list_websites_all( $sdata );
+		if ( isset( $list_sites['total'] ) && $list_sites['total'] > 1 ) {
+			$output['agni_list_sites'] = $list_sites;
 		}
-		unset( $current_site );
+		unset( $sdata, $list_sites );
+		
+		// show global alert message. ---------------------------------------------------------------------------------------------------
+		$this->load->library( 'session' );
+		// to use global status, use the code sample as below this line.
+		// $this->session->set_userdata( 'global_status', array( 'msg' => 'this is status message.', 'status' => 'error' ) );// sample global status.
+		// the 'msg' is message (text or html). 'status' is warning, info, error, success (choose one).
+		//
+		// to remove global status, use the code below
+		// $this->session->unset_userdata( 'global_status' );
+		//
+		// show global status, alert
+		$output['global_status'] = $this->session->userdata( 'global_status' );
+		// end show global alert message. --------------------------------------------------------------------------------------------
 		
 		//
 		$output['page_content'] = $this->load->view( $page, $output, true );

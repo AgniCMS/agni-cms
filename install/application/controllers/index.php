@@ -93,6 +93,7 @@ class index extends MY_Controller {
 		// web server
 		$list_verify['agni_webserver']['value'] = $this->input->server( 'SERVER_SOFTWARE' );
 		$list_verify['agni_webserver']['result'] = (strpos( $this->input->server( 'SERVER_SOFTWARE' ), 'Apache/2' ) !== false ? 'pass' : 'warn' );
+		
 		// php
 		$list_verify['agni_vf_php']['value'] = phpversion();
 		if ( phpversion() >= 5.3 ) {

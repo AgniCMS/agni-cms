@@ -367,6 +367,11 @@ class siteman_model extends CI_Model {
 	}// list_websites
 	
 	
+	/**
+	 * list_websites_all
+	 * @param array $data
+	 * @return mixed
+	 */
 	function list_websites_all( $data = array() ) {
 		if ( is_array( $data ) && !empty( $data ) ) {
 			$this->db->where( $data );

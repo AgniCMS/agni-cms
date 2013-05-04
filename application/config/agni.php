@@ -12,10 +12,13 @@
  */
 
 // current Agni CMS version. use for compare with auto update.
-$config['agni_version'] = '0.9';
+$config['agni_version'] = '0.8';
 
 // enable auto update. recommended setting to 'true' for use auto update, but if you want manual update (core hacking or custom modification through core files) set to false.
 $config['angi_auto_update'] = true;
+
+// agni system cron. set to true if you want to run cron from system or set to false if you already have real cron job call to http://yourdomain.tld/path-installed/site-admin/cron .
+$config['agni_system_cron'] = true;
 
 // theme path refer from base path.
 $config['agni_theme_path'] = 'public/themes/';

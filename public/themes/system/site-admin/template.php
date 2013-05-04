@@ -152,6 +152,14 @@
 			
 			
 			<div class="body-wrap">
+				<?php if ( isset( $global_status['msg'] ) && isset( $global_status['status'] ) && !empty( $global_status ) ) { ?> 
+				<div class="alert alert-<?php echo $global_status['status']; ?> fade in">
+					<button class="close" data-dismiss="alert" type="button">&times;</button>
+					<?php echo $global_status['msg']; ?> 
+				</div>
+				<?php } // endif; 
+				unset( $global_status );
+				?> 
 				
 				<?php if ( isset( $page_content ) ) {echo $page_content;} ?> 
 				
