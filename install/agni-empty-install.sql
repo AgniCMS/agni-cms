@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `an_accounts` (
 
 INSERT INTO `an_accounts` (`account_id`, `account_username`, `account_email`, `account_password`, `account_fullname`, `account_birthdate`, `account_avatar`, `account_signature`, `account_timezone`, `account_language`, `account_create`, `account_create_gmt`, `account_last_login`, `account_last_login_gmt`, `account_online_code`, `account_status`, `account_status_text`, `account_new_email`, `account_new_password`, `account_confirm_code`) VALUES
 (0, 'Guest', 'none@localhost', NULL, 'Guest', NULL, NULL, NULL, 'UP7', NULL, '2012-04-03 19:25:44', '2012-04-03 12:25:44', NULL, NULL, NULL, 0, 'You can''t login with this account.', NULL, NULL, NULL),
-(1, 'admin', 'admin@localhost.com', '6e6f59d20ef87183781895cb20d13c6663f3890c', NULL, NULL, NULL, NULL, 'UP7', NULL, '2011-04-20 19:20:04', '2011-04-20 12:20:04', '2012-06-16 17:09:17', '2012-06-16 10:09:17', 'e2135bb4faf4fb999e3bbebe86ed1cdf', 1, NULL, NULL, NULL, NULL);
+(1, 'admin', 'admin@localhost', '6e6f59d20ef87183781895cb20d13c6663f3890c', NULL, NULL, NULL, NULL, 'UP7', NULL, '2011-04-20 19:20:04', '2011-04-20 12:20:04', '2012-06-16 17:09:17', '2012-06-16 10:09:17', 'e2135bb4faf4fb999e3bbebe86ed1cdf', 1, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -318,14 +318,14 @@ INSERT INTO `an_config` (`config_name`, `config_value`, `config_core`, `config_d
 ('member_allow_register', '1', 1, 'allow users to register'),
 ('member_register_notify_admin', '0', 1, 'send email to notify admin when new member register?'),
 ('member_verification', '1', 1, 'member verification method.\r\n1 = verify by email\r\n2 = wait for admin verify'),
-('member_admin_verify_emails', 'admin@localhost.com', 1, 'emails of administrators to notice them when new member registration'),
+('member_admin_verify_emails', 'admin@localhost', 1, 'emails of administrators to notice them when new member registration'),
 ('mail_protocol', 'mail', 1, 'The mail sending protocol.\r\nmail, sendmail, smtp'),
 ('mail_mailpath', '/usr/sbin/sendmail', 1, 'The server path to Sendmail.'),
 ('mail_smtp_host', 'localhost', 1, 'SMTP Server Address.'),
-('mail_smtp_user', 'no-reply@localhost.com', 1, 'SMTP Username.'),
+('mail_smtp_user', 'no-reply@localhost', 1, 'SMTP Username.'),
 ('mail_smtp_pass', '', 1, 'SMTP Password.'),
 ('mail_smtp_port', '25', 1, 'SMTP Port.'),
-('mail_sender_email', 'no-reply@localhost.com', 1, 'Email for ''sender'''),
+('mail_sender_email', 'no-reply@localhost', 1, 'Email for ''sender'''),
 ('content_show_title', '1', 1, 'show h1 content title'),
 ('content_show_time', '1', 1, 'show content time. (publish, update, ...)'),
 ('content_show_author', '1', 1, 'show content author.'),
@@ -334,8 +334,18 @@ INSERT INTO `an_config` (`config_name`, `config_value`, `config_core`, `config_d
 ('comment_show_notallow', '0', 1, 'list old comments even if comment setting change to not allow new comment?\r\n0=not show, 1=show\r\nif 0 the system will not show comments when setting to not allow new comment.'),
 ('comment_perpage', '40', 1, 'number of comments per page'),
 ('comment_new_notify_admin', '1', 1, 'notify admin when new comment?\r\n0=no, 1=yes(require moderation only), 2=yes(all)'),
-('comment_admin_notify_emails', 'admin@localhost.com', 1, 'emails of administrators to notify when new comment or moderation required ?'),
-('media_allowed_types', '7z|aac|ace|ai|aif|aifc|aiff|avi|bmp|css|csv|doc|docx|eml|flv|gif|gz|h264|h.264|htm|html|jpeg|jpg|js|json|log|mid|midi|mov|mp3|mpeg|mpg|pdf|png|ppt|psd|swf|tar|text|tgz|tif|tiff|txt|wav|webm|word|xls|xlsx|xml|xsl|zip', 1, 'media upload allowed file types.\r\nthese types must specified mime-type in config/mimes.php');
+('comment_admin_notify_emails', 'admin@localhost', 1, 'emails of administrators to notify when new comment or moderation required ?'),
+('media_allowed_types', '7z|aac|ace|ai|aif|aifc|aiff|avi|bmp|css|csv|doc|docx|eml|flv|gif|gz|h264|h.264|htm|html|jpeg|jpg|js|json|log|mid|midi|mov|mp3|mpeg|mpg|pdf|png|ppt|psd|swf|tar|text|tgz|tif|tiff|txt|wav|webm|word|xls|xlsx|xml|xsl|zip', 1, 'media upload allowed file types.\r\nthese types must specified mime-type in config/mimes.php'),
+('agni_version', '0.8', 1, 'current Agni CMS version. use for compare with auto update.'),
+('angi_auto_update', '1', 1, 'enable auto update. recommended setting to \'true\' (1 = true, 0 = false) for use auto update, but if you want manual update (core hacking or custom modification through core files) set to false.'),
+('agni_auto_update_url', 'http://localhost/agnicms.org/modules/updateservice/update.xml', 1, 'url of auto update.'),
+('agni_system_cron', '1', 1, 'agni system cron. set to true (1) if you want to run cron from system or set to false (0) if you already have real cron job call to http://yourdomain.tld/path-installed/cron .'),
+('ftp_host', '', 1, 'FTP host name. ftp is very useful in update/download files from remote host to current host.'),
+('ftp_username', '', 1, 'FTP username'),
+('ftp_password', '', 1, 'FTP password'),
+('ftp_port', '21', 1, 'FTP port. usually is 21'),
+('ftp_passive', 'true', 1, 'FTP passive mode'),
+('ftp_basepath', '/public_html/', 1, 'FTP base path. store path to public html (web root)');
 
 -- --------------------------------------------------------
 
@@ -508,6 +518,7 @@ CREATE TABLE IF NOT EXISTS `an_posts` (
   `meta_keywords` varchar(255) DEFAULT NULL,
   `content_settings` text COMMENT 'store serialize array of settings',
   `comment_count` int(9) NOT NULL DEFAULT '0',
+  `view_count` int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (`post_id`),
   KEY `account_id` (`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='for content-type article, pages, static content.' AUTO_INCREMENT=1 ;
@@ -557,6 +568,28 @@ CREATE TABLE IF NOT EXISTS `an_post_revision` (
 
 --
 -- Dumping data for table `an_post_revision`
+--
+
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_queue`
+--
+
+CREATE TABLE IF NOT EXISTS `an_queue` (
+  `queue_id` int(11) NOT NULL AUTO_INCREMENT,
+  `queue_name` varchar(255) DEFAULT NULL,
+  `queue_data` longtext,
+  `queue_create` bigint(20) DEFAULT NULL,
+  `queue_update` bigint(20) DEFAULT NULL,
+  `queue_expire` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`queue_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='store ''to do'' job queue.' AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_queue`
 --
 
 
