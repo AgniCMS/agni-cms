@@ -299,6 +299,9 @@ class comments_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_item( $post_id = '',$mode = 'thread', $list_for = 'front' ) {
+		// comment view permission
+		$comment_view_permission = $this->account_model->check_admin_permission( 'comment_perm', 'comment_viewall_perm' );
+		
 		$this->db->select( '*, comments.account_id AS c1_account_id' );
 		$this->db->join( 'accounts', 'accounts.account_id = comments.account_id', 'left outer' );
 		$this->db->join( 'posts', 'posts.post_id = comments.post_id', 'left outer' );
@@ -308,7 +311,7 @@ class comments_model extends CI_Model {
 		// sql filter
 		$filter = strip_tags( trim( $this->input->get( 'filter' ) ) );
 		$filter_val = strip_tags( trim( $this->input->get( 'filter_val' ) ) );
-		if ( $list_for == 'front' && !$this->account_model->check_admin_permission( 'comment_perm', 'comment_viewall_perm' ) ) {
+		if ( $list_for == 'front' && ! $comment_view_permission ) {
 			$this->db->where( 'comment_status', '1' );
 		}
 		if ( $post_id != null ) {
