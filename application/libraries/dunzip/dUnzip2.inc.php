@@ -1,4 +1,9 @@
 <?php
+// 22/03/2013 (v2.67)
+// - New method: ->each(function($fileName, $fileInfo) use ($zip)), works as jQuery.
+//   Example: $z->each(function($filename) use ($z){ $z->unzip($filename, "unc/".basename($filename)); });
+// 25/07/2012 (v2.664)
+// - unzip was NOT respecting chmod parameters, and always setting to 0777. (thanks to Stef Dawson, http://stefdawson.com)
 // 19/08/2011 (v2.663)
 // - unzipAll was using double slashes (path//filename) to save files. (thanks to Karen Peyton).
 // 09/08/2010 (v2.662)
@@ -22,7 +27,7 @@
 // - New method: getLastError()
 
 ##############################################################
-# Class dUnzip2 v2.663
+# Class dUnzip2 v2.67
 #
 #  Author: Alexandre Tedeschi (d)
 #  E-Mail: alexandrebr at gmail dot com
@@ -42,6 +47,7 @@
 #
 #  Methods:
 #  * dUnzip2($filename)         - Constructor - Opens $filename
+#  * each($cbEach)              - Calls $cbEach($filename, $fileinfo) on each compressed file
 #  * getList([$stopOnFile])     - Retrieve the file list
 #  * getExtraInfo($zipfilename) - Retrieve more information about compressed file
 #  * getZipInfo([$entry])       - Retrieve ZIP file details.
@@ -60,7 +66,7 @@
 
 class dUnzip2{
 	Function getVersion(){
-		return "2.663";
+		return "2.67";
 	}
 	// Public
 	var $fileName;
@@ -182,6 +188,19 @@ class dUnzip2{
 			$this->endOfCentral;
 	}
 	
+	Function each ($cbEachCompreesedFile){
+		// cbEachCompreesedFile(filename, fileinfo);
+		if(!is_callable($cbEachCompreesedFile))
+			die("dUnzip2: You called 'each' method, but failed to provide an Callback as argument. Usage: \$zip->each(function(\$filename, \$fileinfo) use (\$zip){ ... \$zip->unzip(\$filename, 'uncompress/\$filename'); }).");
+		
+		$lista = $this->getList();
+		if(sizeof($lista)) foreach($lista as $fileName=>$fileInfo){
+			if(false === call_user_func($cbEachCompreesedFile, $fileName, $fileInfo)){
+				return false;
+			}
+		}
+		return true;
+	}
 	Function unzip($compressedFileName, $targetFileName=false, $applyChmod=0777){
 		if(!sizeof($this->compressedList)){
 			$this->debugMsg(1, "Trying to unzip before loading file list... Loading it!");
@@ -214,7 +233,7 @@ class dUnzip2{
 			);
 		unset($toUncompress);
 		if($applyChmod && $targetFileName)
-			chmod($targetFileName, 0777);
+			chmod($targetFileName, $applyChmod);
 		
 		return $ret;
 	}
