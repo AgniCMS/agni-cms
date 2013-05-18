@@ -22,8 +22,8 @@ class media extends admin_controller {
 		$this->load->helper( array( 'date', 'file', 'form' ) );
 		
 		// load library
-		$this->load->library( array( 'filesys' ) );
-		$this->filesys->base_dir = $this->config->item( 'agni_upload_path' ).'media';
+		$this->load->library( array( 'media_filesys' ) );
+		$this->media_filesys->base_dir = $this->config->item( 'agni_upload_path' ).'media';
 		
 		// load language
 		$this->lang->load( 'media' );
@@ -57,7 +57,7 @@ class media extends admin_controller {
 		
 		$folder = $this->input->post( 'folder' ).'/';
 		
-		if ( !$this->filesys->is_over_limit_base( $this->filesys->base_dir, $folder ) ) {
+		if ( !$this->media_filesys->is_over_limit_base( $this->media_filesys->base_dir, $folder ) ) {
 			// recursive delete folders and files in it.
 			$this->media_model->delete_folder( $folder );
 			
@@ -83,7 +83,7 @@ class media extends admin_controller {
 		$current_path = trim( $this->input->post( 'current_path' ) );
 		$folder_name = trim( $this->input->post( 'folder_name' ) );
 		
-		$result = $this->filesys->create_folder( $current_path.'/'.$folder_name, $folder_name );
+		$result = $this->media_filesys->create_folder( $current_path.'/'.$folder_name, $folder_name );
 		
 		if ( $result === true ) {
 			$output['result'] = true;
@@ -112,7 +112,7 @@ class media extends admin_controller {
 		$current_folder = trim( $this->input->post( 'current_folder' ) );
 		$folder_new_name = trim( $this->input->post( 'folder_new_name' ) );
 		
-		$result = $this->filesys->rename_folder( $current_path, $current_folder, $folder_new_name );
+		$result = $this->media_filesys->rename_folder( $current_path, $current_folder, $folder_new_name );
 		
 		if ( $result === true ) {
 			$output['result'] = true;
@@ -411,15 +411,15 @@ class media extends admin_controller {
 		$output['cur_sort'] = $this->input->get( 'sort', true );
 		$output['sort'] = ( $this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'desc' ? 'asc' : 'desc' );
 		
-		$current_path = ( $this->input->get( 'current_path' ) != null ? rtrim( $this->input->get( 'current_path' ), '/' ) : $this->filesys->base_dir );
-		$current_path = ( $this->filesys->is_over_limit_base( $this->filesys->base_dir, $current_path ) ? $this->filesys->base_dir : $current_path );
+		$current_path = ( $this->input->get( 'current_path' ) != null ? rtrim( $this->input->get( 'current_path' ), '/' ) : $this->media_filesys->base_dir );
+		$current_path = ( $this->media_filesys->is_over_limit_base( $this->media_filesys->base_dir, $current_path ) ? $this->media_filesys->base_dir : $current_path );
 		$output['current_path'] = $current_path;
 		
 		$output['output'] = $output;// send all values to $output array in views. this is very usefull in function.
 		
 		// list folders
-		$this->filesys->current_path = $current_path;
-		$output['list_folder'] = $this->filesys->list_dir_and_sub();
+		$this->media_filesys->current_path = $current_path;
+		$output['list_folder'] = $this->media_filesys->list_dir_and_sub();
 		
 		// list item
 		$data['folder'] = $current_path.'/';
@@ -512,7 +512,7 @@ class media extends admin_controller {
 			$output['target_folder'] = $data['target_folder'];
 		}
 		
-		$output['list_folder'] = $this->filesys->list_dir_and_sub();
+		$output['list_folder'] = $this->media_filesys->list_dir_and_sub();
 		$output['ids'] = $id;
 		
 		// get files information from db.
@@ -563,15 +563,15 @@ class media extends admin_controller {
 		$output['cur_sort'] = $this->input->get( 'sort', true );
 		$output['sort'] = ( $this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'desc' ? 'asc' : 'desc' );
 		
-		$current_path = ( $this->input->get( 'current_path' ) != null ? rtrim( $this->input->get( 'current_path' ), '/' ) : $this->filesys->base_dir );
-		$current_path = ( $this->filesys->is_over_limit_base( $this->filesys->base_dir, $current_path ) ? $this->filesys->base_dir : $current_path );
+		$current_path = ( $this->input->get( 'current_path' ) != null ? rtrim( $this->input->get( 'current_path' ), '/' ) : $this->media_filesys->base_dir );
+		$current_path = ( $this->media_filesys->is_over_limit_base( $this->media_filesys->base_dir, $current_path ) ? $this->media_filesys->base_dir : $current_path );
 		$output['current_path'] = $current_path;
 		
 		$output['output'] = $output;// send all values to $output array in views. this is very usefull in function.
 		
 		// list folders
-		$this->filesys->current_path = $current_path;
-		$output['list_folder'] = $this->filesys->list_dir_and_sub();
+		$this->media_filesys->current_path = $current_path;
+		$output['list_folder'] = $this->media_filesys->list_dir_and_sub();
 		
 		// list item
 		$data['folder'] = $current_path.'/';

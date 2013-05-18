@@ -21,7 +21,7 @@
 		<p><?php echo lang( 'media_you_are_moving_these_files_to' ); ?></p>
 		<select name="target_folder">
 			<option value=""></option>
-			<option value="<?php echo $this->filesys->base_dir; ?>">media</option>
+			<option value="<?php echo $this->media_filesys->base_dir; ?>">media</option>
 			<?php
 			require_once( dirname(__FILE__).'/media_list_folder_recursive_function.php' );
 			echo list_folder_recursive_selectbox( $list_folder, array( 'selected_option' => $target_folder ) );

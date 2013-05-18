@@ -496,7 +496,7 @@ class account_model extends CI_Model {
 		if ( $account_id == null ) {
 			// account id is empty, get it from cookie.
 			$ca_account = $this->get_account_cookie( 'admin' );
-			$account_id = ( isset( $ca_account['id']) ? $ca_account['id'] : '' );
+			$account_id = ( isset( $ca_account['id']) ? $ca_account['id'] : '0' );
 		}
 		
 		// check for required attribute

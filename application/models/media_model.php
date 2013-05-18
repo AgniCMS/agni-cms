@@ -309,7 +309,7 @@ class media_model extends CI_Model {
 	 * @return mixed
 	 */
 	function move_file( $data = array() ) {
-		$this->load->library( 'filesys' );
+		$this->load->library( 'media_filesys' );
 		
 		foreach ( $data['ids'] as $id ) {
 			$query = $this->db->where( 'file_id', $id )->get( 'files' );
@@ -317,7 +317,7 @@ class media_model extends CI_Model {
 			if ( $query->num_rows() > 0 ) {
 				$row = $query->row();
 				
-				$result = $this->filesys->move_file( $row->file, str_replace( $row->folder, $data['target_folder'].'/', $row->file ) );
+				$result = $this->media_filesys->move_file( $row->file, str_replace( $row->folder, $data['target_folder'].'/', $row->file ) );
 				
 				if ( $result == true ) {
 					$data_update['file_id'] = $id;
@@ -393,7 +393,7 @@ class media_model extends CI_Model {
 		
 		$current_path = trim( $this->input->post( 'current_path' ) ).'/';
 		
-		if ( $this->filesys->is_over_limit_base( $this->filesys->base_dir, $current_path ) ) {
+		if ( $this->media_filesys->is_over_limit_base( $this->media_filesys->base_dir, $current_path ) ) {
 			unset( $ca_account, $account_id, $current_path );
 			return 'Hack Attempt!';
 		}

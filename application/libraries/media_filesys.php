@@ -10,7 +10,7 @@
  */
 
 
-class filesys {
+class media_filesys {
 	
 	
 	// base directory for prevent user back to system files. (no end slash trail)

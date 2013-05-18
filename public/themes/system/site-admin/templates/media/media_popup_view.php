@@ -11,10 +11,10 @@
 				require_once( dirname(__FILE__).'/media_list_folder_recursive_function.php' );
 				?> 
 				<ul class="folder-tree list-folder-tree">
-					<li class="<?php if ( !empty( $list_folder ) ) {echo 'has-subfolder';} ?><?php if ( $current_path == $this->filesys->base_dir ) {echo ' current-path current active';} ?>">
+					<li class="<?php if ( !empty( $list_folder ) ) {echo 'has-subfolder';} ?><?php if ( $current_path == $this->media_filesys->base_dir ) {echo ' current-path current active';} ?>">
 						<div class="folder-item-container">
 							<span class="icon-folder-open"></span> 
-							<a href="<?php echo current_url().'?current_path='.urlencode( $this->filesys->base_dir ).( $orders != null ? '&amp;orders='.$orders : '' ).( $cur_sort != null ? '&amp;sort='.$cur_sort : '' ).( $filter != null ? '&amp;filter='.$filter : '' ).( $filter_val != null ? '&amp;filter_val='.$filter_val : '' ).( $q != null ?'&amp;q='.$q : '' ); ?>" class="folder-link">media</a>
+							<a href="<?php echo current_url().'?current_path='.urlencode( $this->media_filesys->base_dir ).( $orders != null ? '&amp;orders='.$orders : '' ).( $cur_sort != null ? '&amp;sort='.$cur_sort : '' ).( $filter != null ? '&amp;filter='.$filter : '' ).( $filter_val != null ? '&amp;filter_val='.$filter_val : '' ).( $q != null ?'&amp;q='.$q : '' ); ?>" class="folder-link">media</a>
 						</div>
 				<?php
 				$data = $output;
