@@ -229,6 +229,16 @@ html, body {height: 100%;}
 
 
 
+.ftp-test-result {
+	border: 1px dotted #ddd;
+	border-radius: 5px;
+	display: none;
+	margin: 10px 0;
+	padding: 10px;
+}
+
+
+
 .footer {
 	background: #eee; 
 	color: #777; 

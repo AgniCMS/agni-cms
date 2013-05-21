@@ -58,6 +58,9 @@ class updater extends admin_controller {
 		if ( !isset( $cfg['angi_auto_update']['value'] ) || ( isset( $cfg['angi_auto_update']['value'] ) && $cfg['angi_auto_update']['value'] == '0' ) ) {redirect( 'site-admin' );}
 		unset( $cfg );
 		
+		// load library
+		$this->load->library(array('encrypt'));
+		
 		// get queue data of agni core update.
 		$queue = $this->queue_model->get_queue_data( array( 'queue_name' => $this->agni_update->agni_update_core_name ) );
 		
@@ -79,7 +82,7 @@ class updater extends admin_controller {
 		$output['current_version'] = ( isset( $cfg['agni_version']['value'] ) ? $cfg['agni_version']['value'] : null );
 		$output['ftp_host'] = ( isset( $cfg['ftp_host']['value'] ) ? $cfg['ftp_host']['value'] : null );
 		$output['ftp_username'] = ( isset( $cfg['ftp_username']['value'] ) ? $cfg['ftp_username']['value'] : null );
-		$output['ftp_password'] = ( isset( $cfg['ftp_password']['value'] ) ? $cfg['ftp_password']['value'] : null );
+		$output['ftp_password'] = ( isset( $cfg['ftp_password']['value'] ) ? $this->encrypt->decode($cfg['ftp_password']['value']) : null );
 		$output['ftp_port'] = ( isset( $cfg['ftp_port']['value'] ) ? $cfg['ftp_port']['value'] : null );
 		$output['ftp_passive'] = ( isset( $cfg['ftp_passive']['value'] ) ? $cfg['ftp_passive']['value'] : null );
 		$output['ftp_basepath'] = ( isset( $cfg['ftp_basepath']['value'] ) ? $cfg['ftp_basepath']['value'] : null );

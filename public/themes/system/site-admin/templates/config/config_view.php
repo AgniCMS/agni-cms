@@ -10,6 +10,7 @@
 			<li><a href="#tabs-4"><?php echo lang( 'config_content' ); ?></a></li>
 			<li><a href="#tabs-media"><?php echo lang( 'config_media' ); ?></a></li>
 			<li><a href="#tabs-comment"><?php echo lang( 'config_comment' ); ?></a></li>
+			<li><a href="#tabs-ftp"><?php echo lang('config_ftp'); ?></a></li>
 		</ul>
 
 		
@@ -32,6 +33,37 @@
 				<label class="control-label"><?php echo lang( 'config_timezone' ); ?>: </label>
 				<div class="controls">
 					<?php echo timezone_menu( (isset($site_timezone) ? $site_timezone : ''), 'input-block-level' ); ?>
+				</div>
+			</div>
+			
+			<hr />
+			
+			<div class="control-group">
+				<label class="control-label"><?php echo lang('config_autoupdate'); ?>: </label>
+				<div class="controls">
+					<select name="angi_auto_update">
+						<option value="0"<?php if (isset($angi_auto_update) && $angi_auto_update == '0') { ?> selected="selected"<?php } ?>><?php echo lang('config_disable'); ?></option>
+						<option value="1"<?php if (isset($angi_auto_update) && $angi_auto_update == '1') { ?> selected="selected"<?php } ?>><?php echo lang('config_enable'); ?></option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="cfg-agni_auto_update_url"><?php echo lang('config_autoupdate_url'); ?>: </label>
+				<div class="controls">
+					<input type="text" name="agni_auto_update_url" value="<?php if ( isset( $agni_auto_update_url ) ) {echo $agni_auto_update_url;} ?>" maxlength="255" id="cfg-agni_auto_update_url" class="input-block-level" />
+					<div class="help-block"><?php printf(lang('config_autoupdate_url_default_is'), 'http://agnicms.org/th/modules/updateservice/update.xml'); ?></div>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label"><?php echo lang('config_system_cron'); ?>: </label>
+				<div class="controls">
+					<select name="agni_system_cron">
+						<option value="0"<?php if (isset($agni_system_cron) && $agni_system_cron == '0') { ?> selected="selected"<?php } ?>><?php echo lang('admin_no'); ?></option>
+						<option value="1"<?php if (isset($agni_system_cron) && $agni_system_cron == '1') { ?> selected="selected"<?php } ?>><?php echo lang('admin_yes'); ?></option>
+					</select>
+					<div class="help-block"><?php printf(lang('config_system_cron_can_run_from_cronjob_if_no_use_system_cron'), site_url('cron')); ?></div>
 				</div>
 			</div>
 		</div>
@@ -280,10 +312,87 @@
 		</div>
 		
 		
+		<div id="tabs-ftp">
+			<p><?php echo lang('config_ftp_usage_describe');?></p>
+			
+			<div class="control-group">
+				<label class="control-label" for="config-ftp_host"><?php echo lang('config_ftp_host'); ?>:</label>
+				<div class="controls">
+					<input type="text" name="ftp_host" value="<?php if (isset($ftp_host)) {echo $ftp_host;} ?>" maxlength="255" id="config-ftp_host" class="config-ftp_host input-block-level" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="config-ftp_username"><?php echo lang('config_ftp_username'); ?>:</label>
+				<div class="controls">
+					<input type="text" name="ftp_username" value="<?php if (isset($ftp_username)) {echo $ftp_username;} ?>" maxlength="255" id="config-ftp_username" class="config-ftp_username input-block-level" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="config-ftp_password"><?php echo lang('config_ftp_password'); ?>:</label>
+				<div class="controls">
+					<input type="password" name="ftp_password" value="<?php if (isset($ftp_password)) {echo $this->encrypt->decode($ftp_password);} ?>" maxlength="255" id="config-ftp_password" class="config-ftp_password input-block-level" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="config-ftp_port"><?php echo lang('config_ftp_port'); ?>:</label>
+				<div class="controls">
+					<input type="text" name="ftp_port" value="<?php if (isset($ftp_port)) {echo $ftp_port;} ?>" maxlength="255" id="config-ftp_port" class="config-ftp_port" />
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label"><?php echo lang('config_ftp_passive'); ?>:</label>
+				<div class="controls">
+					<select name="ftp_passive" class="config-ftp_passive">
+						<option value="false"<?php if (isset($ftp_passive) && $ftp_passive == 'false') { ?> selected="selected"<?php } ?>><?php echo lang('admin_no'); ?></option>
+						<option value="true"<?php if (isset($ftp_passive) && $ftp_passive == 'true') { ?> selected="selected"<?php } ?>><?php echo lang('admin_yes'); ?></option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="config-ftp_basepath"><?php echo lang('config_ftp_basepath'); ?>:</label>
+				<div class="controls">
+					<input type="text" name="ftp_basepath" value="<?php if (isset($ftp_basepath)) {echo $ftp_basepath;} ?>" maxlength="255" id="config-ftp_basepath" class="config-ftp_basepath input-block-level" />
+					<div class="help-block"><?php echo lang('config_ftp_basepath_generally_is'); ?></div>
+				</div>
+			</div>
+			
+			<button type="button" class="btn" onclick="ajax_test_ftp();"><?php echo lang('config_ftp_test_connection'); ?></button>
+			<div class="ftp-test-result"></div>
+		</div>
+		
+		
 		<div class="ui-tabs-panel button-panel"><button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button></div>
 	</div>
 <?php echo form_close(); ?>
 
 <script type="text/javascript">
 	make_tabs();
+	
+	
+	function ajax_test_ftp() {
+		$('.ftp-test-result').fadeOut();
+		
+		var ftp_host = $('.config-ftp_host').val();
+		var username = $('.config-ftp_username').val();
+		var password = $('.config-ftp_password').val();
+		var port = $('.config-ftp_port').val();
+		var passive = $('.config-ftp_passive').val();
+		var basepath = $('.config-ftp_basepath').val();
+		
+		$.ajax({
+			url: site_url+'site-admin/config/ajax_test_ftp',
+			type: 'POST',
+			data: csrf_name+'='+csrf_value+'&hostname='+ftp_host+'&username='+username+'&password='+password+'&port='+port+'&passive='+passive+'&basepath='+basepath,
+			dataType: 'html',
+			success: function(data) {
+				$('.ftp-test-result').html(data);
+				$('.ftp-test-result').show();
+			}
+		});
+	}// ajax_test_ftp
 </script>

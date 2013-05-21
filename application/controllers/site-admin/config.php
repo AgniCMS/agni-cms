@@ -18,6 +18,9 @@ class config extends admin_controller {
 		// load model
 		$this->load->model( array( 'themes_model' ) );
 		
+		// load library
+		$this->load->library( array( 'encrypt' ) );
+		
 		// load helper
 		$this->load->helper( array( 'date', 'form' ) );
 		
@@ -32,6 +35,43 @@ class config extends admin_controller {
 	function _define_permission() {
 		return array( 'config_global' => array( 'config_global' ) );
 	}// _define_permission
+	
+	
+	function ajax_test_ftp() {
+		// check permission
+		if ( $this->account_model->check_admin_permission( 'config_global', 'config_global' ) != true ) {redirect( 'site-admin' );}
+		
+		if (!$this->input->is_ajax_request()) {redirect('site-admin');}
+		
+		// test ftp connection.
+		$config['hostname'] = $this->input->post('hostname');
+		$config['username'] = $this->input->post('username');
+		$config['password'] = $this->input->post('password');
+		$config['port'] = (int) $this->input->post('port');
+		$config['passive'] = ($this->input->post('passive') == 'true' ? true : false);
+		$config['debug'] = true;
+		
+		$basepath = $this->input->post('basepath');
+		
+		// load library
+		$this->load->library('ftp');
+		
+		$this->ftp->connect($config);
+		$files = $this->ftp->list_files($basepath);
+		
+		if (is_array($files) && !empty($files)) {
+			natsort($files);
+			
+			echo '<div class="txt_info alert alert-info">'.lang('config_ftp_basepath_correct_should_see_application_modules_public_system_folders').'</div>';
+			foreach ( $files as $file ) {
+				echo str_replace('/', '', $file) . '<br />';
+			}
+		} else {
+			echo '<div class="txt_error alert alert-error">'.lang('config_ftp_basepath_incorrect').'</div>';
+		}
+		
+		$this->ftp->close();
+	}// ajax_test_ftp
 	
 	
 	function index() {
@@ -66,6 +106,11 @@ class config extends admin_controller {
 			$data['site_name'] = trim( $this->input->post( 'site_name', true ) );
 			$data['page_title_separator'] = $this->input->post( 'page_title_separator', true );
 			$data['site_timezone'] = trim( $this->input->post( 'timezones', true ) );
+			$data['angi_auto_update'] = trim($this->input->post('angi_auto_update'));
+			if ($data['angi_auto_update'] != '1') {$data['angi_auto_update'] = '0';}
+			$data['agni_auto_update_url'] = trim($this->input->post('agni_auto_update_url'));
+			$data['agni_system_cron'] = trim($this->input->post('agni_system_cron'));
+			if ($data['agni_system_cron'] != '1') {$data['agni_system_cron'] = '0';}
 			
 			//tab2
 			$data['member_allow_register'] = $this->input->post( 'member_allow_register' );
@@ -118,6 +163,16 @@ class config extends admin_controller {
 			$data['comment_new_notify_admin'] = $this->input->post( 'comment_new_notify_admin' );
 			if ( $data['comment_new_notify_admin'] < '0' || $data['comment_new_notify_admin'] > '2' ) {$data['comment_new_notify_admin'] = '1';}
 			$data['comment_admin_notify_emails'] = trim( $this->input->post( 'comment_admin_notify_emails' ) );
+			
+			// tab ftp
+			$data['ftp_host'] = trim($this->input->post('ftp_host'));
+			$data['ftp_username'] = trim($this->input->post('ftp_username'));
+			$data['ftp_password'] = trim($this->input->post('ftp_password'));
+			if ($data['ftp_password'] != null) {$data['ftp_password'] = $this->encrypt->encode($data['ftp_password']);}
+			$data['ftp_port'] = trim($this->input->post('ftp_port'));
+			if ($data['ftp_port'] == null || !is_numeric( $data['ftp_port'])) {$data['ftp_port'] = '21';}
+			$data['ftp_passive'] = trim($this->input->post('ftp_passive'));
+			$data['ftp_basepath'] = trim($this->input->post('ftp_basepath'));
 			
 			// load form validation
 			$this->load->library( 'form_validation' );
