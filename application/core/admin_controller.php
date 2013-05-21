@@ -28,19 +28,22 @@ class admin_controller extends MY_Controller {
 		$this->lang->load( 'admin' );
 		
 		// call cron controller. --------------------------------------------------------------------------------------------------------------
-		// this is very useful when user's server has no cron job.
-		if ( $this->config->item( 'agni_system_cron' ) === true ) {
-			// user use agni system cron instead of real cron job.
-			// check last run.
-			$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
-			if ( false === $this->cache->get( 'agnicms_had_run_cron_job' ) ) {
-				$this->cache->save( 'agnicms_had_run_cron_job', 'true', 86400 );// 86400 seconds is 1 day
-				
-				// call cron controller.
-				$this->load->module( 'site-admin/cron' );
-				$this->cron->index();
+		$cfg = $this->config_model->load( array( 'agni_system_cron', 'angi_auto_update' ) );
+		
+		// if use agni system cron instead of real cron job.
+		if ( isset( $cfg['agni_system_cron']['value'] ) && $cfg['agni_system_cron']['value'] === '1' ) {
+			// call cron controller.
+			$this->load->module( 'cron' );
+			$this->cron->index();
+			
+			// check update queue for admin to click update.
+			if ( $this->account_model->check_admin_permission( 'updater_perm', 'updater_update_core_perm' ) === true 
+			&& ( isset( $cfg['angi_auto_update']['value'] ) && $cfg['angi_auto_update']['value'] == '1' ) 
+			) {
+				$this->cron->check_queue_update_core();
 			}
 		}
+		unset( $cfg );
 		// call cron controller. --------------------------------------------------------------------------------------------------------------
 		
 		// get default admin theme name and set new theme_path

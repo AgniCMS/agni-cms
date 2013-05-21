@@ -44,6 +44,8 @@ class siteman_model extends CI_Model {
 
 						'modules',
 						'module_sites',
+	    
+						'queue',
 
 						'sites',
 	    

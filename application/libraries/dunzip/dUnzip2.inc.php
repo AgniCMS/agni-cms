@@ -12,7 +12,7 @@
 // - Fixed E_STRICT notice: "Only variables should be passed by reference". Thanks Erik W.
 // 24/03/2010 (v2.66)
 // - Fixed bug inside unzipAll when dirname is "." (thanks to Thorsten Groth)
-// - Added character "´" to the string conversion table (ex: caixa d´água)
+// - Added character "ï¿½" to the string conversion table (ex: caixa dï¿½ï¿½gua)
 // 27/02/2010
 // - Removed PHP4 support (file_put_contents redeclaration).
 // 04/12/2009 (v2.65)
@@ -548,8 +548,8 @@ class dUnzip2{
 		$from = "\xb7\xb5\xb6\xc7\x8e\x8f\x92\x80\xd4\x90\xd2\xd3\xde\xd6\xd7\xd8\xd1\xa5\xe3\xe0".
 		        "\xe2\xe5\x99\x9d\xeb\xe9\xea\x9a\xed\xe8\xe1\x85\xa0\x83\xc6\x84\x86\x91\x87\x8a".
 				"\x82\x88\x89\x8d\xa1\x8c\x8b\xd0\xa4\x95\xa2\x93\xe4\x94\x9b\x97\xa3\x96\xec\xe7".
-				"\x98ï";
-		$to   = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûışÿ´";
+				"\x98ï¿½";
+		$to   = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 
 		return strtr($filename, $from, $to);
 	}
