@@ -635,7 +635,7 @@ CREATE TABLE IF NOT EXISTS `an_syslog` (
   `sl_referer` tinytext COMMENT 'url referer of event',
   `sl_ipaddress` varchar(50) DEFAULT NULL,
   `sl_datetime` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`slid`)
+  PRIMARY KEY (`sl_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='contain system log.' AUTO_INCREMENT=1 ;
 
 --
