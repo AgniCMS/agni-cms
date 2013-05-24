@@ -48,6 +48,9 @@ class media_filesys {
 	
 	/**
 	 * is_over_limit_base
+	 * sample1 is_over_limit_base('public/upload/media', 'public/upload/media/sub-folder/') => return false because it is not over limit base
+	 * sample2 is_over_limit_base('public/upload/media', 'public/upload/') => return true because it is over limit base
+	 * sample3 is_over_limit_base('public/upload/media', 'public/upload/media/sub-folder/../../../../') => return true because it is over limit base
 	 * @param string $path1
 	 * @param string $path2
 	 * @return boolean
@@ -194,6 +197,10 @@ class media_filesys {
 	 * @return mixed
 	 */
 	function rename_folder( $current_path = '', $current_folder = '', $new_name = '' ) {
+		if ( $this->is_over_limit_base($this->base_dir, $current_path.'/') === true || $current_path == $this->base_dir ) {
+			return 'Hack attempt!';
+		}
+		
 		if ( !preg_match( "/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $new_name ) ) {
 			return lang( 'media_new_folder_disallowed_characters' );
 		}

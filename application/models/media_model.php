@@ -352,6 +352,7 @@ class media_model extends CI_Model {
 		
 		foreach ( $query->result() as $row ) {
 			// loop cut current folder and set new one. ---------------------------------------------
+			// eg: public/upload/image/ -> public/upload/images/
 			$current_path_exp = explode( '/', $current_path );
 			$new_folder_name_path = '';
 			foreach ( $current_path_exp as $path ) {
@@ -375,6 +376,37 @@ class media_model extends CI_Model {
 		}
 		
 		$query->free_result();
+		
+		// loop rename files & folders in all sub. ---------------------------------------------------------------------------------------------
+		$query = $this->db->like('folder', $current_path.'/', 'after')
+					->get('files');
+		
+		foreach ( $query->result() as $row2 ) {
+			// loop cut current folder and set new one. ---------------------------------------------
+			// eg: public/upload/image/ -> public/upload/images/
+			$current_path_exp = explode( '/', $current_path );
+			$new_folder_name_path = '';
+			foreach ( $current_path_exp as $path ) {
+				if ( $path != $current_folder ) {
+					$new_folder_name_path .= $path.'/';
+				}
+			}
+			$new_folder_name_path .= $new_name.'/';
+
+			unset( $current_path_exp, $path );
+			// loop cut current folder and set new one. ---------------------------------------------
+			
+			$data['file_id'] = $row2->file_id;
+			$data['folder'] = str_replace( $current_path.'/', $new_folder_name_path, $row2->folder );
+			$data['file'] = str_replace( $current_path.'/', $new_folder_name_path, $row2->file );
+			
+			$this->edit( $data );
+			
+			unset( $new_folder_name_path, $data );
+		}
+		
+		$query->free_result();
+		// loop rename files & folders in all sub. ---------------------------------------------------------------------------------------------
 		
 		return true;
 	}// rename_folder

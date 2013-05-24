@@ -83,7 +83,11 @@ class media extends admin_controller {
 		$current_path = trim( $this->input->post( 'current_path' ) );
 		$folder_name = trim( $this->input->post( 'folder_name' ) );
 		
-		$result = $this->media_filesys->create_folder( $current_path.'/'.$folder_name, $folder_name );
+		if ( $this->media_filesys->is_over_limit_base($this->media_filesys->base_dir, $current_path.'/') === true ) {
+			$result = 'Hack attempt!';
+		} else {
+			$result = $this->media_filesys->create_folder( $current_path.'/'.$folder_name, $folder_name );
+		}
 		
 		if ( $result === true ) {
 			$output['result'] = true;
