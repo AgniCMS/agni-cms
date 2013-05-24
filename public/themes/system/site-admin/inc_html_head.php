@@ -37,6 +37,10 @@
 		<?php if ( $this->uri->segment(2) == 'category' || $this->uri->segment(2) == 'menu' ) { ?> 
 		<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/jquery.mjs.nestedSortable.js"></script>
 		<?php } ?> 
+		<?php if ( $this->uri->segment(2) == 'media' && $this->uri->segment(3) == 'edit' ) { ?> 
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-js/jcrop/css/jquery.Jcrop.min.css">
+		<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/jcrop/js/jquery.Jcrop.min.js"></script>
+		<?php } ?> 
 		
 		<script type="text/javascript">
 			// declare variable for use in .js file

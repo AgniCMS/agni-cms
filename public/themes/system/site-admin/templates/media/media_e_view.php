@@ -11,7 +11,11 @@
 				<?php $media_type = 'image'; ?> 
 				
 				<div class="image-container">
-					<a href="<?php echo base_url().$row->file; ?>" class="media-screenshot-placeholder"><img src="<?php echo base_url().$row->file; ?>" alt="<?php echo $row->file_original_name; ?>" class="media-screenshot img-polaroid" /></a>
+					<a href="<?php echo base_url().$row->file; ?>" class=" btn btn-small"><span class="icon-zoom-in"></span> <?php echo lang( 'media_view_full_image' ); ?></a>
+					<div class="space-break"></div>
+					<div class="media-screenshot-placeholder">
+						<img src="<?php echo base_url().$row->file; ?>" alt="<?php echo $row->file_original_name; ?>" class="media-screenshot" id="media-image" />
+					</div>
 				</div>
 				
 				
@@ -46,6 +50,24 @@
 						<div class="clearfix"></div>
 					</div>
 					
+				</div>
+				
+				
+				<div class="editing-image-row">
+					<!--<strong>X1:</strong><span class="crop_x1"></span>
+					<strong>Y1:</strong><span class="crop_y1"></span>
+					<strong>X2:</strong><span class="crop_x2"></span>
+					<strong>Y2:</strong><span class="crop_y2"></span>-->
+					<strong><?php echo lang( 'media_width' ); ?>:</strong><span class="crop_w"></span>
+					<strong><?php echo lang( 'media_height' ); ?>:</strong><span class="crop_h"></span>
+					
+					<input type="hidden" name="crop_x1" value="" class="input_crop_x1" />
+					<input type="hidden" name="crop_y1" value="" class="input_crop_y1" />
+					<input type="hidden" name="crop_x2" value="" class="input_crop_x2" />
+					<input type="hidden" name="crop_y2" value="" class="input_crop_y2" />
+					<input type="hidden" name="crop_w" value="" class="input_crop_w" />
+					<input type="hidden" name="crop_h" value="" class="input_crop_h" />
+					<button type="button" class="btn" onclick="ajax_crop( <?php echo $row->file_id; ?> );"><?php echo lang('media_crop_selected_area'); ?></button>
 				</div>
 				
 				<?php else: ?> 
@@ -110,8 +132,52 @@
 			preview_autosize( 'height' );
 		});
 		// end preview auto size
+		
+		// show cropping image
+		init_jcrop();
 		<?php endif; ?> 
 	});// jquery
+	
+	
+	<?php if ( isset( $media_type ) && $media_type == 'image' ) { ?> 
+	function ajax_crop( file_id ) {
+		var crop_x1 = $('.input_crop_x1').val();
+		var crop_y1 = $('.input_crop_y1').val();
+		var crop_x2 = $('.input_crop_x2').val();
+		var crop_y2 = $('.input_crop_y2').val();
+		var crop_w = $('.input_crop_w').val();
+		var crop_h = $('.input_crop_h').val();
+		
+		if ( crop_x1 == '' || crop_y1 == '' || crop_x2 == '' || crop_y2 == '' || crop_w == '' || crop_h == '' ) {
+			// value not set
+			return false;
+		}
+		
+		$.ajax({
+			url: site_url+'site-admin/media/ajax_crop',
+			type: 'POST',
+			data: csrf_name+'='+csrf_value+'&file_id='+file_id+'&crop_x1='+crop_x1+'&crop_y1='+crop_y1+'&crop_x2='+crop_x2+'&crop_y2='+crop_y2+'&crop_w='+crop_w+'&crop_h='+crop_h,
+			dataType: 'json',
+			success: function( data ) {
+				if ( data.result == true ) {
+					$('.form-result').html(data.form_status);
+					$('.media-screenshot-placeholder').html('<img src="'+data.croped_img+'" alt="" id="media-image" />');
+					init_jcrop();
+					setTimeout('clear_status()', '3000');
+				} else {
+					$('.form-result').html(data.form_status);
+					setTimeout('clear_status()', '10000');
+					$('body,html').animate({scrollTop: 0}, 800);
+				}
+			},
+			error: function( data, status, e ) {
+				// 
+			}
+		});
+		
+		return false;
+	}// ajax_crop
+	<?php } ?> 
 	
 	
 	<?php if ( isset( $media_type ) && $media_type == 'image' ): ?>
@@ -126,7 +192,8 @@
 			success: function( data ) {
 				if ( data.result == true ) {
 					$('.form-result').html(data.form_status);
-					$('.media-screenshot-placeholder').html('<img src="'+data.resized_img+'" alt="" />');
+					$('.media-screenshot-placeholder').html('<img src="'+data.resized_img+'" alt="" id="media-image" />');
+					init_jcrop();
 					setTimeout('clear_status()', '3000');
 				} else {
 					$('.form-result').html(data.form_status);
@@ -145,6 +212,16 @@
 	function clear_status() {
 		$('.form-result').html('');
 	}// clear_status
+	
+	
+	<?php if ( isset( $media_type ) && $media_type == 'image' ) { ?> 
+	function init_jcrop() {
+		$('#media-image').Jcrop({
+			onChange: showCropCoords,
+			onSelect: showCropCoords
+		});
+	}// init_jcrop
+	<?php } ?> 
 	
 	
 	<?php if ( isset( $media_type ) && $media_type == 'image' ): ?>
@@ -177,4 +254,23 @@
 	function isNumber(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	}// isNumber
+	
+	
+	function showCropCoords(c) {
+		// for show debug.
+		$('.crop_x1').text(c.x);
+		$('.crop_y1').text(c.y);
+		$('.crop_x2').text(c.x2);
+		$('.crop_y2').text(c.y2);
+		$('.crop_w').text(c.w);
+		$('.crop_h').text(c.h);
+		
+		// for input hidden and send to php
+		$('.input_crop_x1').val(c.x);
+		$('.input_crop_y1').val(c.y);
+		$('.input_crop_x2').val(c.x2);
+		$('.input_crop_y2').val(c.y2);
+		$('.input_crop_w').val(c.w);
+		$('.input_crop_h').val(c.h);
+	}
 </script>

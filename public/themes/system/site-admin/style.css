@@ -479,6 +479,9 @@ html, body {height: 100%;}
 	border-radius: 5px;
 	padding: 5px;
 }
+.page-edit-media .editing-image-row {
+	margin: 0 0 10px;
+}
 .page-edit-media .image-container {
 	margin: 0 0 10px;
 }
@@ -591,6 +594,17 @@ html, body {height: 100%;}
 
 .sf-menu .badge {
 	padding: 0 9px;
+}
+
+
+
+.space-break {
+	clear: both;
+	display: block;
+	height: 10px;
+	margin: 0;
+	padding: 0;
+	width: auto;
 }
 
 

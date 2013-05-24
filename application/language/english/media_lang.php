@@ -5,6 +5,8 @@ $lang['media_are_you_sure_delete_folder'] = 'Are you sure to delete selected fol
 $lang['media_aspect_ratio'] = 'Aspect ratio';
 $lang['media_close'] = 'Close';
 $lang['media_copy'] = 'Copy';
+$lang['media_crop_memory_exceed_limit'] = 'This image use exceed memory limit for crop (%d &lt; %d), resize image fail.';
+$lang['media_crop_selected_area'] = 'Crop selected area';
 $lang['media_description'] = 'Description';
 $lang['media_edit_file'] = 'Editing file: %s';
 $lang['media_file_name'] = 'File name';
@@ -45,6 +47,7 @@ $lang['media_unable_to_move_some_file_due_to_system_permission'] = 'Unable to mo
 $lang['media_upload'] = 'Upload';
 $lang['media_upload_by'] = 'Upload by';
 $lang['media_upload_complete'] = 'Upload completed.';
+$lang['media_view_full_image'] = 'View full size';
 $lang['media_width'] = 'Width';
 $lang['media_you_are_moving_these_files_to'] = 'You are moving these file(s) to';
 

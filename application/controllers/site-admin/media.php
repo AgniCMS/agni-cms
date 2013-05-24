@@ -74,6 +74,108 @@ class media extends admin_controller {
 	}// ajax_delete_folder
 	
 	
+	function ajax_crop() {
+		// check both permission
+		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) != true && $this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) != true ) {redirect( 'site-admin' );}
+		
+		// get account id
+		$ca_account = $this->account_model->get_account_cookie( 'admin' );
+		$my_account_id = $ca_account['id'];
+		unset( $ca_account );
+		
+		// check that it is ajax request.
+		if ( $this->input->is_ajax_request() ) {
+			$file_id = trim( $this->input->post( 'file_id' ) );
+			
+			// open db for edit and check permission (own, other)
+			$data['file_id'] = $file_id;
+			$row = $this->media_model->get_file_data_db( $data );
+			unset( $data );
+			if ( $row == null ) {
+				return false;
+			}
+			
+			// check permissions-----------------------------------------------------------
+			if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id != $my_account_id ) {
+				// this user has permission to edit own, but NOT editing own
+				if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) ) {
+					// this user has NOT permission to edit other's, but editing other's
+					unset( $row, $my_account_id );
+					redirect( 'site-admin' );
+				}
+			} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id == $my_account_id ) {
+				// this user has NOT permission to edit own, but editing own.
+				unset( $row, $my_account_id );
+				redirect( 'site-admin' );
+			}
+			// end check permissions-----------------------------------------------------------
+			
+			// if cropping image
+			if ( strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png' ) {
+				$width = trim( $this->input->post( 'crop_w' ) );
+					if ( !is_numeric( $width ) ) {return false;}
+				$height = trim( $this->input->post( 'crop_h' ) );
+					if ( !is_numeric( $height ) ) {return false;}
+				$crop_x1 = trim( $this->input->post('crop_x1'));
+					if (!is_numeric($crop_x1)) {return false;}
+				$crop_y1 = trim( $this->input->post('crop_y1'));
+					if (!is_numeric($crop_y1)) {return false;}
+				$crop_x2 = trim( $this->input->post('crop_x2'));
+					if (!is_numeric($crop_x2)) {return false;}
+				$crop_y2 = trim( $this->input->post('crop_y2'));
+					if (!is_numeric($crop_y2)) {return false;}
+				
+				// calculate memory limit usage for resize image (actually it is cropping image)
+				if ( $this->media_model->checkMemAvailbleForResize( $row->file, $width, $height ) ) {
+					// crop using CI's image library.
+					$this->load->library('image_lib');
+					$config['source_image'] = $row->file;
+					$config['quality'] = '100%';
+					$config['width'] = $width;
+					$config['height'] = $height;
+					$config['maintain_ratio'] = false;
+					$config['x_axis'] = $crop_x1;
+					$config['y_axis'] = $crop_y1;
+					$this->image_lib->initialize($config);
+					unset( $config );
+					
+					// if crop not success
+					if (!$this->image_lib->crop()) {
+						$output['result'] = false;
+						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->image_lib->display_errors().'</div>';
+					} else {
+						// crop success.
+						// update file size in db
+						$size = get_file_info( $row->file, 'size' );
+						$this->db->set( 'file_size', $size['size'] );
+						$this->db->where( 'file_id', $file_id );
+						$this->db->update( 'files' );
+
+						// done.
+						$output['result'] = true;
+						$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'media_resize_success' ).'</div>';
+						$output['croped_img'] = base_url().$row->file.'?'.time();
+					}
+				} else {
+					$memory_limit = ((int) ini_get('memory_limit') * 1024) * 1024;
+					$require_mem = $this->media_model->checkMemAvailbleForResize( $row->file, $width, $height, true );
+					$output['result'] = false;
+					$output['form_status'] = '<div class="txt_error alert alert-error">'.sprintf( $this->lang->line( 'media_crop_memory_exceed_limit' ), $memory_limit, $require_mem ).'</div>';
+				}
+				
+				// send data to output and done.
+				$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+				$this->output->set_header( 'Pragma: no-cache' );
+				$this->output->set_content_type( 'application/json' );
+				$this->output->set_output( json_encode( $output ) );
+			} else {
+				log_message( 'error', 'The file that trying to crop is not image. '.$row->file );
+				return false;
+			}
+		}
+	}// ajax_crop
+	
+	
 	function ajax_new_folder() {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_manage_folder' ) != true ) {redirect( 'site-admin/media' );}
