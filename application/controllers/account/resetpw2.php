@@ -72,7 +72,7 @@ class resetpw2 extends MY_Controller {
 							$this->db->update( 'accounts' );
 							$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_confirm_reset_password' ) . '</div>';
 							
-							// any APIs add here
+							// module plugins do action
 							$this->modules_plug->do_action( 'account_change_password', $data );
 						}
 					}

@@ -34,26 +34,35 @@
 			?></td>
 			<td>
 				<?php
-				$insert_tag = $this->modules_plug->do_action( 'media_insert_tag', $row );
-				if ( is_object( $insert_tag ) ) {
-					// insert_tag from modules_plug must be string. if not, means it has no modules_plug work with this. unset it.
-					unset( $insert_tag );
-					
-					$is_image = false;
-					if ( (strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png') ) {
-						$is_image = true;
-						// image.
+				// check if is image
+				$is_image = false;
+				if ((strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png')) {
+					$is_image = true;
+				}
+				
+				// if has module plug filter insert tag
+				if ($this->modules_plug->has_filter('media_insert_tag')) {
+					$insert_tag = $this->modules_plug->do_filter( 'media_insert_tag', $row );
+				} else {
+					// if is image
+					if ($is_image === true) {
+						// insert image element.
 						$insert_tag = '<img src="'.base_url( $row->file ).'" alt="'.$row->media_name.'" />';
 					} else {
-						$insert_tag = '<a href="'.base_url( $row->file ).'">'.$row->file_name.'</a>';
+						// if has module plug filter insert tag in other type.
+						if ($this->modules_plug->has_filter('media_insert_tag_other')) {
+							$insert_tag = $this->modules_plug->do_filter('media_insert_tag_other');
+						} else {
+							// use default insert media tag
+							$insert_tag = '<a href="'.base_url( $row->file ).'" title="' . $row->media_name . '">'.$row->file_name.'</a>';
+						}
 					}
 				}
 				?>
 				<ul class="actions-inline">
 					<?php 
-					$action_module_plug = $this->modules_plug->do_action( 'media_actions', $row );
-					if ( $action_module_plug !== $row ) {
-						echo $action_module_plug;
+					if ($this->modules_plug->has_filter('media_actions')) {
+						echo $this->modules_plug->do_filter( 'media_actions', $row );
 					} else {
 					?> 
 					<li><a href="#" onclick="return insert_media('<?php echo htmlspecialchars( $insert_tag, ENT_QUOTES, config_item( 'charset' ) ); ?>');"><?php echo lang( 'media_insert' ); ?></a></li>

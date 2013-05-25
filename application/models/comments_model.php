@@ -56,9 +56,6 @@ class comments_model extends CI_Model {
 		$this->load->model( 'posts_model' );
 		$this->posts_model->update_total_comment( $data['post_id'] );
 		
-		// comment's module plug
-		$this->modules_plug->do_action( 'comment_after_newcomment', $data );
-		
 		// email notify admin new comment
 		$cfg_val = $this->config_model->load( array( 'comment_new_notify_admin', 'comment_admin_notify_emails', 'mail_sender_email' ) );
 		$user_email = '';
@@ -95,6 +92,9 @@ class comments_model extends CI_Model {
 		}
 		
 		unset( $query, $row, $cfg_val, $user_email );
+		
+		// comment's module plug
+		$this->modules_plug->do_action( 'comment_after_newcomment', $data );
 		
 		// done
 		$output['id'] = $data['comment_id'];
@@ -433,13 +433,11 @@ class comments_model extends CI_Model {
 	 * @return string 
 	 */
 	function modify_content( $content = '' ) {
-		$original_content = $content;
-		
-		// modify content by plugin
-		$content = $this->modules_plug->do_action( 'comment_modifybody_value', $content );
-		
-		if ( $content == $original_content ) {
-			// modify content by core here.
+		if ($this->modules_plug->has_filter('comment_modifybody_value')) {
+			// modify content by plugin
+			$content = $this->modules_plug->do_filter( 'comment_modifybody_value', $content );
+		} else {
+			// modify content.
 			$content = htmlspecialchars( $content, ENT_QUOTES, config_item( 'charset' ) );
 			$content = nl2br( $content );
 		}

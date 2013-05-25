@@ -1,15 +1,20 @@
+module plug action
+post_after_add		เรียกทำงานหลังการ add ใน model โดยส่งค่าไปเป็น array
+post_after_delete		เรียกทำงานหลังการ delete ใน model โดยส่งค่า post_id ไปให้
+post_after_edit		เรียกทำงานหลังการ edit ใน model โดยส่งค่าไปเป็น array
+post_is_allow_delete	ตรวจหาว่าโพสต์ที่กำลังเห็นอยู่ลบได้หรือไม่				ส่งค่า $row object ไป ให้ return เป็น boolean
+post_is_allow_edit		ตรวจหาว่าโพสต์ที่กำลังเห็นอยู่แก้ไขได้หรือไม่ตาม permission			ส่งค่า $row object ไป ให้ return เป็น boolean
+post_published		เรียกทำงานหลังมีการ publish แล้ว โดยส่งค่าไปเป็น array
+post_published_byid	เรียกทำงานหลังมีการ publish แล้ว โดยส่งแค่ค่า post_id ไปให้
+
+
+module plug filter
 post_admin_abovebody	แสดงในตำแหน่งเหนือ body value ภายใน label กรอบของ body value
 post_admin_belowbody	แสดงในตำแหน่งล่าง body value ภายใน label กรอบของ body value ก่อนปิด label
 post_admin_bottomtab6	แสดงในหน้า add/edit ของบทความ,page ด้านล่างแทบตั้งค่าอื่นๆ
-post_after_add		เรียกทำงานหลังการ add ใน model โดยส่งค่าไปเป็น array
-post_after_edit		เรียกทำงานหลังการ edit ใน model โดยส่งค่าไปเป็น array
-post_after_delete		เรียกทำงานหลังการ delete ใน model โดยส่งค่า post_id ไปให้
 post_admin_script		แสดงภายใน <script>...</script>
-post_published		เรียกทำงานหลังมีการ publish แล้ว โดยส่งค่าไปเป็น array
-post_published_byid	เรียกทำงานหลังมีการ publish แล้ว โดยส่งแค่ค่า post_id ไปให้
+post_modifybody_value	เรียกการทำงานเกี่ยวกับเนือหาในหน้าโพสต์ที่แสดงบทความ/หน้า			ส่งค่าเนื้อหาหลัก body_value, post_type เข้าไป
+post_postauthor		เรียกการทำงานเกี่ยวกับผู้เขียนในหน้าโพสต์ที่แสดงบทความ/หน้า		ส่ง account_username, account_id ผู้โพสต์เข้าไปเป็น array
 post_postname		เรียกการทำงานเข้ามาทำเกี่ยวกับชื่อโพสต์ในหน้าโพสต์แสดงข้อความ/หน้า 		ส่งชื่อโพสต์เข้าไป
 post_publish_date_gmt	เรียกการทำงานเกี่ยวกับเวลา publish gmt ในหน้าแสดงข้อความ/หน้าโพสต์		ส่งวันที่ timestamp แบบ gmt0 เข้าไป
-post_postauthor		เรียกการทำงานเกี่ยวกับผู้เขียนในหน้าโพสต์ที่แสดงบทความ/หน้า		ส่ง account_username, account_id ผู้โพสต์เข้าไปเป็น array
-post_modifybody_value	เรียกการทำงานเกี่ยวกับเนือหาในหน้าโพสต์ที่แสดงบทความ/หน้า			ส่งค่าเนื้อหาหลัก body_value, post_type เข้าไป
-post_is_allow_edit		ตรวจหาว่าโพสต์ที่กำลังเห็นอยู่แก้ไขได้หรือไม่ตาม permission			ส่งค่า $row object ไป ให้ return เป็น boolean
-post_is_allow_delete	ตรวจหาว่าโพสต์ที่กำลังเห็นอยู่ลบได้หรือไม่				ส่งค่า $row object ไป ให้ return เป็น boolean
+

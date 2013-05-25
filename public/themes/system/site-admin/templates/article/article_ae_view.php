@@ -56,10 +56,10 @@
 						}
 					</script>
 					<!--end insert media-->
-					<?php echo $this->modules_plug->do_action( 'post_admin_abovebody' ); ?> 
+					<?php echo $this->modules_plug->do_filter( 'post_admin_abovebody' ); ?> 
 					<textarea name="body_value" class="post-body" id="body_value"><?php if ( isset( $body_value ) ) {echo $body_value;} ?></textarea>
 					<span class="help-block"><?php echo lang( 'admin_html_allowed' ); ?></span>
-					<?php echo $this->modules_plug->do_action( 'post_admin_belowbody' ); ?> 
+					<?php echo $this->modules_plug->do_filter( 'post_admin_belowbody' ); ?> 
 				</div>
 			</div>
 			
@@ -254,7 +254,7 @@
 				</div>
 			</div>
 			
-			<?php echo $this->modules_plug->do_action( 'post_admin_bottomtab6' ); ?> 
+			<?php echo $this->modules_plug->do_filter( 'post_admin_bottomtab6' ); ?> 
 		</div>
 		
 		
@@ -478,5 +478,5 @@
 	}
 	
 	// modules plug script
-	<?php echo $this->modules_plug->do_action( 'post_admin_script' ); ?> 
+	<?php echo $this->modules_plug->do_filter( 'post_admin_script' ); ?> 
 </script>

@@ -105,11 +105,11 @@ class posts_model extends CI_Model {
 		$this->db->set( 'language', $data_posts['language'] );
 		$this->db->insert( 'url_alias' );
 		
-		// any fields settings add here.
-		$this->modules_plug->do_action( 'post_after_add', array( $data, $data_posts, $data_post_revision, $data_tax_index ) );
+		// module plug here
+		$this->modules_plug->do_action('post_after_add', array('data' => $data, 'data_posts' => $data_posts, 'data_post_revision' => $data_post_revision, 'data_tax_index' => $data_tax_index));
 		if ( $data_posts['post_status'] == '1' ) {
 			// publish plugin
-			$this->modules_plug->do_action( 'post_published', array( $data, $data_posts, $data_post_revision, $data_tax_index ) );
+			$this->modules_plug->do_action('post_published', array('data' => $data, 'data_posts' => $data_posts, 'data_post_revision' => $data_post_revision, 'data_tax_index' => $data_tax_index));
 		}
 		
 		// done.
@@ -187,7 +187,7 @@ class posts_model extends CI_Model {
 		$this->db->where( 'post_id', $post_id );
 		$this->db->delete( 'posts' );
 		
-		// for modules plug
+		// modules plug
 		$this->modules_plug->do_action( 'post_after_delete', $post_id );
 		
 		return true;
@@ -235,12 +235,9 @@ class posts_model extends CI_Model {
 			// if this admin has not permission to publish/unpublish, the post_status is not set.
 			$this->db->set( 'post_status', $data_posts['post_status'] );
 		}
-		if ( $row->post_publish_date == null && $row->post_publish_date_gmt == null && ( isset( $data['post_status'] ) && $data['post_status'] == '1' ) ) {
+		if ( $row->post_publish_date == null && $row->post_publish_date_gmt == null && ( isset( $data_posts['post_status'] ) && $data_posts['post_status'] == '1' ) ) {
 			$this->db->set( 'post_publish_date', $data_posts['post_publish_date'] );
 			$this->db->set( 'post_publish_date_gmt', $data_posts['post_publish_date_gmt'] );
-			
-			// publish plugin
-			$this->modules_plug->do_action( 'post_published', $data );
 		}
 		$this->db->where( 'post_id', $data_posts['post_id'] );
 		$this->db->update( 'posts', $data_posts );
@@ -374,7 +371,11 @@ class posts_model extends CI_Model {
 		$this->db->update( 'menu_items' );
 		
 		// module plug
-		$this->modules_plug->do_action( 'post_after_edit', $data );
+		$this->modules_plug->do_action('post_after_edit', array('data' => $data, 'data_posts' => $data_posts, 'data_post_revision' => $data_post_revision, 'data_tax_index' => $data_tax_index));
+		if (isset( $data_posts['post_status'] ) && $data_posts['post_status'] == '1') {
+			// module plug publish
+			$this->modules_plug->do_action('post_published', array('data' => $data, 'data_posts' => $data_posts, 'data_post_revision' => $data_post_revision, 'data_tax_index' => $data_tax_index));
+		}
 		
 		// done.
 		return true;
@@ -499,10 +500,11 @@ class posts_model extends CI_Model {
 			}
 			return false;
 		} else {
-			// check other types
+			// check other types using module plug.
 			$result = $this->modules_plug->do_action( 'post_is_allow_delete', $row );
-			if ( is_bool( $result ) ) {
-				return $result;
+			
+			if (isset($result['post_is_allow_delete']) && is_array($result['post_is_allow_delete']) && is_bool(array_shift(array_values($result['post_is_allow_delete'])))) {
+				return array_shift(array_values($result['post_is_allow_delete']));
 			}
 			return false;
 		}
@@ -533,10 +535,11 @@ class posts_model extends CI_Model {
 			}
 			return false;
 		} else {
-			// check other types
+			// check other types using module plug
 			$result = $this->modules_plug->do_action( 'post_is_allow_edit', $row );
-			if ( is_bool( $result ) ) {
-				return $result;
+			
+			if (isset($result['post_is_allow_edit']) && is_array($result['post_is_allow_edit']) && is_bool(array_shift(array_values($result['post_is_allow_edit'])))) {
+				return array_shift(array_values($result['post_is_allow_edit']));
 			}
 			return false;
 		}
@@ -699,12 +702,13 @@ class posts_model extends CI_Model {
 	 * @return string 
 	 */
 	function modify_content( $content = '', $post_type = '' ) {
-		if ( $content == null ) {return;}
-		
-		// modify content by core here.
-		
-		// modify content by plugin
-		$content = $this->modules_plug->do_action( 'post_modifybody_value', $content, $post_type );
+		if ($this->modules_plug->has_filter('post_modifybody_value')) {
+			// modify content by core here.
+			
+		} else {
+			// modify content by plugin
+			$content = $this->modules_plug->do_filter( 'post_modifybody_value', $content, $post_type );
+		}
 		
 		// done
 		return $content;

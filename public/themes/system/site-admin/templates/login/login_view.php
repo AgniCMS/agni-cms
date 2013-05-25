@@ -49,7 +49,7 @@
 								</div>
 
 							<?php echo form_close(); ?> 
-							<?php echo $this->modules_plug->do_action( 'admin_login_page' ); ?>
+							<?php echo $this->modules_plug->do_filter( 'admin_login_page' ); ?>
 						</div>
 
 

@@ -433,13 +433,17 @@ class comment extends MY_Controller {
 				} else {
 					$data['comment_status'] = (int) 0;
 					
-					// any api check spam add here.
+					// module plug check spam. --------------------------------------------------------
 					$data['permalink_url'] = urldecode( current_url() );
+					
 					$spam_result = $this->modules_plug->do_action( 'comment_spam_check', $data );
-					$data['comment_spam_status'] = $spam_result;
-					if ( !is_string( $spam_result ) ) {
+					
+					if (isset($spam_result['comment_spam_check']) && is_array($spam_result['comment_spam_check'])) {
+						$data['comment_spam_status'] = array_shift(array_values($spam_result['comment_spam_check']));
+					} else {
 						$data['comment_spam_status'] = 'normal';
 					}
+					// module plug check spam. --------------------------------------------------------
 					
 					unset( $data['permalink_url'] );
 				}

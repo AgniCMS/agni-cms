@@ -1,16 +1,20 @@
+module plug action
 account_add = แอคชั่นที่ทำหลังเพิ่มผู้ใช้ทางหน้า admin โดยรหัสผ่านยังไม่ถูกเข้ารหัส. มีการส่งค่าต่างๆของ user มาทาง attribute เป็น $data array
 account_admin_edit = แอคชั่นที่ทำหลังแก้ไขข้อมูลต่างๆของผู้ใช้ รวมถึงการแก้รหัสผ่าน (ถ้ามี แต่การแก้รหัสผ่านแนะให้ใช้ .change_password) โดยส่งข้อมูลเป็น $data array
 account_change_email	เปลี่ยนอีเมลในหน้ายืนยันการเปลี่ยนอีเมล		ส่งค่า account_id, account_username, account_email เป็น array
 account_change_password = เปลี่ยนรหัสผ่าน มีการส่งค่าต่างๆของ user มาทาง attribute เป็น $data array
-account_delete_account = ลบแอคเคาท์ ส่งค่าเป็น $row objectไป สามารถดึงตามตารางฐานข้อมูลได้เลย เช่น $row->account_id
-account_register_form_bottom = ตำแหน่งใต้ captcha แต่อยู่ใน <form> ในหน้า register		
-account_register_show_captcha = แสดง captcha ในหน้า register	
-account_register_check_captcha = ตรวจ captcha หลังจากที่แสดง และผู้ใช้ submit ทาง method post		ให้ return true หรือ false เท่านั้น
-account_register = ทำหน้าที่หลังผู้ใช้ลงทะเบียน แต่ยังไม่ยืนยันสมาชิก ข้อมูลส่งไปแบบ array รหัสผ่านไม่เข้ารหัส
-account_register_confirmed = ทำหน้าที่หลังผู้ใช้ยืนยันสมัครสมาชิกแล้ว ข้อมูลส่งไปแบบ array
-account_show_captcha = แสดง captcha ในหน้าทั่วไป	
 account_check_captcha = ตรวจ captcha ในหน้าทั่วไป	ให้ return true หรือ false เท่านั้น
+account_delete_account = ลบแอคเคาท์ ส่งค่าเป็น $row objectไป สามารถดึงตามตารางฐานข้อมูลได้เลย เช่น $row->account_id
+account_register = ทำหน้าที่หลังผู้ใช้ลงทะเบียน แต่ยังไม่ยืนยันสมาชิก ข้อมูลส่งไปแบบ array รหัสผ่านไม่เข้ารหัส
+account_register_check_captcha = ตรวจ captcha หลังจากที่แสดง และผู้ใช้ submit ทาง method post		ให้ return true หรือ false เท่านั้น
+account_register_confirmed = ทำหน้าที่หลังผู้ใช้ยืนยันสมัครสมาชิกแล้ว ข้อมูลส่งไปแบบ array
 account_login_process = ทำงานหลังการ login ในเว็บสำเร็จแล้ว ส่งค่า username+password ไปในแบบ array
 account_logout = ทำงานก่อนการลบ cookie เพื่อ logout. ส่งค่าต่างๆเป็น array
 account_member_edit = แก้ไขข้อมูลในหน้า edit profile. ส่งค่าเป็น array
-account_edit_profile_form_bottom = ตำแหน่งด้านล่างสุดในหน้า edit profile แต่อยู่ใน <form>	
+
+
+module plug filter
+account_edit_profile_form_bottom = ตำแหน่งด้านล่างสุดในหน้า edit profile แต่อยู่ใน <form>
+account_register_form_bottom = ตำแหน่งใต้ captcha แต่อยู่ใน <form> ในหน้า register	
+account_register_show_captcha = แสดง captcha ในหน้า register
+account_show_captcha = แสดง captcha ในหน้าทั่วไป

@@ -34,7 +34,7 @@
 		</script>
 		
 		<?php if ( isset( $in_head_elements ) ) {echo $in_head_elements;} ?> 
-		<?php echo $this->modules_plug->do_action( 'front_html_head' ); ?> 
+		<?php echo $this->modules_plug->do_filter( 'front_html_head' ); ?> 
 	</head>
 	<body class="body-class<?php echo $this->html_model->gen_front_body_class( 'theme-'.$this->theme_system_name ); ?>">
 		

@@ -49,7 +49,7 @@
 			var csrf_name = '<?php echo config_item( 'csrf_token_name' ); ?>';
 			var csrf_value = '<?php echo $this->security->get_csrf_hash(); ?>';
 		</script>
-		<?php echo $this->modules_plug->do_action( 'admin_html_head' ); ?> 
+		<?php echo $this->modules_plug->do_filter( 'admin_html_head' ); ?> 
 	</head>
 	
 	<body>

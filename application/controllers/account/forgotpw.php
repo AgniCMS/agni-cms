@@ -24,7 +24,7 @@ class forgotpw extends MY_Controller {
 	
 	
 	function index() {
-		$output['plugin_captcha'] = $this->modules_plug->do_action( 'account_show_captcha' );
+		$output['plugin_captcha'] = $this->modules_plug->do_filter( 'account_show_captcha' );
 		
 		// submitted email to reset password
 		if ( $this->input->post() ) {
@@ -39,10 +39,12 @@ class forgotpw extends MY_Controller {
 				// check captcha
 				if ( $output['plugin_captcha'] != null ) {
 					// use plugin captcha to check
-					if ( $this->modules_plug->do_action( 'account_check_captcha' ) == false ) {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
-					} else {
+					$plug_captcha_check = $this->modules_plug->do_action( 'account_check_captcha', $_POST );
+					
+					if (isset($plug_captcha_check['account_check_captcha']) && is_array($plug_captcha_check['account_check_captcha']) && in_array(true, $plug_captcha_check['account_check_captcha'], true)) {
 						$continue = true;
+					} else {
+						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
 					}
 				} else {
 					// use system captcha to check

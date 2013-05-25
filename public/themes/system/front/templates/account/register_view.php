@@ -53,7 +53,7 @@
 				<?php } ?> 
 			</div>
 
-			<?php echo $this->modules_plug->do_action( 'account_register_form_bottom' ); ?> 
+			<?php echo $this->modules_plug->do_filter( 'account_register_form_bottom' ); ?> 
 			
 			<div class="control-group">
 				<div class="controls">

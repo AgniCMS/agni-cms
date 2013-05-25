@@ -7,7 +7,7 @@
 		echo anchor( current_url().'?filter=comment_status&amp;filter_val=0', sprintf( lang( 'comment_total_unapprove' ), $count ) ); ?> 
 		| <?php $count = $this->db->where( 'comment_status', '1' )->count_all_results( 'comments' );
 		echo anchor( current_url().'?filter=comment_status&amp;filter_val=1', sprintf( lang( 'comment_total_approved' ), $count ) ); ?> 
-		<?php echo $this->modules_plug->do_action( 'comment_admin_index_top' ); ?> 
+		<?php echo $this->modules_plug->do_filter( 'comment_admin_index_top' ); ?> 
 	</div>
 	<div class="cmd-right">
 		<form method="get" class="form-search">
@@ -84,7 +84,7 @@
 		<div class="cmd-left">
 			<select name="act">
 				<option value="" selected="selected"></option>
-				<?php echo $this->modules_plug->do_action( 'comment_admin_index_options' ); ?> 
+				<?php echo $this->modules_plug->do_filter( 'comment_admin_index_options' ); ?> 
 				<?php if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_approve_unapprove_perm' ) ): ?> 
 				<option value="approve"><?php echo lang( 'comment_approve' ); ?></option>
 				<option value="unapprove"><?php echo lang( 'comment_unapprove' ); ?></option>

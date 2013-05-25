@@ -1,3 +1,8 @@
+module plug action
+admin_login_process = รับค่า $row object จาก db มาเพื่อใช้เรียก $row->field. action นี้ทำงานหลัง login สำเร็จแล้ว.
+
+
+module plug filter
 admin_html_head = เรียกให้แสดง element ต่างๆภายใน <head>..</head> ของหน้า admin.
 admin_login_page = เรียกให้แสดงผลที่ใต้ form login ในหน้า site-admin/login
-admin_login_process = รับค่า $row object จาก db มาเพื่อใช้เรียก $row->field. action นี้ทำงานหลัง login สำเร็จแล้ว.
+

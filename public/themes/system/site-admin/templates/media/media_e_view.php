@@ -7,7 +7,7 @@
 		
 		<div class="row-fluid">
 			<div class="span6">
-				<?php if ( strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png' ): ?> 
+				<?php if (strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png') { ?> 
 				<?php $media_type = 'image'; ?> 
 				
 				<div class="image-container">
@@ -70,9 +70,9 @@
 					<button type="button" class="btn" onclick="ajax_crop( <?php echo $row->file_id; ?> );"><?php echo lang('media_crop_selected_area'); ?></button>
 				</div>
 				
-				<?php else: ?> 
-					<?php $this->modules_plug->do_action( 'media_review', $row->file_id ); ?> 
-				<?php endif; ?> 
+				<?php } else { ?> 
+					<?php echo $this->modules_plug->do_filter( 'media_review', $row->file_id ); ?> 
+				<?php } //endif; ?> 
 			</div>
 		
 			<div class="span6">

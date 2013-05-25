@@ -82,7 +82,7 @@
 	
 <?php echo form_close(); ?> 
 
-<?php echo $this->modules_plug->do_action( 'tag_admin_bottom' ); ?> 
+<?php echo $this->modules_plug->do_filter( 'tag_admin_bottom' ); ?> 
 	
 <script type="text/javascript">
 	make_tabs();

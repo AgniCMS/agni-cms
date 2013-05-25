@@ -65,8 +65,8 @@ class account_model extends CI_Model {
 		// add level
 		$this->db->insert( 'account_level', $data2 );
 		
-		// any APIs add here.
-		$data['level_group_id'] = $data2['level_group_id'];// set back for use in plugins
+		// module plug here.
+		$data['level_group_id'] = $data2['level_group_id'];// set for use in plugins
 		$this->modules_plug->do_action( 'account_add', $data );
 		
 		return true;
@@ -221,7 +221,7 @@ class account_model extends CI_Model {
 					$this->admin_login_record( $row->account_id, '1', 'Success' );
 					$query->free_result();
 					
-					// any api here.
+					// module plug here.
 					$this->modules_plug->do_action( 'admin_login_process', $row );
 					
 					return true;
@@ -631,22 +631,9 @@ class account_model extends CI_Model {
 		$this->db->where( 'account_id', $account_id );
 		$this->db->set( 'account_id', '1' );
 		$this->db->update( 'files' );
-		
-		// get account info for send to api
-		$this->db->where( 'account_id', $account_id );
-		$query = $this->db->get( 'accounts' );
-		if ( $query->num_rows() > 0 ) {
-			$row = $query->row();
 			
-			// delete avatar
-			$this->delete_account_avatar( $account_id );
-			
-			// any api here.
-			$this->modules_plug->do_action( 'account_delete_account', $row );
-			$query->free_result();
-			unset( $row );
-		}
-		unset( $query );
+		// delete avatar
+		$this->delete_account_avatar( $account_id );
 		
 		// delete account
 		$this->db->where( 'account_id', $account_id )->delete( 'account_fields' );
@@ -657,6 +644,19 @@ class account_model extends CI_Model {
 		
 		// delete cache.
 		$this->config_model->delete_cache( 'ainf_' );
+		
+		// get account info for send to api
+		$this->db->where( 'account_id', $account_id );
+		$query = $this->db->get( 'accounts' );
+		if ( $query->num_rows() > 0 ) {
+			$row = $query->row();
+			
+			// module plug here.
+			$this->modules_plug->do_action( 'account_delete_account', $row );
+			$query->free_result();
+			unset( $row );
+		}
+		unset( $query );
 		
 		return true;
 	}// delete_account
@@ -790,7 +790,7 @@ class account_model extends CI_Model {
 			// check old password is match in db.
 			if ( $old_password == $get_old_password_from_db ) {
 				$data['account_password'] = $data['account_new_password_encrypted'];
-				// any APIs add here
+				// module plug here
 				$this->modules_plug->do_action( 'account_change_password', $data );
 			} else {
 				unset( $old_password, $get_old_password_from_db );
@@ -825,7 +825,7 @@ class account_model extends CI_Model {
 		$this->config_model->delete_cache( 'ainf_' );
 		$this->config_model->delete_cache( 'chkacc_'.$data['account_id'].'_' );
 		
-		// any APIs add here.
+		// module plug here
 		$data['level_group_id'] = $data2['level_group_id'];// set back for use in plugins
 		$this->modules_plug->do_action( 'account_admin_edit', $data );
 		
@@ -1280,7 +1280,6 @@ class account_model extends CI_Model {
 		
 		// delete cache of this account id
 		if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) && isset( $cm_account['email'] ) ) {
-			$this->modules_plug->do_action( 'account_logout', $cm_account );
 			$this->config_model->delete_cache( 'chkacc_'.$cm_account['id'].'_' );
 		}
 		
@@ -1290,6 +1289,9 @@ class account_model extends CI_Model {
 		// delete cookie
 		delete_cookie( 'admin_account' );
 		delete_cookie( 'member_account' );
+		
+		// module plug here
+		$this->modules_plug->do_action( 'account_logout', $cm_account );
 		
 		// done
 		return true;
@@ -1356,7 +1358,7 @@ class account_model extends CI_Model {
 			// check old password is match in db.
 			if ( $old_password == $get_old_password_from_db ) {
 				$data['account_password'] = $data['account_new_password_encrypted'];
-				// any APIs add here
+				// module plug here
 				$this->modules_plug->do_action( 'account_change_password', $data );
 			} else {
 				unset( $old_password, $get_old_password_from_db );
@@ -1379,7 +1381,7 @@ class account_model extends CI_Model {
 		$this->config_model->delete_cache( 'ainf_' );
 		$this->config_model->delete_cache( 'chkacc_'.$data['account_id'].'_' );
 		
-		// any APIs add here.
+		// module plug here
 		$this->modules_plug->do_action( 'account_member_edit', $data );
 		
 		return true;
@@ -1437,7 +1439,7 @@ class account_model extends CI_Model {
 				$this->admin_login_record( $row->account_id, '1', 'Success' );
 				$query->free_result();
 				
-				// any api here.
+				// module plug here
 				$this->modules_plug->do_action( 'account_login_process', $data );
 				unset( $query, $row, $session_id, $expires, $set_cm_account );
 				
@@ -1521,7 +1523,7 @@ class account_model extends CI_Model {
 		$this->db->set( 'account_id', $account_id );
 		$this->db->insert( 'account_level' );
 		
-		// any APIs add here.
+		// module plug here
 		$this->modules_plug->do_action( 'account_register', $data );
 		
 		// done

@@ -40,7 +40,7 @@ class html_model extends CI_Model {
 		$class .= ' '.str_replace( '/', '_', ltrim( urldecode( $this->uri->uri_string() ), '/' ) );
 		
 		// plugins here
-		$class .= ' '.$this->modules_plug->do_action( 'front_html_body_class' );
+		$class .= ' '.$this->modules_plug->do_filter( 'front_html_body_class' );
 		
 		return rtrim( $class );
 	}// gen_front_body_class
@@ -79,7 +79,7 @@ class html_model extends CI_Model {
 				$title = $cfg['site_name']['value'];
 			}
 			
-			$title = $this->modules_plug->do_action( 'html_title', $title );
+			$title = $this->modules_plug->do_filter( 'html_title', $title );
 			
 			return $title;
 		}

@@ -504,8 +504,8 @@ class article extends admin_controller {
 			$output = array_merge( $output, $data_posts );
 			$output = array_merge( $output, $data_post_revision );
 			$output = array_merge( $output, $data_tax_index );
-			if ( isset( $data['post_status'] ) ) {
-				$output['post_status'] = $data['post_status'];
+			if ( isset( $data_posts['post_status'] ) ) {
+				$output['post_status'] = $data_posts['post_status'];
 			}
 			
 			// content settings

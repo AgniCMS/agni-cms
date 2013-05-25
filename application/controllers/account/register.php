@@ -27,7 +27,7 @@ class register extends MY_Controller {
 		if ( $this->config_model->load_single( 'member_allow_register' ) == '0' ) {redirect( $this->base_url );}// check for allowed register?
 		
 		// get plugin captcha for check
-		$output['plugin_captcha'] = $this->modules_plug->do_action( 'account_register_show_captcha' );
+		$output['plugin_captcha'] = $this->modules_plug->do_filter( 'account_register_show_captcha' );
 		
 		// save action (register action)
 		if ( $this->input->post() ) {
@@ -47,10 +47,12 @@ class register extends MY_Controller {
 				// check plugin captcha
 				if ( $output['plugin_captcha'] != null ) {
 					// use plugin captcha to check
-					if ( $this->modules_plug->do_action( 'account_register_check_captcha' ) == false ) {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
+					$plug_captcha_check = $this->modules_plug->do_action( 'account_register_check_captcha', $_POST );
+					
+					if (isset($plug_captcha_check['account_register_check_captcha']) && is_array($plug_captcha_check['account_register_check_captcha']) && in_array(true, $plug_captcha_check['account_register_check_captcha'], true)) {
+						$continue = true;
 					} else {
-						$continue_register = true;
+						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
 					}
 				} else {
 					// use system captcha to check

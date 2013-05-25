@@ -75,7 +75,7 @@
 				</div>
 			</div>
 
-			<?php echo $this->modules_plug->do_action( 'account_edit_profile_form_bottom' ); ?> 
+			<?php echo $this->modules_plug->do_filter( 'account_edit_profile_form_bottom' ); ?> 
 			
 			<div class="control-group">
 				<div class="controls">
