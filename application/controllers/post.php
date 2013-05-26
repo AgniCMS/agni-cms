@@ -263,7 +263,7 @@ class post extends MY_Controller {
 		$output['row'] = $row;
 		
 		// preset values---------------------------------------------------------
-		$output['post_name'] = $this->modules_plug->do_action( 'post_postname', $row->post_name );
+		$output['post_name'] = $this->modules_plug->do_filter( 'post_postname', $row->post_name );
 		
 		if ($this->modules_plug->has_filter('post_publish_date_gmt')) {
 			$output['post_publish_date_gmt'] = $this->modules_plug->do_filter( 'post_publish_date_gmt', $row->post_publish_date_gmt );
