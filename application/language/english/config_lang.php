@@ -33,6 +33,7 @@ $lang['config_ftp_basepath'] = 'FTP base path';
 $lang['config_ftp_basepath_correct_should_see_application_modules_public_system_folders'] = 'Correct FTP base path should see these folders application, modules, public, system';
 $lang['config_ftp_basepath_generally_is'] = 'Generally is /public_html/ or /http_docs/';
 $lang['config_ftp_basepath_incorrect'] = 'FTP base path is incorrect.';
+$lang['config_ftp_could_not_connect_to_server'] = 'Could not connect to server.';
 $lang['config_ftp_host'] = 'FTP host';
 $lang['config_ftp_passive'] = 'Passive';
 $lang['config_ftp_password'] = 'Password';

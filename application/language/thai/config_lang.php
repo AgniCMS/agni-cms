@@ -33,6 +33,7 @@ $lang['config_ftp_basepath'] = 'ตำแหน่งฐานของเว็
 $lang['config_ftp_basepath_correct_should_see_application_modules_public_system_folders'] = 'ตำแหน่งฐานของเว็บไซต์ที่ถูกต้องควรเห็นโฟลเดอร์ application, modules, public, system';
 $lang['config_ftp_basepath_generally_is'] = 'โดยปกติแล้วจะเป็น /public_html/ หรือ /http_docs/';
 $lang['config_ftp_basepath_incorrect'] = 'ตำแหน่งฐานของเว็บไซต์ไม่ถูกต้อง.';
+$lang['config_ftp_could_not_connect_to_server'] = 'ไม่สามารถเชื่อมต่อไปยัง server ได้.';
 $lang['config_ftp_host'] = 'FTP host';
 $lang['config_ftp_passive'] = 'Passive';
 $lang['config_ftp_password'] = 'รหัสผ่าน FTP';

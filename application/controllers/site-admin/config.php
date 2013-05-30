@@ -49,25 +49,30 @@ class config extends admin_controller {
 		$config['password'] = $this->input->post('password');
 		$config['port'] = (int) $this->input->post('port');
 		$config['passive'] = ($this->input->post('passive') == 'true' ? true : false);
-		$config['debug'] = true;
+		$config['debug'] = false;
 		
 		$basepath = $this->input->post('basepath');
 		
 		// load library
 		$this->load->library('ftp');
 		
-		$this->ftp->connect($config);
-		$files = $this->ftp->list_files($basepath);
+		$connect_result = $this->ftp->connect($config);
 		
-		if (is_array($files) && !empty($files)) {
-			natsort($files);
-			
-			echo '<div class="txt_info alert alert-info">'.lang('config_ftp_basepath_correct_should_see_application_modules_public_system_folders').'</div>';
-			foreach ( $files as $file ) {
-				echo str_replace('/', '', $file) . '<br />';
+		if ($connect_result === true) {
+			$files = $this->ftp->list_files($basepath);
+
+			if (is_array($files) && !empty($files)) {
+				natsort($files);
+
+				echo '<div class="txt_info alert alert-info">'.lang('config_ftp_basepath_correct_should_see_application_modules_public_system_folders').'</div>';
+				foreach ( $files as $file ) {
+					echo str_replace('/', '', $file) . '<br />';
+				}
+			} else {
+				echo '<div class="txt_error alert alert-error">'.lang('config_ftp_basepath_incorrect').'</div>';
 			}
 		} else {
-			echo '<div class="txt_error alert alert-error">'.lang('config_ftp_basepath_incorrect').'</div>';
+			echo '<div class="txt_error alert alert-error">'.$this->lang->line('config_ftp_could_not_connect_to_server').'</div>';
 		}
 		
 		$this->ftp->close();
