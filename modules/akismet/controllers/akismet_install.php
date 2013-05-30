@@ -34,7 +34,13 @@ class akismet_install extends admin_controller {
 		
 		// done
 		$this->load->library( 'session' );
-		$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'akismet_install_completed' ).'</div>' );
+		$this->session->set_flashdata(
+			'form_status',
+			array(
+				'form_status' => 'success',
+				'form_status_message' => $this->lang->line('akismet_install_completed')
+			)
+		);
 		// go back
 		redirect( 'site-admin/module' );
 	}// index

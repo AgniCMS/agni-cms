@@ -33,16 +33,24 @@ class blog extends admin_controller {
 			$this->form_validation->set_rules( 'blog_title', 'lang:blog_title', 'trim|required|xss_clean' );
 			$this->form_validation->set_rules( 'blog_content', 'lang:blog_content', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$result = $this->blog_model->add( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'blog/site-admin/blog' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			// re-populate form
@@ -89,16 +97,24 @@ class blog extends admin_controller {
 			$this->form_validation->set_rules( 'blog_title', 'lang:blog_title', 'trim|required|xss_clean' );
 			$this->form_validation->set_rules( 'blog_content', 'lang:blog_content', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = validation_errors( '<div class="txt_error alert alert-error">', '</div>' );
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$result = $this->blog_model->edit( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'blog/site-admin/blog' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			// re-populate form
@@ -119,24 +135,29 @@ class blog extends admin_controller {
 	function index() {
 		// check permission
 		if ( $this->account_model->check_admin_permission( 'blog_admin', 'blog_all_post' ) != true ) {redirect( 'site-admin' );}
+		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
+		
 		// list posts
 		$output['list_item'] = $this->blog_model->list_item( 'admin' );
 		if ( is_array( $output['list_item'] ) ) {
 			$this->pagination->create_links();
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'blog_blog' ) );
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page( 'site-admin/blog_view', $output );
 	}// index
