@@ -23,6 +23,7 @@ $lang['config_content_show_author'] = 'Show author';
 $lang['config_content_show_title'] = 'Show content title';
 $lang['config_content_show_time'] = 'Show time';
 $lang['config_content_items_perpage'] = 'Items per page';
+$lang['config_current_version'] = 'Current version';
 $lang['config_disable'] = 'Disable';
 $lang['config_duplicate_login'] = 'Allow duplicate login';
 $lang['config_email'] = 'Email';

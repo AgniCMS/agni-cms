@@ -1,6 +1,7 @@
 <?php
 
 $lang['admin_add'] = 'Add';
+$lang['admin_agnicms'] = 'Agni CMS';
 $lang['admin_cancel'] = 'Cancel';
 $lang['admin_credit'] = 'Powered by <a href="http://www.agnicms.org">Agni CMS</a>';
 $lang['admin_delete'] = 'Delete';

@@ -1,6 +1,7 @@
 <?php
 
 $lang['admin_add'] = 'เพิ่ม';
+$lang['admin_agnicms'] = 'อัคนี CMS';
 $lang['admin_cancel'] = 'ยกเลิก';
 $lang['admin_credit'] = 'เสริมพลังโดย <a href="http://www.agnicms.org">อัคนี CMS</a>';
 $lang['admin_delete'] = 'ลบ';

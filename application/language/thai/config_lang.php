@@ -23,6 +23,7 @@ $lang['config_content_show_author'] = 'แสดงชื่อผู้เข�
 $lang['config_content_show_title'] = 'แสดงชื่อเรื่อง';
 $lang['config_content_show_time'] = 'แสดงเวลา';
 $lang['config_content_items_perpage'] = 'จำนวนรายการต่อหน้า';
+$lang['config_current_version'] = 'รุ่นปัจจุบัน';
 $lang['config_disable'] = 'ปิดใช้งาน';
 $lang['config_duplicate_login'] = 'อนุญาตให้บันทึกเข้าซ้อน';
 $lang['config_email'] = 'อีเมล';

@@ -52,6 +52,13 @@
 			</div>
 			
 			<div class="control-group">
+				<label class="control-label"><?php echo lang('config_current_version'); ?>: </label>
+				<div class="controls">
+					<?php echo lang('admin_agnicms'); ?> <?php if (isset($agni_version)) {echo $agni_version;} ?> 
+				</div>
+			</div>
+			
+			<div class="control-group">
 				<label class="control-label" for="cfg-agni_auto_update_url"><?php echo lang('config_autoupdate_url'); ?>: </label>
 				<div class="controls">
 					<input type="text" name="agni_auto_update_url" value="<?php if ( isset( $agni_auto_update_url ) ) {echo $agni_auto_update_url;} ?>" maxlength="255" id="cfg-agni_auto_update_url" class="input-block-level" />
