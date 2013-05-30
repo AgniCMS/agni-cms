@@ -335,6 +335,9 @@ class post extends MY_Controller {
 			$output['list_tag'] = $this->taxonomy_model->list_taxterm_index( $row->post_id );
 		}
 		
+		// add view count.
+		$this->db->query('UPDATE ' . $this->db->dbprefix('posts') . ' SET view_count = view_count+1 WHERE post_id = ' . $this->db->escape($row->post_id));
+		
 		// head tags output ##############################
 		if ( $row->meta_title != null ) {
 			$output['page_title'] = $row->meta_title;
