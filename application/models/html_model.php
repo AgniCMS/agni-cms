@@ -69,17 +69,17 @@ class html_model extends CI_Model {
 	 * @return string 
 	 */
 	function gen_title( $title = '' ) {
-		$cfg = $this->config_model->load( array( 'site_name', 'page_title_separator' ) );
+		$cfg = $this->config_model->load(array('site_name', 'page_title_separator'));
 		
-		if ( ! empty($cfg) ) {
-			if ( $title != null ) {
+		if (!empty($cfg)) {
+			if ($title != null) {
 				$title = $cfg['site_name']['value'] . $cfg['page_title_separator']['value'] . $title;
 			} else {
 				// no $title set, return only site name
 				$title = $cfg['site_name']['value'];
 			}
 			
-			$title = $this->modules_plug->do_filter( 'html_title', $title );
+			$title = $this->modules_plug->do_filter('html_title', $title, $cfg);
 			
 			return $title;
 		}
