@@ -112,20 +112,28 @@ class modules_plug {
 		
 		// loop load modules plug
 		foreach ($this->modules as $key => $item) {
-			include_once config_item('agni_plugins_path') . $item['module_system_name'] . '/' . $item['module_system_name'] . '_module.php';
-			
-			$module_plug = $item['module_system_name'] . '_module';
-			
-			if (class_exists($module_plug)) {
-				$module_plug = new $module_plug;
-				
-				if (method_exists($module_plug, $filter)) {
-					// run module plug.
-					$this->data = $module_plug->$filter($this->data, $args);
+			if (file_exists(config_item('agni_plugins_path') . $item['module_system_name'] . '/' . $item['module_system_name'] . '_module.php')) {
+				include_once config_item('agni_plugins_path') . $item['module_system_name'] . '/' . $item['module_system_name'] . '_module.php';
+
+				$module_plug = $item['module_system_name'] . '_module';
+
+				if (class_exists($module_plug)) {
+					$module_plug = new $module_plug;
+
+					if (method_exists($module_plug, $filter)) {
+						// run module plug.
+						$this->data = $module_plug->$filter($this->data, $args);
+					}
 				}
+
+				unset($module_plug);
+			} else {
+				// module is not exists anymore.
+				// delete this module from db.
+				$ci =& get_instance();
+				$ci->load->model('modules_model');
+				$ci->modules_model->delete_a_module($item['module_system_name']);
 			}
-			
-			unset($module_plug);
 		}
 		
 		unset($args);
