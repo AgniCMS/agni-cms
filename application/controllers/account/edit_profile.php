@@ -65,8 +65,9 @@ class edit_profile extends MY_Controller {
 		// load session for flashdata
 		$this->load->library( 'session' );
 		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
 		unset( $form_status );
 		
@@ -115,17 +116,25 @@ class edit_profile extends MY_Controller {
 			$this->form_validation->set_rules( 'account_birthdate', 'lang:account_birthdate', 'trim|preg_match_date' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
 				$result = $this->account_model->member_edit_profile( $data );
 				
 				if ( $result === true ) {
 					// flash success msg to session
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'account_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('account_saved')
+						)
+					);
 					redirect( current_url() );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 				unset( $result );
 			}

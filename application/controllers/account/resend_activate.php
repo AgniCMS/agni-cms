@@ -33,7 +33,8 @@ class resend_activate extends MY_Controller {
 			$this->form_validation->set_rules( 'account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// check for registered email but not confirm
 				$this->db->where( 'account_email', $data['account_email'] );
@@ -46,7 +47,9 @@ class resend_activate extends MY_Controller {
 				
 				if ( $query->num_rows() <= 0 ) {
 					$query->free_result();
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_not_found_with_this_email' ).'</div>';
+					
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $this->lang->line('account_not_found_with_this_email');
 				} else {
 					$row = $query->row();
 					$query->free_result();
@@ -63,9 +66,11 @@ class resend_activate extends MY_Controller {
 						$this->db->set( 'account_confirm_code', $data['account_confirm_code'] );
 						$this->db->where( 'account_id', $row->account_id );
 						$this->db->update( 'accounts' );
-						$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'account_registered_please_check_email' ).'</div>';
+						$output['form_status'] = 'success';
+						$output['form_status_message'] = $this->lang->line('account_registered_please_check_email');
 					} else {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $result;
 					}
 					
 					unset( $result, $row, $query );

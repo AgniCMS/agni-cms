@@ -4,7 +4,9 @@
 
 	<?php echo form_open( current_url().( isset( $go_to ) ? '?rdr='.$go_to : '' ), array( 'class' => 'form-horizontal' ) ); ?> 
 	
-		<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+		<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+		<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+		<?php } ?> 
 
 		<div class="control-group">
 			<label class="control-label" for="account_username"><?php echo lang( 'account_username' ); ?>: </label>

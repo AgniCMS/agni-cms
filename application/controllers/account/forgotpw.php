@@ -34,7 +34,8 @@ class forgotpw extends MY_Controller {
 			$this->load->library( array( 'form_validation', 'securimage/securimage' ) );
 			$this->form_validation->set_rules( 'account_email', 'lang:account_email', 'trim|required|valid_email' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// check captcha
 				if ( $output['plugin_captcha'] != null ) {
@@ -44,13 +45,15 @@ class forgotpw extends MY_Controller {
 					if (isset($plug_captcha_check['account_check_captcha']) && is_array($plug_captcha_check['account_check_captcha']) && in_array(true, $plug_captcha_check['account_check_captcha'], true)) {
 						$continue = true;
 					} else {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $this->lang->line('account_wrong_captcha_code');
 					}
 				} else {
 					// use system captcha to check
 					$this->load->library( 'securimage/securimage' );
 					if ( $this->securimage->check( $this->input->post( 'captcha', true ) ) == false ) {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $this->lang->line('account_wrong_captcha_code');
 					} else {
 						$continue = true;
 					}
@@ -62,9 +65,11 @@ class forgotpw extends MY_Controller {
 					
 					if ( $result === true ) {
 						$output['hide_form'] = true;
-						$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_please_check_email_confirm_resetpw' ) . '</div>';
+						$output['form_status'] = 'success';
+						$output['form_status_message'] = $this->lang->line('account_please_check_email_confirm_resetpw');
 					} else {
-						$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $result;
 					}
 				}
 			}

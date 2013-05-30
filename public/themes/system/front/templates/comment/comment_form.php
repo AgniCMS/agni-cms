@@ -1,6 +1,9 @@
 
 	<?php echo form_open( current_url().(isset( $go_to ) ? '?rdr='.$go_to : '' ).'#addcomment', array( 'class' => 'form-horizontal' ) ); ?> 
-		<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+		<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+		<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+		<?php } ?> 
+		
 		<input type="hidden" name="cmd" value="post_comment" />
 		<input type="hidden" name="post_id" value="<?php echo $post_id; ?>" />
 		<input type="hidden" name="parent_id" value="<?php if ( isset( $comment_id ) && $comment_id != null ) {echo $comment_id;} ?>" />
@@ -29,7 +32,7 @@
 			</div>
 			
 			<div class="control-group">
-				<label class="control-label" for="input-comment-body"><?php echo lang( 'comment_comment' ); ?></label>
+				<label class="control-label" for="input-comment-body"><?php echo lang( 'comment_comment' ); ?> <span class="txt_require">*</span></label>
 				<div class="controls">
 					<textarea name="comment_body_value" cols="60" rows="10" id="input-comment-body" class="input-block-level"><?php if ( isset( $comment_body_value ) ) {echo $comment_body_value;} ?></textarea>
 				</div>

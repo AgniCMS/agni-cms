@@ -3,7 +3,9 @@
 	<h1><?php echo lang( 'account_edit_profile' ); ?></h1>
 
 	<?php echo form_open_multipart( '', array( 'class' => 'form-horizontal' ) ); ?> 
-		<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+		<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+		<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+		<?php } ?> 
 
 		<div class="page-edit-profile">
 			<div class="control-group">
@@ -62,7 +64,7 @@
 			<div class="control-group">
 				<label class="control-label" for="account_birthdate"><?php echo lang( 'account_birthdate' ); ?>: </label>
 				<div class="controls">
-					<input type="date" name="account_birthdate" value="<?php if ( isset( $account_birthdate ) ) {echo $account_birthdate;} ?>" maxlength="10" id="account_birthdate" />
+					<input type="text" name="account_birthdate" value="<?php if ( isset( $account_birthdate ) ) {echo $account_birthdate;} ?>" maxlength="10" id="account_birthdate" />
 					<span class="help-inline"><?php echo lang( 'account_birthdate_format' ); ?></span>
 				</div>
 			</div>

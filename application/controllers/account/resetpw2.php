@@ -38,7 +38,9 @@ class resetpw2 extends MY_Controller {
 				$this->db->set( 'account_confirm_code', NULL );
 				$this->db->where( 'account_id', $account_id );
 				$this->db->update( 'accounts' );
-				$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_cancel_change_password' ) . '</div>';
+				
+				$output['form_status'] = 'success';
+				$output['form_status_message'] = $this->lang->line('account_cancel_change_password');
 			} else {
 				$this->db->where( 'account_id', $account_id );
 				$this->db->where( 'account_confirm_code', $confirm_code );
@@ -62,7 +64,8 @@ class resetpw2 extends MY_Controller {
 						$this->form_validation->set_rules('new_password', 'lang:account_new_password', 'trim|required|matches[conf_new_password]');
 						$this->form_validation->set_rules('conf_new_password', 'lang:account_confirm_new_password', 'trim|required');
 						if ( $this->form_validation->run() == false ) {
-							$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+							$output['form_status'] = 'error';
+							$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 						} else {
 							// update new password
 							$this->db->set( 'account_password', $this->account_model->encrypt_password( $data['new_password'] ) );
@@ -70,7 +73,9 @@ class resetpw2 extends MY_Controller {
 							$this->db->set( 'account_confirm_code', NULL );
 							$this->db->where( 'account_id', $account_id );
 							$this->db->update( 'accounts' );
-							$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_confirm_reset_password' ) . '</div>';
+							
+							$output['form_status'] = 'success';
+							$output['form_status_message'] = $this->lang->line('account_confirm_reset_password');
 							
 							// module plugins do action
 							$this->modules_plug->do_action( 'account_change_password', $data );
@@ -78,12 +83,14 @@ class resetpw2 extends MY_Controller {
 					}
 					
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_forgetpw_invalid_url' ) . '</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $this->lang->line('account_forgetpw_invalid_url');
 				}
 				$query->free_result();
 			}
 		} else {
-			$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_forgetpw_invalid_url' ) . '</div>';
+			$output['form_status'] = 'error';
+			$output['form_status_message'] = $this->lang->line('account_forgetpw_invalid_url');
 		}
 		
 		// head tags output ##############################

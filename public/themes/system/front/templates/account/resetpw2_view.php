@@ -1,7 +1,9 @@
 <article class="general-page-container">
 	<h1><?php echo lang( 'account_reset_password' ); ?></h1>
 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?>
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
 	<?php if ( isset( $show_changepw_form ) && $show_changepw_form === true ): ?> 
 	<?php echo form_open( '', array( 'class' => 'form-horizontal' ) ); ?> 

@@ -287,7 +287,8 @@ class comment extends MY_Controller {
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				return '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$result = $this->comments_model->edit( $data );
 				
@@ -300,7 +301,8 @@ class comment extends MY_Controller {
 						redirect( 'post/'.$row->post_uri_encoded.'?per_page='.$gotopage.'#comment-id-'.$comment_id );
 					}
 				} else {
-					return '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -381,7 +383,12 @@ class comment extends MY_Controller {
 		
 		// post method, new comment posting
 		if ( $this->input->post() ) {
-			$output['form_status'] = $this->post_comment();
+			$post_comment = $this->post_comment();
+			if (isset($post_comment['form_status']) && isset($post_comment['form_status_message'])) {
+				$output['form_status'] = $post_comment['form_status'];
+				$output['form_status_message'] = $post_comment['form_status_message'];
+			}
+			unset($post_comment);
 			
 			// re-populate form
 			$output['name'] = htmlspecialchars( trim( $this->input->post( 'name' ) ) );
@@ -394,7 +401,7 @@ class comment extends MY_Controller {
 	}// list_comments
 	
 	
-	function post_comment() {
+	private function post_comment() {
 		$account_id = (int) trim( $this->input->post( 'account_id' ) );
 		if ( $account_id == null ) {$account_id = '0';}
 		
@@ -412,7 +419,9 @@ class comment extends MY_Controller {
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				return '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
+				return $output;
 			} else {
 				
 				// set data for insert
@@ -503,10 +512,14 @@ class comment extends MY_Controller {
 						$gotopage = $this->comments_model->get_comment_display_page( $result['id'], $this->mode );
 						redirect( current_url().'?per_page='.$gotopage.'#comment-id-'.$result['id'] );
 					} else {
-						return '<div class="txt_success alert alert-success">'.$this->lang->line( 'comment_user_wait_approve' ).'</div>';
+						$output['form_status'] = 'success';
+						$output['form_status_message'] = $this->lang->line('comment_user_wait_approve');
+						return $output;
 					}
 				} else {
-					return '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
+					return $output;
 				}
 				
 			}// endif form validation

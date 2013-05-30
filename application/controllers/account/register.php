@@ -42,7 +42,8 @@ class register extends MY_Controller {
 			$this->form_validation->set_rules( 'account_password', 'lang:account_password', 'trim|required' );
 			$this->form_validation->set_rules( 'account_confirm_password', 'lang:account_confirm_password', 'trim|required|matches[account_password]' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// check plugin captcha
 				if ( $output['plugin_captcha'] != null ) {
@@ -52,13 +53,15 @@ class register extends MY_Controller {
 					if (isset($plug_captcha_check['account_register_check_captcha']) && is_array($plug_captcha_check['account_register_check_captcha']) && in_array(true, $plug_captcha_check['account_register_check_captcha'], true)) {
 						$continue = true;
 					} else {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $this->lang->line('account_wrong_captcha_code');
 					}
 				} else {
 					// use system captcha to check
 					$this->load->library( 'securimage/securimage' );
 					if ( $this->securimage->check( $this->input->post( 'captcha', true ) ) == false ) {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_wrong_captcha_code' ).'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $this->lang->line('account_wrong_captcha_code');
 					} else {
 						$continue_register = true;
 					}
@@ -74,12 +77,15 @@ class register extends MY_Controller {
 						// if confirm member by email, use msg check email. if confirm member by admin, use msg wait for admin moderation.
 						$member_verfication = $this->config_model->load( 'member_verification' );
 						if ( $member_verfication == '1' ) {
-							$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'account_registered_please_check_email' ).'</div>';
+							$output['form_status'] = 'success';
+							$output['form_status_message'] = $this->lang->line('account_registered_please_check_email');
 						} elseif ( $member_verfication == '2' ) {
-							$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'account_registered_wait_admin_mod' ).'</div>';
+							$output['form_status'] = 'success';
+							$output['form_status_message'] = $this->lang->line('account_registered_wait_admin_mod');
 						}
 					} else {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $result;
 					}
 				}
 			}

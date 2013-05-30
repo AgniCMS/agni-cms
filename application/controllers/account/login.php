@@ -37,11 +37,12 @@ class login extends MY_Controller {
 		$this->load->library( array( 'securimage/securimage', 'session' ) );
 		
 		// read account error. eg. duplicate, simultaneous login error from check_login() in account model.
-		$account_error = $this->session->flashdata( 'account_error' );
-		if ( $account_error != null ) {
-			$output['form_status'] = '<div class="txt_error alert alert-error">' . $account_error . '</div>';
+		$form_status = $this->session->flashdata( 'form_status' );
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $account_error );
+		unset( $form_status );
 		
 		// count login fail
 		if ( $this->session->userdata( 'fail_count' ) >= 3 || $this->session->userdata( 'show_captcha' ) == true ) {
@@ -65,7 +66,8 @@ class login extends MY_Controller {
 			$this->form_validation->set_rules( 'account_username', 'lang:account_username', 'trim|required' );
 			$this->form_validation->set_rules( 'account_password', 'lang:account_password', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors( '<li>', '</li>' ).'</ul>';
 			} else {
 				$login_fail_last_time = $this->account_model->login_fail_last_time( $data['account_username'] );
 				$count_login_fail = $this->account_model->count_login_fail( $data['account_username'] );
@@ -121,7 +123,9 @@ class login extends MY_Controller {
 					if ( $count_login_fail >= 3 ) {
 						$this->session->set_userdata( 'show_captcha', true );
 					}
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 				
 			}

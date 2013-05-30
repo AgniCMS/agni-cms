@@ -45,11 +45,13 @@ class confirm_register extends MY_Controller {
 			$this->db->where( 'account_id', $row->account_id );
 			$this->db->update( 'accounts' );
 			
-			$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_confirm_register_completed' ) . '</div>';
+			$output['form_status'] = 'success';
+			$output['form_status_message'] = $this->lang->line('account_confirm_register_completed');
 			
 			$this->modules_plug->do_action( 'account_register_confirmed', array( 'account_id' => $row->account_id, 'account_username' => $username, 'account_email' => $row->account_email ) );
 		} else {
-			$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_confirm_register_invalid' ) . '</div>';
+			$output['form_status'] = 'error';
+			$output['form_status_message'] = $this->lang->line('account_confirm_register_invalid');
 		}
 		
 		// head tags output ##############################

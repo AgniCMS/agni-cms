@@ -3,7 +3,11 @@
 	<h1><?php echo lang( 'account_register' ); ?></h1>
 
 	<?php echo form_open( '', array( 'class' => 'form-horizontal' ) ); ?> 
-		<div class="form-status-placeholder"><?php if ( isset( $form_status ) ) {echo $form_status;} ?></div>
+		<div class="form-status-placeholder">
+			<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+			<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+			<?php } ?> 
+		</div>
 
 		<?php if ( !isset( $hide_register_form ) || ( isset( $hide_register_form ) && $hide_register_form == false ) ): ?> 
 		<div class="page-account-register">
