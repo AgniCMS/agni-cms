@@ -902,10 +902,10 @@ class account_model extends CI_Model {
 	 */
 	function encrypt_password($password = '') 
 	{
-		if ($this->modules_plug->has_filter('account_generate_hash_password')) {
+		if (property_exists($this, 'modules_plug') && $this->modules_plug->has_filter('account_generate_hash_password')) {
 			return $this->modules_plug->do_filter('account_generate_hash_password', $password);
 		} else {
-			include_once 'application/libraries/PasswordHash.php';
+			include_once dirname(dirname(__FILE__)).'/libraries/PasswordHash.php';
 			$PasswordHash = new PasswordHash(12, false);
 			return $PasswordHash->HashPassword($password);
 		}

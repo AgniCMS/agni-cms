@@ -341,10 +341,12 @@ class index extends MY_Controller {
 			} else {
 				// get main app model to gen password
 				include_once( '../application/models/account_model.php' );
+				
 				$account_model = new account_model();
+				
 				$data['encrypted_password'] = $account_model->encrypt_password( $data['account_password'] );
-				//
 				$result = $this->install_model->install_configured( $data );
+				
 				if ( isset( $result['result'] ) && $result['result'] === true ) {
 					// install complete.
 					set_cookie( 'agni_install_step3', 'pass', 86400 );
