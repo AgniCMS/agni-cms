@@ -15,6 +15,7 @@ account_member_edit = แก้ไขข้อมูลในหน้า edit profile. ส่งค่าเป็น array
 
 module plug filter
 account_edit_profile_form_bottom = ตำแหน่งด้านล่างสุดในหน้า edit profile แต่อยู่ใน <form>
+account_generate_hash_password = สร้างรหัสผ่านที่ผ่านการ hash แล้วโดยใช้วิธีการ hash ที่กำหนดเอง	ส่งค่ารหัสผ่านเข้าไป	ส่งค่ารหัสผ่านที่ hash แล้วกลับมา.
 account_register_form_bottom = ตำแหน่งใต้ captcha แต่อยู่ใน <form> ในหน้า register	
 account_register_show_captcha = แสดง captcha ในหน้า register
 account_show_captcha = แสดง captcha ในหน้าทั่วไป

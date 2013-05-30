@@ -144,7 +144,6 @@ class account_model extends CI_Model {
 		if ( !is_array( $data ) || empty( $data ) ) {return false;}
 		
 		$this->db->where( 'account_username', $data['username'] );
-		$this->db->where( 'account_password', $this->encrypt_password( $data['password'] ) );
 		
 		$query = $this->db->get( 'accounts' );
 		
@@ -152,90 +151,100 @@ class account_model extends CI_Model {
 			$row = $query->row();
 			
 			if ( $row->account_status == '1' ) {
-				if ( $this->check_admin_permission( 'account_admin_login', 'account_admin_login', $row->account_id ) == true ) {
-					$this->load->library( 'session' );
-					$session_id = $this->session->userdata( 'session_id' );
-					
-					// update session มีไว้เพื่อกำหนดว่าจะอัปเดท session หรือไม่. กรณีมีการ login จากหน้าสมาชิกด้านหน้าเว็บแล้ว ก็จะไม่ต้องอัปเดทอีก, แต่ถ้ายัง ก็ต้องอัปเดท session เพื่อให้มีรหัส session ในการตรวจสอบ login ซ้อน
-					$need_update_session = false;// กำหนดเป็น false ไปก่อน เพื่อให้มีการอัปเดท session (สมมุติว่ายังไม่เคยมีการ login จากหน้าแรกเลย.
-					
-					// เอาคุกกี้สำหรับหน้าแรกมา เพื่อหาว่าเคยมีการ login แล้วรึยัง
-					$cm_account = $this->get_account_cookie( 'member' );
-					if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) && isset( $cm_account['password'] ) && isset( $cm_account['onlinecode'] ) && $cm_account['id'] == $row->account_id ) {
-						// เคยมีการ login จากหน้าแรกแล้ว
-						// ดึงค่า session, onlinecode จากที่เคย login หน้าแรกมาใช้.
-						$set_ca_account['onlinecode'] = $cm_account['onlinecode'];
-						$session_id = $cm_account['onlinecode'];
+				if ($this->checkPassword($data['password'], $row->account_password) === true) {
+					if ( $this->check_admin_permission( 'account_admin_login', 'account_admin_login', $row->account_id ) == true ) {
+						$this->load->library( 'session' );
+						$session_id = $this->session->userdata( 'session_id' );
+
+						// update session มีไว้เพื่อกำหนดว่าจะอัปเดท session หรือไม่. กรณีมีการ login จากหน้าสมาชิกด้านหน้าเว็บแล้ว ก็จะไม่ต้องอัปเดทอีก, แต่ถ้ายัง ก็ต้องอัปเดท session เพื่อให้มีรหัส session ในการตรวจสอบ login ซ้อน
+						$need_update_session = false;// กำหนดเป็น false ไปก่อน เพื่อให้มีการอัปเดท session (สมมุติว่ายังไม่เคยมีการ login จากหน้าแรกเลย.
+
+						// เอาคุกกี้สำหรับหน้าแรกมา เพื่อหาว่าเคยมีการ login แล้วรึยัง
+						$cm_account = $this->get_account_cookie( 'member' );
+						if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) && isset( $cm_account['password'] ) && isset( $cm_account['onlinecode'] ) && $cm_account['id'] == $row->account_id ) {
+							// เคยมีการ login จากหน้าแรกแล้ว
+							// ดึงค่า session, onlinecode จากที่เคย login หน้าแรกมาใช้.
+							$set_ca_account['onlinecode'] = $cm_account['onlinecode'];
+							$session_id = $cm_account['onlinecode'];
+						} else {
+							// ยังไม่เคยมีการ login จากหน้าแรก
+							// เซ็ทคุกกี้สำหรับหน้าแรกให้เลย.
+							$set_cm_account['id'] = $row->account_id;
+							$set_cm_account['username'] = $data['username'];
+							$set_cm_account['password'] = $row->account_password;
+							$set_cm_account['fullname'] = $row->account_fullname;
+							$set_cm_account['onlinecode'] = $session_id;
+							$set_cm_account = $this->encrypt->encode( serialize( $set_cm_account ) );
+							set_cookie( 'member_account', $set_cm_account, 0 );
+
+							// เพราะว่ายังไม่เคยมีการ login จากหน้าแรก จึงต้องให้อัปเดท session
+							$need_update_session = true;
+						}
+
+						// ตั้งค่าคุกกี้สำหรับหน้า admin
+						$set_ca_account['id'] = $row->account_id;
+						$set_ca_account['username'] = $data['username'];
+						$set_ca_account['password'] = $row->account_password;
+						$set_ca_account['onlinecode'] = $session_id;
+						$set_ca_account = $this->encrypt->encode( serialize( $set_ca_account ) );
+						set_cookie( 'admin_account', $set_ca_account, 0 );
+
+						// ถ้าจะต้องมีการอัพเดท session
+						// load date helper for gmt
+						$this->load->helper( 'date' );
+						if ( $need_update_session === true ) {
+							//$this->db->set( 'account_online_code', $session_id );// deprecated
+							$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
+							$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
+							$this->db->where( 'account_id', $row->account_id );
+							$this->db->update( 'accounts' );
+
+							// add online code for multisite check ------------------------------------------------
+							$session_data['account_id'] = $row->account_id;
+							$session_data['session_id'] = $session_id;
+							$this->add_login_session( $session_data );
+							unset( $session_data );
+							// add online code for multisite check ------------------------------------------------
+						} else {
+							$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
+							$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
+							$this->db->where( 'account_id', $row->account_id );
+							$this->db->update( 'accounts' );
+							// add online code for multisite check ------------------------------------------------
+							$session_data['account_id'] = $row->account_id;
+							$this->add_login_session( $session_data );
+							unset( $session_data );
+							// add online code for multisite check ------------------------------------------------
+						}
+
+						// record log in
+						$this->admin_login_record( $row->account_id, '1', 'Success' );
+						$query->free_result();
+
+						// module plug here.
+						$this->modules_plug->do_action( 'admin_login_process', $row );
+
+						return true;
 					} else {
-						// ยังไม่เคยมีการ login จากหน้าแรก
-						// เซ็ทคุกกี้สำหรับหน้าแรกให้เลย.
-						$set_cm_account['id'] = $row->account_id;
-						$set_cm_account['username'] = $data['username'];
-						$set_cm_account['password'] = $row->account_password;
-						$set_cm_account['fullname'] = $row->account_fullname;
-						$set_cm_account['onlinecode'] = $session_id;
-						$set_cm_account = $this->encrypt->encode( serialize( $set_cm_account ) );
-						set_cookie( 'member_account', $set_cm_account, 0 );
-						
-						// เพราะว่ายังไม่เคยมีการ login จากหน้าแรก จึงต้องให้อัปเดท session
-						$need_update_session = true;
+						// has no permission to login here
+						$query->free_result();
+
+						$this->admin_login_record( $row->account_id, '0', 'Not allow to login to admin page.' );
+
+						if ( !$this->input->is_ajax_request() ) {
+							redirect( base_url() );
+						} else {
+							return $this->lang->line( 'account_not_allow_login_here' );
+						}
 					}
-					
-					// ตั้งค่าคุกกี้สำหรับหน้า admin
-					$set_ca_account['id'] = $row->account_id;
-					$set_ca_account['username'] = $data['username'];
-					$set_ca_account['password'] = $row->account_password;
-					$set_ca_account['onlinecode'] = $session_id;
-					$set_ca_account = $this->encrypt->encode( serialize( $set_ca_account ) );
-					set_cookie( 'admin_account', $set_ca_account, 0 );
-					
-					// ถ้าจะต้องมีการอัพเดท session
-					// load date helper for gmt
-					$this->load->helper( 'date' );
-					if ( $need_update_session === true ) {
-						//$this->db->set( 'account_online_code', $session_id );// deprecated
-						$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
-						$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
-						$this->db->where( 'account_id', $row->account_id );
-						$this->db->update( 'accounts' );
-						
-						// add online code for multisite check ------------------------------------------------
-						$session_data['account_id'] = $row->account_id;
-						$session_data['session_id'] = $session_id;
-						$this->add_login_session( $session_data );
-						unset( $session_data );
-						// add online code for multisite check ------------------------------------------------
-					} else {
-						$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
-						$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
-						$this->db->where( 'account_id', $row->account_id );
-						$this->db->update( 'accounts' );
-						// add online code for multisite check ------------------------------------------------
-						$session_data['account_id'] = $row->account_id;
-						$this->add_login_session( $session_data );
-						unset( $session_data );
-						// add online code for multisite check ------------------------------------------------
-					}
-					
-					// record log in
-					$this->admin_login_record( $row->account_id, '1', 'Success' );
-					$query->free_result();
-					
-					// module plug here.
-					$this->modules_plug->do_action( 'admin_login_process', $row );
-					
-					return true;
 				} else {
-					// has no permission to login here
+					// password not match
+					// login failed.
+					$this->admin_login_record( $row->account_id, '0', 'Wrong username or password' );
 					$query->free_result();
-					
-					$this->admin_login_record( $row->account_id, '0', 'Not allow to login to admin page.' );
-					
-					if ( !$this->input->is_ajax_request() ) {
-						redirect( base_url() );
-					} else {
-						return $this->lang->line( 'account_not_allow_login_here' );
-					}
+					unset( $query, $row );
+
+					return $this->lang->line( 'account_wrong_username_or_password' );
 				}
 			} else {
 				// account disabled
@@ -556,6 +565,32 @@ class account_model extends CI_Model {
 	
 	
 	/**
+	 * check password entered and hash one.
+	 * @param string $entered_password
+	 * @param string $hashed_password
+	 * @return boolean
+	 */
+	public function checkPassword($entered_password = '', $hashed_password = '') 
+	{
+		if ($this->modules_plug->has_filter('account_check_hash_password')) {
+			$result = $this->modules_plug->do_action('account_check_hash_password', array($entered_password, $hashed_password));
+			
+			if (isset($result['account_check_hash_password']) && is_array($result['account_check_hash_password'])) {
+				return array_shift(array_values($result['account_check_hash_password']));
+			}
+			
+			return false;
+		} else {
+			include_once 'application/libraries/PasswordHash.php';
+			$PasswordHash = new PasswordHash(12, false);
+			
+			// check password
+			return $PasswordHash->CheckPassword($entered_password, $hashed_password);
+		}
+	}// checkPassword
+	
+	
+	/**
 	 * count_login_fail 
 	 * count continuous log in fail.
 	 * @param string $username
@@ -746,6 +781,7 @@ class account_model extends CI_Model {
 			$this->db->where( 'account_id != ', $data['account_id'] );
 			$this->db->where( 'account_email', $data['account_email'] );
 			$query = $this->db->select( 'account_id, account_email' )->get( 'accounts' );
+			
 			if ( $query->num_rows() > 0 ) {
 				$query->free_result();
 				return $this->lang->line( 'account_email_already_exists' );
@@ -753,6 +789,7 @@ class account_model extends CI_Model {
 				$email_change = 'yes';
 				$data['account_new_email'] = $data['account_email'];
 			}
+			
 			$query->free_result();
 		}
 		// end check for duplicate email
@@ -782,21 +819,21 @@ class account_model extends CI_Model {
 		 
 		 // check password change and set password value for update in db.
 		if ( !empty( $data['account_new_password'] ) ) {
-			$old_password = $this->encrypt_password( $data['account_password'] );
-			$data['account_old_password_encrypted'] = $old_password;
+			$data['account_old_password_encrypted'] = $data['account_password'];
 			$data['account_new_password_encrypted'] = $this->encrypt_password( $data['account_new_password'] );
 			$get_old_password_from_db = $this->show_accounts_info( $data['account_id'], 'account_id', 'account_password' );
 			
 			// check old password is match in db.
-			if ( $old_password == $get_old_password_from_db ) {
+			if ($this->checkPassword($data['account_password'], $get_old_password_from_db)) {
 				$data['account_password'] = $data['account_new_password_encrypted'];
+				
 				// module plug here
 				$this->modules_plug->do_action( 'account_change_password', $data );
 			} else {
-				unset( $old_password, $get_old_password_from_db );
+				unset($get_old_password_from_db);
 				return $this->lang->line( 'account_wrong_password' );
 			}
-			unset( $old_password, $get_old_password_from_db );
+			unset($get_old_password_from_db);
 		} else {
 			// no password change, remove this variable to prevent set null value to db while update.
 			unset( $data['account_password'] );
@@ -857,9 +894,15 @@ class account_model extends CI_Model {
 	 * @param string $password
 	 * @return string
 	 */
-	function encrypt_password( $password = '' ) {
-		$this->load->library( 'encrypt' );
-		return $this->encrypt->sha1( $this->config->item( 'encryption_key' ).'::'.$this->encrypt->sha1( $password ) );
+	function encrypt_password($password = '') 
+	{
+		if ($this->modules_plug->has_filter('account_generate_hash_password')) {
+			return $this->modules_plug->do_filter('account_generate_hash_password', $password);
+		} else {
+			include_once 'application/libraries/PasswordHash.php';
+			$PasswordHash = new PasswordHash(12, false);
+			return $PasswordHash->HashPassword($password);
+		}
 	}// encrypt_password
 	
 	
@@ -952,6 +995,18 @@ class account_model extends CI_Model {
 		$query->free_result();
 		return null;
 	}// get_account_online_code
+	
+	
+	/**
+	 * hash password
+	 * alias name of encrypt password.
+	 * @param string $password
+	 * @return string
+	 */
+	public function hash_password($password = '') 
+	{
+		return $this->encrypt_password($password);
+	}// hash_password
 	
 	
 	
@@ -1351,20 +1406,21 @@ class account_model extends CI_Model {
 		 // check password change and set password value for update in db.
 		if ( !empty( $data['account_new_password'] ) ) {
 			$old_password = $this->encrypt_password( $data['account_password'] );
-			$data['account_old_password_encrypted'] = $old_password;
+			$data['account_old_password_encrypted'] = $data['account_password'];
 			$data['account_new_password_encrypted'] = $this->encrypt_password( $data['account_new_password'] );
 			$get_old_password_from_db = $this->show_accounts_info( $data['account_id'], 'account_id', 'account_password' );
 			
 			// check old password is match in db.
-			if ( $old_password == $get_old_password_from_db ) {
+			if ($this->checkPassword($data['account_password'], $get_old_password_from_db)) {
 				$data['account_password'] = $data['account_new_password_encrypted'];
+				
 				// module plug here
 				$this->modules_plug->do_action( 'account_change_password', $data );
 			} else {
-				unset( $old_password, $get_old_password_from_db );
+				unset($get_old_password_from_db);
 				return $this->lang->line( 'account_wrong_password' );
 			}
-			unset( $old_password, $get_old_password_from_db );
+			unset($get_old_password_from_db);
 		} else {
 			// no password change, remove this variable to prevent set null value to db while update.
 			unset( $data['account_password'] );
@@ -1397,60 +1453,70 @@ class account_model extends CI_Model {
 		if ( !isset( $data['account_username'] ) || !isset( $data['account_password'] ) ) {return false;}
 		
 		$this->db->where( 'account_username', $data['account_username'] );
-		$this->db->where( 'account_password', $this->encrypt_password( $data['account_password'] ) );
 		$query = $this->db->get( 'accounts' );
 		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			if ( $row->account_status == '1' ) {
-				// generate session id for check simultanous login
-				$this->load->library( 'session' );
-				$session_id = $this->session->userdata( 'session_id' );
-				
-				// set cookie
-				$this->load->library( 'encrypt' );
-				$this->load->helper( 'cookie' );
-				
-				$expires = ( $this->input->post( 'remember', true ) == 'yes' ? (60*60*24*365)/12 : '0' );
-				$set_cm_account['id'] = $row->account_id;
-				$set_cm_account['username'] = $data['account_username'];
-				$set_cm_account['password'] = $row->account_password;
-				$set_cm_account['fullname'] = $row->account_fullname;
-				$set_cm_account['onlinecode'] = $session_id;
-				$set_cm_account = $this->encrypt->encode( serialize( $set_cm_account ) );
-				set_cookie( 'member_account', $set_cm_account, $expires );
-				
-				// update session
-				$this->load->helper( 'date' );
-				//$this->db->set( 'account_online_code', $session_id );// deprecated
-				$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
-				$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
-				$this->db->where( 'account_id', $row->account_id );
-				$this->db->update( 'accounts' );
-				
-				// add online code for multisite check ------------------------------------------------
-				$session_data['account_id'] = $row->account_id;
-				$session_data['session_id'] = $session_id;
-				$this->add_login_session( $session_data );
-				unset( $session_data );
-				// add online code for multisite check ------------------------------------------------
-				
-				// record log in
-				$this->admin_login_record( $row->account_id, '1', 'Success' );
-				$query->free_result();
-				
-				// module plug here
-				$this->modules_plug->do_action( 'account_login_process', $data );
-				unset( $query, $row, $session_id, $expires, $set_cm_account );
-				
-				return true;
+				// check hash password.
+				if ($this->checkPassword($data['account_password'], $row->account_password) === true) {
+					// generate session id for check simultanous login
+					$this->load->library( 'session' );
+					$session_id = $this->session->userdata( 'session_id' );
+
+					// set cookie
+					$this->load->library( 'encrypt' );
+					$this->load->helper( 'cookie' );
+
+					$expires = ( $this->input->post( 'remember', true ) == 'yes' ? (60*60*24*365)/12 : '0' );
+					$set_cm_account['id'] = $row->account_id;
+					$set_cm_account['username'] = $data['account_username'];
+					$set_cm_account['password'] = $row->account_password;
+					$set_cm_account['fullname'] = $row->account_fullname;
+					$set_cm_account['onlinecode'] = $session_id;
+					$set_cm_account = $this->encrypt->encode( serialize( $set_cm_account ) );
+					set_cookie( 'member_account', $set_cm_account, $expires );
+
+					// update session
+					$this->load->helper( 'date' );
+					//$this->db->set( 'account_online_code', $session_id );// deprecated
+					$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
+					$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
+					$this->db->where( 'account_id', $row->account_id );
+					$this->db->update( 'accounts' );
+
+					// add online code for multisite check ------------------------------------------------
+					$session_data['account_id'] = $row->account_id;
+					$session_data['session_id'] = $session_id;
+					$this->add_login_session( $session_data );
+					unset( $session_data );
+					// add online code for multisite check ------------------------------------------------
+
+					// record log in
+					$this->admin_login_record( $row->account_id, '1', 'Success' );
+					$query->free_result();
+
+					// module plug here
+					$this->modules_plug->do_action( 'account_login_process', $data );
+					unset( $query, $row, $session_id, $expires, $set_cm_account );
+
+					return true;
+				} else {
+					// password not match
+					// login failed.
+					$this->admin_login_record( $row->account_id, '0', 'Wrong username or password' );
+					$query->free_result();
+					unset( $query, $row );
+
+					return $this->lang->line( 'account_wrong_username_or_password' );
+				}
 			} else {
 				// account disabled
 				$this->admin_login_record( $row->account_id, '0', 'Account was disabed.' );
 				$query->free_result();
-				unset( $query, $row );
+				unset($query);
 				
-				return $this->lang->line( 'account_disabled' ) . ': ' . $row->account_status_text;
+				return $this->lang->line('account_disabled') . ': ' . $row->account_status_text;
 			}
 		}
 		$query->free_result();

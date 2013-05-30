@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS `an_accounts` (
   `account_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_username` varchar(255) DEFAULT NULL,
   `account_email` varchar(255) DEFAULT NULL,
-  `account_password` varchar(255) DEFAULT NULL,
+  `account_salt` varchar(255) DEFAULT NULL COMMENT 'store salt for use when hashing password',
+  `account_password` tinytext,
   `account_fullname` varchar(255) DEFAULT NULL,
   `account_birthdate` date DEFAULT NULL,
   `account_avatar` varchar(255) DEFAULT NULL,
@@ -47,9 +48,9 @@ CREATE TABLE IF NOT EXISTS `an_accounts` (
 -- Dumping data for table `an_accounts`
 --
 
-INSERT INTO `an_accounts` (`account_id`, `account_username`, `account_email`, `account_password`, `account_fullname`, `account_birthdate`, `account_avatar`, `account_signature`, `account_timezone`, `account_language`, `account_create`, `account_create_gmt`, `account_last_login`, `account_last_login_gmt`, `account_online_code`, `account_status`, `account_status_text`, `account_new_email`, `account_new_password`, `account_confirm_code`) VALUES
-(0, 'Guest', 'none@localhost', NULL, 'Guest', NULL, NULL, NULL, 'UP7', NULL, '2012-04-03 19:25:44', '2012-04-03 12:25:44', NULL, NULL, NULL, 0, 'You can''t login with this account.', NULL, NULL, NULL),
-(1, 'admin', 'admin@localhost', '6e6f59d20ef87183781895cb20d13c6663f3890c', NULL, NULL, NULL, NULL, 'UP7', NULL, '2011-04-20 19:20:04', '2011-04-20 12:20:04', '2012-06-16 17:09:17', '2012-06-16 10:09:17', 'e2135bb4faf4fb999e3bbebe86ed1cdf', 1, NULL, NULL, NULL, NULL);
+INSERT INTO `an_accounts` (`account_id`, `account_username`, `account_email`, `account_salt`, `account_password`, `account_fullname`, `account_birthdate`, `account_avatar`, `account_signature`, `account_timezone`, `account_language`, `account_create`, `account_create_gmt`, `account_last_login`, `account_last_login_gmt`, `account_online_code`, `account_status`, `account_status_text`, `account_new_email`, `account_new_password`, `account_confirm_code`) VALUES
+(0, 'Guest', 'none@localhost', NULL, NULL, 'Guest', NULL, NULL, NULL, 'UP7', NULL, '2012-04-03 19:25:44', '2012-04-03 12:25:44', NULL, NULL, NULL, 0, 'You can''t login with this account.', NULL, NULL, NULL),
+(1, 'admin', 'admin@localhost', NULL, '$P$FPnwJAQzX498tYCbbIfYTbdYiOCShE0', NULL, NULL, NULL, NULL, 'UP7', NULL, '2011-04-20 19:20:04', '2011-04-20 12:20:04', '2012-06-16 17:09:17', '2012-06-16 10:09:17', 'e2135bb4faf4fb999e3bbebe86ed1cdf', 1, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
