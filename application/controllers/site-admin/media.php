@@ -142,7 +142,8 @@ class media extends admin_controller {
 					// if crop not success
 					if (!$this->image_lib->crop()) {
 						$output['result'] = false;
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.$this->image_lib->display_errors().'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $this->image_lib->display_errors();
 					} else {
 						// crop success.
 						// update file size in db
@@ -153,14 +154,16 @@ class media extends admin_controller {
 
 						// done.
 						$output['result'] = true;
-						$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'media_resize_success' ).'</div>';
-						$output['croped_img'] = base_url().$row->file.'?'.time();
+						$output['form_status'] = 'success';
+						$output['form_status_message'] = $this->lang->line( 'media_crop_success' );
+						$output['croped_img'] = base_url($row->file.'?'.time());
 					}
 				} else {
 					$memory_limit = ((int) ini_get('memory_limit') * 1024) * 1024;
 					$require_mem = $this->media_model->checkMemAvailbleForResize( $row->file, $width, $height, true );
 					$output['result'] = false;
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.sprintf( $this->lang->line( 'media_crop_memory_exceed_limit' ), $memory_limit, $require_mem ).'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = sprintf($this->lang->line('media_crop_memory_exceed_limit'), $memory_limit, $require_mem);
 				}
 				
 				// send data to output and done.
@@ -296,13 +299,15 @@ class media extends admin_controller {
 					
 					// done.
 					$output['result'] = true;
-					$output['form_status'] = '<div class="txt_success alert alert-success">'.$this->lang->line( 'media_resize_success' ).'</div>';
-					$output['resized_img'] = base_url().$row->file.'?'.time();
+					$output['form_status'] = 'success';
+					$output['form_status_message'] = $this->lang->line('media_resize_success');
+					$output['resized_img'] = base_url($row->file.'?'.time());
 				} else {
 					$memory_limit = ((int) ini_get('memory_limit') * 1024) * 1024;
 					$require_mem = $this->media_model->checkMemAvailbleForResize( $row->file, $width, $height, true );
 					$output['result'] = false;
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.sprintf( $this->lang->line( 'media_resize_memory_exceed_limit' ), $memory_limit, $require_mem ).'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = sprintf($this->lang->line('media_resize_memory_exceed_limit'), $memory_limit, $require_mem);
 				}
 				
 				// send data to output and done.
@@ -462,7 +467,13 @@ class media extends admin_controller {
 			$result = $this->media_model->edit( $data );
 			if ( $result === true ) {
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+				$this->session->set_flashdata(
+					'form_status',
+					array(
+						'form_status' => 'success',
+						'form_status_message' => $this->lang->line('admin_saved')
+					)
+				);
 				redirect( 'site-admin/media' );
 			}
 			
@@ -498,11 +509,12 @@ class media extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );
@@ -604,13 +616,20 @@ class media extends admin_controller {
 			$data['target_folder'] = trim( $this->input->post( 'target_folder' ) );
 			
 			if ( $data['target_folder'] == null ) {
-				$output['form_status'] = '<div class="alert alert-error">'.lang( 'media_please_select_target_folder' ).'</div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = $this->lang->line('media_please_select_target_folder');
 			} else {
 				$result = $this->media_model->move_file( $data );
 				
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'media_files_moved_successfully' ) . '</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('media_files_moved_successfully')
+						)
+					);
 					redirect( 'site-admin/media' );
 				}
 			}
@@ -629,7 +648,8 @@ class media extends admin_controller {
 		$output['files'] = $query->result();
 		
 		if ( isset( $cannot_move_some_files ) && $cannot_move_some_files === true ) {
-			$output['form_status'] = '<div class="alert alert-error">'.lang( 'media_unable_to_move_some_file_due_to_system_permission' ).'</div>';
+			$output['form_status'] = 'error';
+			$output['form_status_message'] = $this->lang->line('media_unable_to_move_some_file_due_to_system_permission');
 		}
 		
 		// head tags output ##############################
@@ -650,11 +670,12 @@ class media extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie( 'admin' );

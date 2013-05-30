@@ -432,8 +432,6 @@ class account_model extends CI_Model {
 							$this->lang->load( 'account' );
 							
 							// flash error and return
-							$this->session->set_flashdata( 'account_error', $this->lang->line( 'account_duplicate_login_detected' ) );// old code
-							// new code below
 							$this->session->set_flashdata(
 								'form_status',
 								array(

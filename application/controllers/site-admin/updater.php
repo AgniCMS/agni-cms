@@ -126,14 +126,16 @@ class updater extends admin_controller {
 				
 				if ( $result === false ) {
 					$this->ftp->close();
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.lang( 'updater_incorrect_ftp_configuration' ).'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $this->lang->line('updater_incorrect_ftp_configuration');
 				} else {
 					$result = $this->ftp->list_files( $data['ftp_basepath'] );
 					$this->ftp->close();
 					
 					// if base path is not correct
 					if ( !is_array( $result ) || ( is_array( $result ) && !in_array( '/application', $result ) ) ) {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.lang( 'updater_incorrect_ftp_basepath' ).'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $this->lang->line('updater_incorrect_ftp_basepath');
 					} else {
 						// all setting are correct
 						$this->session->set_userdata( 'rewrite_method', 'ftp' );
@@ -245,16 +247,20 @@ class updater extends admin_controller {
 						// success, go to step3
 						redirect( 'site-admin/updater/step3' );
 					} else {
-						$output['form_status'] = '<div class="txt_error alert alert-error">'.lang( 'updater_unable_to_update_database' ).'</div>';
+						$output['form_status'] = 'error';
+						$output['form_status_message'] = $this->lang->line( 'updater_unable_to_update_database' );
 					}
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.lang( 'updater_unable_to_copy_update_files' ).'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $this->lang->line( 'updater_unable_to_copy_update_files' );
 				}
 			} else {
-				$output['form_status'] = '<div class="txt_error alert alert-error">'.lang( 'updater_unable_to_unzip_file' ).'</div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = $this->lang->line( 'updater_unable_to_unzip_file' );
 			}
 		} else {
-			$output['form_status'] = '<div class="txt_error alert alert-error">'.lang( 'updater_unable_to_download_update_file' ).'</div>';
+			$output['form_status'] = 'error';
+			$output['form_status_message'] = $this->lang->line( 'updater_unable_to_download_update_file' );
 		}
 		// update process ------------------------------------------------------------------------------------------------------------------
 		

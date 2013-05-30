@@ -64,12 +64,12 @@ class edit_profile extends MY_Controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
+		$form_status = $this->session->flashdata('form_status');
 		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
 			$output['form_status'] = $form_status['form_status'];
 			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// get id
 		$cm_account = $this->account_model->get_account_cookie( 'member' );

@@ -8,7 +8,11 @@
 </div>
 
 <?php echo form_open( 'site-admin/account-level/process_bulk' ); ?> 
-	<div class="form-result"><?php if ( isset( $form_status ) ) {echo $form_status;} ?></div>
+	<div class="form-result">
+		<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+		<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+		<?php } ?> 
+	</div>
 	
 	<table class="table table-striped table-hover" id="sortable">
 		<thead>
@@ -85,15 +89,13 @@
 					data: csrf_name+'='+csrf_value+'&'+orders,
 					dataType: 'json',
 					success: function( data ) {
-						$( '.form-result' ).html( data.form_status );
+						$( '.form-result' ).html( '<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>' );
 						setTimeout("clearinfo();", 3000);
 					},
 					error: function ( data, status, e ) {
 						alert( 'Fail sort role: '+e );
 					}
 				});
-				/*$(".form_result").load("<?php echo site_url($this->uri->segment(1)."/".$this->uri->segment(2)); ?>/ajax_sort?return=true&"+order);
-				setTimeout("clearinfo();", 3000);*/
 			}
 		});
 		$("#sortable tbody").disableSelection();

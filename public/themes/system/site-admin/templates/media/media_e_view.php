@@ -3,7 +3,11 @@
 	<h1><?php echo sprintf( lang( 'media_edit_file' ), $row->file_name ); ?></h1>
 	
 	<?php echo form_open( '', array( 'class' => 'form-horizontal' ) ); ?> 
-		<div class="form-result"><?php if ( isset( $form_status ) ) {echo $form_status;} ?> </div>
+		<div class="form-result">
+			<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+			<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+			<?php } ?> 
+		</div>
 		
 		<div class="row-fluid">
 			<div class="span6">
@@ -160,12 +164,12 @@
 			dataType: 'json',
 			success: function( data ) {
 				if ( data.result == true ) {
-					$('.form-result').html(data.form_status);
+					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					$('.media-screenshot-placeholder').html('<img src="'+data.croped_img+'" alt="" id="media-image" />');
 					init_jcrop();
 					setTimeout('clear_status()', '3000');
 				} else {
-					$('.form-result').html(data.form_status);
+					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					setTimeout('clear_status()', '10000');
 					$('body,html').animate({scrollTop: 0}, 800);
 				}
@@ -191,12 +195,12 @@
 			dataType: 'json',
 			success: function( data ) {
 				if ( data.result == true ) {
-					$('.form-result').html(data.form_status);
+					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					$('.media-screenshot-placeholder').html('<img src="'+data.resized_img+'" alt="" id="media-image" />');
 					init_jcrop();
 					setTimeout('clear_status()', '3000');
 				} else {
-					$('.form-result').html(data.form_status);
+					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					setTimeout('clear_status()', '10000');
 					$('body,html').animate({scrollTop: 0}, 800);
 				}

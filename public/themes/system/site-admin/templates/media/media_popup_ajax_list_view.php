@@ -14,8 +14,8 @@
 		</tr>
 	</tfoot>
 	<tbody>
-	<?php if ( isset( $list_item['items'] ) && is_array( $list_item['items'] ) ): ?> 
-	<?php foreach ( $list_item['items'] as $row ): ?> 
+	<?php if ( isset( $list_item['items'] ) && is_array( $list_item['items'] ) ) { ?> 
+	<?php foreach ( $list_item['items'] as $row ) { ?> 
 		<tr>
 			<td>
 				<?php if ( file_exists( $row->file ) ) {
@@ -74,11 +74,11 @@
 				<?php unset( $insert_tag, $is_image, $action_module_plug ); ?> 
 			</td>
 		</tr>
-	<?php endforeach; ?> 
-	<?php else: ?> 
+	<?php } //endforeach; ?> 
+	<?php } else { ?> 
 		<tr>
 			<td colspan="3"><?php echo lang( 'admin_nodata' ); ?></td>
 		</tr>
-	<?php endif; ?> 
+	<?php } //endif; ?> 
 	</tbody>
 </table>

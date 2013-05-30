@@ -80,11 +80,12 @@ class config extends admin_controller {
 		
 		// load session
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// load config to form
 		$this->db->where( 'config_core', '1' );
@@ -183,16 +184,24 @@ class config extends admin_controller {
 			$this->form_validation->set_rules( 'comment_perpage', 'lang:config_comment_perpage', 'trim|required|integer|xss_clean' );
 			$this->form_validation->set_rules( 'comment_admin_notify_emails', 'lang:config_comment_admin_notify_emails', 'trim|required|valid_email|xss_clean' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save config
 				$result = $this->config_model->save( $data );
 				
 				if ( $result === true ) {
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/config' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			

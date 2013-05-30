@@ -10,7 +10,9 @@
 </div>
 
 <?php echo form_open( 'site-admin/siteman/multiple' ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
 	<table class="table table-striped table-hover">
 		<thead>
@@ -39,7 +41,7 @@
 			<?php if ( isset( $list_websites['items'] ) && is_array( $list_websites['items'] ) ) { ?> 
 			<?php foreach ( $list_websites['items'] as $row ) { ?> 
 			<tr>
-				<td class="check-column"><?php echo form_checkbox( 'id[]', $row->site_id); ?></td>
+				<td class="check-column"><?php echo form_checkbox('id[]', $row->site_id, false, ($row->site_id == '1' ? 'disabled="disabled"' : '')); ?></td>
 				<td><?php echo $row->site_name; ?></td>
 				<td><?php echo $row->site_domain; ?></td>
 				<td><span class="<?php if ( $row->site_status == '1' ) {echo 'icon-ok';} elseif ( $row->site_status == '0' ) {echo 'icon-remove';} ?>"></span></td>

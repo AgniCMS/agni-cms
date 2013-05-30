@@ -66,7 +66,9 @@
 		<h3><?php echo lang( 'media_files' ); ?></h3>
 		
 		<?php echo form_open( 'site-admin/media/process_bulk' ); ?> 
-			<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+			<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+			<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+			<?php } ?> 
 
 			<div class="list-items-placeholder">
 				<?php $this->load->view( 'site-admin/templates/media/media_ajax_list_view' ); ?> 

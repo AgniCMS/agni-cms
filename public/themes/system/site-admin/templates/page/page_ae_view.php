@@ -1,7 +1,9 @@
 <h1><?php echo ( $this->uri->segment(3) == 'add' ? lang( 'post_add_page' ) : lang( 'post_edit_page' ) ); ?></h1>
 
 <?php echo form_open(); ?>
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?>
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
 	<div id="tabs" class="page-tabs post-article-tabs">
 		<ul>

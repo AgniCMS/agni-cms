@@ -1,7 +1,9 @@
 <h1><?php echo lang( 'modules_add' ); ?></h1>
 
 <?php echo form_open_multipart( '', array( 'class' => 'form-horizontal' ) ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
 	<div class="page-add-edit page-add-module">
 	

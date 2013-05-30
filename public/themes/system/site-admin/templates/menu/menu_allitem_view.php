@@ -159,7 +159,7 @@
 				if ( data.result == true ) {
 					window.location.reload();// reload menu item list
 				} else {
-					$('.form-result').html(data.form_status);
+					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					setTimeout( "$('.form-result').html('')", 3000 );
 					$('body,html').animate({scrollTop: 0}, 800);
 				}
@@ -184,7 +184,7 @@
 				if ( data.result == true ) {
 					window.location.reload();// reload menu item list
 				} else {
-					$('.form-result').html(data.form_status);
+					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					setTimeout( "$('.form-result').html('')", 3000 );
 					$('body,html').animate({scrollTop: 0}, 800);
 				}
@@ -207,7 +207,7 @@
 				if ( data.result == true ) {
 					window.location.reload();// reload menu item list
 				} else {
-					$('.form-result').html(data.form_status);
+					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					setTimeout( "$('.form-result').html('')", 3000 );
 					$('body,html').animate({scrollTop: 0}, 800);
 				}

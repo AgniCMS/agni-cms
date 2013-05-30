@@ -1,7 +1,11 @@
 <div class="admin-dashboard">
 	
 	
-	<?php if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_viewall_perm' ) ): ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
+	
+	<?php if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_viewall_perm' ) ) { ?> 
 	<div class="admin-block">
 		<h3><?php echo anchor( 'site-admin/article', lang( 'admin_block_articles' ) ); ?></h3>
 		<?php
@@ -44,22 +48,22 @@
 				if ( $i > 10 ) {
 					break;
 				}
-			}
+			} // endforeach;
 		?> 
 			</tbody>
 		</table>
 		<?php
-		}
+		} // endif; is_array
 		?> 
 		<?php
 		// clear unuse var.
 		unset( $list_item, $i, $row );
 		?> 
 	</div>
-	<?php endif; ?> 
+	<?php } //endif; ?> 
 	
 	
-	<?php if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_viewall_perm' ) ): ?> 
+	<?php if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_viewall_perm' ) ) { ?> 
 	<div class="admin-block">
 		<h3><?php echo anchor( 'site-admin/comment', lang( 'admin_block_comment' ) ); ?></h3>
 		<p>
@@ -74,13 +78,13 @@
 		</p>
 		<?php 
 		// clear unuse var.
-		unset( $count_comment );
+		unset($count_comment);
 		?> 
 	</div>
-	<?php endif; ?> 
+	<?php } //endif; ?> 
 	
 	
-	<?php if ( $this->account_model->check_admin_permission( 'account_perm', 'account_manage_perm' ) ): ?> 
+	<?php if ( $this->account_model->check_admin_permission( 'account_perm', 'account_manage_perm' ) ) { ?> 
 	<div class="admin-block">
 		<h3><?php echo anchor( 'site-admin/account', lang( 'admin_block_users' ) ); ?></h3>
 		<p>
@@ -90,7 +94,7 @@
 			?> 
 		</p>
 	</div>
-	<?php endif; ?> 
+	<?php } //endif; ?> 
 	
 	
 </div>

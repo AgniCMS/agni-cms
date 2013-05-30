@@ -17,7 +17,11 @@
 </div>
 
 <div class="debug"></div>
-<div class="form-result"><?php if ( isset( $form_status ) ) {echo $form_status;} ?></div>
+<div class="form-result">
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
+</div>
 
 <?php echo form_open('', array( 'class' => 'blocks-management' ) ); ?> 
 	
@@ -95,7 +99,9 @@
 					dataType: 'json',
 					success: function(data) {
 						// done, reload
-						$('.form-result').html(data.form_status);
+						if ( data.form_status != '' ) {
+							$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
+						}
 						if ( data.result == true ) {
 							// reload blocks in area using ajax.
 							ajax_load_area( area_name );

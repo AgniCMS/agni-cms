@@ -6,7 +6,9 @@
 
 
 <?php echo form_open( 'site-admin/updater', array( 'class' => 'form-horizontal' ) ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 	
 	<div class="control-group">
 		<div class="control-label"><?php echo lang( 'updater_rewrite_method' ); ?>:</div>

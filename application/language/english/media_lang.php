@@ -7,6 +7,7 @@ $lang['media_close'] = 'Close';
 $lang['media_copy'] = 'Copy';
 $lang['media_crop_memory_exceed_limit'] = 'This image use exceed memory limit for crop (%d &lt; %d), resize image fail.';
 $lang['media_crop_selected_area'] = 'Crop selected area';
+$lang['media_crop_success'] = 'Crop successfully.';
 $lang['media_description'] = 'Description';
 $lang['media_edit_file'] = 'Editing file: %s';
 $lang['media_file_name'] = 'File name';

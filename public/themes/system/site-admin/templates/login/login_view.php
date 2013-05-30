@@ -10,7 +10,11 @@
 							<h1><?php echo config_load( 'site_name' ); ?></h1>
 							<?php echo form_open( current_url().( isset( $go_to ) ? '?rdr='.$go_to : '' ), array( 'onsubmit' => 'return ajax_admin_login($(this));', 'class' => 'form-full-width' ) ); ?> 
 								<noscript><div class="txt_error alert alert-error"><?php echo lang( 'account_please_enable_javascript' ); ?></div></noscript>
-								<div class="form-status"><?php if ( isset( $form_status ) ) {echo $form_status;} ?></div>
+								<div class="form-status">
+									<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+									<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+									<?php } ?> 
+								</div>
 
 								<div class="control-group">
 									<div class="controls">

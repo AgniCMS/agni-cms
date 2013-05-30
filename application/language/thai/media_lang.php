@@ -7,6 +7,7 @@ $lang['media_close'] = 'ปิด';
 $lang['media_copy'] = 'ทำซ้ำ';
 $lang['media_crop_memory_exceed_limit'] = 'การครอปรูปนี้ใช้หน่วยความจำมากเกินกว่าที่กำหนดไว้ (%d &lt; %d) ไม่สามารถดำเนินการต่อได้.';
 $lang['media_crop_selected_area'] = 'ครอปบริเวณที่เลือก';
+$lang['media_crop_success'] = 'ครอปภาพสำเร็จแล้ว.';
 $lang['media_description'] = 'รายละเอียด';
 $lang['media_edit_file'] = 'แก้ไขไฟล์ %s';
 $lang['media_file_name'] = 'ชื่อไฟล์';

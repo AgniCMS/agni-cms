@@ -8,7 +8,9 @@
 </div>
 
 <?php echo form_open( 'site-admin/menu/process_group' ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
 	<table class="table table-striped table-hover">
 		<thead>

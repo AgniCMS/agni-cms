@@ -121,16 +121,24 @@ class article extends admin_controller {
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save result
 				$result = $this->posts_model->add( $data_posts, $data_post_revision, $data_tax_index );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/article' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $result . '</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -336,7 +344,13 @@ class article extends admin_controller {
 		// if selected post id is not exists.
 		if ( $row == null ) {
 			$this->load->library( 'session' );
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">' . $this->lang->line( 'post_there_is_no_selected_article' ) . '</div>' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('post_there_is_no_selected_article')
+				)
+			);
 			redirect( 'site-admin/article' );
 		}
 		
@@ -487,16 +501,24 @@ class article extends admin_controller {
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save result
 				$result = $this->posts_model->edit( $data_posts, $data_post_revision, $data_tax_index, $data );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/article' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $result . '</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -548,11 +570,12 @@ class article extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// list item
 		$output['list_item'] = $this->posts_model->list_item( 'admin' );

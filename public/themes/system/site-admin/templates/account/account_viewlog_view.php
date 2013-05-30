@@ -1,7 +1,9 @@
 <h1><?php echo lang( 'account_view_logins' ); ?> : <?php echo (isset( $account_username ) ? $account_username : '' ); ?></h1>
 
 <?php echo form_open( 'site-admin/account/delete_log/'.$account_id ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 	
 	<table class="table table-striped table-hover">
 		<thead>

@@ -61,18 +61,26 @@ class menu extends admin_controller {
 			$this->form_validation->set_rules( 'mg_name', 'lang:menu_group_name', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$result = $this->menu_model->add_group( $data );
 				
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					
 					redirect( 'site-admin/menu' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -125,10 +133,11 @@ class menu extends admin_controller {
 			
 			if ( $this->form_validation->run() == false ) {
 				$output['result'] = false;
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 				
 				// log error in ajax help developer found the problem easier.
-				log_message( 'error', $output['form_status'] );
+				log_message( 'error', $output['form_status_message'] );
 			} else {
 				// 
 				$result = $this->menu_model->add_item( $data );
@@ -137,7 +146,8 @@ class menu extends admin_controller {
 					$output['result'] = true;
 				} else {
 					$output['result'] = false;
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -361,16 +371,24 @@ class menu extends admin_controller {
 			$this->form_validation->set_rules( 'mg_name', 'lang:menu_group_name', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$result = $this->menu_model->edit_group( $data );
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/menu' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -401,11 +419,12 @@ class menu extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// list menu group
 		$output['list_group'] = $this->menu_model->list_group();

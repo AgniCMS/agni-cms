@@ -2,7 +2,9 @@
 
 
 <?php echo form_open( 'site-admin/media/move_file', array( 'class' => 'form-inline' ) ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
 	<div class="page-add-edit">
 		<?php if ( isset( $files ) && is_array( $files ) && !empty( $files ) ) { ?> 

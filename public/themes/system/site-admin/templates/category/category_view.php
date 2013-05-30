@@ -9,7 +9,9 @@
 </div>
 
 <?php echo form_open( 'site-admin/category/process_bulk'); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
 	<div class="row-fluid">
 		<div class="span8">

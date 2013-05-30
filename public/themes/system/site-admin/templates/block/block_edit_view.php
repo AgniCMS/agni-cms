@@ -21,7 +21,9 @@
 
 	<?php echo form_open(); ?> 
 	
-		<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+		<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+		<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+		<?php } ?> 
 		<input type="hidden" name="block_id" value="<?php echo $row->block_id; ?>" />
 
 		<div class="control-group">

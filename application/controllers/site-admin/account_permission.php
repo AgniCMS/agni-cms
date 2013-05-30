@@ -37,11 +37,12 @@ class account_permission extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		$output['list_permissions'] = $this->permission_model->fetch_permissions();
 		$output['list_permissions_check'] = $this->permission_model->list_permissions_check();
@@ -74,11 +75,12 @@ class account_permission extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// get module data -----------------------------------------------------------------------------------------------------------------
 		$data['module_system_name'] = $module_system_name;
@@ -146,7 +148,13 @@ class account_permission extends admin_controller {
 		
 		// set success msg and send back
 		$this->load->library( 'session' );
-		$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+		$this->session->set_flashdata(
+			'form_status',
+			array(
+				'form_status' => 'success',
+				'form_status_message' => $this->lang->line('admin_saved')
+			)
+		);
 		
 		// go back
 		$this->load->library( 'user_agent' );
