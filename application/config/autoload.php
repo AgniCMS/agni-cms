@@ -96,7 +96,7 @@ $autoload['config'] = array( 'agni' );
 |
 */
 
-$autoload['language'] = array( 'account' );
+$autoload['language'] = array( 'account', 'frontend' );
 
 
 /*

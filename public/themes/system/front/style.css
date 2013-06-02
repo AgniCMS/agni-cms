@@ -78,29 +78,9 @@ body {
 .block-corebreadcrumb {
 	font-size: 12px;
 }
-.block-corebreadcrumb ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-.block-corebreadcrumb ul:after {
-	clear: both;
-	content: '';
-	display: table;
-}
-.block-corebreadcrumb ul li {
-	float: left;
-	margin: 0 5px 0 0;
-	padding: 0;
-}
-.block-corebreadcrumb ul li:before {
-	content: ' > ';
-}
-.block-corebreadcrumb ul li:first-child:before {
-	content: '';
-}
-.block-corebreadcrumb ul li:last-child a {
-	color: #555;
+.block-corebreadcrumb ul li.active a {
+	color: #999;
+	text-decoration: none;
 }
 
 

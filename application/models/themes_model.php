@@ -647,9 +647,10 @@ class themes_model extends CI_Model {
 	/**
 	 * render_area
 	 * @param string $area_name
+	 * @param mixed $attributes send values as attirbutes from controller, view
 	 * @return string 
 	 */
-	function render_area( $area_name = '' ) {
+	function render_area($area_name = '', $attributes = '') {
 		// load widget class
 		$this->load->helper( 'widget' );
 		
@@ -736,7 +737,7 @@ class themes_model extends CI_Model {
 					if ( file_exists( config_item( 'modules_uri' ).$row->block_file ) ) {
 						$output .= '<div class="each-block block-id-'.$row->block_id.' block-'.$row->block_name.'">';
 						ob_start();
-						widget::run( $row->block_name, $row->block_file, $row->block_values, $row );
+						widget::run( $row->block_name, $row->block_file, $row->block_values, $row, $attributes );
 						$output .= ob_get_contents();
 						ob_end_clean();
 						$output .= '</div>';

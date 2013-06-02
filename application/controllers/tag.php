@@ -51,18 +51,27 @@ class tag extends MY_Controller {
 			exit;
 		}
 		
-		/*$this->db->where( 't_uri_encoded', $uri );
-		$this->db->where( 'language', $this->lang->get_current_lang() );
-		$this->db->where( 't_type', 'tag' );
-		$query = $this->db->get( 'taxonomy_term_data' );
-		if ( $query->num_rows() <= 0 ) {
-			// not found category
-			$query->free_result();
-			show_404();
-			exit;
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		
+		// loop each category and all sub or tag
+		$segs = $this->uri->segment_array();
+		
+		foreach ( $segs as $segment ) {
+			$data['t_uri_encoded'] = $segment;
+			$data['language'] = $this->lang->get_current_lang();
+			$row_seg = $this->taxonomy_model->get_taxonomy_term_data_db( $data );
+			unset($data);
+			
+			if ($row_seg != null) {
+				$breadcrumb[] = array('text' => $row_seg->t_name, 'url' => 'tag/' . $row_seg->t_uris);
+			}
 		}
-		$row = $query->row();
-		$query->free_result();*/
+		
+		$output['breadcrumb'] = $breadcrumb;
+		$row_seg = null;
+		unset($breadcrumb, $row_seg);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		
 		// set cat (tag) object for use in views
 		$output['cat'] = $row;

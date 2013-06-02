@@ -259,6 +259,32 @@ class post extends MY_Controller {
 			show_404();
 		}
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		
+		// loop each category and all sub or tag
+		$segs = $this->uri->segment_array();
+		
+		foreach ( $segs as $segment ) {
+			$data['t_uri_encoded'] = $segment;
+			$data['language'] = $this->lang->get_current_lang();
+			$row_seg = $this->taxonomy_model->get_taxonomy_term_data_db( $data );
+			unset($data);
+			
+			$last_taxterm_uri = '';
+			if ($row_seg != null) {
+				$breadcrumb[] = array('text' => $row_seg->t_name, 'url' => $row_seg->t_uris);
+				$last_taxterm_uri = $row_seg->t_uris;
+			}
+		}
+		
+		$breadcrumb[] = array('text' => $row->post_name, 'url' => $last_taxterm_uri . '/' . $row->post_uri_encoded);
+		
+		$output['breadcrumb'] = $breadcrumb;
+		$row_seg = null;
+		unset($breadcrumb, $row_seg);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// set row for custom use
 		$output['row'] = $row;
 		
