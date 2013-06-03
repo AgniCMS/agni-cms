@@ -703,11 +703,11 @@ class posts_model extends CI_Model {
 	 */
 	function modify_content( $content = '', $post_type = '' ) {
 		if ($this->modules_plug->has_filter('post_modifybody_value')) {
-			// modify content by core here.
-			
-		} else {
 			// modify content by plugin
 			$content = $this->modules_plug->do_filter( 'post_modifybody_value', $content, $post_type );
+		} else {
+			// modify content by core here.
+			
 		}
 		
 		// done
