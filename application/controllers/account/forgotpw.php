@@ -24,6 +24,13 @@ class forgotpw extends MY_Controller {
 	
 	
 	function index() {
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_forget_userpass'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		$output['plugin_captcha'] = $this->modules_plug->do_filter( 'account_show_captcha' );
 		
 		// submitted email to reset password

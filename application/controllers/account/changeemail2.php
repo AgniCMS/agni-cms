@@ -31,6 +31,13 @@ class changeemail2 extends MY_Controller {
 	function index( $account_id = '', $confirm_code = '' ) {
 		$confirm_code = ( isset( $confirm_code[0] ) ? $confirm_code[0] : '' );
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_change_email'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		if ( is_numeric( $account_id ) && $confirm_code != null ) {
 			if ( $confirm_code == '0' ) {
 				// cancel, delete confirm code and new password from db

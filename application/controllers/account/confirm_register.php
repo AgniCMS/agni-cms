@@ -30,6 +30,13 @@ class confirm_register extends MY_Controller {
 	
 	
 	function index( $username = '', $confirm_code = '' ) {
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_confirm_register'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// check in db
 		$this->db->where( 'account_username', $username );
 		$this->db->where( 'account_confirm_code', $confirm_code );

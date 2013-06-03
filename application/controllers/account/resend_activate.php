@@ -24,6 +24,13 @@ class resend_activate extends MY_Controller {
 	
 	
 	function index() {
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_resend_verify_email'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// method post ( re-send action )
 		if ( $this->input->post() ) {
 			$data['account_email'] = trim( $this->input->post( 'account_email' ) );

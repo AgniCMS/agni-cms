@@ -24,6 +24,13 @@ class login extends MY_Controller {
 	
 	
 	function index() {
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_login'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// set login redirect referrer (when done)
 		$this->load->library( 'user_agent' );
 		if ( $this->agent->is_referral() && $this->agent->referrer() != current_url() ) {

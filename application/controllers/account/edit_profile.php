@@ -55,6 +55,13 @@ class edit_profile extends MY_Controller {
 		// is member login?
 		if ( !$this->account_model->is_member_login() ) {redirect( site_url() );}
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_edit_profile'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// load configurations
 		$cfg = $this->config_model->load( array( 'allow_avatar', 'avatar_size', 'avatar_allowed_types' ) );
 		$output['allow_avatar'] = $cfg['allow_avatar']['value'];
