@@ -73,35 +73,58 @@ class MY_Loader extends MX_Loader {
 	 * @param string $use_theme
 	 * @return mixed
 	 */
-	public function view($view, $vars = array(), $return = FALSE, $use_theme = '') {
-		$this->config->load( 'agni' );
-		$view_path = config_item( 'agni_theme_path' );
-		if ( $use_theme == null )
-			$use_theme = $this->theme_system_name;// ดึงจาก MY_Controller, admin_controller .
-		$default_theme = 'system';// ห้ามแก้.
+	public function view($view, $vars = array(), $return = false, $use_theme = '') {
+		$this->config->load('agni');
 		
-		$this->_ci_view_paths = array($view_path => TRUE);
+		// set theme path
+		$view_path = config_item('agni_theme_path');
+		
+		// if use theme variable is null
+		if ($use_theme == null) {
+			$use_theme = $this->theme_system_name;// get theme system name from MY_Controller, admin_controller .
+		}
+		
+		$default_theme = 'system';// no change.
+		
+		$this->_ci_view_paths = array($view_path => true);
 		$ci_view = $view;
+		
+		// load library
+		$this->load->library('user_agent');
 			
-		if ( file_exists( $view_path.$use_theme.'/'.$view.'.php' ) ) {
-			// มองหาใน public/themes/theme_name/view_name.php แล้วเจอ
+		if (file_exists($view_path.$use_theme.'/'.$view.'.php')) {
+			// found in public/themes/theme_name/view_name.php
 			$ci_view = $use_theme.'/'.$view;
-		} elseif ( file_exists( $view_path.$default_theme.'/'.$view.'.php' ) ) {
-			// มองหาใน public/themes/system/view_name.php แล้วเจอ
-			$this->_ci_view_paths = array($view_path.$default_theme.'/' => TRUE);
+		} elseif (file_exists($view_path.$default_theme.'/'.$view.'.php')) {
+			// found in public/themes/system/view_name.php
+			$this->_ci_view_paths = array($view_path.$default_theme.'/' => true);
 			$ci_view = $view;
-		} elseif ( file_exists( $view_path.$use_theme.'/modules/'.$this->_module.'/'.$view.'.php' ) ) {
-			// มองหาใน public/themes/theme_name/modules/module_name/view_name.php แล้วเจอ
-			$this->_ci_view_paths = array( $view_path.$use_theme.'/modules/'.$this->_module.'/' => TRUE );
+		} elseif (file_exists($view_path.$use_theme.'/modules/'.$this->_module.'/'.$view.'.php')) {
+			// found in public/themes/theme_name/modules/module_name/view_name.php
+			$this->_ci_view_paths = array( $view_path.$use_theme.'/modules/'.$this->_module.'/' => true);
 			$ci_view = $view;
 		} else {
-			// มองหาใน modules แล้วใช้จากตรงนั้นแทน
-			list( $path, $view ) = Modules::find( $view, $this->_module, 'views/' );
-			$this->_ci_view_paths = array( $path => TRUE ) + $this->_ci_view_paths;
+			// found in modules
+			list($path, $view) = Modules::find($view, $this->_module, 'views/');
+			$this->_ci_view_paths = array($path => true) + $this->_ci_view_paths;
 			$ci_view = $view;
 		}
 		
-		unset( $view_path, $use_theme, $default_theme );
+		// add mobile theme support -------------------------------------------------------------------------------------------------------
+		if ($this->agent->is_mobile() === true) {
+			if (file_exists($view_path.$use_theme.'/mobile/'.$view.'.php')) {
+				// found in public/themes/theme_name/mobile/view_name.php
+				$ci_view = $use_theme.'/mobile/'.$view;
+			} elseif (file_exists($view_path.$use_theme.'/mobile/modules/'.$this->_module.'/'.$view.'.php')) {
+				// found in public/themes/theme_name/mobile/modules/module_name/view_name.php
+				$this->_ci_view_paths = array( $view_path.$use_theme.'/mobile/modules/'.$this->_module.'/' => true);
+				$ci_view = $view;
+			}
+		}
+		// end add mobile theme support -------------------------------------------------------------------------------------------------
+		
+		unset($view_path, $use_theme, $default_theme);
+		
 		return $this->_ci_load(array('_ci_view' => $ci_view, '_ci_vars' => $this->_ci_object_to_array($vars), '_ci_return' => $return));
 	}// view
 	
