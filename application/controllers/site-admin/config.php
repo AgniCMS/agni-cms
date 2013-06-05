@@ -66,7 +66,7 @@ class config extends admin_controller {
 
 				echo '<div class="txt_info alert alert-info">'.lang('config_ftp_basepath_correct_should_see_application_modules_public_system_folders').'</div>';
 				foreach ( $files as $file ) {
-					echo str_replace('/', '', $file) . '<br />';
+					echo str_replace($basepath, '', $file) . '<br />';
 				}
 			} else {
 				echo '<div class="txt_error alert alert-error">'.lang('config_ftp_basepath_incorrect').'</div>';
