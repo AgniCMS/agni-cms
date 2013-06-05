@@ -51,6 +51,8 @@ $lang['media_upload_complete'] = 'Upload completed.';
 $lang['media_view_full_image'] = 'View full size';
 $lang['media_width'] = 'Width';
 $lang['media_you_are_moving_these_files_to'] = 'You are moving these file(s) to';
+$lang['media_you_have_no_permission_edit_others'] = 'คุณไม่ได้รับอนุญาตให้แก้ไขรายการของผู้อื่น.';
+$lang['media_you_have_no_permission_edit_yours'] = 'คุณไม่ได้รับอนุญาตให้แก้ไขรายการของคุณ.';
 
 /* permission */
 $lang['media_copy_perm'] = 'Copy file';

@@ -170,14 +170,35 @@ class comment extends MY_Controller {
 		// not found a comment.
 		if ( $row == null ) { redirect(); }
 		
-		// check permissions
-		if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_own_perm', $account_id ) && $row->account_id != $account_id ) {
-			if ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_other_perm', $account_id ) ) {
-				redirect();
-			}
-		} elseif ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_own_perm', $account_id ) && $row->account_id == $account_id ) {
+		// check permissions for both own and others---------------------------------------------------------------------------------
+		if ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm') === false && $row->account_id == $account_id) {
+			// user has NO permission to edit own and editing own.
+			unset($row, $account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_delete_yours')
+				)
+			);
 			redirect();
-		}
+		} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm') === false && $row->account_id != $account_id) {
+			// user has NO permission to edit others and editing others.
+			unset($row, $account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_delete_others')
+				)
+			);
+			redirect();
+		} 
+		// check permissions for both own and others---------------------------------------------------------------------------------
 		
 		// set value for confirm delete
 		$output['post_id'] = $row->post_id;
@@ -253,14 +274,35 @@ class comment extends MY_Controller {
 		// not found a comment.
 		if ( $row == null ) { redirect(); }
 		
-		// check permissions
-		if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_own_perm', $account_id ) && $row->account_id != $account_id ) {
-			if ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_other_perm', $account_id ) ) {
-				redirect();
-			}
-		} elseif ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_own_perm', $account_id ) && $row->account_id == $account_id ) {
+		// check permissions -------------------------------------------------------------------------------------------------------------------
+		if ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm') === false && $row->account_id == $account_id) {
+			// user has NO permission to edit own and editing own.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_edit_yours')
+				)
+			);
+			redirect();
+		} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm') === false && $row->account_id != $account_id) {
+			// user has NO permission to edit others and editing others.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_edit_others')
+				)
+			);
 			redirect();
 		}
+		// check permissions -------------------------------------------------------------------------------------------------------------------
 		
 		// set values for edit
 		$output['post_id'] = $row->post_id;

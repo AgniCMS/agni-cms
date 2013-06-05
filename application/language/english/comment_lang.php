@@ -33,6 +33,10 @@ $lang['comment_total_unapprove'] = 'Un-approve %d items';
 $lang['comment_unapprove'] = 'Un-approve';
 $lang['comment_user_wait_approve'] = 'Your comment was saved, You have to wait administrator moderate your comment before publish.';
 $lang['comment_yes'] = 'Yes';
+$lang['comment_you_have_no_permission_delete_others'] = 'You have no permission to delete others item.';
+$lang['comment_you_have_no_permission_delete_yours'] = 'You have no permission to delete your item.';
+$lang['comment_you_have_no_permission_edit_others'] = 'You have no permission to edit others item.';
+$lang['comment_you_have_no_permission_edit_yours'] = 'You have no permission to edit your item.';
 
 /* permission */
 $lang['comment_approve_unapprove_perm'] = 'Approve/Un-approve comment';

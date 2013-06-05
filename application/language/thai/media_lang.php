@@ -51,6 +51,8 @@ $lang['media_upload_complete'] = 'อัพโหลดเรียบร้อ�
 $lang['media_view_full_image'] = 'ดูภาพเต็ม';
 $lang['media_width'] = 'กว้าง';
 $lang['media_you_are_moving_these_files_to'] = 'คุณกำลังย้ายไฟล์เหล่านี้ไปยัง';
+$lang['media_you_have_no_permission_edit_others'] = 'You have no permission to edit others item.';
+$lang['media_you_have_no_permission_edit_yours'] = 'You have no permission to edit your item.';
 
 /* permission */
 $lang['media_copy_perm'] = 'ทำซ้ำไฟล์';

@@ -96,18 +96,33 @@ class media extends admin_controller {
 			}
 			
 			// check permissions-----------------------------------------------------------
-			if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id != $my_account_id ) {
-				// this user has permission to edit own, but NOT editing own
-				if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) ) {
-					// this user has NOT permission to edit other's, but editing other's
-					unset( $row, $my_account_id );
-					redirect( 'site-admin' );
-				}
-			} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id == $my_account_id ) {
-				// this user has NOT permission to edit own, but editing own.
-				unset( $row, $my_account_id );
-				redirect( 'site-admin' );
-			}
+			if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
+				// user has NO permission to edit own and editing own.
+				unset($row, $my_account_id);
+				// flash error permission message
+				$this->load->library( 'session' );
+				$this->session->set_flashdata(
+					'form_status',
+					array(
+						'form_status' => 'error',
+						'form_status_message' => $this->lang->line('media_you_have_no_permission_edit_yours')
+					)
+				);
+				redirect('site-admin/media');
+			} elseif ($this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
+				// user has NO permission to edit others and editing others.
+				unset($row, $my_account_id);
+				// flash error permission message
+				$this->load->library( 'session' );
+				$this->session->set_flashdata(
+					'form_status',
+					array(
+						'form_status' => 'error',
+						'form_status_message' => $this->lang->line('media_you_have_no_permission_edit_others')
+					)
+				);
+				redirect('site-admin/media');
+			} 
 			// end check permissions-----------------------------------------------------------
 			
 			// if cropping image
@@ -264,17 +279,32 @@ class media extends admin_controller {
 			}
 			
 			// check permissions-----------------------------------------------------------
-			if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id != $my_account_id ) {
-				// this user has permission to edit own, but NOT editing own
-				if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) ) {
-					// this user has NOT permission to edit other's, but editing other's
-					unset( $row, $my_account_id );
-					redirect( 'site-admin' );
-				}
-			} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id == $my_account_id ) {
-				// this user has NOT permission to edit own, but editing own.
-				unset( $row, $my_account_id );
-				redirect( 'site-admin' );
+			if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
+				// user has NO permission to edit own and editing own.
+				unset($row, $my_account_id);
+				// flash error permission message
+				$this->load->library( 'session' );
+				$this->session->set_flashdata(
+					'form_status',
+					array(
+						'form_status' => 'error',
+						'form_status_message' => $this->lang->line('media_you_have_no_permission_edit_yours')
+					)
+				);
+				redirect('site-admin/media');
+			} elseif ($this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
+				// user has NO permission to edit others and editing others.
+				unset($row, $my_account_id);
+				// flash error permission message
+				$this->load->library( 'session' );
+				$this->session->set_flashdata(
+					'form_status',
+					array(
+						'form_status' => 'error',
+						'form_status_message' => $this->lang->line('media_you_have_no_permission_edit_others')
+					)
+				);
+				redirect('site-admin/media');
 			}
 			// end check permissions-----------------------------------------------------------
 			
@@ -432,17 +462,32 @@ class media extends admin_controller {
 		}
 		
 		// check permissions-----------------------------------------------------------
-		if ( $this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id != $my_account_id ) {
-			// this user has permission to edit own, but NOT editing own
-			if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_other_perm' ) ) {
-				// this user has NOT permission to edit other's, but editing other's
-				unset( $row, $my_account_id );
-				redirect( 'site-admin' );
-			}
-		} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_edit_own_perm' ) && $row->account_id == $my_account_id ) {
-			// this user has NOT permission to edit own, but editing own.
-			unset( $row, $my_account_id );
-			redirect( 'site-admin' );
+		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
+			// user has NO permission to edit own and editing own.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('media_you_have_no_permission_edit_yours')
+				)
+			);
+			redirect('site-admin/media');
+		} elseif ($this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
+			// user has NO permission to edit others and editing others.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('media_you_have_no_permission_edit_others')
+				)
+			);
+			redirect('site-admin/media');
 		}
 		// end check permissions-----------------------------------------------------------
 		
@@ -593,17 +638,14 @@ class media extends admin_controller {
 				if ( $row == null ) {continue;}
 				
 				// check permissions-----------------------------------------------------------
-				if ( $this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) && $row->account_id != $my_account_id ) {
-					// this user has permission to delete own, but NOT delete own
-					if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_delete_other_perm' ) ) {
-						// this user has NOT permission to delete other's, but deleting other's
-						unset( $row, $ids[$key] );
-						$cannot_move_some_files = true;
-						continue;
-					}
-				} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) && $row->account_id == $my_account_id ) {
-					// this user has NOT permission to delete own, but deleting own.
-					unset( $row, $ids[$key] );
+				if ($this->account_model->check_admin_permission('media_perm', 'media_delete_own_perm') === false && $row->account_id == $my_account_id) {
+					// user has NO permission to edit own and editing own.
+					unset($row, $my_account_id, $ids[$key]);
+					$cannot_move_some_files = true;
+					continue;
+				} elseif ($this->account_model->check_admin_permission('media_perm', 'media_delete_other_perm') === false && $row->account_id != $my_account_id) {
+					// user has NO permission to edit others and editing others.
+					unset($row, $my_account_id, $ids[$key]);
 					$cannot_move_some_files = true;
 					continue;
 				}
@@ -752,16 +794,13 @@ class media extends admin_controller {
 				if ( $row == null ) {continue;}
 				
 				// check permissions-----------------------------------------------------------
-				if ( $this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) && $row->account_id != $my_account_id ) {
-					// this user has permission to delete own, but NOT delete own
-					if ( !$this->account_model->check_admin_permission( 'media_perm', 'media_delete_other_perm' ) ) {
-						// this user has NOT permission to delete other's, but deleting other's
-						unset( $row );
-						continue;
-					}
-				} elseif ( !$this->account_model->check_admin_permission( 'media_perm', 'media_delete_own_perm' ) && $row->account_id == $my_account_id ) {
-					// this user has NOT permission to delete own, but deleting own.
-					unset( $row );
+				if ($this->account_model->check_admin_permission('media_perm', 'media_delete_own_perm') === false && $row->account_id == $my_account_id) {
+					// user has NO permission to edit own and editing own.
+					unset($row, $my_account_id);
+					continue;
+				} elseif ($this->account_model->check_admin_permission('media_perm', 'media_delete_other_perm') === false && $row->account_id != $my_account_id) {
+					// user has NO permission to edit others and editing others.
+					unset($row, $my_account_id);
 					continue;
 				}
 				// end check permissions-----------------------------------------------------------
