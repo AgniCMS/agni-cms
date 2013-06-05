@@ -1,4 +1,5 @@
 module plug action
+admin_core_controller_constructor = ทำงานที่ core controller constructure ของ admin ซึ่งเป็นจุดเริ่มต้นการทำงานทั้งระบบของฝั่ง admin ส่งค่า $this object ของ admin core controller เข้าไป
 admin_login_process = รับค่า $row object จาก db มาเพื่อใช้เรียก $row->field. action นี้ทำงานหลัง login สำเร็จแล้ว.
 
 

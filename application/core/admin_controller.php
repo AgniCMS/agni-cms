@@ -51,6 +51,9 @@ class admin_controller extends MY_Controller {
 		$this->theme_path = $this->base_url.config_item( 'agni_theme_path' ).$theme_system_name.'/';
 		$this->theme_system_name = $theme_system_name;
 		unset( $theme_system_name );
+		
+		// module plug working at admin start point
+		$this->modules_plug->do_action('admin_core_controller_constructor', $this);
 	}// __construct
 	
 	
