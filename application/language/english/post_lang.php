@@ -58,6 +58,7 @@ $lang['post_total_comment'] = '%d comments';
 $lang['post_unpublished'] = 'Unpublished';
 $lang['post_update_since'] = 'Update';
 $lang['post_use_default_setting'] = 'Use default setting';
+$lang['post_view_count'] = 'Views';
 $lang['post_yes'] = 'Yes';
 $lang['post_you_have_no_permission_edit_others'] = 'You have no permission to edit others item.';
 $lang['post_you_have_no_permission_edit_yours'] = 'You have no permission to edit your item.';

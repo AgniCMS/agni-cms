@@ -58,6 +58,7 @@ $lang['post_total_comment'] = '%d ความคิดเห็น';
 $lang['post_unpublished'] = 'เลิกเผยแพร่';
 $lang['post_update_since'] = 'อัพเดท';
 $lang['post_use_default_setting'] = 'ใช้การตั้งค่าหลัก';
+$lang['post_view_count'] = 'คนดู';
 $lang['post_yes'] = 'ใช่';
 $lang['post_you_have_no_permission_edit_others'] = 'คุณไม่ได้รับอนุญาตให้แก้ไขรายการของผู้อื่น.';
 $lang['post_you_have_no_permission_edit_yours'] = 'คุณไม่ได้รับอนุญาตให้แก้ไขรายการของคุณ.';

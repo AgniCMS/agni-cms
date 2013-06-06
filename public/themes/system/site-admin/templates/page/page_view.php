@@ -28,6 +28,7 @@
 				<th><?php echo anchor( current_url().'?orders=post_status&amp;sort='.$sort.'&amp;q='.$q, lang( 'post_status' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=theme_system_name&amp;sort='.$sort.'&amp;q='.$q, lang( 'admin_theme' ) ); ?></th>
 				<th><?php echo lang( 'post_date' ); ?></th>
+				<th><?php echo anchor(current_url().'?orders=view_count&amp;sort=' . $sort . '&amp;q=' . $q, lang('post_view_count')); ?></th>
 				<th></th>
 			</tr>
 		</thead>
@@ -39,6 +40,7 @@
 				<th><?php echo anchor( current_url().'?orders=post_status&amp;sort='.$sort.'&amp;q='.$q, lang( 'post_status' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=theme_system_name&amp;sort='.$sort.'&amp;q='.$q, lang( 'admin_theme' ) ); ?></th>
 				<th><?php echo lang( 'post_date' ); ?></th>
+				<th><?php echo anchor(current_url().'?orders=view_count&amp;sort=' . $sort . '&amp;q=' . $q, lang('post_view_count')); ?></th>
 				<th></th>
 			</tr>
 		</tfoot>
@@ -63,6 +65,7 @@
 					<?php echo lang( 'post_update_since' ); ?>: <?php echo gmt_date( 'Y-m-d H:i:s', $row->post_update_gmt ); ?><br />
 					<?php echo lang( 'post_publish' ); ?>: <?php echo gmt_date( 'Y-m-d H:i:s', $row->post_publish_date_gmt ); ?>
 				</td>
+				<td><?php echo $row->view_count; ?></td>
 				<td>
 					<?php if ( ( $this->account_model->check_admin_permission( 'post_page_perm', 'post_page_edit_own_perm' ) && $row->account_id == $my_account_id ) || ( $this->account_model->check_admin_permission( 'post_page_perm', 'post_page_edit_other_perm' ) && $row->account_id != $my_account_id ) ): ?>
 					<?php echo anchor( current_url().'/edit/'.$row->post_id, lang( 'admin_edit' ) ); ?>
@@ -72,7 +75,7 @@
 		<?php endforeach; ?> 
 		<?php else: ?> 
 			<tr>
-				<td colspan="7"><?php echo lang( 'admin_nodata' ); ?></td>
+				<td colspan="8"><?php echo lang( 'admin_nodata' ); ?></td>
 			</tr>
 		<?php endif; ?> 
 		</tbody>
