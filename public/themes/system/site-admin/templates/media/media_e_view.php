@@ -2,15 +2,17 @@
 	
 	<h1><?php echo sprintf( lang( 'media_edit_file' ), $row->file_name ); ?></h1>
 	
-	<?php echo form_open( '', array( 'class' => 'form-horizontal' ) ); ?> 
+	<?php echo form_open(); ?> 
 		<div class="form-result">
 			<?php if (isset($form_status) && isset($form_status_message)) { ?> 
 			<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
 			<?php } ?> 
 		</div>
 		
+	
+	
 		<div class="row-fluid">
-			<div class="span6">
+			<div class="span12">
 				<?php if (strtolower($row->file_ext) == '.jpg' || strtolower($row->file_ext) == '.jpeg' || strtolower($row->file_ext) == '.gif' || strtolower($row->file_ext) == '.png') { ?> 
 				<?php $media_type = 'image'; ?> 
 				
@@ -22,42 +24,51 @@
 					</div>
 				</div>
 				
-				
-				<div class="row-fluid editing-image-row">
-					<?php list( $width, $height ) = getimagesize( $row->file ); ?> 
+				<?php } else { ?> 
+					<?php echo $this->modules_plug->do_filter( 'media_review', $row->file_id ); ?> 
+				<?php } //endif; ?> 
+			</div>
+		</div><!--.row-fluid-->
+		
+	
+	
+		<div class="container">
+			<div class="row edit-image-row">
+				<?php list( $width, $height ) = getimagesize( $row->file ); ?> 
 					
-					<div class="span4">
-						<div class="row-fluid">
-							<label class="span2" for="resize-width"><?php echo lang( 'media_width' ); ?>: </label>
-							<div class="span10">
-								<input type="text" name="width" value="<?php echo $width; ?>" class="newwidth input-block-level" id="resize-width" />
-							</div>
+				<div class="span4">
+					<div class="row-fluid">
+						<label class="span2" for="resize-width"><?php echo lang( 'media_width' ); ?>: </label>
+						<div class="span10">
+							<input type="text" name="width" value="<?php echo $width; ?>" class="newwidth input-block-level" id="resize-width" />
 						</div>
 					</div>
-					
-					<div class="span4">
-						<div class="row-fluid">
-							<label class="span2" for="resize-height"><?php echo lang( 'media_height' ); ?>: </label>
-							<div class="span10">
-								<input type="text" name="height" value="<?php echo $height; ?>" class="newheight input-block-level" id="resize-height" />
-							</div>
+				</div>
+
+				<div class="span4">
+					<div class="row-fluid">
+						<label class="span2" for="resize-height"><?php echo lang( 'media_height' ); ?>: </label>
+						<div class="span10">
+							<input type="text" name="height" value="<?php echo $height; ?>" class="newheight input-block-level" id="resize-height" />
 						</div>
 					</div>
-					
-					<div class="span4">
-						<label class="checkbox inline">
-							<input type="checkbox" name="aspect_ratio" value="yes" checked="checked" class="resize-ratio" /><?php echo lang( 'media_aspect_ratio' ); ?>
-						</label>
-						
-						<button type="button" class="bb-button resize-image btn pull-right" onclick="ajax_resize( <?php echo $row->file_id; ?> );"><?php echo lang( 'media_resize_now' ); ?></button>
-						
-						<div class="clearfix"></div>
-					</div>
-					
+				</div>
+
+				<div class="span4">
+					<label class="checkbox inline">
+						<input type="checkbox" name="aspect_ratio" value="yes" checked="checked" class="resize-ratio" /><?php echo lang( 'media_aspect_ratio' ); ?>
+					</label>
+
+					<button type="button" class="bb-button resize-image btn pull-right" onclick="ajax_resize( <?php echo $row->file_id; ?> );"><?php echo lang( 'media_resize_now' ); ?></button>
+
+					<div class="clearfix"></div>
 				</div>
 				
-				
-				<div class="editing-image-row">
+			</div><!--.edit-image-row-->
+			
+			
+			<div class="row edit-image-crop-row">
+				<div class="span12">
 					<!--<strong>X1:</strong><span class="crop_x1"></span>
 					<strong>Y1:</strong><span class="crop_y1"></span>
 					<strong>X2:</strong><span class="crop_x2"></span>
@@ -73,54 +84,51 @@
 					<input type="hidden" name="crop_h" value="" class="input_crop_h" />
 					<button type="button" class="btn" onclick="ajax_crop( <?php echo $row->file_id; ?> );"><?php echo lang('media_crop_selected_area'); ?></button>
 				</div>
-				
-				<?php } else { ?> 
-					<?php echo $this->modules_plug->do_filter( 'media_review', $row->file_id ); ?> 
-				<?php } //endif; ?> 
-			</div>
-		
-			<div class="span6">
-				<div class="edit-info-column">
-					
-					<hr class="media-edit-seperate visible-phone visible-tablet" />
+			</div><!--.edit-image-row .edit-image-crop-row-->
+			
+			
+			<div class="row edit-info-row">
+				<div class="span12">
+					<div class="edit-info-column">
 
-					<div class="control-group">
-						<label class="control-label"><?php echo lang( 'media_upload_by' ); ?>: </label>
-						<div class="controls">
-							<?php echo $row->account_username; ?> 
+						<div class="control-group">
+							<label class="control-label"><?php echo lang( 'media_upload_by' ); ?>: </label>
+							<div class="controls">
+								<?php echo $row->account_username; ?> 
+							</div>
 						</div>
-					</div>
 
-					<div class="control-group">
-						<label class="control-label" for="media_name"><?php echo lang( 'media_name' ); ?>: </label>
-						<div class="controls">
-							<input type="text" name="media_name" value="<?php echo $media_name; ?>" maxlength="255" class="input-block-level" id="media_name" />
+						<div class="control-group">
+							<label class="control-label" for="media_name"><?php echo lang( 'media_name' ); ?>: </label>
+							<div class="controls">
+								<input type="text" name="media_name" value="<?php echo $media_name; ?>" maxlength="255" class="input-block-level" id="media_name" />
+							</div>
 						</div>
-					</div>
 
-					<div class="control-group">
-						<label class="control-label" for="media_description"><?php echo lang( 'media_description' ); ?>: </label>
-						<div class="controls">
-							<textarea name="media_description" cols="30" rows="7" class="input-block-level" id="media_description"><?php echo $media_description; ?></textarea>
+						<div class="control-group">
+							<label class="control-label" for="media_description"><?php echo lang( 'media_description' ); ?>: </label>
+							<div class="controls">
+								<textarea name="media_description" cols="30" rows="7" class="input-block-level" id="media_description"><?php echo $media_description; ?></textarea>
+							</div>
 						</div>
-					</div>
 
-					<div class="control-group">
-						<label class="control-label" for="media_keywords"><?php echo lang( 'media_keywords' ); ?>: </label>
-						<div class="controls">
-							<input type="text" name="media_keywords" value="<?php echo $media_keywords; ?>" maxlength="255" class="input-block-level" id="media_keywords" />
+						<div class="control-group">
+							<label class="control-label" for="media_keywords"><?php echo lang( 'media_keywords' ); ?>: </label>
+							<div class="controls">
+								<input type="text" name="media_keywords" value="<?php echo $media_keywords; ?>" maxlength="255" class="input-block-level" id="media_keywords" />
+							</div>
 						</div>
-					</div>
 
-					<div class="control-group">
-						<div class="controls">
-							<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
+						<div class="control-group">
+							<div class="controls">
+								<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
+							</div>
 						</div>
+
 					</div>
-				
 				</div>
-			</div>
-		</div>
+			</div><!--.edit-info-row-->
+		</div><!--.container-->
 	<?php echo form_close(); ?> 
 
 </div>

@@ -474,16 +474,27 @@ html, body {height: 100%;}
 
 
 
-.page-edit-media .edit-info-column {
+.page-edit-media .edit-info-row {
+	margin-bottom: 0;
+}
+.page-edit-media .edit-info-row .edit-info-column {
 	background: #eee;
 	border-radius: 5px;
-	padding: 5px;
+	padding: 10px;
 }
-.page-edit-media .editing-image-row {
-	margin: 0 0 10px;
+.page-edit-media .edit-image-crop-row {
+	margin-bottom: 20px;
+}
+.page-edit-media .edit-image-row {
+	margin-bottom: 10px;
 }
 .page-edit-media .image-container {
-	margin: 0 0 10px;
+	margin: 0 0 20px;
+}
+.page-edit-media .image-container img {
+	max-height: none;
+	max-width: none;
+	width: auto;
 }
 
 
