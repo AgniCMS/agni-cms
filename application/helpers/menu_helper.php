@@ -161,7 +161,7 @@ if ( !function_exists( 'show_menuitem_nested' ) ) {
 						}
 						break;
 					default:
-						if ( current_url() == site_url( $item->link_url ) ) {
+						if (rtrim(current_url(), '/') == rtrim(site_url($item->link_url), '/')) {
 							$output .= ' active current';
 						}
 						break;
