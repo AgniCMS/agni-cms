@@ -100,7 +100,7 @@
 	function clear_status() {
 		$('#upload-msg').html('');
 		// reload list
-		$.get( site_url+'site-admin/media/popup', function(data) {
+		$.get( site_url+'site-admin/media/popup?<?php echo $this->input->server( 'QUERY_STRING' ); ?>', function(data) {
 			$('.list-items-placeholder').html(data);
 		});
 	}// clear_status
