@@ -78,13 +78,6 @@ class comment extends MY_Controller {
 				// send object to view for use.
 				$outval['comment'] = $comment;
 				
-				// show avatar url
-				if ( $comment->account_avatar != null ) {
-					$outval['comment_avatar'] = base_url().$comment->account_avatar;
-				} else {
-					$outval['comment_avatar'] = base_url().'public/images/default-avatar.png';
-				}
-				
 				// comment_body_value
 				$outval['comment_content'] = $this->comments_model->modify_content( $comment->comment_body_value );
 				
