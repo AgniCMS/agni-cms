@@ -614,9 +614,13 @@ class modules_model extends CI_Model {
 	 * load_admin_nav
 	 * @return string|null 
 	 */
-	function load_admin_nav() {
+	function load_admin_nav() 
+	{
+		set_site_id();
+		
 		// load enabled module
 		$this->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' );
+		$this->db->where('module_sites.site_id', SITE_ID);
 		$this->db->where( 'module_sites.module_enable', '1' );
 		$this->db->order_by( 'module_system_name', 'asc' );
 		
