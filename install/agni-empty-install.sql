@@ -279,10 +279,10 @@ CREATE TABLE IF NOT EXISTS `an_comments` (
 
 CREATE TABLE IF NOT EXISTS `an_comment_fields` (
   `comment_id` int(11) NOT NULL,
-  `field_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `field_value` text COLLATE utf8_unicode_ci,
+  `field_name` varchar(255) DEFAULT NULL,
+  `field_value` text,
   KEY `comment_id` (`comment_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `an_comment_fields`
@@ -652,10 +652,10 @@ CREATE TABLE IF NOT EXISTS `an_syslog` (
 
 CREATE TABLE IF NOT EXISTS `an_taxonomy_fields` (
   `tid` int(11) NOT NULL AUTO_INCREMENT,
-  `field_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `field_value` text COLLATE utf8_unicode_ci,
+  `field_name` varchar(255) DEFAULT NULL,
+  `field_value` text ,
   PRIMARY KEY (`tid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `an_taxonomy_fields`
