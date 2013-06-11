@@ -320,6 +320,27 @@
 			width: '100%',
 			theme : "advanced",
 			plugins: "inlinepopups",
+			schema: 'html5',
+			
+			// HTML5 formats
+			style_formats : [
+					{title : 'h1', block : 'h1'},
+					{title : 'h2', block : 'h2'},
+					{title : 'h3', block : 'h3'},
+					{title : 'h4', block : 'h4'},
+					{title : 'h5', block : 'h5'},
+					{title : 'h6', block : 'h6'},
+					{title : 'p', block : 'p'},
+					{title : 'div', block : 'div'},
+					{title : 'pre', block : 'pre'},
+					{title : 'section', block : 'section', wrapper: true, merge_siblings: false},
+					{title : 'article', block : 'article', wrapper: true, merge_siblings: false},
+					{title : 'blockquote', block : 'blockquote', wrapper: true},
+					{title : 'hgroup', block : 'hgroup', wrapper: true},
+					{title : 'aside', block : 'aside', wrapper: true},
+					{title : 'figure', block : 'figure', wrapper: true}
+			],
+			
 			theme_advanced_toolbar_align : "left",
 			theme_advanced_toolbar_location : "top",
 			theme_advanced_buttons1: "bold, italic , underline , strikethrough, forecolor, backcolor, link, unlink, image, removeformat, code",
@@ -344,7 +365,27 @@
 			// General options
 			theme : "advanced",
 			plugins : "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist",
-
+			schema: 'html5',
+			
+			// HTML5 formats
+			style_formats : [
+					{title : 'h1', block : 'h1'},
+					{title : 'h2', block : 'h2'},
+					{title : 'h3', block : 'h3'},
+					{title : 'h4', block : 'h4'},
+					{title : 'h5', block : 'h5'},
+					{title : 'h6', block : 'h6'},
+					{title : 'p', block : 'p'},
+					{title : 'div', block : 'div'},
+					{title : 'pre', block : 'pre'},
+					{title : 'section', block : 'section', wrapper: true, merge_siblings: false},
+					{title : 'article', block : 'article', wrapper: true, merge_siblings: false},
+					{title : 'blockquote', block : 'blockquote', wrapper: true},
+					{title : 'hgroup', block : 'hgroup', wrapper: true},
+					{title : 'aside', block : 'aside', wrapper: true},
+					{title : 'figure', block : 'figure', wrapper: true}
+			],
+			
 			// Theme options
 			theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,formatselect,fontselect,fontsizeselect",
 			theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,|,forecolor,backcolor",
