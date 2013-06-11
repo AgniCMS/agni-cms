@@ -37,6 +37,11 @@ class index extends MY_Controller {
 	
 	
 	function index() {
+		// if there is custom home module plug.
+		if ($this->modules_plug->has_action('front_home_controller')) {
+			return $this->modules_plug->do_action('front_home_controller');
+		}
+		
 		// get frontpage category from config
 		$fp_category = $this->config_model->load_single( 'content_frontpage_category', $this->lang->get_current_lang() );
 		
