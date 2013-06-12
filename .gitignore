@@ -33,6 +33,7 @@ application/config/database.php
 */logs/log-*.php
 public/upload/avatar/*
 public/upload/avatar/!index.html
+public/upload/media/*
 public/upload/media/*/*
 public/upload/media/*/!index.html
 public/upload/unzip/*

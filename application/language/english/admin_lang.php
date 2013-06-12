@@ -1,9 +1,12 @@
 <?php
 
 $lang['admin_add'] = 'Add';
+$lang['admin_agnicms'] = 'Agni CMS';
+$lang['admin_cancel'] = 'Cancel';
 $lang['admin_credit'] = 'Powered by <a href="http://www.agnicms.org">Agni CMS</a>';
 $lang['admin_delete'] = 'Delete';
 $lang['admin_edit'] = 'Edit';
+$lang['admin_edit_source'] = 'Edit source';
 $lang['admin_home'] = 'Admin home';
 $lang['admin_html_allowed'] = 'HTML allowed.';
 $lang['admin_meta_description'] = 'Meta description';
@@ -42,6 +45,7 @@ $lang['admin_nav_media_mgr'] = 'Media manager';
 $lang['admin_nav_menu'] = 'Menu';
 $lang['admin_nav_menuandblock'] = 'Menu &amp; Block';
 $lang['admin_nav_modules_manager'] = 'Modules manager';
+$lang['admin_nav_multisite_manager'] = 'Multi site manager';
 $lang['admin_nav_pages'] = 'Pages';
 $lang['admin_nav_permissions'] = 'Permissions';
 $lang['admin_nav_roles'] = 'Roles';

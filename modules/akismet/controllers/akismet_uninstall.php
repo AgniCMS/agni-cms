@@ -9,35 +9,48 @@
  *
  */
  
-class akismet_uninstall extends admin_controller {
+class akismet_uninstall extends admin_controller 
+{
 	
 	
 	public $module_system_name = 'akismet';
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function index() {
-		// delete config name
-		$this->db->where( 'config_name', 'akismet_api' );
-		$this->db->delete( 'config' );
+	public function index() 
+	{
+		$site_id = trim($this->input->get('site_id'));
+		if ($site_id == '1') {
+			$site_id = '';
+		} else {
+			$site_id .= '_';
+		}
 		
-		// update modules install to 0
-		$this->db->set( 'module_install', '0' );
-		$this->db->where( 'module_system_name', $this->module_system_name );
-		$this->db->update( 'modules' );
+		// delete config name -----------------------------------------------------------------------------------------------------------------
+		$this->db->where('config_name', 'akismet_api');
+		$this->db->delete($this->db->dbprefix($site_id . 'config'));
+		// delete config name -----------------------------------------------------------------------------------------------------------------
 		
-		// disable too
-		$this->load->model( 'modules_model' );
-		$this->modules_model->do_deactivate( $this->module_system_name );
+		// disable module is the last step and required.
+		$this->load->model('modules_model');
+		$this->modules_model->do_deactivate($this->module_system_name, $this->input->get('site_id'));
 		
 		// done
-		$this->load->library( 'session' );
-		$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'akismet_uninstall_completed' ).'</div>' );
-		redirect( 'site-admin/module' );
+		$this->load->library('session');
+		$this->session->set_flashdata(
+			'form_status',
+			array(
+				'form_status' => 'success',
+				'form_status_message' => $this->lang->line('akismet_uninstall_completed')
+			)
+		);
+		
+		redirect('site-admin/module');
 	}// index
 	
 	

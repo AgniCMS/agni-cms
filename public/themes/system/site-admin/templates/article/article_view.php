@@ -24,18 +24,20 @@
 			} ?></select>
 	</div>
 	<div class="cmd-right">
-		<form method="get" class="search">
+		<form method="get" class="form-search">
 			<input type="text" name="q" value="<?php echo htmlspecialchars( trim( $this->input->get( 'q' ) ) ); ?>" maxlength="255" />
 			<button type="submit" class="bb-button standard btn"><?php echo lang( 'post_search' ); ?></button>
 		</form>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/article/process_bulk' ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
-	<table class="list-items">
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
@@ -46,6 +48,7 @@
 				<th><?php echo lang( 'post_tags' ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=theme_system_name&amp;sort='.$sort.'&amp;q='.$q.'&amp;tid='.$tid, lang( 'admin_theme' ) ); ?></th>
 				<th><?php echo lang( 'post_date' ); ?></th>
+				<th><?php echo anchor(current_url().'?orders=view_count&amp;sort=' . $sort . '&amp;q=' . $q . '&amp;tid=' . $tid, lang('post_view_count')); ?></th>
 				<th></th>
 			</tr>
 		</thead>
@@ -59,6 +62,7 @@
 				<th><?php echo lang( 'post_tags' ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=theme_system_name&amp;sort='.$sort.'&amp;q='.$q.'&amp;tid='.$tid, lang( 'admin_theme' ) ); ?></th>
 				<th><?php echo lang( 'post_date' ); ?></th>
+				<th><?php echo anchor(current_url().'?orders=view_count&amp;sort=' . $sort . '&amp;q=' . $q . '&amp;tid=' . $tid, lang('post_view_count')); ?></th>
 				<th></th>
 			</tr>
 		</tfoot>
@@ -71,8 +75,8 @@
 				<td>
 					<?php if ( $this->input->get( 'tid' ) != null && $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_sort_perm' ) && ( ( $orders == 'position' && ( $cur_sort == 'desc' || $cur_sort == null ) ) || $orders == null ) ): ?>
 					<span class="reorder" title="<?php echo $row->position; ?>">
-						<?php echo anchor( 'site-admin/article/reorder/'.$row->post_id.'/'.$this->input->get( 'tid' ).'/up', 'up', array( 'class' => 'up' ) ); ?> 
-						<?php echo anchor( 'site-admin/article/reorder/'.$row->post_id.'/'.$this->input->get( 'tid' ).'/dn', 'dn', array( 'class' => 'down' ) ); ?> 
+						<?php echo anchor( 'site-admin/article/reorder/'.$row->post_id.'/'.$this->input->get( 'tid' ).'/up', '<span class="icon-arrow-up"></span>', array( 'class' => 'up' ) ); ?> 
+						<?php echo anchor( 'site-admin/article/reorder/'.$row->post_id.'/'.$this->input->get( 'tid' ).'/dn', '<span class="icon-arrow-down"></span>', array( 'class' => 'down' ) ); ?> 
 					</span><?php endif; ?> 
 					<?php echo anchor( current_url().'/edit/'.$row->post_id, $row->post_name ); ?>
 				</td>
@@ -119,6 +123,7 @@
 					<?php echo lang( 'post_update_since' ); ?>: <?php echo gmt_date( 'Y-m-d H:i:s', $row->post_update_gmt ); ?><br />
 					<?php echo lang( 'post_publish' ); ?>: <?php echo gmt_date( 'Y-m-d H:i:s', $row->post_publish_date_gmt ); ?>
 				</td>
+				<td><?php echo $row->view_count; ?></td>
 				<td>
 					<?php if ( ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_own_perm' ) && $row->account_id == $my_account_id ) || ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_other_perm' ) && $row->account_id != $my_account_id ) ): ?>
 					<?php echo anchor( current_url().'/edit/'.$row->post_id, lang( 'admin_edit' ) ); ?>
@@ -128,7 +133,7 @@
 		<?php endforeach; ?> 
 		<?php else: ?> 
 			<tr>
-				<td colspan="9"><?php echo lang( 'admin_nodata' ); ?></td>
+				<td colspan="10"><?php echo lang( 'admin_nodata' ); ?></td>
 			</tr>
 		<?php endif; ?> 
 		</tbody>
@@ -150,6 +155,6 @@
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 <?php echo form_close(); ?> 

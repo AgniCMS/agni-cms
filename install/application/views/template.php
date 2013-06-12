@@ -13,7 +13,7 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>public/bootstrap/css/bootstrap-responsive.min.css" />
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>public/styles/style.css" />
 		<?php if ( isset( $page_link ) ) {echo $page_link;} ?> 
-		<script src="<?php echo base_url(); ?>../public/js/jquery.min.js" type="text/javascript"></script>
+		<script src="<?php echo base_url(); ?>public/js/jquery.min.js" type="text/javascript"></script>
 		<?php if ( isset( $page_script ) ) {echo $page_script;} ?> 
 		<script type="text/javascript">
 			// declare variable for use in .js file

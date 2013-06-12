@@ -35,7 +35,10 @@ input[type=text], input[type=password], input[type=search], input[type=tel], inp
 .install-step li.current {background: #eee;}
 
 
-.site-name {background: url('../../../public/themes/system/front/images/logo.png') no-repeat; color: #ff4200; font-size: 19px; font-weight: bold; height: 80px; line-height: 80px; text-indent: 90px;}
+.select-inline {display: inline; margin: 0;}
+
+
+.site-name {background: url('../../public/images/logo.png') no-repeat; color: #ff4200; font-size: 19px; font-weight: bold; height: 80px; line-height: 80px; text-indent: 90px;}
 
 .space-break {height: 20px;}
 

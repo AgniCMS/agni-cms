@@ -121,16 +121,24 @@ class article extends admin_controller {
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save result
 				$result = $this->posts_model->add( $data_posts, $data_post_revision, $data_tax_index );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/article' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $result . '</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -267,19 +275,32 @@ class article extends admin_controller {
 		$row = $query->row();
 		
 		// check permissions-----------------------------------------------------------
-		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) && $row->account_id != $my_account_id ) {
-			// this user has permission to delete own post, but NOT deleting own post
-			if ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_other_perm' ) ) {
-				// this user has NOT permission to delete other's post, but deleting other's post
-				$query->free_result();
-				unset( $row, $query, $my_account_id );
-				redirect( 'site-admin' );
-			}
-		} elseif ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) && $row->account_id == $my_account_id ) {
-			// this user has NOT permission to delete own post, but deleting own post.
-			$query->free_result();
-			unset( $row, $query, $my_account_id );
-			redirect( 'site-admin' );
+		if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_delete_own_perm') === false && $row->account_id == $my_account_id) {
+			// user has NO permission to edit own and editing own.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('post_you_have_no_permission_edit_yours')
+				)
+			);
+			redirect('site-admin/article');
+		} elseif ($this->account_model->check_admin_permission('post_article_perm', 'post_article_delete_other_perm') === false && $row->account_id != $my_account_id) {
+			// user has NO permission to edit others and editing others.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('post_you_have_no_permission_edit_others')
+				)
+			);
+			redirect('site-admin/article');
 		}
 		// end check permissions-----------------------------------------------------------
 		
@@ -336,24 +357,43 @@ class article extends admin_controller {
 		// if selected post id is not exists.
 		if ( $row == null ) {
 			$this->load->library( 'session' );
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">' . $this->lang->line( 'post_there_is_no_selected_article' ) . '</div>' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('post_there_is_no_selected_article')
+				)
+			);
 			redirect( 'site-admin/article' );
 		}
 		
 		// check permissions-----------------------------------------------------------
-		if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_own_perm' ) && $row->account_id != $my_account_id ) {
-			// this user has permission to edit own post, but NOT editing own post
-			if ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_other_perm' ) ) {
-				// this user has NOT permission to edit other's post, but editing other's post
-				$query->free_result();
-				unset( $row, $query, $my_account_id );
-				redirect( 'site-admin' );
-			}
-		} elseif ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_edit_own_perm' ) && $row->account_id == $my_account_id ) {
-			// this user has NOT permission to edit own post, but editing own post.
-			$query->free_result();
-			unset( $row, $query, $my_account_id );
-			redirect( 'site-admin' );
+		if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_edit_own_perm') === false && $row->account_id == $my_account_id) {
+			// user has NO permission to edit own and editing own.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('post_you_have_no_permission_edit_yours')
+				)
+			);
+			redirect('site-admin/article');
+		} elseif ($this->account_model->check_admin_permission('post_article_perm', 'post_article_edit_other_perm') === false && $row->account_id != $my_account_id) {
+			// user has NO permission to edit others and editing others.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('post_you_have_no_permission_edit_others')
+				)
+			);
+			redirect('site-admin/article');
 		}
 		// end check permissions-----------------------------------------------------------
 		
@@ -487,16 +527,24 @@ class article extends admin_controller {
 			$this->form_validation->set_rules( 'body_value', 'lang:post_content', 'trim|required' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save result
 				$result = $this->posts_model->edit( $data_posts, $data_post_revision, $data_tax_index, $data );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/article' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $result . '</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -504,8 +552,8 @@ class article extends admin_controller {
 			$output = array_merge( $output, $data_posts );
 			$output = array_merge( $output, $data_post_revision );
 			$output = array_merge( $output, $data_tax_index );
-			if ( isset( $data['post_status'] ) ) {
-				$output['post_status'] = $data['post_status'];
+			if ( isset( $data_posts['post_status'] ) ) {
+				$output['post_status'] = $data_posts['post_status'];
 			}
 			
 			// content settings
@@ -548,11 +596,12 @@ class article extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// list item
 		$output['list_item'] = $this->posts_model->list_item( 'admin' );
@@ -638,20 +687,15 @@ class article extends admin_controller {
 				$query->free_result();
 				
 				// check permissions-----------------------------------------------------------
-				if ( $this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) && $row->account_id != $my_account_id ) {
-					// this user has permission to delete own post, but NOT delete own post
-					if ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_other_perm' ) ) {
-						// this user has NOT permission to delete other's post, but deleting other's post
-						$query->free_result();
-						unset( $row, $query );
-						continue;
-					}
-				} elseif ( !$this->account_model->check_admin_permission( 'post_article_perm', 'post_article_delete_own_perm' ) && $row->account_id == $my_account_id ) {
-					// this user has NOT permission to delete own post, but deleting own post.
-					$query->free_result();
-					unset( $row, $query );
+				if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_delete_own_perm') === false && $row->account_id == $my_account_id) {
+					// user has NO permission to edit own and editing own.
+					unset($row, $my_account_id);
 					continue;
-				}
+				} elseif ($this->account_model->check_admin_permission('post_article_perm', 'post_article_delete_other_perm') === false && $row->account_id != $my_account_id) {
+					// user has NO permission to edit others and editing others.
+					unset($row, $my_account_id);
+					continue;
+				} 
 				// end check permissions-----------------------------------------------------------
 				
 				$this->posts_model->delete( $an_id );

@@ -51,18 +51,18 @@ $active_record = TRUE;
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'admin';
 $db['default']['password'] = 'pass';
-$db['default']['database'] = 'v_agni';
+$db['default']['database'] = 'v_agnicms_multisite';
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = 'an_';
-$db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
+$db['default']['pconnect'] = true;
+$db['default']['db_debug'] = true;
+$db['default']['cache_on'] = false;
 $db['default']['cachedir'] = 'application/cache/';
 $db['default']['char_set'] = 'utf8';
 $db['default']['dbcollat'] = 'utf8_general_ci';
 $db['default']['swap_pre'] = '';
-$db['default']['autoinit'] = TRUE;
-$db['default']['stricton'] = FALSE;
+$db['default']['autoinit'] = true;
+$db['default']['stricton'] = false;
 
 
 /* End of file database.php */

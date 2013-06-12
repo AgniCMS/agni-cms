@@ -2,6 +2,13 @@
 	<div class="comment-wrapper">
 		<footer>
 			<div class="comment-author">
+				<?php
+				if ($comment->account_avatar != null) {
+					$comment_avatar = base_url($comment->account_avatar);
+				} else {
+					$comment_avatar = base_url('public/images/default-avatar.png');
+				}
+				?> 
 				<img src="<?php echo $comment_avatar; ?>" alt="" class="comment-avatar" />
 				<?php if ( $comment->account_id != null || $comment->account_id != '0' ) {
 					echo '<a href="#comment-id-'.$comment->comment_id/*$comment->c1_account_id*/.'">'.$comment->name.'</a>';

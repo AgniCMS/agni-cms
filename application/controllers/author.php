@@ -46,6 +46,13 @@ class author extends MY_Controller {
 		}
 		unset( $cm_account );
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => $username, 'url' => 'author/' . $username);
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// send username to views
 		$output['username'] = $username;
 		

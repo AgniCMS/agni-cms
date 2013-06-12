@@ -47,7 +47,7 @@ class corerecentarticle extends widget {
 		$sql .= ' and post_status = 1';
 		$sql .= ' group by p.post_id';
 		// order and sort
-		$sql .= ' order by position desc, post_add desc';
+		$sql .= ' ORDER BY post_add DESC';
 		$sql .= ' limit 0, '.(isset( $values['recent_num'] ) && is_numeric( $values['recent_num'] ) ? $values['recent_num'] : 5 );
 		$query = $this->db->query( $sql);
 		if ( $query->num_rows() > 0 ) {

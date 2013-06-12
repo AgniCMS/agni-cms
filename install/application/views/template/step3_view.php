@@ -3,6 +3,18 @@
 
 <?php echo form_open(); ?> 
 	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+
+	<fieldset>
+		<legend><?php echo lang( 'agni_install_sample_data' ); ?></legend>
+		
+		<label><?php echo lang( 'agni_install_select_sample_data_set' ); ?>: </label>
+		<select name="sample_data" class="sample_data select-inline">
+			<option value="agni-sampledata-empty"><?php echo lang( 'agni_install_sample_data_none' ); ?></option>
+			<option value="agni-sampledata-simple"><?php echo lang( 'agni_install_sample_data_simple' ); ?></option>
+		</select>
+		
+		<button type="button" class="btn" onclick="ajax_install_sample_data();"><?php echo lang( 'agni_install' ); ?></button><span class="install_sample_data_result"></span>
+	</fieldset>
 	
 	<fieldset>
 		<legend><?php echo lang( 'agni_config_site_info' ); ?></legend>
@@ -44,3 +56,30 @@
 	</div>
 	
 <?php echo form_close(); ?> 
+
+
+<script type="text/javascript">
+	function ajax_install_sample_data() {
+		var sample_data_set = $('.sample_data').val();
+		$('.install_sample_data_result').html('');
+		
+		if ( sample_data_set != '' ) {
+			$.ajax({
+				url: '<?php echo site_url( 'index/ajax_install_sample_data' ); ?>',
+				type: 'POST',
+				data: ({ <?php echo config_item( 'csrf_token_name' ); ?>:'<?php echo $this->security->get_csrf_hash(); ?>', sample_data:sample_data_set }),
+				dataType: 'json',
+				success: function(data) {
+					if ( data.result == true ) {
+						$('.install_sample_data_result').html('<span class="icon-ok"></span>');
+					} else {
+						$('.install_sample_data_result').html('<span class="icon-remove"></span> '+data.result_text);
+					}
+				},
+				error: function(data) {
+					$('.install_sample_data_result').html('<span class="icon-remove"></span> <?php echo lang( 'agni_install_sample_data_error_please_select_none_first' ); ?>');
+				}
+			});
+		}
+	}// ajax_install_sample_data
+</script>

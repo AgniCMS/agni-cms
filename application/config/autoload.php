@@ -64,7 +64,7 @@ $autoload['libraries'] = array( 'database', 'modules_plug' );
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array( 'url' );
+$autoload['helper'] = array( 'language', 'siteinfo', 'url' );
 
 
 /*
@@ -96,7 +96,7 @@ $autoload['config'] = array( 'agni' );
 |
 */
 
-$autoload['language'] = array( 'account' );
+$autoload['language'] = array( 'account', 'frontend' );
 
 
 /*

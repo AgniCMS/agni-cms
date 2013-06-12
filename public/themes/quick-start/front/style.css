@@ -8,32 +8,28 @@ Your Css start below.
 */
 
 
-body {background: #fff; color: #555; font-family: tahoma,Geneva,Arial,Helvetica,sans-serif; font-size: 12px;}
-
-
-.content-wraper, .sidebar {margin-bottom: 18px;}
-
 
 .demo-area {background: #ff0; background-color: rgba(255,255,0,0.5); outline: #ff4200 1px dotted;}
 
 
-/* icons */
-.ico16-delete {background: url('images/web-icons.png') no-repeat -16px -20px; cursor: pointer; display: inline-block; height: 16px; text-indent: -999999px; width: 16px;}
-.ico16-edit {background: url('images/web-icons.png') no-repeat -64px -20px; cursor: pointer; display: inline-block; height: 16px; text-indent: -999999px; width: 16px;}
-.ico-no {background: url('images/check-icons.png') no-repeat -17px 0; display: inline-block; height: 16px; width: 16px;}
-.ico-unknow {background: url('images/check-icons.png') no-repeat -34px 0;display: inline-block; height: 16px; width: 16px;}
-.ico-yes {background: url('images/check-icons.png') no-repeat; display: inline-block; height: 16px; width: 16px;}
+
+.footer-row {
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
 
 
-.list-posts .each-post {border-bottom: 2px solid #eee; margin-bottom: 6px; padding-bottom: 7px;}
-.list-posts .each-post .entry {margin: 0 0 0 160px;}
-.list-posts .each-post .post-feature-image {float: left; margin: 0 10px 0 0; max-width: 150px; position: relative;}
+
+.list-posts .each-post {border-bottom: 2px solid #eee; margin-bottom: 10px; padding-bottom: 10px;}
+
 
 
 .navbar {background: #ccc; margin-bottom: 18px;}
 
 
-.page-footer {font-size: 11px; margin-bottom: 15px;}
+
+.txt_require {color: #f00; font-weight: bold;}
+
 
 
 /* comments in post page */
@@ -52,6 +48,8 @@ body {background: #fff; color: #555; font-family: tahoma,Geneva,Arial,Helvetica,
 .post-page .comments .each-comment .comment-tools ul li {float: left; margin: 0 10px 0 0;}
 .post-page .comments .indent {margin-left: 1.5em;}
 
+
+
 /* list category, tag of post page */
 .post-page .taxonomy-term {border-top: 1px solid #ddd; margin-bottom: 15px; padding-top: 10px;}
 .post-page .taxonomy-term ul.items {display: block; list-style: none; margin: 0; overflow: hidden; padding: 0; width: 100%;}
@@ -63,22 +61,6 @@ body {background: #fff; color: #555; font-family: tahoma,Geneva,Arial,Helvetica,
 .post-page .taxonomy-term ul.items li ul li:first-child:before {content: '';}
 
 
-.pagination {margin: 0; text-align: center;}
-.pagination a {display: inline-block; margin: 0 5px; min-width: 20px; text-align: center;}
-.pagination ul {display: inline-block; list-style: none; margin: 0; padding: 0;}
-.pagination ul li {display: inline-block; margin: 0;}
-.pagination ul li.active {font-weight: bold;}
-
-
-.site-name {font-size: 19px; font-weight: bold; margin-bottom: 18px; padding: 0;}
-
-
-/* error, success, comment, alert styles */
-.txt_comment {color: #aaa; font-size: 11px;}
-.txt_error {background: #ffecec; border:2px solid #ffc4c4; color:#f00; font-weight: bold; margin: 0 0 10px 0; padding: 3px;}
-.txt_require {color: #f00; font-weight: bold;}
-.txt_success {background: #f7fff2; border: 2px solid #8bfa49; color: #307f00; margin: 0 0 10px 0; padding: 3px;}
-
 
 /* language switch block */
 .area-sidebar .each-block .language-switch-block {display: block; color: #ff4200; cursor: pointer; list-style: none; margin: 0 0 8px 0; position: relative; text-transform:capitalize; width: auto;}
@@ -86,6 +68,7 @@ body {background: #fff; color: #555; font-family: tahoma,Geneva,Arial,Helvetica,
 .area-sidebar .each-block .language-switch-block li:hover > ul {display: block;}
 .area-sidebar .each-block .language-switch-block .lang-switch {display: none; list-style: none; left: 0; margin: 0; padding: 0; position: absolute; top: 18px; z-index: 5;}
 .area-sidebar .each-block .language-switch-block .lang-switch li {background: #f5f5f5; box-shadow: 1px 3px 2px #aaa; margin: 0; padding: 5px;}
+
 
 
 /* navigation block */
@@ -99,14 +82,22 @@ body {background: #fff; color: #555; font-family: tahoma,Geneva,Arial,Helvetica,
 .area-navigation ul ul li:hover {background: #aaa !important;}
 .area-navigation ul ul ul {left: 100%; top: 0;}
 
-/* article tools (edit, delete article) */
-.each-post:hover > .article-tools {display: block;}
+
+
+/* article tools */
+.each-post:hover > .article-tools, 
 .post-page:hover > .article-tools {display: block;}
-.article-tools {display: none; height: 0; margin: 0; padding: 0; position: relative;}
-.article-tools .tools-start {background: url('images/web-icons.png') -112px -20px no-repeat; cursor: pointer; height: 16px; position: absolute; right: 0; width: 16px; z-index: 5;}
-.article-tools .tools-start:hover {background: url('images/web-icons.png') -112px -36px no-repeat;}
-.article-tools .tools-start:hover > .tools-container {display: block;}
-.article-tools .tools-start .tools-container {display: none; height:16px; padding-top: 3px; position: relative;}
-.article-tools .tools-start ul {background: #eee; border-radius: 5px; box-shadow: 0 1px 3px #555; list-style: none; margin: 16px 0 0 0; padding: 0; width: 26px;}
-.article-tools .tools-start ul li {margin: 0; padding: 5px 5px 0 5px;}
-.article-tools .tools-start ul li:last-child {padding-bottom: 3px;}
+.article-tools {
+	display: none; 
+	height: 0; 
+	margin: 0; 
+	padding: 0; 
+	position: relative;
+}
+.article-tools .btn-group {
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+
