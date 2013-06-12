@@ -3,13 +3,15 @@
 <article class="post-page post-id-<?php echo $row->post_id; ?>">
 	<?php if ( $this->posts_model->is_allow_edit_post( $row ) || $this->posts_model->is_allow_delete_post( $row ) ): ?> 
 		<div class="article-tools">
-			<div class="tools-start">
-				<div class="tools-container">
-					<ul>
-						<?php if ( $this->posts_model->is_allow_edit_post( $row ) ): ?><li><?php echo anchor( 'site-admin/'.($row->post_type == 'article' ? 'article' : 'page').'/edit/'.$row->post_id, '<span class="ico16-edit"></span>' ); ?></li><?php endif; ?> 
-						<?php if ( $this->posts_model->is_allow_delete_post( $row ) ): ?><li><?php echo anchor( 'site-admin/'.($row->post_type == 'article' ? 'article' : 'page').'/delete/'.$row->post_id, '<span class="ico16-delete"></span>' ); ?></li><?php endif; ?> 
-					</ul>
-				</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+					<span class="icon-asterisk"></span>
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<?php if ( $this->posts_model->is_allow_edit_post( $row ) ): ?><li><?php echo anchor( 'site-admin/'.($row->post_type == 'article' ? 'article' : 'page').'/edit/'.$row->post_id, '<span class="icon-pencil"></span> '.lang( 'post_edit' ) ); ?></li><?php endif; ?> 
+					<?php if ( $this->posts_model->is_allow_delete_post( $row ) ): ?><li><?php echo anchor( 'site-admin/'.($row->post_type == 'article' ? 'article' : 'page').'/delete/'.$row->post_id, '<span class="icon-trash"></span> '.lang( 'post_delete' ) ); ?></li><?php endif; ?> 
+				</ul>
 			</div>
 		</div>
 		<?php endif; ?> 

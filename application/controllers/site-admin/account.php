@@ -59,7 +59,8 @@ class account extends admin_controller {
 			$this->form_validation->set_rules( 'account_status', 'lang:account_status', 'trim|required' );
 			$this->form_validation->set_rules( 'level_group_id', 'lang:account_level', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
 				$result = $this->account_model->add_account( $data );
@@ -67,10 +68,17 @@ class account extends admin_controller {
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/account' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -203,9 +211,14 @@ class account extends admin_controller {
 		// check if editing higher level?
 		if ( !$this->account_model->can_i_add_edit_account( $output['level_group_id'] ) ) {
 			// you cannot edit this user because he/she has higher role than you
-			$query->free_result();
 			$this->load->library( 'session' );
-			$this->session->set_flashdata( 'form_status', '<div class="txt_error alert alert-error">'.$this->lang->line( 'account_cannot_edit_account_higher_your_level' ).'</div>' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('account_cannot_edit_account_higher_your_level')
+				)
+			);
 			redirect( 'site-admin/account' );
 		}
 		
@@ -238,7 +251,8 @@ class account extends admin_controller {
 			$this->form_validation->set_rules( 'account_status', 'lang:account_status', 'trim|required' );
 			$this->form_validation->set_rules( 'level_group_id', 'lang:account_level', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
 				$result = $this->account_model->edit_account( $data );
@@ -246,10 +260,17 @@ class account extends admin_controller {
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/account' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -284,7 +305,7 @@ class account extends admin_controller {
 		$output['sort'] = ($this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'asc' ? 'desc' : 'asc' );
 		
 		// list item
-		$output['list_item'] = $this->account_model->list_account();
+		$output['list_item'] = $this->account_model->list_account( 'admin' );
 		if ( is_array( $output['list_item'] ) ) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -292,8 +313,9 @@ class account extends admin_controller {
 		// load session for flashdata
 		$this->load->library( 'session' );
 		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
 		unset( $form_status );
 		
@@ -350,9 +372,11 @@ class account extends admin_controller {
 		// load session for flashdata
 		$this->load->library( 'session' );
 		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
+		unset( $form_status );
 		
 		// check if viewing higher level than yours?
 		$target_level_group_id = $this->account_model->show_account_level_info( $account_id );

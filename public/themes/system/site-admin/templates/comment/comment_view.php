@@ -7,23 +7,25 @@
 		echo anchor( current_url().'?filter=comment_status&amp;filter_val=0', sprintf( lang( 'comment_total_unapprove' ), $count ) ); ?> 
 		| <?php $count = $this->db->where( 'comment_status', '1' )->count_all_results( 'comments' );
 		echo anchor( current_url().'?filter=comment_status&amp;filter_val=1', sprintf( lang( 'comment_total_approved' ), $count ) ); ?> 
-		<?php echo $this->modules_plug->do_action( 'comment_admin_index_top' ); ?> 
+		<?php echo $this->modules_plug->do_filter( 'comment_admin_index_top' ); ?> 
 	</div>
 	<div class="cmd-right">
-		<form method="get" class="search">
+		<form method="get" class="form-search">
 			<input type="hidden" name="filter" value="<?php echo $filter; ?>" />
 			<input type="hidden" name="filter_val" value="<?php echo $filter_val; ?>" />
 			<input type="text" name="q" value="<?php echo $q; ?>" maxlength="255" />
 			<button type="submit" class="bb-button standard btn"><?php echo lang( 'comment_search' ); ?></button>
 		</form>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
 <?php echo form_open( 'site-admin/comment/process_bulk' ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 
-	<table class="list-items">
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
@@ -51,6 +53,7 @@
 					<div class="comment-account-info">
 						<img src="<?php echo ( $row->account_avatar != null ? base_url().$row->account_avatar : base_url().'public/images/default-avatar.png' ); ?>" alt="" class="avatar" />
 						<?php echo ( $row->c1_account_id != '0' && $row->c1_account_id != null ? anchor( 'site-admin/account/edit/'.$row->c1_account_id, $row->name ) : $row->name ); ?> 
+						<div class="clearfix"></div>
 					</div>
 					<div class="comment-user-data"><?php echo $row->ip_address; ?><br />
 					<?php echo $row->user_agent; ?></div>
@@ -83,7 +86,7 @@
 		<div class="cmd-left">
 			<select name="act">
 				<option value="" selected="selected"></option>
-				<?php echo $this->modules_plug->do_action( 'comment_admin_index_options' ); ?> 
+				<?php echo $this->modules_plug->do_filter( 'comment_admin_index_options' ); ?> 
 				<?php if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_approve_unapprove_perm' ) ): ?> 
 				<option value="approve"><?php echo lang( 'comment_approve' ); ?></option>
 				<option value="unapprove"><?php echo lang( 'comment_unapprove' ); ?></option>
@@ -96,7 +99,7 @@
 		<div class="cmd-right">
 			<?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 		</div>
-		<div class="clear"></div>
+		<div class="clearfix"></div>
 	</div>
 
 <?php echo form_close(); ?> 

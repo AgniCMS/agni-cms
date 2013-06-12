@@ -69,17 +69,25 @@ class category extends admin_controller {
 			$this->form_validation->set_rules("t_name", "lang:category_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$result = $this->taxonomy_model->add( $data );
 				
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					redirect( 'site-admin/category' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -227,18 +235,26 @@ class category extends admin_controller {
 			$this->form_validation->set_rules("t_name", "lang:category_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$result = $this->taxonomy_model->edit( $data, $data_ua, $data_mi );
 				
 				if ( $result === true ) {
 					// load session library
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
 					
 					redirect( 'site-admin/category' );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -271,11 +287,12 @@ class category extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// list categories
 		$output['list_item'] = $this->taxonomy_model->list_item();
@@ -287,7 +304,7 @@ class category extends admin_controller {
 		}
 		
 		// count total items
-		$output['total_item'] = count( $output['list_item'] );
+		$output['total_item'] = $this->taxonomy_model->list_item_total();
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'category_category' ) );

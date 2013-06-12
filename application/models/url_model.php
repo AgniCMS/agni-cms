@@ -326,6 +326,8 @@ class url_model extends CI_Model {
 			'comment/edit',
 			'comment/list_comments',
 			'comment/post_comment',
+		    
+			'cron',
 			
 			'index',
 			
@@ -337,6 +339,8 @@ class url_model extends CI_Model {
 			'search',
 			
 			'tag',
+		    
+			'update',
 			
 			'modules',
 			'modules/core',

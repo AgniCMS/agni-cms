@@ -1,0 +1,102 @@
+/**
+* style for admin login page.
+*/
+
+
+
+.browser-check-no {
+	background: #be3100; 
+	color: #feece6; 
+	margin: 0 0 15px 0; 
+	padding: 5px; 
+	text-align: center;
+}
+.browser-check-no a {
+	color: #fff;
+}
+
+
+
+.language {
+	display: inline-block; 
+	color: #ff4200; 
+	cursor: pointer; 
+	margin: 0 0 8px 0; 
+	position: relative; 
+	text-transform: capitalize; 
+	width: auto;
+}
+.language:hover > ul {
+	display: block;
+}
+.language .lang-switch {
+	display: none; 
+	list-style: none; 
+	left: 0; 
+	margin: 0; 
+	padding: 0; 
+	position: absolute; 
+	top: 18px; 
+	z-index: 5;
+}
+.language .lang-switch li {
+	background: #eee; 
+	box-shadow: 1px 3px 2px #aaa; 
+	margin: 0; 
+	padding: 5px;
+}
+
+
+
+.login-cloak {
+	display: block; 
+	margin: 0 auto; 
+	padding-top: 30px; 
+}
+.login-cloak .forget-form {
+	background: #eee; 
+	border-radius: 0 5px 5px 5px;
+	display: none; 
+	margin: 0 0 20px;
+	padding: 10px;
+}
+.login-cloak .forget-form label .input-captcha {text-transform: uppercase;}
+.login-cloak .forget-toggle {
+	background: #eee; 
+	border-radius: 5px 5px 0 0;
+	cursor: pointer; 
+	padding: 10px;
+}
+
+.login-cloak .login-container {
+	border-radius: 5px;
+	box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+	display: block; 
+	margin: 0 0 20px 0;
+	padding: 10px 20px;
+}
+	.login-container h1 {
+		font-size: 1.3em; 
+		font-weight: bold; 
+		margin-bottom: auto; 
+		text-align: center;
+	}
+	.login-container .captcha-field {
+		display: none;
+	}
+	.login-container .captcha-field.show {
+		display: block;
+	}
+	.login-container label .input-captcha {
+		text-transform: uppercase;
+	}
+
+.login-cloak .requirement-check {
+	margin: 0 0 20px 0; 
+	text-align: center;
+}
+.login-cloak .requirement-check span {
+	margin: 0 10px;
+}
+
+

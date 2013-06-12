@@ -65,8 +65,8 @@ class account_model extends CI_Model {
 		// add level
 		$this->db->insert( 'account_level', $data2 );
 		
-		// any APIs add here.
-		$data['level_group_id'] = $data2['level_group_id'];// set back for use in plugins
+		// module plug here.
+		$data['level_group_id'] = $data2['level_group_id'];// set for use in plugins
 		$this->modules_plug->do_action( 'account_add', $data );
 		
 		return true;
@@ -102,6 +102,40 @@ class account_model extends CI_Model {
 	
 	
 	/**
+	 * add multisite login session
+	 * @param array $data
+	 */
+	function add_login_session( $data = array() ) {
+		// load model
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+
+		$query = $this->db->where( 'account_id', $data['account_id'] )->where( 'site_id', $site_id )->get( 'account_sites' );
+		if ( $query->num_rows() <= 0 ) {
+			// use insert
+			$this->db->set( 'account_id', $data['account_id'] )
+				   ->set( 'site_id', $site_id )
+				   ->set( 'account_last_login', time() )
+				   ->set( 'account_last_login_gmt', local_to_gmt( time() ) );
+			if ( isset( $data['session_id'] ) ) {
+				$this->db->set( 'account_online_code', $data['session_id'] );
+			}
+			$this->db->insert( 'account_sites' );
+		} else {
+			// use update
+			$this->db->set( 'account_last_login', time() )
+				   ->set( 'account_last_login_gmt', local_to_gmt( time() ) );
+			if ( isset( $data['session_id'] ) ) {
+				$this->db->set( 'account_online_code', $data['session_id'] );
+			}
+			$this->db->where( 'account_id', $data['account_id'] )
+				   ->where( 'site_id', $site_id );
+			$this->db->update( 'account_sites' );
+		}
+	}// add_login_session
+	
+	
+	/**
 	 * admin_login
 	 * @param array $data
 	 * @return mixed 
@@ -110,7 +144,6 @@ class account_model extends CI_Model {
 		if ( !is_array( $data ) || empty( $data ) ) {return false;}
 		
 		$this->db->where( 'account_username', $data['username'] );
-		$this->db->where( 'account_password', $this->encrypt_password( $data['password'] ) );
 		
 		$query = $this->db->get( 'accounts' );
 		
@@ -118,78 +151,100 @@ class account_model extends CI_Model {
 			$row = $query->row();
 			
 			if ( $row->account_status == '1' ) {
-				if ( $this->check_admin_permission( 'account_admin_login', 'account_admin_login', $row->account_id ) == true ) {
-					$this->load->library( 'session' );
-					$session_id = $this->session->userdata( 'session_id' );
-					
-					// update session มีไว้เพื่อกำหนดว่าจะอัปเดท session หรือไม่. กรณีมีการ login จากหน้าสมาชิกด้านหน้าเว็บแล้ว ก็จะไม่ต้องอัปเดทอีก, แต่ถ้ายัง ก็ต้องอัปเดท session เพื่อให้มีรหัส session ในการตรวจสอบ login ซ้อน
-					$need_update_session = false;// กำหนดเป็น false ไปก่อน เพื่อให้มีการอัปเดท session (สมมุติว่ายังไม่เคยมีการ login จากหน้าแรกเลย.
-					
-					// เอาคุกกี้สำหรับหน้าแรกมา เพื่อหาว่าเคยมีการ login แล้วรึยัง
-					$cm_account = $this->get_account_cookie( 'member' );
-					if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) && isset( $cm_account['password'] ) && isset( $cm_account['onlinecode'] ) && $cm_account['id'] == $row->account_id ) {
-						// เคยมีการ login จากหน้าแรกแล้ว
-						// ดึงค่า session, onlinecode จากที่เคย login หน้าแรกมาใช้.
-						$set_ca_account['onlinecode'] = $cm_account['onlinecode'];
-						$session_id = $cm_account['onlinecode'];
+				if ($this->checkPassword($data['password'], $row->account_password) === true) {
+					if ( $this->check_admin_permission( 'account_admin_login', 'account_admin_login', $row->account_id ) == true ) {
+						$this->load->library( 'session' );
+						$session_id = $this->session->userdata( 'session_id' );
+
+						// update session มีไว้เพื่อกำหนดว่าจะอัปเดท session หรือไม่. กรณีมีการ login จากหน้าสมาชิกด้านหน้าเว็บแล้ว ก็จะไม่ต้องอัปเดทอีก, แต่ถ้ายัง ก็ต้องอัปเดท session เพื่อให้มีรหัส session ในการตรวจสอบ login ซ้อน
+						$need_update_session = false;// กำหนดเป็น false ไปก่อน เพื่อให้มีการอัปเดท session (สมมุติว่ายังไม่เคยมีการ login จากหน้าแรกเลย.
+
+						// เอาคุกกี้สำหรับหน้าแรกมา เพื่อหาว่าเคยมีการ login แล้วรึยัง
+						$cm_account = $this->get_account_cookie( 'member' );
+						if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) && isset( $cm_account['password'] ) && isset( $cm_account['onlinecode'] ) && $cm_account['id'] == $row->account_id ) {
+							// เคยมีการ login จากหน้าแรกแล้ว
+							// ดึงค่า session, onlinecode จากที่เคย login หน้าแรกมาใช้.
+							$set_ca_account['onlinecode'] = $cm_account['onlinecode'];
+							$session_id = $cm_account['onlinecode'];
+						} else {
+							// ยังไม่เคยมีการ login จากหน้าแรก
+							// เซ็ทคุกกี้สำหรับหน้าแรกให้เลย.
+							$set_cm_account['id'] = $row->account_id;
+							$set_cm_account['username'] = $data['username'];
+							$set_cm_account['password'] = $row->account_password;
+							$set_cm_account['fullname'] = $row->account_fullname;
+							$set_cm_account['onlinecode'] = $session_id;
+							$set_cm_account = $this->encrypt->encode( serialize( $set_cm_account ) );
+							set_cookie( 'member_account', $set_cm_account, 0 );
+
+							// เพราะว่ายังไม่เคยมีการ login จากหน้าแรก จึงต้องให้อัปเดท session
+							$need_update_session = true;
+						}
+
+						// ตั้งค่าคุกกี้สำหรับหน้า admin
+						$set_ca_account['id'] = $row->account_id;
+						$set_ca_account['username'] = $data['username'];
+						$set_ca_account['password'] = $row->account_password;
+						$set_ca_account['onlinecode'] = $session_id;
+						$set_ca_account = $this->encrypt->encode( serialize( $set_ca_account ) );
+						set_cookie( 'admin_account', $set_ca_account, 0 );
+
+						// ถ้าจะต้องมีการอัพเดท session
+						// load date helper for gmt
+						$this->load->helper( 'date' );
+						if ( $need_update_session === true ) {
+							//$this->db->set( 'account_online_code', $session_id );// deprecated
+							$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
+							$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
+							$this->db->where( 'account_id', $row->account_id );
+							$this->db->update( 'accounts' );
+
+							// add online code for multisite check ------------------------------------------------
+							$session_data['account_id'] = $row->account_id;
+							$session_data['session_id'] = $session_id;
+							$this->add_login_session( $session_data );
+							unset( $session_data );
+							// add online code for multisite check ------------------------------------------------
+						} else {
+							$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
+							$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
+							$this->db->where( 'account_id', $row->account_id );
+							$this->db->update( 'accounts' );
+							// add online code for multisite check ------------------------------------------------
+							$session_data['account_id'] = $row->account_id;
+							$this->add_login_session( $session_data );
+							unset( $session_data );
+							// add online code for multisite check ------------------------------------------------
+						}
+
+						// record log in
+						$this->admin_login_record( $row->account_id, '1', 'Success' );
+						$query->free_result();
+
+						// module plug here.
+						$this->modules_plug->do_action( 'admin_login_process', $row );
+
+						return true;
 					} else {
-						// ยังไม่เคยมีการ login จากหน้าแรก
-						// เซ็ทคุกกี้สำหรับหน้าแรกให้เลย.
-						$set_cm_account['id'] = $row->account_id;
-						$set_cm_account['username'] = $data['username'];
-						$set_cm_account['password'] = $row->account_password;
-						$set_cm_account['fullname'] = $row->account_fullname;
-						$set_cm_account['onlinecode'] = $session_id;
-						$set_cm_account = $this->encrypt->encode( serialize( $set_cm_account ) );
-						set_cookie( 'member_account', $set_cm_account, 0 );
-						
-						// เพราะว่ายังไม่เคยมีการ login จากหน้าแรก จึงต้องให้อัปเดท session
-						$need_update_session = true;
+						// has no permission to login here
+						$query->free_result();
+
+						$this->admin_login_record( $row->account_id, '0', 'Not allow to login to admin page.' );
+
+						if ( !$this->input->is_ajax_request() ) {
+							redirect( base_url() );
+						} else {
+							return $this->lang->line( 'account_not_allow_login_here' );
+						}
 					}
-					
-					// ตั้งค่าคุกกี้สำหรับหน้า admin
-					$set_ca_account['id'] = $row->account_id;
-					$set_ca_account['username'] = $data['username'];
-					$set_ca_account['password'] = $row->account_password;
-					$set_ca_account['onlinecode'] = $session_id;
-					$set_ca_account = $this->encrypt->encode( serialize( $set_ca_account ) );
-					set_cookie( 'admin_account', $set_ca_account, 0 );
-					
-					// ถ้าจะต้องมีการอัพเดท session
-					// load date helper for gmt
-					$this->load->helper( 'date' );
-					if ( $need_update_session === true ) {
-						$this->db->set( 'account_online_code', $session_id );
-						$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
-						$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
-						$this->db->where( 'account_id', $row->account_id );
-						$this->db->update( 'accounts' );
-					} else {
-						$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
-						$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
-						$this->db->where( 'account_id', $row->account_id );
-						$this->db->update( 'accounts' );
-					}
-					
-					// record log in
-					$this->admin_login_record( $row->account_id, '1', 'Success' );
-					$query->free_result();
-					
-					// any api here.
-					$this->modules_plug->do_action( 'admin_login_process', $row );
-					
-					return true;
 				} else {
-					// has no permission to login here
+					// password not match
+					// login failed.
+					$this->admin_login_record( $row->account_id, '0', 'Wrong username or password' );
 					$query->free_result();
-					
-					$this->admin_login_record( $row->account_id, '0', 'Not allow to login to admin page.' );
-					
-					if ( !$this->input->is_ajax_request() ) {
-						redirect( base_url() );
-					} else {
-						return $this->lang->line( 'account_not_allow_login_here' );
-					}
+					unset( $query, $row );
+
+					return $this->lang->line( 'account_wrong_username_or_password' );
 				}
 			} else {
 				// account disabled
@@ -229,6 +284,10 @@ class account_model extends CI_Model {
 		
 		if ( $attempt_text == null ) {$attempt_text = null;}
 		
+		// load model
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
 		// load library
 		$this->load->library( array( 'Browser' ) );
 		
@@ -237,6 +296,7 @@ class account_model extends CI_Model {
 		
 		// sql insert log
 		$this->db->set( 'account_id', $account_id );
+		$this->db->set( 'site_id', $site_id );
 		$this->db->set( 'login_ua', $this->browser->getUserAgent() );
 		$this->db->set( 'login_os', $this->browser->getPlatform() );
 		$this->db->set( 'login_browser', $this->browser->getBrowser() . ' ' . $this->browser->getVersion() );
@@ -341,8 +401,11 @@ class account_model extends CI_Model {
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
 		
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
 		// check cached
-		if ( false === $account_val = $this->cache->get( 'chkacc_'.$id.'_'.$username.$password ) ) {
+		if ( false === $account_val = $this->cache->get( 'chkacc_'.$id.'_'.$site_id.'_'.$username.$password ) ) {
 			// check with db
 			$this->db->where( 'account_id', $id );
 			$this->db->where( 'account_username', $username );
@@ -357,10 +420,10 @@ class account_model extends CI_Model {
 					
 					// check if globa config not allow duplicate login
 					if ( $this->config_model->load_single( 'duplicate_login' ) == '0' ) {
-						if ( $row->account_online_code != $onlinecode ) {
+						if ( $this->is_duplicate_login( $id, $onlinecode ) === true ) {
 							// dup log in detected.
 							$query->free_result();
-							$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+							$this->config_model->delete_cache( 'chkacc_'.$id.'_'.$site_id.'_' );
 							
 							// log out
 							$this->logout();
@@ -369,7 +432,13 @@ class account_model extends CI_Model {
 							$this->lang->load( 'account' );
 							
 							// flash error and return
-							$this->session->set_flashdata( 'account_error', $this->lang->line( 'account_duplicate_login_detected' ) );
+							$this->session->set_flashdata(
+								'form_status',
+								array(
+									'form_status' => 'error',
+									'form_status_message' => $this->lang->line('account_duplicate_login_detected')
+								)
+							);
 							return false;
 						}
 					}
@@ -378,14 +447,14 @@ class account_model extends CI_Model {
 					$query->free_result();
 					
 					// save to cache and return true
-					$this->cache->save( 'chkacc_'.$id.'_'.$username.$password, $row->account_online_code, 3600 );
+					$this->cache->save( 'chkacc_'.$id.'_'.$site_id.'_'.$username.$password, $this->get_account_online_code( $row->account_id, $site_id ), 3600 );
 					return true;
 				} else {
 					// account was disabled
 					$query->free_result();
 					
 					// delete cache
-					$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+					$this->config_model->delete_cache( 'chkacc_'.$id.'_'.$site_id.'_' );
 					
 					// log out
 					$this->logout();
@@ -396,7 +465,7 @@ class account_model extends CI_Model {
 			$query->free_result();
 			
 			// delete cache
-			$this->config_model->delete_cache( 'chkacc_'.$id.'_' );
+			$this->config_model->delete_cache( 'chkacc_'.$id.'_'.$site_id.'_' );
 			
 			// log out
 			$this->logout();
@@ -442,7 +511,7 @@ class account_model extends CI_Model {
 		if ( $account_id == null ) {
 			// account id is empty, get it from cookie.
 			$ca_account = $this->get_account_cookie( 'admin' );
-			$account_id = ( isset( $ca_account['id']) ? $ca_account['id'] : '' );
+			$account_id = ( isset( $ca_account['id']) ? $ca_account['id'] : '0' );
 		}
 		
 		// check for required attribute
@@ -454,7 +523,7 @@ class account_model extends CI_Model {
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
 		
 		// check cached
-		if ( false === $check_admin_permission = $this->cache->get( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id ) ) {
+		if ( false === $check_admin_permission = $this->cache->get( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id ) ) {
 			$this->db->where( 'account_id', $account_id );
 			$query = $this->db->get( 'account_level' );
 			
@@ -464,7 +533,7 @@ class account_model extends CI_Model {
 					if ( $row->level_group_id == '1' ) {
 						// super admin group allow all by default.
 						$query->free_result();
-						$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
+						$this->cache->save( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
 						return true;
 					}
 					
@@ -476,19 +545,19 @@ class account_model extends CI_Model {
 					if ( $query2->num_rows() > 0 ) {
 						$query->free_result();
 						$query2->free_result();
-						$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
+						$this->cache->save( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id, 'true', 600 );
 						return true;
 					}
 					$query2->free_result();
 				}
 				$query->free_result();
 				
-				$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'false', 600 );
+				$this->cache->save( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id, 'false', 600 );
 				return false;
 			}
 			$query->free_result();
 			
-			$this->cache->save( 'check_admin_permission_'.$page_name.'_'.$action.'_'.$account_id, 'false', 600 );
+			$this->cache->save( 'check_admin_permission_'.SITE_TABLE.$page_name.'_'.$action.'_'.$account_id, 'false', 600 );
 			return false;
 		}
 		
@@ -499,6 +568,32 @@ class account_model extends CI_Model {
 			return false;
 		}
 	}// check_admin_permission
+	
+	
+	/**
+	 * check password entered and hash one.
+	 * @param string $entered_password
+	 * @param string $hashed_password
+	 * @return boolean
+	 */
+	public function checkPassword($entered_password = '', $hashed_password = '') 
+	{
+		if ($this->modules_plug->has_filter('account_check_hash_password')) {
+			$result = $this->modules_plug->do_action('account_check_hash_password', array($entered_password, $hashed_password));
+			
+			if (isset($result['account_check_hash_password']) && is_array($result['account_check_hash_password'])) {
+				return array_shift(array_values($result['account_check_hash_password']));
+			}
+			
+			return false;
+		} else {
+			include_once 'application/libraries/PasswordHash.php';
+			$PasswordHash = new PasswordHash(12, false);
+			
+			// check password
+			return $PasswordHash->CheckPassword($entered_password, $hashed_password);
+		}
+	}// checkPassword
 	
 	
 	/**
@@ -577,6 +672,19 @@ class account_model extends CI_Model {
 		$this->db->where( 'account_id', $account_id );
 		$this->db->set( 'account_id', '1' );
 		$this->db->update( 'files' );
+			
+		// delete avatar
+		$this->delete_account_avatar( $account_id );
+		
+		// delete account
+		$this->db->where( 'account_id', $account_id )->delete( 'account_fields' );
+		$this->db->where( 'account_id', $account_id )->delete( 'account_level' );
+		$this->db->where( 'account_id', $account_id )->delete( 'account_logins' );
+		$this->db->where( 'account_id', $account_id )->delete( 'account_sites' );
+		$this->db->where( 'account_id', $account_id )->delete( 'accounts' );
+		
+		// delete cache.
+		$this->config_model->delete_cache( 'ainf_' );
 		
 		// get account info for send to api
 		$this->db->where( 'account_id', $account_id );
@@ -584,23 +692,12 @@ class account_model extends CI_Model {
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			
-			// delete avatar
-			$this->delete_account_avatar( $account_id );
-			
-			// any api here.
+			// module plug here.
 			$this->modules_plug->do_action( 'account_delete_account', $row );
 			$query->free_result();
 			unset( $row );
 		}
 		unset( $query );
-		
-		// delete account
-		$this->db->where( 'account_id', $account_id )->delete( 'account_level' );
-		$this->db->where( 'account_id', $account_id )->delete( 'account_logins' );
-		$this->db->where( 'account_id', $account_id )->delete( 'accounts' );
-		
-		// delete cache.
-		$this->config_model->delete_cache( 'ainf_' );
 		
 		return true;
 	}// delete_account
@@ -660,7 +757,7 @@ class account_model extends CI_Model {
 		$this->db->where( 'level_group_id', $level_group_id )->delete( 'account_level_group' );
 		
 		// delete cache
-		$this->config_model->delete_cache( 'alg_'.$level_group_id );
+		$this->config_model->delete_cache( 'alg_'.SITE_TABLE.$level_group_id );
 		
 		return true;
 	}// delete_level_group
@@ -690,6 +787,7 @@ class account_model extends CI_Model {
 			$this->db->where( 'account_id != ', $data['account_id'] );
 			$this->db->where( 'account_email', $data['account_email'] );
 			$query = $this->db->select( 'account_id, account_email' )->get( 'accounts' );
+			
 			if ( $query->num_rows() > 0 ) {
 				$query->free_result();
 				return $this->lang->line( 'account_email_already_exists' );
@@ -697,6 +795,7 @@ class account_model extends CI_Model {
 				$email_change = 'yes';
 				$data['account_new_email'] = $data['account_email'];
 			}
+			
 			$query->free_result();
 		}
 		// end check for duplicate email
@@ -726,21 +825,21 @@ class account_model extends CI_Model {
 		 
 		 // check password change and set password value for update in db.
 		if ( !empty( $data['account_new_password'] ) ) {
-			$old_password = $this->encrypt_password( $data['account_password'] );
-			$data['account_old_password_encrypted'] = $old_password;
+			$data['account_old_password_encrypted'] = $data['account_password'];
 			$data['account_new_password_encrypted'] = $this->encrypt_password( $data['account_new_password'] );
 			$get_old_password_from_db = $this->show_accounts_info( $data['account_id'], 'account_id', 'account_password' );
 			
 			// check old password is match in db.
-			if ( $old_password == $get_old_password_from_db ) {
+			if ($this->checkPassword($data['account_password'], $get_old_password_from_db)) {
 				$data['account_password'] = $data['account_new_password_encrypted'];
-				// any APIs add here
+				
+				// module plug here
 				$this->modules_plug->do_action( 'account_change_password', $data );
 			} else {
-				unset( $old_password, $get_old_password_from_db );
+				unset($get_old_password_from_db);
 				return $this->lang->line( 'account_wrong_password' );
 			}
-			unset( $old_password, $get_old_password_from_db );
+			unset($get_old_password_from_db);
 		} else {
 			// no password change, remove this variable to prevent set null value to db while update.
 			unset( $data['account_password'] );
@@ -769,7 +868,7 @@ class account_model extends CI_Model {
 		$this->config_model->delete_cache( 'ainf_' );
 		$this->config_model->delete_cache( 'chkacc_'.$data['account_id'].'_' );
 		
-		// any APIs add here.
+		// module plug here
 		$data['level_group_id'] = $data2['level_group_id'];// set back for use in plugins
 		$this->modules_plug->do_action( 'account_admin_edit', $data );
 		
@@ -790,7 +889,7 @@ class account_model extends CI_Model {
 		$this->db->update( 'account_level_group', $data );
 		
 		// delete cache
-		$this->config_model->delete_cache( 'alg_' );
+		$this->config_model->delete_cache( 'alg_'.SITE_TABLE );
 		
 		return true;
 	}// edit_level_group
@@ -801,9 +900,15 @@ class account_model extends CI_Model {
 	 * @param string $password
 	 * @return string
 	 */
-	function encrypt_password( $password = '' ) {
-		$this->load->library( 'encrypt' );
-		return $this->encrypt->sha1( $this->config->item( 'encryption_key' ).'::'.$this->encrypt->sha1( $password ) );
+	function encrypt_password($password = '') 
+	{
+		if (property_exists($this, 'modules_plug') && $this->modules_plug->has_filter('account_generate_hash_password')) {
+			return $this->modules_plug->do_filter('account_generate_hash_password', $password);
+		} else {
+			include_once dirname(dirname(__FILE__)).'/libraries/PasswordHash.php';
+			$PasswordHash = new PasswordHash(12, false);
+			return $PasswordHash->HashPassword($password);
+		}
 	}// encrypt_password
 	
 	
@@ -875,6 +980,41 @@ class account_model extends CI_Model {
 	}// get_account_level_group_data
 	
 	
+	/**
+	 * get_account_online_code
+	 * @param integer $account_id
+	 * @param integer $site_id
+	 * @return string
+	 */
+	function get_account_online_code( $account_id = '', $site_id = '' ) {
+		$this->db->where( 'account_id', $account_id )
+			   ->where( 'site_id', $site_id );
+		$query = $this->db->get( 'account_sites' );
+		
+		if ( $query->num_rows() > 0 ) {
+			$row = $query->row();
+			$query->free_result();
+			
+			return $row->account_online_code;
+		}
+		
+		$query->free_result();
+		return null;
+	}// get_account_online_code
+	
+	
+	/**
+	 * hash password
+	 * alias name of encrypt password.
+	 * @param string $password
+	 * @return string
+	 */
+	public function hash_password($password = '') 
+	{
+		return $this->encrypt_password($password);
+	}// hash_password
+	
+	
 	
 	/**
 	 * check is admin login
@@ -892,6 +1032,48 @@ class account_model extends CI_Model {
 		// check again in database
 		return $this->check_account();
 	}// is_admin_login
+	
+	
+	/**
+	 * is_duplicate_login
+	 * @param string $onlinecode
+	 * @return boolean
+	 */
+	function is_duplicate_login( $account_id = '', $onlinecode = '' ) {
+		// if not set online code.
+		if ( $onlinecode == null ) {
+			$cm_account = $this->get_account_cookie( 'member' );
+			
+			if ( !isset( $cm_account['onlinecode'] ) ) {
+				return false;
+			}
+			
+			$onlinecode = $cm_account['onlinecode'];
+		}
+		
+		// load model
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
+		$this->db->where( 'account_id', $account_id )
+			   ->where( 'site_id', $site_id )
+			   ->where( 'account_online_code', $onlinecode );
+		$query = $this->db->get( 'account_sites' );
+		
+		if ( $query->num_rows() > 0 ) {
+			$row = $query->row();
+			$query->free_result();
+			
+			if ( $row->account_online_code == $onlinecode ) {
+				// NOT duplicate login
+				return false;
+			}
+			return true;
+		}
+		
+		$query->free_result();
+		return false;
+	}// is_duplicate_login
 	
 	
 	/**
@@ -935,23 +1117,6 @@ class account_model extends CI_Model {
 			unset( $like_data );
 		}
 		$this->db->group_by( 'accounts.account_id' );
-		
-		/*$sql = 'select * from ' . $this->db->dbprefix( 'accounts' ) . ' as acc';
-		$sql .= ' left join ' . $this->db->dbprefix( 'account_level' ) . ' as al';
-		$sql .= ' on acc.account_id = al.account_id';
-		$sql .= ' left join ' . $this->db->dbprefix( 'account_level_group' ) . ' as alg';
-		$sql .= ' on al.level_group_id = alg.level_group_id';
-		$sql .= ' where 1';
-		$q = trim( $this->input->get( 'q' ) );
-		if ( $q != null && $q != 'none' ) {
-			$sql .= ' and (';
-			$sql .= " account_username like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or account_email like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or account_fullname like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= " or account_status_text like '%" . $this->db->escape_like_str( $q ) . "%'";
-			$sql .= ')';
-		}
-		$sql .= ' group by acc.account_id';*/
 		
 		// order and sort
 		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
@@ -1030,6 +1195,7 @@ class account_model extends CI_Model {
 		if ( !is_numeric( $account_id ) ) {return null;}
 		
 		// query sql
+		$this->db->join( 'sites', 'sites.site_id = account_logins.site_id', 'left' );
 		$this->db->where( 'account_id', $account_id );
 		
 		// order and sort
@@ -1175,7 +1341,6 @@ class account_model extends CI_Model {
 		
 		// delete cache of this account id
 		if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) && isset( $cm_account['email'] ) ) {
-			$this->modules_plug->do_action( 'account_logout', $cm_account );
 			$this->config_model->delete_cache( 'chkacc_'.$cm_account['id'].'_' );
 		}
 		
@@ -1185,6 +1350,9 @@ class account_model extends CI_Model {
 		// delete cookie
 		delete_cookie( 'admin_account' );
 		delete_cookie( 'member_account' );
+		
+		// module plug here
+		$this->modules_plug->do_action( 'account_logout', $cm_account );
 		
 		// done
 		return true;
@@ -1244,20 +1412,21 @@ class account_model extends CI_Model {
 		 // check password change and set password value for update in db.
 		if ( !empty( $data['account_new_password'] ) ) {
 			$old_password = $this->encrypt_password( $data['account_password'] );
-			$data['account_old_password_encrypted'] = $old_password;
+			$data['account_old_password_encrypted'] = $data['account_password'];
 			$data['account_new_password_encrypted'] = $this->encrypt_password( $data['account_new_password'] );
 			$get_old_password_from_db = $this->show_accounts_info( $data['account_id'], 'account_id', 'account_password' );
 			
 			// check old password is match in db.
-			if ( $old_password == $get_old_password_from_db ) {
+			if ($this->checkPassword($data['account_password'], $get_old_password_from_db)) {
 				$data['account_password'] = $data['account_new_password_encrypted'];
-				// any APIs add here
+				
+				// module plug here
 				$this->modules_plug->do_action( 'account_change_password', $data );
 			} else {
-				unset( $old_password, $get_old_password_from_db );
+				unset($get_old_password_from_db);
 				return $this->lang->line( 'account_wrong_password' );
 			}
-			unset( $old_password, $get_old_password_from_db );
+			unset($get_old_password_from_db);
 		} else {
 			// no password change, remove this variable to prevent set null value to db while update.
 			unset( $data['account_password'] );
@@ -1274,7 +1443,7 @@ class account_model extends CI_Model {
 		$this->config_model->delete_cache( 'ainf_' );
 		$this->config_model->delete_cache( 'chkacc_'.$data['account_id'].'_' );
 		
-		// any APIs add here.
+		// module plug here
 		$this->modules_plug->do_action( 'account_member_edit', $data );
 		
 		return true;
@@ -1290,53 +1459,70 @@ class account_model extends CI_Model {
 		if ( !isset( $data['account_username'] ) || !isset( $data['account_password'] ) ) {return false;}
 		
 		$this->db->where( 'account_username', $data['account_username'] );
-		$this->db->where( 'account_password', $this->encrypt_password( $data['account_password'] ) );
 		$query = $this->db->get( 'accounts' );
 		
 		if ( $query->num_rows() > 0 ) {
 			$row = $query->row();
 			if ( $row->account_status == '1' ) {
-				// generate session id for check simultanous login
-				$this->load->library( 'session' );
-				$session_id = $this->session->userdata( 'session_id' );
-				
-				// set cookie
-				$this->load->library( 'encrypt' );
-				$this->load->helper( 'cookie' );
-				
-				$expires = ( $this->input->post( 'remember', true ) == 'yes' ? (60*60*24*365)/12 : '0' );
-				$set_cm_account['id'] = $row->account_id;
-				$set_cm_account['username'] = $data['account_username'];
-				$set_cm_account['password'] = $row->account_password;
-				$set_cm_account['fullname'] = $row->account_fullname;
-				$set_cm_account['onlinecode'] = $session_id;
-				$set_cm_account = $this->encrypt->encode( serialize( $set_cm_account ) );
-				set_cookie( 'member_account', $set_cm_account, $expires );
-				
-				// update session
-				$this->load->helper( 'date' );
-				$this->db->set( 'account_online_code', $session_id );
-				$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
-				$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
-				$this->db->where( 'account_id', $row->account_id );
-				$this->db->update( 'accounts' );
-				
-				// record log in
-				$this->admin_login_record( $row->account_id, '1', 'Success' );
-				$query->free_result();
-				
-				// any api here.
-				$this->modules_plug->do_action( 'account_login_process', $data );
-				unset( $query, $row, $session_id, $expires, $set_cm_account );
-				
-				return true;
+				// check hash password.
+				if ($this->checkPassword($data['account_password'], $row->account_password) === true) {
+					// generate session id for check simultanous login
+					$this->load->library( 'session' );
+					$session_id = $this->session->userdata( 'session_id' );
+
+					// set cookie
+					$this->load->library( 'encrypt' );
+					$this->load->helper( 'cookie' );
+
+					$expires = ( $this->input->post( 'remember', true ) == 'yes' ? (60*60*24*365)/12 : '0' );
+					$set_cm_account['id'] = $row->account_id;
+					$set_cm_account['username'] = $data['account_username'];
+					$set_cm_account['password'] = $row->account_password;
+					$set_cm_account['fullname'] = $row->account_fullname;
+					$set_cm_account['onlinecode'] = $session_id;
+					$set_cm_account = $this->encrypt->encode( serialize( $set_cm_account ) );
+					set_cookie( 'member_account', $set_cm_account, $expires );
+
+					// update session
+					$this->load->helper( 'date' );
+					//$this->db->set( 'account_online_code', $session_id );// deprecated
+					$this->db->set( 'account_last_login', date( 'Y-m-d H:i:s', time() ) );
+					$this->db->set( 'account_last_login_gmt', date( 'Y-m-d H:i:s', local_to_gmt( time() ) ) );
+					$this->db->where( 'account_id', $row->account_id );
+					$this->db->update( 'accounts' );
+
+					// add online code for multisite check ------------------------------------------------
+					$session_data['account_id'] = $row->account_id;
+					$session_data['session_id'] = $session_id;
+					$this->add_login_session( $session_data );
+					unset( $session_data );
+					// add online code for multisite check ------------------------------------------------
+
+					// record log in
+					$this->admin_login_record( $row->account_id, '1', 'Success' );
+					$query->free_result();
+
+					// module plug here
+					$this->modules_plug->do_action( 'account_login_process', $data );
+					unset( $query, $row, $session_id, $expires, $set_cm_account );
+
+					return true;
+				} else {
+					// password not match
+					// login failed.
+					$this->admin_login_record( $row->account_id, '0', 'Wrong username or password' );
+					$query->free_result();
+					unset( $query, $row );
+
+					return $this->lang->line( 'account_wrong_username_or_password' );
+				}
 			} else {
 				// account disabled
 				$this->admin_login_record( $row->account_id, '0', 'Account was disabed.' );
 				$query->free_result();
-				unset( $query, $row );
+				unset($query);
 				
-				return $this->lang->line( 'account_disabled' ) . ': ' . $row->account_status_text;
+				return $this->lang->line('account_disabled') . ': ' . $row->account_status_text;
 			}
 		}
 		$query->free_result();
@@ -1409,7 +1595,7 @@ class account_model extends CI_Model {
 		$this->db->set( 'account_id', $account_id );
 		$this->db->insert( 'account_level' );
 		
-		// any APIs add here.
+		// module plug here
 		$this->modules_plug->do_action( 'account_register', $data );
 		
 		// done
@@ -1617,14 +1803,14 @@ class account_model extends CI_Model {
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
 		
 		// check cached
-		if ( ! $alg_val = $this->cache->get( 'alg_'.$lv_group_id.'_'.$return_field ) ) {
+		if ( ! $alg_val = $this->cache->get( 'alg_'.SITE_TABLE.$lv_group_id.'_'.$return_field ) ) {
 			$this->db->where( 'level_group_id', $lv_group_id );
 			$query = $this->db->get( 'account_level_group' );
 			
 			if ( $query->num_rows() > 0 ) {
 				$row = $query->row();
 				$query->free_result();
-				$this->cache->save( 'alg_'.$lv_group_id.'_'.$return_field, $row->$return_field, 3600 );
+				$this->cache->save( 'alg_'.SITE_TABLE.$lv_group_id.'_'.$return_field, $row->$return_field, 3600 );
 				return $row->$return_field;
 			}
 			

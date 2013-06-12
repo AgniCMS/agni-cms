@@ -61,19 +61,32 @@ class comment extends admin_controller {
 		unset( $comment );
 		
 		// check permissions-----------------------------------------------------------
-		if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_own_perm' ) && $row->account_id != $my_account_id ) {
-			// this user has permission to edit own post, but NOT editing own post
-			if ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_other_perm' ) ) {
-				// this user has NOT permission to edit other's post, but editing other's post
-				$query->free_result();
-				unset( $row, $query, $my_account_id );
-				redirect( 'site-admin' );
-			}
-		} elseif ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_own_perm' ) && $row->account_id == $my_account_id ) {
-			// this user has NOT permission to edit own post, but editing own post.
-			$query->free_result();
-			unset( $row, $query, $my_account_id );
-			redirect( 'site-admin' );
+		if ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm') === false && $row->account_id == $my_account_id) {
+			// user has NO permission to edit own and editing own.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_edit_yours')
+				)
+			);
+			redirect('site-admin/comment');
+		} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm') === false && $row->account_id != $my_account_id) {
+			// user has NO permission to edit others and editing others.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_edit_others')
+				)
+			);
+			redirect('site-admin/comment');
 		}
 		// end check permissions-----------------------------------------------------------
 		
@@ -106,13 +119,22 @@ class comment extends admin_controller {
 			$this->form_validation->set_rules( 'email', 'lang:comment_email', 'trim|valid_email|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save result
 				$result = $this->comments_model->edit( $data );
 				if ( $result === true ) {
 					$this->load->library( 'session' );
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">' . $this->lang->line( 'admin_saved' ) . '</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('admin_saved')
+						)
+					);
+					
+					// go back
 					$this->load->library( 'user_agent' );
 					if ( $this->agent->is_referral() && $this->agent->referrer() != current_url() ) {
 						redirect( $this->agent->referrer() );
@@ -120,7 +142,8 @@ class comment extends admin_controller {
 						redirect( 'site-admin/comment' );
 					}
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">' . $result . '</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -151,11 +174,12 @@ class comment extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// list item
 		if ( $this->input->get( 'orders' ) == null && $this->input->get( 'sort' ) == null ) {
@@ -225,17 +249,15 @@ class comment extends admin_controller {
 					$query->free_result();
 					
 					// check permissions-----------------------------------------------------------
-					if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_own_perm' ) && $row->account_id != $my_account_id ) {
-						if ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_other_perm' ) ) {
-							$query->free_result();
-							unset( $row, $query );
-							continue;
-						}
-					} elseif ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_own_perm' ) && $row->account_id == $my_account_id ) {
-						$query->free_result();
-						unset( $row, $query );
+					if ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm') === false && $row->account_id == $my_account_id) {
+						// user has NO permission to edit own and editing own.
+						unset($row, $my_account_id, $query);
 						continue;
-					}
+					} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm') === false && $row->account_id != $my_account_id) {
+						// user has NO permission to edit others and editing others.
+						unset($row, $my_account_id, $query);
+						continue;
+					} 
 					// end check permissions-----------------------------------------------------------
 					
 					// delete

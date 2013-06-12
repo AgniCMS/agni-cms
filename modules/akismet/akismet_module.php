@@ -134,19 +134,26 @@ class akismet_module {
 	
 	function comment_spam_check( $data = array() ) {
 		$ci =& get_instance();
+		
 		// get akismet api
 		$akismet_api = $this->_get_akismet_api();
+		
 		if ( $akismet_api == null ) {return $data;}
+		
 		// load akismet class
-		include( dirname(__FILE__).'/libraries/Akismet.class.php ');
+		include(dirname(__FILE__).'/libraries/Akismet.class.php');
+		
 		$akismet = new Akismet( site_url(), $akismet_api );
+		
 		if ( !$akismet->isKeyValid() ) {
 			// invalid key.
 			return $data;
 		}
+		
 		$akismet->setCommentAuthor( $data['name'] );
 		$akismet->setCommentContent( $data['comment_body_value'] );
 		$akismet->setPermalink( $data['permalink_url'] );
+		
 		if( $akismet->isCommentSpam() ) {
 			return 'spam';
 		} else {

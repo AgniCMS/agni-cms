@@ -35,6 +35,13 @@ class modules_model extends CI_Model {
 		// load agni config
 		$this->config->load( 'agni' );
 		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Add new module';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
 		// config upload
 		$config['upload_path'] = $this->config->item( 'agni_upload_path' ).'unzip';
 		$config['allowed_types'] = 'zip';
@@ -132,10 +139,22 @@ class modules_model extends CI_Model {
 			ob_start();
 			$module_uninstall = $module_system_name.'_uninstall';
 			$this->load->module( $module_system_name.'/'.$module_uninstall );
-			$this->$module_uninstall->index();
+			if ( method_exists( $this->$module_uninstall, 'index' ) ) {
+				$this->$module_uninstall->index();
+			}
 			$output = ob_get_contents();
 			ob_end_clean();
 		}
+		
+		// get module id for delete from module_sites
+		$this->db->where( 'module_system_name', $module_system_name );
+		$query = $this->db->get( 'modules' );
+		if ( $query->num_rows() > 0 ) {
+			$row = $query->row();
+			$this->db->where( 'module_id', $row->module_id )
+				   ->delete( 'module_sites' );
+		}
+		$query->free_result();
 		
 		$this->db->trans_start();
 		$this->db->where( 'module_system_name', $module_system_name );
@@ -149,7 +168,15 @@ class modules_model extends CI_Model {
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache( 'ismodactive_' );
+		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name );
+		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
+		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Delete module '.$module_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		// load file helper for delete folder recursive
 		$this->load->helper( 'file' );
@@ -170,12 +197,11 @@ class modules_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	function do_activate( $module_system_name = '' ) {
+	function do_activate( $module_system_name = '', $site_id = '' ) {
 		$pdata = $this->read_module_metadata( $module_system_name.'/'.$module_system_name.'_module.php'  );
 		
-		// check if module activated
-		$this->db->where( 'module_system_name', $module_system_name );
-		$query = $this->db->get( 'modules' );
+		// check if module is inserted
+		$row = $this->get_modules_data( array( 'module_system_name' => $module_system_name ) );
 		
 		// set data for insert/update
 		$this->db->set( 'module_name', ( empty($pdata['name']) ? $module_system_name : $pdata['name'] ) );
@@ -184,28 +210,58 @@ class modules_model extends CI_Model {
 		$this->db->set( 'module_description', ( !empty($pdata['description']) ? $pdata['description'] : null ) );
 		$this->db->set( 'module_author', ( !empty($pdata['author_name']) ? $pdata['author_name'] : null ) );
 		$this->db->set( 'module_author_url', ( !empty($pdata['author_url']) ? $pdata['author_url'] : null ) );
-		$this->db->set( 'module_enable', '1' );
 		
-		if ( $query->num_rows() <= 0 ) {
+		if ( $row == null ) {
 			// never install, use insert.
 			$this->db->set( 'module_system_name', $module_system_name );
 			$this->db->insert( 'modules' );
+			
+			// inserted, get modules data again
+			$row = $this->get_modules_data( array( 'module_system_name' => $module_system_name ) );
 		} else {
 			$this->db->where( 'module_system_name', $module_system_name );
 			$this->db->update( 'modules' );
 		}
 		
-		//
-		unset( $pdata );
+		// check if module is in modules_sites
+		$this->db->where( 'module_id', $row->module_id )
+			   ->where( 'site_id', $site_id );
+		if ( $this->db->count_all_results( 'module_sites' ) > 0 ) {
+			// use update
+			$this->db->where( 'module_id', $row->module_id )
+				   ->where( 'site_id', $site_id )
+				   ->set( 'module_enable', '1' )
+				   ->update( 'module_sites' );
+		} else {
+			// use insert
+			$this->db->set( 'module_id', $row->module_id )
+				   ->set( 'site_id', $site_id )
+				   ->set( 'module_enable', '1' )
+				   ->insert( 'module_sites' );
+		}
+		
+		// clear memory usage
+		unset( $row, $pdata );
 		
 		// delete cache
-		$this->config_model->delete_cache( 'ismodactive_' );
+		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name.'_'.$site_id );
+		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
+		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Enable module '.$module_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		// if module have install action?
 		$this->load->module( array( $module_system_name.'_install' ) );
 		$find_install = Modules::find($module_system_name.'_install', $module_system_name, 'controllers/');
 		if ( isset( $find_install[0] ) && $find_install[0] != null ) {
-			redirect( $module_system_name.'/'.$module_system_name.'_install' );
+			// set status as installed.
+			$this->set_install_module( $module_system_name, $site_id );
+			
+			redirect( $module_system_name.'/'.$module_system_name.'_install?site_id='.$site_id );
 		} else {
 			return true;
 		}
@@ -217,12 +273,22 @@ class modules_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	function do_deactivate( $module_system_name = '' ) {
+	function do_deactivate( $module_system_name = '', $site_id = '' ) {
 		$this->db->trans_start();
 		
+		$query = $this->db->where( 'module_system_name', $module_system_name )
+					->get( 'modules' );
+		$row = $query->row();
+		
+		if ( $query->num_rows() <= 0 ) {
+			$query->free_result();
+			return false;
+		}
+		
 		$this->db->set( 'module_enable', '0' );
-		$this->db->where( 'module_system_name', $module_system_name );
-		$this->db->update( 'modules' );
+		$this->db->where( 'module_id', $row->module_id )
+			   ->where( 'site_id', $site_id );
+		$this->db->update( 'module_sites' );
 		
 		$this->db->trans_complete();
 		
@@ -233,10 +299,91 @@ class modules_model extends CI_Model {
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache( 'ismodactive_' );
+		$this->config_model->delete_cache( 'ismodactive_'.$module_system_name.'_'.$site_id );
+		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
+		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Disable module '.$module_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		return true;
 	}// do_deactivate
+	
+	
+	/**
+	 * do_uninstall
+	 * @param string $module_system_name
+	 * @param integer $site_id
+	 * @return boolean
+	 */
+	function do_uninstall( $module_system_name = '', $site_id = '' ) {
+		$this->db->trans_start();
+		
+		$query = $this->db->where( 'module_system_name', $module_system_name )
+					->get( 'modules' );
+		$row = $query->row();
+		
+		if ( $query->num_rows() <= 0 ) {
+			$query->free_result();
+			return false;
+		}
+		
+		$this->db->set( 'module_install', '0' );
+		$this->db->where( 'module_id', $row->module_id )
+			   ->where( 'site_id', $site_id );
+		$this->db->update( 'module_sites' );
+		
+		$this->db->trans_complete();
+		
+		// check transaction
+		if ( $this->db->trans_status() === false ) {
+			$this->db->trans_rollback();
+			return false;
+		}
+		
+		// delete cache
+		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
+		$this->config_model->delete_cache( 'ismodhaspermission_'.$module_system_name );
+		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Set module '.$module_system_name.' as uninstalled';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
+		$find_uninstall = Modules::find($module_system_name.'_uninstall', $module_system_name, 'controllers/');
+		if ( isset( $find_uninstall[0] ) && $find_uninstall[0] != null ) {
+			if ( $this->input->is_ajax_request() ) {
+				ob_start();
+				redirect( $module_system_name.'/'.$module_system_name.'_uninstall?site_id='.$site_id );
+				ob_end_clean();
+			} else {
+				redirect( $module_system_name.'/'.$module_system_name.'_uninstall?site_id='.$site_id );
+			}
+		}
+		
+		return true;
+	}// do_uninstall
+	
+	
+	/**
+	 * get_modules_data
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_modules_data( $data = array() ) {
+		if ( is_array( $data ) && !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		
+		$query = $this->db->get( 'modules' );
+		
+		return $query->row();
+	}// get_modules_data
 	
 	
 	/**
@@ -244,21 +391,35 @@ class modules_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	function is_activated( $module_system_name = '' ) {
+	function is_activated( $module_system_name = '', $site_id = '' ) {
 		if ( $module_system_name == null ) {return false;}
+		if ( $site_id == null ) {return false;}
+		
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
+		
 		// check cached
-		if ( false === $ismod_active = $this->cache->get( 'ismodactive_'.$module_system_name ) ) {
+		if ( false === $ismod_active = $this->cache->get( 'ismodactive_'.$module_system_name.'_'.$site_id ) ) {
 			$this->db->where( 'module_system_name', $module_system_name );
-			$this->db->where( 'module_enable', '1' );
-			if ( $this->db->count_all_results( 'modules' ) > 0 ) {
-				$this->cache->save( 'ismodactive_'.$module_system_name, 'true', 2678400 );
-				return true;
+			$query = $this->db->get( 'modules' );
+			
+			if ( $query->num_rows() > 0 ) {
+				$row = $query->row();
+				$this->db->where( 'module_id', $row->module_id )
+					   ->where( 'site_id', $site_id )
+					   ->where( 'module_enable', '1' );
+				unset( $row );
+				if ( $this->db->count_all_results( 'module_sites' ) > 0 ) {
+					$this->cache->save( 'ismodactive_'.$module_system_name.'_'.$site_id, 'true', 2678400 );
+					return true;
+				}
 			}
-			$this->cache->save( 'ismodactive_'.$module_system_name, 'false', 2678400 );
+			
+			$query->free_result();
+			$this->cache->save( 'ismodactive_'.$module_system_name.'_'.$site_id, 'false', 2678400 );
 			return false;
 		}
+		
 		// return cached
 		if ( $ismod_active == 'true' ) {
 			return true;
@@ -266,6 +427,70 @@ class modules_model extends CI_Model {
 			return false;
 		}
 	}// is_activated
+	
+	
+	/**
+	 * is_activated_one
+	 * check if atleast one module activated in one site.
+	 * @param string $module_system_name
+	 * @return boolean
+	 */
+	function is_activated_one( $module_system_name = '' ) {
+		if ( $module_system_name == null ) {return false;}
+		
+		$this->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' )
+			   ->where( 'module_system_name', $module_system_name )
+			   ->where( 'module_sites.module_enable', '1' );
+		if ( $this->db->count_all_results( 'modules' ) > 0 ) {
+			return true;
+		}
+		
+		return false;
+	}// is_activated_one
+	
+	
+	/**
+	 * is_installed
+	 * @param string $module_system_name
+	 * @param integer $site_id
+	 * @return boolean
+	 */
+	function is_installed( $module_system_name = '', $site_id = '' ) {
+		if ( $module_system_name == null ) {return false;}
+		if ( $site_id == null ) {return false;}
+		
+		// load cache driver
+		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
+		
+		// check cached
+		if ( false === $ismod_install = $this->cache->get( 'ismodinstall_'.$module_system_name.'_'.$site_id ) ) {
+			$this->db->where( 'module_system_name', $module_system_name );
+			$query = $this->db->get( 'modules' );
+			
+			if ( $query->num_rows() > 0 ) {
+				$row = $query->row();
+				$this->db->where( 'module_id', $row->module_id )
+					   ->where( 'site_id', $site_id )
+					   ->where( 'module_install', '1' );
+				unset( $row );
+				if ( $this->db->count_all_results( 'module_sites' ) > 0 ) {
+					$this->cache->save( 'ismodinstall_'.$module_system_name.'_'.$site_id, 'true', 2678400 );
+					return true;
+				}
+			}
+			
+			$query->free_result();
+			$this->cache->save( 'ismodinstall_'.$module_system_name.'_'.$site_id, 'false', 2678400 );
+			return false;
+		}
+		
+		// return cached
+		if ( $ismod_install == 'true' ) {
+			return true;
+		} else {
+			return false;
+		}
+	}// is_installed
 	
 	
 	/**
@@ -331,7 +556,10 @@ class modules_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_all_widgets() {
-		$this->db->where( 'module_enable', '1' );
+		$this->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' );
+		$this->db->where( 'module_sites.module_enable', '1' );
+		$this->db->group_by( 'modules.module_id' );
+		
 		$query = $this->db->get( 'modules' );
 		
 		// load helper
@@ -386,9 +614,14 @@ class modules_model extends CI_Model {
 	 * load_admin_nav
 	 * @return string|null 
 	 */
-	function load_admin_nav() {
+	function load_admin_nav() 
+	{
+		set_site_id();
+		
 		// load enabled module
-		$this->db->where( 'module_enable', '1' );
+		$this->db->join( 'module_sites', 'module_sites.module_id = modules.module_id', 'inner' );
+		$this->db->where('module_sites.site_id', SITE_ID);
+		$this->db->where( 'module_sites.module_enable', '1' );
 		$this->db->order_by( 'module_system_name', 'asc' );
 		
 		$query = $this->db->get( 'modules' );
@@ -473,6 +706,8 @@ class modules_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function scan_module_dir() {
+		$this->load->model( 'siteman_model' );
+		
 		$map = scandir( $this->module_dir );
 		
 		if ( is_array( $map ) && !empty( $map ) ) {
@@ -500,7 +735,7 @@ class modules_model extends CI_Model {
 						unset( $pdata );
 						
 						// check if activated
-						$dir[$i]['module_activated'] = $this->is_activated( $item );
+						$dir[$i]['module_activated'] = $this->is_activated( $item, $this->siteman_model->get_site_id() );
 						
 						unset( $result );
 					}
@@ -511,6 +746,45 @@ class modules_model extends CI_Model {
 			return $dir;
 		}
 	}// scan_module_dir
+	
+	
+	/**
+	 * set_install_module
+	 * set module install status to 1.
+	 * @param string $module_system_name
+	 * @param integer $site_id
+	 * @return boolean
+	 */
+	function set_install_module( $module_system_name = '', $site_id = '' ) {
+		if ( $module_system_name == null || !is_numeric( $site_id ) ) {return null;}
+		
+		$this->db->where( 'module_system_name', $module_system_name );
+		$query = $this->db->get( 'modules' );
+		
+		if ( $query->num_rows() > 0 ) {
+			$row = $query->row();
+			
+			$this->db->where( 'module_id', $row->module_id )
+				   ->where( 'site_id', $site_id )
+				   ->set( 'module_install', '1' )
+				   ->update( 'module_sites' );
+			
+			unset( $row );
+		}
+		
+		// delete cache
+		$this->config_model->delete_cache( 'ismodinstall_'.$module_system_name.'_'.$site_id );
+		
+		// system log
+		$log['sl_type'] = 'module';
+		$log['sl_message'] = 'Set module '.$module_system_name.' as installed';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
+		
+		$query->free_result();
+		return true;
+	}// set_install_module
 	
 	
 }

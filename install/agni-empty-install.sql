@@ -3,20 +3,14 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 16, 2012 at 09:27 PM
--- Server version: 5.5.23
--- PHP Version: 5.3.11
+-- Generation Time: Apr 19, 2013 at 10:16 AM
+-- Server version: 5.5.24
+-- PHP Version: 5.4.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
 --
--- Database: `v_agni`
+-- Database: `v_agnicms_multisite`
 --
 
 -- --------------------------------------------------------
@@ -29,7 +23,8 @@ CREATE TABLE IF NOT EXISTS `an_accounts` (
   `account_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_username` varchar(255) DEFAULT NULL,
   `account_email` varchar(255) DEFAULT NULL,
-  `account_password` varchar(255) DEFAULT NULL,
+  `account_salt` varchar(255) DEFAULT NULL COMMENT 'store salt for use when hashing password',
+  `account_password` tinytext,
   `account_fullname` varchar(255) DEFAULT NULL,
   `account_birthdate` date DEFAULT NULL,
   `account_avatar` varchar(255) DEFAULT NULL,
@@ -40,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `an_accounts` (
   `account_create_gmt` datetime DEFAULT NULL COMMENT 'gmt0, utc0',
   `account_last_login` datetime DEFAULT NULL,
   `account_last_login_gmt` datetime DEFAULT NULL,
-  `account_online_code` varchar(255) DEFAULT NULL COMMENT 'store session code for check dubplicate log in if enabled.',
+  `account_online_code` varchar(255) DEFAULT NULL COMMENT 'store session code for check dubplicate log in if enabled. deprecated',
   `account_status` int(1) NOT NULL DEFAULT '0' COMMENT '0=disable, 1=enable',
   `account_status_text` varchar(255) DEFAULT NULL,
   `account_new_email` varchar(255) DEFAULT NULL,
@@ -53,9 +48,27 @@ CREATE TABLE IF NOT EXISTS `an_accounts` (
 -- Dumping data for table `an_accounts`
 --
 
-INSERT INTO `an_accounts` (`account_id`, `account_username`, `account_email`, `account_password`, `account_fullname`, `account_birthdate`, `account_avatar`, `account_signature`, `account_timezone`, `account_language`, `account_create`, `account_create_gmt`, `account_last_login`, `account_last_login_gmt`, `account_online_code`, `account_status`, `account_status_text`, `account_new_email`, `account_new_password`, `account_confirm_code`) VALUES
-(0, 'Guest', 'none@localhost', NULL, 'Guest', NULL, NULL, NULL, 'UP7', NULL, '2012-04-03 19:25:44', '2012-04-03 12:25:44', NULL, NULL, NULL, 0, 'You can''t login with this account.', NULL, NULL, NULL),
-(1, 'admin', 'admin@localhost.com', '6e6f59d20ef87183781895cb20d13c6663f3890c', NULL, NULL, NULL, NULL, 'UP7', NULL, '2011-04-20 19:20:04', '2011-04-20 12:20:04', '2012-06-16 17:09:17', '2012-06-16 10:09:17', 'e2135bb4faf4fb999e3bbebe86ed1cdf', 1, NULL, NULL, NULL, NULL);
+INSERT INTO `an_accounts` (`account_id`, `account_username`, `account_email`, `account_salt`, `account_password`, `account_fullname`, `account_birthdate`, `account_avatar`, `account_signature`, `account_timezone`, `account_language`, `account_create`, `account_create_gmt`, `account_last_login`, `account_last_login_gmt`, `account_online_code`, `account_status`, `account_status_text`, `account_new_email`, `account_new_password`, `account_confirm_code`) VALUES
+(0, 'Guest', 'none@localhost', NULL, NULL, 'Guest', NULL, NULL, NULL, 'UP7', NULL, '2012-04-03 19:25:44', '2012-04-03 12:25:44', NULL, NULL, NULL, 0, 'You can''t login with this account.', NULL, NULL, NULL),
+(1, 'admin', 'admin@localhost', NULL, '$P$FPnwJAQzX498tYCbbIfYTbdYiOCShE0', NULL, NULL, NULL, NULL, 'UP7', NULL, '2011-04-20 19:20:04', '2011-04-20 12:20:04', '2012-06-16 17:09:17', '2012-06-16 10:09:17', 'e2135bb4faf4fb999e3bbebe86ed1cdf', 1, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_account_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `an_account_fields` (
+  `account_id` int(11) NOT NULL COMMENT 'refer to accounts.account_id',
+  `field_name` varchar(255) DEFAULT NULL,
+  `field_value` text,
+  KEY `account_id` (`account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `an_account_fields`
+--
+
 
 -- --------------------------------------------------------
 
@@ -133,6 +146,7 @@ CREATE TABLE IF NOT EXISTS `an_account_level_permission` (
 CREATE TABLE IF NOT EXISTS `an_account_logins` (
   `account_login_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT NULL,
   `login_ua` varchar(255) DEFAULT NULL,
   `login_os` varchar(255) DEFAULT NULL,
   `login_browser` varchar(255) DEFAULT NULL,
@@ -147,6 +161,27 @@ CREATE TABLE IF NOT EXISTS `an_account_logins` (
 
 --
 -- Dumping data for table `an_account_logins`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_account_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_account_sites` (
+  `account_site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `account_id` int(11) DEFAULT NULL COMMENT 'refer to accounts.account_id',
+  `site_id` int(11) DEFAULT NULL COMMENT 'refer to sites.site_id',
+  `account_last_login` bigint(20) DEFAULT NULL,
+  `account_last_login_gmt` bigint(20) DEFAULT NULL,
+  `account_online_code` varchar(255) DEFAULT NULL COMMENT 'store session code for check dubplicate log in if enabled.',
+  PRIMARY KEY (`account_site_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_account_sites`
 --
 
 
@@ -198,9 +233,6 @@ CREATE TABLE IF NOT EXISTS `an_ci_sessions` (
 -- Dumping data for table `an_ci_sessions`
 --
 
-INSERT INTO `an_ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activity`, `user_data`) VALUES
-('3fb85808b26e02b8a9200198f048fb20', '::1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0', 1339856660, ''),
-('57142e7800ddc7aa73c54db2b1a6ebb2', '::1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:13.0) Gecko/20100101 Firefox/13.0', 1339855628, 'a:1:{s:9:"user_data";s:0:"";}');
 
 -- --------------------------------------------------------
 
@@ -211,6 +243,7 @@ INSERT INTO `an_ci_sessions` (`session_id`, `ip_address`, `user_agent`, `last_ac
 CREATE TABLE IF NOT EXISTS `an_comments` (
   `comment_id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) NOT NULL DEFAULT '0',
+  `language` varchar(5) DEFAULT NULL,
   `post_id` int(11) DEFAULT NULL,
   `account_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL COMMENT 'comment author''s name',
@@ -235,6 +268,24 @@ CREATE TABLE IF NOT EXISTS `an_comments` (
 
 --
 -- Dumping data for table `an_comments`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_comment_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `an_comment_fields` (
+  `comment_id` int(11) NOT NULL,
+  `field_name` varchar(255) DEFAULT NULL,
+  `field_value` text,
+  KEY `comment_id` (`comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `an_comment_fields`
 --
 
 
@@ -268,14 +319,14 @@ INSERT INTO `an_config` (`config_name`, `config_value`, `config_core`, `config_d
 ('member_allow_register', '1', 1, 'allow users to register'),
 ('member_register_notify_admin', '0', 1, 'send email to notify admin when new member register?'),
 ('member_verification', '1', 1, 'member verification method.\r\n1 = verify by email\r\n2 = wait for admin verify'),
-('member_admin_verify_emails', 'admin@localhost.com', 1, 'emails of administrators to notice them when new member registration'),
+('member_admin_verify_emails', 'admin@localhost', 1, 'emails of administrators to notice them when new member registration'),
 ('mail_protocol', 'mail', 1, 'The mail sending protocol.\r\nmail, sendmail, smtp'),
 ('mail_mailpath', '/usr/sbin/sendmail', 1, 'The server path to Sendmail.'),
 ('mail_smtp_host', 'localhost', 1, 'SMTP Server Address.'),
-('mail_smtp_user', 'no-reply@localhost.com', 1, 'SMTP Username.'),
+('mail_smtp_user', 'no-reply@localhost', 1, 'SMTP Username.'),
 ('mail_smtp_pass', '', 1, 'SMTP Password.'),
 ('mail_smtp_port', '25', 1, 'SMTP Port.'),
-('mail_sender_email', 'no-reply@localhost.com', 1, 'Email for ''sender'''),
+('mail_sender_email', 'no-reply@localhost', 1, 'Email for ''sender'''),
 ('content_show_title', '1', 1, 'show h1 content title'),
 ('content_show_time', '1', 1, 'show content time. (publish, update, ...)'),
 ('content_show_author', '1', 1, 'show content author.'),
@@ -284,8 +335,18 @@ INSERT INTO `an_config` (`config_name`, `config_value`, `config_core`, `config_d
 ('comment_show_notallow', '0', 1, 'list old comments even if comment setting change to not allow new comment?\r\n0=not show, 1=show\r\nif 0 the system will not show comments when setting to not allow new comment.'),
 ('comment_perpage', '40', 1, 'number of comments per page'),
 ('comment_new_notify_admin', '1', 1, 'notify admin when new comment?\r\n0=no, 1=yes(require moderation only), 2=yes(all)'),
-('comment_admin_notify_emails', 'admin@localhost.com', 1, 'emails of administrators to notify when new comment or moderation required ?'),
-('media_allowed_types', '7z|aac|ace|ai|aif|aifc|aiff|avi|bmp|css|csv|doc|docx|eml|flv|gif|gz|h264|h.264|htm|html|jpeg|jpg|js|json|log|mid|midi|mov|mp3|mpeg|mpg|pdf|png|ppt|psd|swf|tar|text|tgz|tif|tiff|txt|wav|webm|word|xls|xlsx|xml|xsl|zip', 1, 'media upload allowed file types.\r\nthese types must specified mime-type in config/mimes.php');
+('comment_admin_notify_emails', 'admin@localhost', 1, 'emails of administrators to notify when new comment or moderation required ?'),
+('media_allowed_types', '7z|aac|ace|ai|aif|aifc|aiff|avi|bmp|css|csv|doc|docx|eml|flv|gif|gz|h264|h.264|htm|html|jpeg|jpg|js|json|log|mid|midi|mov|mp3|mpeg|mpg|pdf|png|ppt|psd|swf|tar|text|tgz|tif|tiff|txt|wav|webm|word|xls|xlsx|xml|xsl|zip', 1, 'media upload allowed file types.\r\nthese types must specified mime-type in config/mimes.php'),
+('agni_version', '1.0', 1, 'current Agni CMS version. use for compare with auto update.'),
+('angi_auto_update', '1', 1, 'enable auto update. recommended setting to \'true\' (1 = true, 0 = false) for use auto update, but if you want manual update (core hacking or custom modification through core files) set to false.'),
+('agni_auto_update_url', 'http://agnicms.org/th/modules/updateservice/update.xml', 1, 'url of auto update.'),
+('agni_system_cron', '1', 1, 'agni system cron. set to true (1) if you want to run cron from system or set to false (0) if you already have real cron job call to http://yourdomain.tld/path-installed/cron .'),
+('ftp_host', '', 1, 'FTP host name. ftp is very useful in update/download files from remote host to current host.'),
+('ftp_username', '', 1, 'FTP username'),
+('ftp_password', '', 1, 'FTP password'),
+('ftp_port', '21', 1, 'FTP port. usually is 21'),
+('ftp_passive', 'true', 1, 'FTP passive mode'),
+('ftp_basepath', '/public_html/', 1, 'FTP base path. store path to public html (web root)');
 
 -- --------------------------------------------------------
 
@@ -296,7 +357,7 @@ INSERT INTO `an_config` (`config_name`, `config_value`, `config_core`, `config_d
 CREATE TABLE IF NOT EXISTS `an_files` (
   `file_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) NOT NULL,
-  `language` varchar(5) DEFAULT NULL,
+  `folder` text COMMENT 'contain path to folder that store this file.',
   `file` varchar(255) DEFAULT NULL,
   `file_name` varchar(255) DEFAULT NULL,
   `file_original_name` varchar(255) DEFAULT NULL,
@@ -395,8 +456,6 @@ CREATE TABLE IF NOT EXISTS `an_modules` (
   `module_description` text,
   `module_author` varchar(255) DEFAULT NULL,
   `module_author_url` varchar(255) DEFAULT NULL,
-  `module_enable` int(1) NOT NULL DEFAULT '0',
-  `module_install` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`module_id`),
   UNIQUE KEY `module_system_name` (`module_system_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
@@ -405,8 +464,30 @@ CREATE TABLE IF NOT EXISTS `an_modules` (
 -- Dumping data for table `an_modules`
 --
 
-INSERT INTO `an_modules` (`module_id`, `module_system_name`, `module_name`, `module_url`, `module_version`, `module_description`, `module_author`, `module_author_url`, `module_enable`, `module_install`) VALUES
-(1, 'core', 'Agni core module.', 'http://www.agnicms.org', NULL, 'Agni cms core module.', 'vee w.', 'http://okvee.net', 1, 0);
+INSERT INTO `an_modules` (`module_id`, `module_system_name`, `module_name`, `module_url`, `module_version`, `module_description`, `module_author`, `module_author_url`) VALUES
+(1, 'core', 'Agni core module.', 'http://www.agnicms.org', NULL, 'Agni cms core module.', 'vee w.', 'http://okvee.net');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_module_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_module_sites` (
+  `module_site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `module_id` int(11) NOT NULL,
+  `site_id` int(11) DEFAULT NULL,
+  `module_enable` int(1) NOT NULL DEFAULT '0',
+  `module_install` int(1) NOT NULL DEFAULT '0' COMMENT 'use when the module want to install db, script or anything.',
+  PRIMARY KEY (`module_site_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `an_module_sites`
+--
+
+INSERT INTO `an_module_sites` (`module_site_id`, `module_id`, `site_id`, `module_enable`, `module_install`) VALUES
+(1, 1, 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -438,6 +519,7 @@ CREATE TABLE IF NOT EXISTS `an_posts` (
   `meta_keywords` varchar(255) DEFAULT NULL,
   `content_settings` text COMMENT 'store serialize array of settings',
   `comment_count` int(9) NOT NULL DEFAULT '0',
+  `view_count` int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (`post_id`),
   KEY `account_id` (`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='for content-type article, pages, static content.' AUTO_INCREMENT=1 ;
@@ -490,6 +572,96 @@ CREATE TABLE IF NOT EXISTS `an_post_revision` (
 --
 
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_queue`
+--
+
+CREATE TABLE IF NOT EXISTS `an_queue` (
+  `queue_id` int(11) NOT NULL AUTO_INCREMENT,
+  `queue_name` varchar(255) DEFAULT NULL,
+  `queue_data` longtext,
+  `queue_create` bigint(20) DEFAULT NULL,
+  `queue_update` bigint(20) DEFAULT NULL,
+  `queue_expire` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`queue_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='store ''to do'' job queue.' AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_queue`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_sites` (
+  `site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `site_name` varchar(255) DEFAULT NULL,
+  `site_domain` varchar(255) DEFAULT NULL COMMENT 'ex. domain.com, sub.domain.com with out http://',
+  `site_status` int(1) NOT NULL DEFAULT '0' COMMENT '0=disable, 1=enable',
+  `site_create` bigint(20) DEFAULT NULL,
+  `site_create_gmt` bigint(20) DEFAULT NULL,
+  `site_update` bigint(20) DEFAULT NULL,
+  `site_update_gmt` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`site_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `an_sites`
+--
+
+INSERT INTO `an_sites` (`site_id`, `site_name`, `site_domain`, `site_status`, `site_create`, `site_create_gmt`, `site_update`, `site_update_gmt`) VALUES
+(1, 'Agni CMS', NULL, 1, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_syslog`
+--
+
+CREATE TABLE IF NOT EXISTS `an_syslog` (
+  `sl_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'system log id',
+  `account_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT NULL,
+  `sl_type` varchar(100) DEFAULT NULL COMMENT 'log type. example system, user action',
+  `sl_message` text,
+  `sl_variables` longtext,
+  `sl_url` tinytext COMMENT 'url of event.',
+  `sl_referer` tinytext COMMENT 'url referer of event',
+  `sl_ipaddress` varchar(50) DEFAULT NULL,
+  `sl_datetime` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`sl_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='contain system log.' AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_syslog`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_taxonomy_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `an_taxonomy_fields` (
+  `tid` int(11) NOT NULL AUTO_INCREMENT,
+  `field_name` varchar(255) DEFAULT NULL,
+  `field_value` text ,
+  PRIMARY KEY (`tid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `an_taxonomy_fields`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -529,6 +701,8 @@ CREATE TABLE IF NOT EXISTS `an_taxonomy_term_data` (
   `t_uri` tinytext,
   `t_uri_encoded` text,
   `t_uris` longtext COMMENT 'full path of uri, eg. animal/4legs/cat (no end slash and must uri encoded)',
+  `t_position` int(9) NOT NULL DEFAULT '0' COMMENT 'for use as position order when some module need it.',
+  `t_status` int(1) NOT NULL DEFAULT '1' COMMENT '0=not publish, 1=publish',
   `meta_title` varchar(255) DEFAULT NULL,
   `meta_description` varchar(255) DEFAULT NULL,
   `meta_keywords` varchar(255) DEFAULT NULL,
@@ -555,21 +729,40 @@ CREATE TABLE IF NOT EXISTS `an_themes` (
   `theme_url` varchar(255) DEFAULT NULL,
   `theme_version` varchar(30) DEFAULT NULL,
   `theme_description` text,
-  `theme_enable` int(1) NOT NULL DEFAULT '0',
-  `theme_default` int(1) NOT NULL DEFAULT '0',
-  `theme_default_admin` int(1) NOT NULL DEFAULT '0',
-  `theme_settings` text,
   PRIMARY KEY (`theme_id`),
   UNIQUE KEY `theme_system_name` (`theme_system_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `an_themes`
 --
 
-INSERT INTO `an_themes` (`theme_id`, `theme_system_name`, `theme_name`, `theme_url`, `theme_version`, `theme_description`, `theme_enable`, `theme_default`, `theme_default_admin`, `theme_settings`) VALUES
-(1, 'system', 'System', 'http://www.agnicms.org', '1.0', 'Agni system theme.', 1, 1, 1, NULL),
-(2, 'quick-start', 'Quick Start', 'http://www.agnicms.org', '1.0', 'For theme designer quick start theme.', 1, 0, 0, NULL);
+INSERT INTO `an_themes` (`theme_id`, `theme_system_name`, `theme_name`, `theme_url`, `theme_version`, `theme_description`) VALUES
+(1, 'system', 'System', 'http://www.agnicms.org', '1.0', 'Agni system theme.');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `an_theme_sites`
+--
+
+CREATE TABLE IF NOT EXISTS `an_theme_sites` (
+  `theme_site_id` int(11) NOT NULL AUTO_INCREMENT,
+  `theme_id` int(11) DEFAULT NULL,
+  `site_id` int(11) DEFAULT NULL,
+  `theme_enable` int(1) NOT NULL DEFAULT '0',
+  `theme_default` int(1) NOT NULL DEFAULT '0',
+  `theme_default_admin` int(11) NOT NULL DEFAULT '0',
+  `theme_settings` text,
+  PRIMARY KEY (`theme_site_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `an_theme_sites`
+--
+
+INSERT INTO `an_theme_sites` (`theme_site_id`, `theme_id`, `site_id`, `theme_enable`, `theme_default`, `theme_default_admin`, `theme_settings`) VALUES
+(1, 1, 1, 1, 1, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -584,8 +777,8 @@ CREATE TABLE IF NOT EXISTS `an_url_alias` (
   `uri` tinytext,
   `uri_encoded` text,
   `redirect_to` tinytext COMMENT 'for use in url redirect',
-  `redirect_to_encoded` text NULL DEFAULT NULL,
-  `redirect_code` INT( 5 ) NULL DEFAULT NULL COMMENT '301 permanent, 302 temporarily',
+  `redirect_to_encoded` text,
+  `redirect_code` int(5) DEFAULT NULL COMMENT '301 permanent, 302 temporarily',
   `language` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`alias_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

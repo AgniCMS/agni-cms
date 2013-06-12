@@ -51,11 +51,13 @@ class block extends admin_controller {
 			$result = $this->blocks_model->add_to_area( $data );
 			if ( isset( $result['result'] ) && $result['result'] == true ) {
 				$output['form_status'] = '';
+				$output['form_status_message'] = '';
 				$output['result'] = true;
 				$output['block_id'] = $result['id'];
 			} else {
 				$output['result'] = false;
-				$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = $result;
 			}
 			
 			// output
@@ -202,12 +204,19 @@ class block extends admin_controller {
 			if ( $result === true ) {
 				// load session library
 				$this->load->library( 'session' );
-				$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>' );
+				$this->session->set_flashdata(
+					'form_status',
+					array(
+						'form_status' => 'success',
+						'form_status_message' => $this->lang->line('admin_saved')
+					)
+				);
 				
 				// done, redirect to manage block page.
 				redirect( 'site-admin/block?theme_system_name='.$row->theme_system_name );
 			} else {
-				$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = $result;
 			}
 		}
 		
@@ -229,11 +238,12 @@ class block extends admin_controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// list enabled themes
 		$output['list_themes'] = $this->themes_model->list_enabled_themes();
