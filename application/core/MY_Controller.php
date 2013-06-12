@@ -43,6 +43,9 @@ class MY_Controller extends MX_Controller {
 		
 		// load helper
 		$this->load->helper( array( 'block' ) );
+		
+		// module plug working at start point.
+		$this->modules_plug->do_action('front_core_controller_constructor', $this);
 	}// __construct
 	
 	

@@ -37,28 +37,46 @@ class MY_Router extends MX_Router {
 			/* module exists? */
 			if (is_dir($source = $location.$module.'/controllers/')) {
 				
-				/* ADD AGNICMS MODULE CHECK */
+				/* ADD AGNI CMS MODULE CHECK */
 				// ใน router core ใช้ get_instance ไม่ได้ จึงใช้ $ci->db->get() ไม่ได้ เลยต้อง hardcode เอง.
 				require_once( APPPATH.'config/database.php' );
 				if ( !isset( $db ) ) {
 					require( APPPATH.'config/database.php' );
 				}
-				$link = mysql_connect( $db['default']['hostname'], $db['default']['username'], $db['default']['password'] ) or die( 'Can\'t connect to db.' );
-				$db_selected = mysql_select_db( $db['default']['database'] ) or die( 'Can\'t select db.' );
-				mysql_query( 'SET character_set_results='.$db['default']['char_set'] );
-				mysql_query( 'SET character_set_client='.$db['default']['char_set'] );
-				mysql_query( 'SET character_set_connection='.$db['default']['char_set'] );
-				$result = mysql_query( 'select * from '.$db['default']['dbprefix'].'modules where module_system_name = \''.$module.'\' and module_enable = 1');
-				if ( mysql_num_rows($result) <= 0 ) {
-					mysql_free_result( $result );
-					mysql_close( $link );
+				$link = mysqli_connect( $db['default']['hostname'], $db['default']['username'], $db['default']['password'] ) or die( 'Can\'t connect to db.' );
+				$db_selected = mysqli_select_db( $link, $db['default']['database'] ) or die( 'Can\'t select db.' );
+				mysqli_query( $link, 'SET character_set_results='.$db['default']['char_set'] );
+				mysqli_query( $link, 'SET character_set_client='.$db['default']['char_set'] );
+				mysqli_query( $link, 'SET character_set_connection='.$db['default']['char_set'] );
+				// get site_id
+				$site_id = ( isset( $_GET['site_id'] ) ? $_GET['site_id'] : '' );
+				if ( $site_id == null ) {
+					$result = mysqli_query( $link, 'SELECT * FROM '.$db['default']['dbprefix'].'sites WHERE site_domain = \''.mysqli_real_escape_string( $link, $_SERVER['HTTP_HOST'] ).'\'' );
+					$row = mysqli_fetch_object( $result );
+					if ( $row != null ) {
+						$site_id = $row->site_id;
+						mysqli_free_result( $result );
+						unset( $result, $row );
+					} else {
+						// not found selected site.
+						mysqli_free_result( $result );
+						mysqli_close( $link );
+						unset( $link, $result, $row );
+						continue;
+					}
+				}
+				// check if this module in this site id is enable
+				$result = mysqli_query( $link, 'SELECT * FROM '.$db['default']['dbprefix'].'modules INNER JOIN '.$db['default']['dbprefix'].'module_sites ON '.$db['default']['dbprefix'].'module_sites.module_id = '.$db['default']['dbprefix'].'modules.module_id WHERE module_system_name = \''.$module.'\' AND '.$db['default']['dbprefix'].'module_sites.site_id = '.$site_id.' AND '.$db['default']['dbprefix'].'module_sites.module_enable = 1');
+				if ( mysqli_num_rows( $result ) <= 0 ) {
+					mysqli_free_result( $result );
+					mysqli_close( $link );
 					unset( $link, $db_selected );
 					continue;
 				}
-				mysql_free_result( $result );
-				mysql_close( $link );
+				mysqli_free_result( $result );
+				mysqli_close( $link );
 				unset( $link, $db_selected );
-				/* END ADD AGNICMS MODULE CHECK */
+				/* END ADD AGNI CMS MODULE CHECK */
 				
 				$this->module = $module;
 				$this->directory = $offset.$module.'/controllers/';

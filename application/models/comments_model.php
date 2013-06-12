@@ -39,12 +39,6 @@ class comments_model extends CI_Model {
 			return $this->lang->line( 'comment_post_not_exists' );
 		}
 		
-		/*$this->db->where( 'post_id', $data['post_id'] );
-		$query = $this->db->get( 'posts' );
-		if ( $query->num_rows() <= 0 ) {$query->free_result(); }
-		$row = $query->row();
-		$query->free_result();*/
-		
 		// additional data for insert to db
 		$data['ip_address'] = $this->input->ip_address();
 		$data['user_agent'] = $this->input->user_agent();
@@ -53,27 +47,6 @@ class comments_model extends CI_Model {
 		$data['comment_update'] = time();
 		$data['comment_update_gmt'] = local_to_gmt( time() );
 		
-		/*$this->db->set( 'parent_id', $data['parent_id'] );
-		$this->db->set( 'post_id', $data['post_id'] );
-		$this->db->set( 'account_id', $data['account_id'] );
-		$this->db->set( 'name', $data['name'] );
-		$this->db->set( 'subject', $data['subject'] );
-		$this->db->set( 'comment_body_value', $data['comment_body_value'] );
-		if ( isset( $data['email'] ) ) {
-			$this->db->set( 'email', $data['email'] );
-		}
-		if ( isset( $data['homepage'] ) ) {
-			$this->db->set( 'homepage', $data['homepage'] );
-		}
-		$this->db->set( 'comment_status', $data['comment_status'] );
-		$this->db->set( 'comment_spam_status', $data['comment_spam_status'] );
-		$this->db->set( 'ip_address', $this->input->ip_address() );
-		$this->db->set( 'user_agent', $this->input->user_agent() );
-		$this->db->set( 'comment_add', time() );
-		$this->db->set( 'comment_add_gmt', local_to_gmt( time() ) );
-		$this->db->set( 'comment_update', time() );
-		$this->db->set( 'comment_update_gmt', local_to_gmt( time() ) );
-		$this->db->set( 'thread', $data['thread'] );*/
 		$this->db->insert( 'comments', $data );
 		
 		// get insert id
@@ -82,9 +55,6 @@ class comments_model extends CI_Model {
 		// update post table -> total comments.
 		$this->load->model( 'posts_model' );
 		$this->posts_model->update_total_comment( $data['post_id'] );
-		
-		// comment's module plug
-		$this->modules_plug->do_action( 'comment_after_newcomment', $data );
 		
 		// email notify admin new comment
 		$cfg_val = $this->config_model->load( array( 'comment_new_notify_admin', 'comment_admin_notify_emails', 'mail_sender_email' ) );
@@ -122,6 +92,9 @@ class comments_model extends CI_Model {
 		}
 		
 		unset( $query, $row, $cfg_val, $user_email );
+		
+		// comment's module plug
+		$this->modules_plug->do_action( 'comment_after_newcomment', $data );
 		
 		// done
 		$output['id'] = $data['comment_id'];
@@ -269,17 +242,18 @@ class comments_model extends CI_Model {
 		
 		// query db to get current page that this comment will display in.
 		// this step cannot use active record because it has JOIN ... ON ... AND comes together.
-		$sql = 'select *, count(*) as count from '.$this->db->dbprefix( 'comments' ).' as c1';
-		$sql .= ' inner join '.$this->db->dbprefix( 'comments' ).' as c2 on c1.post_id = c2.post_id';
-		$sql .= ' and c2.comment_id = '.$comment_id;
+		$sql = 'SELECT *, count(*) AS count FROM '.$this->db->dbprefix( 'comments' ).' as c1';
+		$sql .= ' INNER JOIN '.$this->db->dbprefix( 'comments' ).' AS c2 ON c1.post_id = c2.post_id';
+		$sql .= ' AND c2.comment_id = '.$comment_id;
 		if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_viewall_perm', $account_id ) ) {
 			$sql .= ' and c1.comment_status = 1';
 		}
 		if ( $mode == 'thread' ) {
-			$sql .= ' where SUBSTRING(c1.thread, 1, (LENGTH(c1.thread) -1)) < SUBSTRING(c2.thread, 1, (LENGTH(c2.thread) -1))';
+			$sql .= ' WHERE SUBSTRING(c1.thread, 1, (LENGTH(c1.thread) -1)) < SUBSTRING(c2.thread, 1, (LENGTH(c2.thread) -1))';
 		} else {
-			$sql .= ' and c1.comment_id < '.$comment_id;
+			$sql .= ' AND c1.comment_id < '.$comment_id;
 		}
+		$sql .= ' GROUP BY c1.comment_id';
 		
 		$query = $this->db->query( $sql );
 		
@@ -325,14 +299,19 @@ class comments_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_item( $post_id = '',$mode = 'thread', $list_for = 'front' ) {
+		// comment view permission
+		$comment_view_permission = $this->account_model->check_admin_permission( 'comment_perm', 'comment_viewall_perm' );
+		
 		$this->db->select( '*, comments.account_id AS c1_account_id' );
 		$this->db->join( 'accounts', 'accounts.account_id = comments.account_id', 'left outer' );
 		$this->db->join( 'posts', 'posts.post_id = comments.post_id', 'left outer' );
 		
-		// sql query
+		$this->db->where( 'comments.language', $this->lang->get_current_lang() );
+		
+		// sql filter
 		$filter = strip_tags( trim( $this->input->get( 'filter' ) ) );
 		$filter_val = strip_tags( trim( $this->input->get( 'filter_val' ) ) );
-		if ( $list_for == 'front' && !$this->account_model->check_admin_permission( 'comment_perm', 'comment_viewall_perm' ) ) {
+		if ( $list_for == 'front' && ! $comment_view_permission ) {
 			$this->db->where( 'comment_status', '1' );
 		}
 		if ( $post_id != null ) {
@@ -454,13 +433,11 @@ class comments_model extends CI_Model {
 	 * @return string 
 	 */
 	function modify_content( $content = '' ) {
-		$original_content = $content;
-		
-		// modify content by plugin
-		$content = $this->modules_plug->do_action( 'comment_modifybody_value', $content );
-		
-		if ( $content == $original_content ) {
-			// modify content by core here.
+		if ($this->modules_plug->has_filter('comment_modifybody_value')) {
+			// modify content by plugin
+			$content = $this->modules_plug->do_filter( 'comment_modifybody_value', $content );
+		} else {
+			// modify content.
 			$content = htmlspecialchars( $content, ENT_QUOTES, config_item( 'charset' ) );
 			$content = nl2br( $content );
 		}

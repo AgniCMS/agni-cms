@@ -55,6 +55,13 @@ class edit_profile extends MY_Controller {
 		// is member login?
 		if ( !$this->account_model->is_member_login() ) {redirect( site_url() );}
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_edit_profile'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// load configurations
 		$cfg = $this->config_model->load( array( 'allow_avatar', 'avatar_size', 'avatar_allowed_types' ) );
 		$output['allow_avatar'] = $cfg['allow_avatar']['value'];
@@ -64,11 +71,12 @@ class edit_profile extends MY_Controller {
 		
 		// load session for flashdata
 		$this->load->library( 'session' );
-		$form_status = $this->session->flashdata( 'form_status' );
-		if ( $form_status != null ) {
-			$output['form_status'] = $form_status;
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $form_status );
+		unset($form_status);
 		
 		// get id
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
@@ -113,18 +121,27 @@ class edit_profile extends MY_Controller {
 			$this->load->library( 'form_validation' );
 			$this->form_validation->set_rules( 'account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean' );
 			$this->form_validation->set_rules( 'account_birthdate', 'lang:account_birthdate', 'trim|preg_match_date' );
+			
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
 				$result = $this->account_model->member_edit_profile( $data );
 				
 				if ( $result === true ) {
 					// flash success msg to session
-					$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'account_saved' ).'</div>' );
+					$this->session->set_flashdata(
+						'form_status',
+						array(
+							'form_status' => 'success',
+							'form_status_message' => $this->lang->line('account_saved')
+						)
+					);
 					redirect( current_url() );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 				unset( $result );
 			}
@@ -141,17 +158,7 @@ class edit_profile extends MY_Controller {
 		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_edit_profile' ) );
 		// meta tags
 		// link tags
-		$link = array(
-			'<link rel="stylesheet" type="text/css" href="'.$this->base_url.'public/js/jquery-ui/css/smoothness/jquery-ui.css" media="all" />'
-			);
-		$output['page_link'] = $this->html_model->gen_tags( $link );
-		unset( $link );
 		// script tags
-		$script = array(
-			'<script src="'.$this->base_url.'public/js/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>'
-			);
-		$output['page_script'] = $this->html_model->gen_tags( $script );
-		unset( $script );
 		// end head tags output ##############################
 		
 		// output

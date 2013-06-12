@@ -272,6 +272,24 @@ class taxonomy_model extends CI_Model {
 	
 	
 	/**
+	 * list_item_total
+	 * get total taxonomy from list_item method.
+	 * @return integer
+	 */
+	function list_item_total() {
+		// copy these query from list_item() method
+		$this->db->where( 'language', $this->language );
+		$this->db->where( 't_type', $this->tax_type );
+		$this->db->order_by( 't_name', 'asc' );
+		
+		// run query
+		$query = $this->db->get( 'taxonomy_term_data' );
+		
+		return $query->num_rows();
+	}// list_item_total
+	
+	
+	/**
 	 * list_tags
 	 * @param admin|front $list_for
 	 * @return mixed 

@@ -31,6 +31,13 @@ class changeemail2 extends MY_Controller {
 	function index( $account_id = '', $confirm_code = '' ) {
 		$confirm_code = ( isset( $confirm_code[0] ) ? $confirm_code[0] : '' );
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_change_email'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		if ( is_numeric( $account_id ) && $confirm_code != null ) {
 			if ( $confirm_code == '0' ) {
 				// cancel, delete confirm code and new password from db
@@ -39,7 +46,8 @@ class changeemail2 extends MY_Controller {
 				$this->db->where( 'account_id', $account_id );
 				$this->db->update( 'accounts' );
 				
-				$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_cancel_change_email' ) . '</div>';
+				$output['form_status'] = 'success';
+				$output['form_status_message'] = $this->lang->line('account_cancel_change_email');
 			} else {
 				$this->db->where( 'account_id', $account_id );
 				$this->db->where( 'account_confirm_code', $confirm_code );
@@ -55,17 +63,20 @@ class changeemail2 extends MY_Controller {
 					$this->db->where( 'account_id', $account_id );
 					$this->db->update( 'accounts' );
 					
-					$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_confirmed_change_email' ) . '</div>';
+					$output['form_status'] = 'success';
+					$output['form_status_message'] = $this->lang->line('account_confirmed_change_email');
 					
 					$this->modules_plug->do_action( 'account_change_email', array( 'account_id' => $account_id, 'account_username' => $row->account_username, 'account_email' => $row->account_new_email ) );
 				} else {
-					$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_chengeemail_invalid_url' ) . '</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $this->lang->line('account_chengeemail_invalid_url');
 				}
 				
 				$query->free_result();
 			}
 		} else {
-			$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_chengeemail_invalid_url' ) . '</div>';
+			$output['form_status'] = 'error';
+			$output['form_status_message'] = $this->lang->line('account_chengeemail_invalid_url');
 		}
 		
 		// head tags output ##############################

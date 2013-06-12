@@ -27,6 +27,14 @@ class view_logins extends MY_Controller {
 		// is member login?
 		if ( !$this->account_model->is_member_login() ) {redirect( site_url() );}
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_edit_profile'), 'url' => site_url('account/edit-profile'));
+		$breadcrumb[] = array('text' => lang('account_view_logins'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// get id
 		$cm_account = $this->account_model->get_account_cookie( 'member' );
 		

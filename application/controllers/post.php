@@ -148,11 +148,20 @@ class post extends MY_Controller {
 		$output['row'] = $row;
 		
 		// preset values---------------------------------------------------------
-		$output['post_name'] = $this->modules_plug->do_action( 'post_postname', $row->post_name );
-		$output['post_publish_date_gmt'] = $this->modules_plug->do_action( 'post_publish_date_gmt', $row->post_publish_date_gmt );
-		if ( $output['post_publish_date_gmt'] == $row->post_publish_date_gmt ) {$output['post_publish_date_gmt'] = gmt_date( 'j F Y', $row->post_publish_date_gmt );}
-		$output['post_author'] = $this->modules_plug->do_action( 'post_postauthor', array( $row->account_username, $row->account_id ) );
-		if ( is_array( $output['post_author'] ) ) {$output['post_author'] = anchor( 'author/'.$row->account_username, $row->account_username, array( 'rel' => 'author' ) );}
+		$output['post_name'] = $this->modules_plug->do_filter( 'post_postname', $row->post_name );
+		
+		if ($this->modules_plug->has_filter('post_publish_date_gmt')) {
+			$output['post_publish_date_gmt'] = $this->modules_plug->do_filter( 'post_publish_date_gmt', $row->post_publish_date_gmt );
+		} else {
+			$output['post_publish_date_gmt'] = gmt_date( 'j F Y', $row->post_publish_date_gmt );
+		}
+		
+		if ($this->modules_plug->has_filter('post_postauthor')) {
+			$output['post_author'] = $this->modules_plug->do_filter( 'post_postauthor', array( $row->account_username, $row->account_id ) );
+		} else {
+			$output['post_author'] = anchor( 'author/'.$row->account_username, $row->account_username, array( 'rel' => 'author' ) );
+		}
+		
 		$output['body_value'] = $this->posts_model->modify_content( $row->body_value, $row->post_type );
 		
 		// set custom theme (if specified)---------------------------------
@@ -250,15 +259,50 @@ class post extends MY_Controller {
 			show_404();
 		}
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		
+		// loop each category and all sub or tag
+		$segs = $this->uri->segment_array();
+		
+		foreach ( $segs as $segment ) {
+			$data['t_uri_encoded'] = $segment;
+			$data['language'] = $this->lang->get_current_lang();
+			$row_seg = $this->taxonomy_model->get_taxonomy_term_data_db( $data );
+			unset($data);
+			
+			$last_taxterm_uri = '';
+			if ($row_seg != null) {
+				$breadcrumb[] = array('text' => $row_seg->t_name, 'url' => $row_seg->t_uris);
+				$last_taxterm_uri = $row_seg->t_uris;
+			}
+		}
+		
+		$breadcrumb[] = array('text' => $row->post_name, 'url' => $last_taxterm_uri . '/' . $row->post_uri_encoded);
+		
+		$output['breadcrumb'] = $breadcrumb;
+		$row_seg = null;
+		unset($breadcrumb, $row_seg);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// set row for custom use
 		$output['row'] = $row;
 		
 		// preset values---------------------------------------------------------
-		$output['post_name'] = $this->modules_plug->do_action( 'post_postname', $row->post_name );
-		$output['post_publish_date_gmt'] = $this->modules_plug->do_action( 'post_publish_date_gmt', $row->post_publish_date_gmt );
-		if ( $output['post_publish_date_gmt'] == $row->post_publish_date_gmt ) {$output['post_publish_date_gmt'] = gmt_date( 'j F Y', $row->post_publish_date_gmt );}
-		$output['post_author'] = $this->modules_plug->do_action( 'post_postauthor', array( $row->account_username, $row->account_id ) );
-		if ( is_array( $output['post_author'] ) ) {$output['post_author'] = anchor( 'author/'.$row->account_username, $row->account_username, array( 'rel' => 'author' ) );}
+		$output['post_name'] = $this->modules_plug->do_filter( 'post_postname', $row->post_name );
+		
+		if ($this->modules_plug->has_filter('post_publish_date_gmt')) {
+			$output['post_publish_date_gmt'] = $this->modules_plug->do_filter( 'post_publish_date_gmt', $row->post_publish_date_gmt );
+		} else {
+			$output['post_publish_date_gmt'] = gmt_date( 'j F Y', $row->post_publish_date_gmt );
+		}
+		
+		if ($this->modules_plug->has_filter('post_postauthor')) {
+			$output['post_author'] = $this->modules_plug->do_filter( 'post_postauthor', array( $row->account_username, $row->account_id ) );
+		} else {
+			$output['post_author'] = anchor( 'author/'.$row->account_username, $row->account_username, array( 'rel' => 'author' ) );
+		}
+		
 		$output['body_value'] = $this->posts_model->modify_content( $row->body_value, $row->post_type );
 		
 		// set custom theme (if specified)---------------------------------
@@ -316,6 +360,9 @@ class post extends MY_Controller {
 			$this->taxonomy_model->tax_type = 'tag';
 			$output['list_tag'] = $this->taxonomy_model->list_taxterm_index( $row->post_id );
 		}
+		
+		// add view count.
+		$this->db->query('UPDATE ' . $this->db->dbprefix('posts') . ' SET view_count = view_count+1 WHERE post_id = ' . $this->db->escape($row->post_id));
 		
 		// head tags output ##############################
 		if ( $row->meta_title != null ) {

@@ -26,6 +26,7 @@ $lang['themes_manager'] = 'ระบบจัดการธีม';
 $lang['themes_no'] = 'ไม่';
 $lang['themes_no_name'] = 'ไม่มีชื่อ';
 $lang['themes_select_file'] = 'เลือกไฟล์';
+$lang['themes_still_in_use_in_these_site'] = 'ธีม %s ยังคงเปิดใช้งานอยู่ในไซต์เหล่านี้. คุณต้องปิดใช้งานธีมในไซต์เหล่านี้เสียก่อน.';
 $lang['themes_themes'] = 'Themes';
 $lang['themes_wrong_structure'] = 'โครงสร้าง zip ของธีมไม่ถูกต้อง.';
 $lang['themes_yes'] = 'ใช่';

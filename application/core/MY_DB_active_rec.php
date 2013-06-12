@@ -52,7 +52,21 @@ class MY_DB_active_record extends CI_DB_active_record {
 			
 			// detect table name and add prefix
 			if ( strpos( $item['field'], '.' ) !== false ) {
-				$sql .= $this->dbprefix( $item['field'] );
+				$ci =& get_instance();
+				$ci->load->model('siteman_model');
+				$site_wide_tables = $ci->siteman_model->site_wide_tables;
+				
+				// get only table name prefix
+				$tbname_exp = explode('.', $item['field']);
+				$table_name = $tbname_exp[count($tbname_exp)-1];
+				
+				if (!in_array($table_name, $site_wide_tables)) {
+					$sql .= $this->dbprefix(SITE_TABLE.$item['field']);
+				} else {
+					$sql .= $this->dbprefix( $item['field'] );
+				}
+				
+				unset($ci, $site_wide_tables, $table_name, $tbname_exp);
 			}
 			
 			if ( $item['side'] == 'none' ) {

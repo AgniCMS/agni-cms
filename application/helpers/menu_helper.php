@@ -30,7 +30,7 @@ if ( !function_exists( 'show_menuitem_nested_sortable' ) ) {
 		
 		foreach ($array as $item) {
 
-			$output .= '<li id="list_'.$item->mi_id.'"><div><span class="sort-handle">&nbsp;</span> <span class="item-name">';
+			$output .= '<li id="list_'.$item->mi_id.'"><div><span class="sort-handle icon-move"></span> <span class="item-name">';
 			
 			if ( $item->custom_link != null ) {
 				$output .= $item->custom_link;
@@ -58,7 +58,37 @@ if ( !function_exists( 'show_menuitem_nested_sortable' ) ) {
 			$output .= ' &nbsp; &nbsp; <span class="item-actions">';
 			
 			if ( $ci->account_model->check_admin_permission( 'menu_perm', 'menu_edit_perm' ) ) {
-				$output .= '<a href="#" class="ico16-edit" title="'.lang( 'admin_edit' ).'" onclick="return edit_menu_item(\''.$item->mi_id.'\');">'.lang( 'admin_edit' ).'</a>';
+				// show edit source link
+				// those category, tag, article, page are source and editable.
+				switch ( $item->mi_type ) {
+					case 'category':
+						$has_edit_source = true;
+						$edit_link = site_url( 'site-admin/category/edit/'. $item->type_id );
+						break;
+					case 'tag':
+						$has_edit_source = true;
+						$edit_link = site_url( 'site-admin/tag/edit/'. $item->type_id );
+						break;
+					case 'article':
+						$has_edit_source = true;
+						$edit_link = site_url( 'site-admin/article/edit/'. $item->type_id );
+						break;
+					case 'page':
+						$has_edit_source = true;
+						$edit_link = site_url( 'site-admin/page/edit/'. $item->type_id );
+						break;
+					default:
+						break;
+				}
+				
+				if ( isset( $has_edit_source ) && $has_edit_source === true ) {
+					$output .= '<a href="'.$edit_link.'" title="'.lang( 'admin_edit_source' ).'"><i class="icon-edit"></i> '.lang( 'admin_edit_source' ).'</a> | ';
+				}
+				// remove unused variables
+				unset( $has_edit_source, $edit_link );
+				
+				// show edit menu item link
+				$output .= '<a href="#" title="'.lang( 'admin_edit' ).'" onclick="return edit_menu_item(\''.$item->mi_id.'\');"><i class="icon-pencil"></i> '.lang( 'admin_edit' ).'</a>';
 			}
 			
 			if ( $ci->account_model->check_admin_permission( 'menu_perm', 'menu_edit_perm' ) && $ci->account_model->check_admin_permission( 'menu_perm', 'menu_delete_perm' ) ) {
@@ -66,7 +96,7 @@ if ( !function_exists( 'show_menuitem_nested_sortable' ) ) {
 			}
 			
 			if ( $ci->account_model->check_admin_permission( 'menu_perm', 'menu_delete_perm' ) ) {
-				$output .= '<a href="#" class="ico16-delete" title="'.lang( 'admin_delete' ).'" onclick="return delete_menu_item(\''.$item->mi_id.'\');">'.lang( 'admin_delete' ).'</a>';
+				$output .= '<a href="#" title="'.lang( 'admin_delete' ).'" onclick="return delete_menu_item(\''.$item->mi_id.'\');"><i class="icon-trash"></i> '.lang( 'admin_delete' ).'</a>';
 			}
 			
 			$output .= '</span>';
@@ -101,7 +131,44 @@ if ( !function_exists( 'show_menuitem_nested' ) ) {
 		
 		foreach ($array as $item) {
 
-			$output .= '<li id="list_'.$item->mi_id.'">';
+			$output .= '<li id="list_'.$item->mi_id.'"';
+			$output .= ' class=" link-item';
+			// check for active link
+			if ( $item->custom_link != null ) {
+				if ( strpos( $item->custom_link, current_url() ) !== false ) {
+					$output .= ' active current';
+				}
+			} else {
+				switch ( $item->mi_type ) {
+					case 'category':
+						if ( current_url() == site_url( $item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+					case 'tag':
+						if ( current_url() == site_url( 'tag/'.$item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+					case 'article':
+						if ( current_url() == site_url( 'post/'.$item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+					case 'page':
+						if ( current_url() == site_url( $item->link_url ) ) {
+							$output .= ' active current';
+						}
+						break;
+					default:
+						if (rtrim(current_url(), '/') == rtrim(site_url($item->link_url), '/')) {
+							$output .= ' active current';
+						}
+						break;
+				}
+			}
+			$output .= '"';
+			$output .= '>';
 			if ( $item->custom_link != null ) {
 				$output .= $item->custom_link;
 			} else {

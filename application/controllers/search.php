@@ -31,6 +31,13 @@ class search extends MY_Controller {
 		$q = trim( $this->input->get( 'q' ) );
 		$output['q'] = htmlspecialchars( $q, ENT_QUOTES, config_item( 'charset' ) );
 		
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => $this->lang->line('search_search'), 'url' => 'search?q=' . $output['q']);
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		if ( mb_strlen( $q ) > 1 ) {
 			// search and list post
 			$output['list_item'] = $this->posts_model->list_item( 'front' );

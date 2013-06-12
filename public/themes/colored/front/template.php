@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<?php if ( isset( $page_meta ) ) {echo $page_meta;} ?> 
 		<!--[if lt IE 9]>
-			<script src="<?php echo $this->base_url; ?>public/js/html5.js"></script>
+			<script src="<?php echo $this->theme_path; ?>share-js/html5.js"></script>
 		<![endif]-->
 		
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>960/reset.css" media="all" />
@@ -15,20 +15,27 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/form.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>front/style.css" media="all" />
 		<link rel="stylesheet" type="text/css" href="<?php echo $this->base_url; ?>public/css-fw/beauty-buttons/beauty-buttons.css" media="all" />
+		<?php if ( in_array( $this->uri->uri_string(), array( '/account/edit-profile' ) ) ) { ?> 
+		<link rel="stylesheet" type="text/css" href="<?php echo $this->theme_path; ?>share-js/jquery-ui/css/smoothness/jquery-ui.css" />
+		<?php } // endif; ?> 
 		<?php if ( isset( $page_link ) ) {echo $page_link;} ?> 
-		<script src="<?php echo $this->base_url; ?>public/js/jquery.min.js" type="text/javascript"></script>
+		
+		<script src="<?php echo $this->theme_path; ?>share-js/jquery.min.js" type="text/javascript"></script>
+		<?php if ( in_array( $this->uri->uri_string(), array( '/account/edit-profile' ) ) ) { ?> 
+		<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/jquery-ui/jquery-ui.min.js"></script>
+		<?php } // endif; ?> 
 		<?php if ( isset( $page_script ) ) {echo $page_script;} ?> 
+		
 		<script type="text/javascript">
 			// declare variable for use in .js file
 			var base_url = '<?php echo $this->base_url; ?>';
 			var site_url = '<?php echo site_url(); ?>/';
-			<?php if ( config_item( 'csrf_protection' ) == true ): ?> 
 			var csrf_name = '<?php echo config_item( 'csrf_token_name' ); ?>';
 			var csrf_value = '<?php echo $this->security->get_csrf_hash(); ?>';
-			<?php endif; ?> 
 		</script>
+		
 		<?php if ( isset( $in_head_elements ) ) {echo $in_head_elements;} ?> 
-		<?php echo $this->modules_plug->do_action( 'front_html_head' ); ?> 
+		<?php echo $this->modules_plug->do_filter( 'front_html_head' ); ?> 
 	</head>
 	<body class="body-class<?php echo $this->html_model->gen_front_body_class( 'theme-'.$this->theme_system_name ); ?>">
 		

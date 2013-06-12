@@ -1,23 +1,23 @@
-<table class="list-items media-list-items">
+<table class="table table-striped table-hover media-list-items">
 	<thead>
 		<tr>
 			<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
-			<th><?php echo anchor( current_url().'?orders=file_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_name' ) ); ?></th>
-			<th><?php echo anchor( current_url().'?orders=media_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_name' ) ); ?></th>
-			<th><?php echo anchor( current_url().'?orders=file_mime_type&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_mime_type' ) ); ?></th>
-			<th><?php echo anchor( current_url().'?orders=file_size&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_size' ) ); ?></th>
-			<th><?php echo anchor( current_url().'?orders=file_add&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_add_date' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=file_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_name' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=media_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_name' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=file_mime_type&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_mime_type' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=file_size&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_size' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=file_add&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_add_date' ) ); ?></th>
 			<th></th>
 		</tr>
 	</thead>
 	<tfoot>
 		<tr>
 			<th class="check-column"><input type="checkbox" name="id_all" value="" onclick="checkAll(this.form,'id[]',this.checked)" /></th>
-			<th><?php echo anchor( current_url().'?orders=file_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_name' ) ); ?></th>
-			<th><?php echo anchor( current_url().'?orders=media_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_name' ) ); ?></th>
-			<th><?php echo anchor( current_url().'?orders=file_mime_type&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_mime_type' ) ); ?></th>
-			<th><?php echo anchor( current_url().'?orders=file_size&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_size' ) ); ?></th>
-			<th><?php echo anchor( current_url().'?orders=file_add&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_add_date' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=file_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_name' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=media_name&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_name' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=file_mime_type&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_mime_type' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=file_size&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_file_size' ) ); ?></th>
+			<th><?php echo anchor( current_url().'?current_path='.urlencode( $current_path ).'&amp;orders=file_add&amp;sort='.$sort.'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' ), lang( 'media_add_date' ) ); ?></th>
 			<th></th>
 		</tr>
 	</tfoot>
@@ -36,7 +36,7 @@
 				<?php echo $width; ?> x <?php echo $height; ?><br />
 				<?php endif; ?> 
 				<?php echo anchor( base_url().$row->file, $row->file_name, array( 'title' => $row->file_client_name ) ); ?>
-				<div class="clear"></div>
+				<div class="clearfix"></div>
 			</td>
 			<td><?php echo $row->media_name; ?></td>
 			<td><?php echo $row->file_mime_type; ?></td>

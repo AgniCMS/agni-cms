@@ -1,11 +1,14 @@
 <h1><?php echo lang( 'account_view_logins' ); ?> : <?php echo (isset( $account_username ) ? $account_username : '' ); ?></h1>
 
 <?php echo form_open( 'site-admin/account/delete_log/'.$account_id ); ?> 
-	<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+	<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+	<?php } ?> 
 	
-	<table class="list-items">
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
+				<th><?php echo anchor( current_url().'?orders=site_id&sort='.$sort, lang( 'account_website' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=login_ua&sort='.$sort, lang( 'account_useragent' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=login_os&sort='.$sort, lang( 'account_OS' ) ); ?></th>
 				<th><?php echo anchor( current_url().'?orders=login_browser&sort='.$sort, lang( 'account_browser' ) ); ?></th>
@@ -18,6 +21,7 @@
 		<?php if ( isset( $list_item['items'] ) && is_array( $list_item['items'] ) ): ?> 
 		<?php foreach ( $list_item['items'] as $row ): ?> 
 			<tr>
+				<td><?php echo $row->site_name; ?> [<?php echo anchor( current_protocol().$row->site_domain.site_path(), '#' ); ?>]</td>
 				<td><?php echo $row->login_ua; ?></td>
 				<td><?php echo $row->login_os; ?></td>
 				<td><?php echo $row->login_browser; ?></td>
@@ -48,3 +52,4 @@
 		<div class="clear"></div>
 	</div>
 <?php echo form_close(); ?> 
+

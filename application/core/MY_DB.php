@@ -102,17 +102,23 @@ function &DB($params = '', $active_record_override = NULL)
 	{
 		$active_record = $active_record_override;
 	}
+	
+	// get the CI instance (custom code)
+	$CI = & get_instance();
+	$prefix = $CI->config->item('subclass_prefix');
 
-	require_once(BASEPATH.'database/DB_driver.php');
+	if ( file_exists( APPPATH.'core/'.$prefix.'DB_driver.php' ) ) {
+		require_once( APPPATH.'core/'.$prefix.'DB_driver.php' );
+	} else {
+		// this is CI original code
+		require_once(BASEPATH.'database/DB_driver.php');
+	}
 
 	if ( ! isset($active_record) OR $active_record == TRUE)
 	{
 		require_once(BASEPATH.'database/DB_active_rec.php');
-		
-		// get the CI instance (custom code)
-		$CI = & get_instance();
-		$prefix = $CI->config->item('subclass_prefix');
 
+		// custom code
 		if (file_exists(APPPATH.'core/'.$prefix.'DB_active_rec.php'))
 		{
 			require_once(APPPATH.'core/'.$prefix.'DB_active_rec.php');
@@ -125,6 +131,7 @@ function &DB($params = '', $active_record_override = NULL)
 		{
 			if ( ! class_exists('CI_DB'))
 			{
+				// CI original code
 				eval('class CI_DB extends CI_DB_active_record { }');
 			}
 		}
@@ -133,6 +140,7 @@ function &DB($params = '', $active_record_override = NULL)
 			eval('class CI_DB extends CI_DB_active_record { }');
 		}*/// CI original code
 	}
+	// CI original code
 	else
 	{
 		if ( ! class_exists('CI_DB'))

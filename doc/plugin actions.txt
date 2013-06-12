@@ -1,6 +1,0 @@
-plugin_activate_Plugin_name เรียกเมื่อหลังมีการสั่ง activate แล้ว
-plugin_deactivate_Plugin_name เรียกเมื่อหลังมีการสั่ง deactivate แล้ว
-plugin_install_Plugin_name ถูกเรียกหลัง add plugin ผ่านหน้าเว็บ.
-plugin_uninstall_Plugin_name ถูกเรียกเมื่อก่อนจะมีการลบไฟล์ plugin
-plugin_havesettings_Plugin_name บังคับต้องมีเมื่อมีการ add action plugin_settings_Plugin_name เพื่อสร้างลิ้งค์ไปยังหน้า settings
-plugin_settings_Plugin_name ถูกเรียกเมื่อเข้าไปยังหน้า settings ของ plugin นั้นๆ.
