@@ -37,7 +37,9 @@ class agni_update {
 		
 		// got xml update, loop check.
 		foreach ( $xml as $update ) {
+			// if module name is agnicms and version > currently use version
 			if ( $update->moduleName == 'agnicms' && $update->version > $cfg['agni_version']['value'] ) {
+				// if target version is null or target version <= currently use version
 				if ( $update->targetVersion == '' || ( $update->targetVersion != '' && $update->targetVersion <= $cfg['agni_version']['value'] ) ) {
 					// xml has update core available. add to queue for admin to click update
 					$ci->load->model( 'queue_model' );
@@ -64,6 +66,7 @@ class agni_update {
 					}
 					
 					unset( $data, $data_arr );
+					break;
 				}
 			}
 		}
@@ -291,8 +294,11 @@ class agni_update {
 		$xml = $this->get_xml( $cfg['agni_auto_update_url']['value'] );
 		
 		foreach ( $xml as $update ) {
+			// if module name is agnicms and version > currently use version
 			if ( $update->moduleName == 'agnicms' && $update->version > $cfg['agni_version']['value'] ) {
+				// if target version is null or target version <= currently use version
 				if ( $update->targetVersion == '' || ( $update->targetVersion != '' && $update->targetVersion <= $cfg['agni_version']['value'] ) ) {
+					// if download link is not null and exists.
 					if ( $update->download != null && $this->url_exists( $update->download, array( '301', '302' ) ) ) {
 						$rewrite_method = $ci->session->userdata( 'rewrite_method' );
 						$update_folder = $ci->config->item( 'agni_upload_path' ).'unzip/agnicms_update_core/';
@@ -432,12 +438,19 @@ class agni_update {
 		$xml = $this->get_xml( $cfg['agni_auto_update_url']['value'] );
 		
 		foreach ( $xml as $update ) {
+			// if module name is agnicms and version > currently use version
 			if ( $update->moduleName == 'agnicms' && $update->version > $cfg['agni_version']['value'] ) {
-				$data['agni_version'] = $update->version;
-				$ci->config_model->save( $data );
-				unset( $data );
-				
-				break;
+				// if target version is null or target version <= currently use version
+				if ( $update->targetVersion == '' || ( $update->targetVersion != '' && $update->targetVersion <= $cfg['agni_version']['value'] ) ) {
+					// if download link is not null and exists.
+					if ( $update->download != null && $this->url_exists( $update->download, array( '301', '302' ) ) ) {
+						$data['agni_version'] = (string) $update->version;
+						$ci->config_model->save($data);
+						unset( $data );
+
+						break;
+					}
+				}
 			}
 		}
 		
