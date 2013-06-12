@@ -1,7 +1,11 @@
 <?php $this->load->view( 'site-admin/inc_html_head' ); ?> 
 		
+
 		<div class="page-container">
+			
+			
 			<div class="header">
+				<div class="cms-logo"><img src="<?php echo $this->theme_path; ?>site-admin/images/logo.png" alt="Agni CMS" /></div>
 				<div class="site-name"><?php echo $this->config_model->load_single( 'site_name' ); ?></div>
 				<div class="user">
 					<?php if ( !isset( $cookie ) ) {
@@ -14,7 +18,9 @@
 					</ul>
 					<div class="clear"></div>
 				</div>
-				<div class="clear"></div>
+				<div class="clearfix"></div>
+				
+				
 				<div class="navigations">
 					<?php // load helper
 					$this->load->helper( 'account' ); 
@@ -22,8 +28,30 @@
 					<ul class="primary sf-menu">
 						<li><?php echo anchor( '#', lang( 'admin_nav_website' ), array( 'onclick' => 'return false;' ) ); ?> 
 							<ul>
-								<li><?php echo anchor( 'site-admin', lang( 'admin_home' ) ); ?></li>
-								<li><?php echo anchor( site_url(), lang( 'admin_nav_visit_site' ) ); ?></li>
+								<li>
+									<?php echo anchor( 'site-admin', lang( 'admin_home' ) ); ?> 
+									<?php if ( isset( $agni_list_sites['items'] ) && is_array( $agni_list_sites['items'] ) && !empty( $agni_list_sites['items'] ) ) { ?> 
+									<ul class="list_multi_sites">
+										<?php foreach ( $agni_list_sites['items'] as $agni_site ) { ?> 
+										<li>
+											<?php echo anchor( current_protocol().$agni_site->site_domain.site_path( 'site-admin' ), $agni_site->site_name ); ?> 
+										</li>
+										<?php } // endforeach; ?> 
+									</ul>
+									<?php } // endif; ?> 
+								</li>
+								<li>
+									<?php echo anchor( site_url(), lang( 'admin_nav_visit_site' ) ); ?> 
+									<?php if ( isset( $agni_list_sites['items'] ) && is_array( $agni_list_sites['items'] ) && !empty( $agni_list_sites['items'] ) ) { ?> 
+									<ul class="list_multi_sites">
+										<?php foreach ( $agni_list_sites['items'] as $agni_site ) { ?> 
+										<li>
+											<?php echo anchor( current_protocol().$agni_site->site_domain.site_path(), $agni_site->site_name ); ?> 
+										</li>
+										<?php } // endforeach; ?> 
+									</ul>
+									<?php } // endif; ?> 
+								</li>
 								<?php if ( check_admin_permission( 'config_global', 'config_global' ) ): ?><li><?php echo anchor( 'site-admin/config', lang( 'admin_nav_global_config' ) ); ?></li><?php endif; ?> 
 								<li><?php echo anchor( '#', lang( 'admin_nav_tools' ), array( 'onclick' => 'return false;' ) ); ?>
 									<?php if ( check_admin_permission( 'urls_perm', 'urls_perm_view_all' ) ): ?> 
@@ -90,9 +118,10 @@
 								<li><?php echo anchor( 'site-admin/media', lang( 'admin_nav_media_mgr' ) ); ?></li>
 								<?php endif; ?> 
 								<?php if ( check_admin_permission( 'comment_perm', 'comment_viewall_perm' ) ): ?> 
-								<li><?php echo anchor( 'site-admin/comment', lang( 'admin_nav_comment' ) );
-									$count_comment = $this->db->where( 'comment_status', '0' )->where( 'comment_spam_status', 'normal' )->count_all_results( 'comments' );
-									?> <?php if ( $count_comment > 0 ): ?><span class="count-unpublish-comment"><?php echo $count_comment; ?></span><?php endif; unset( $count_comment ); ?></li>
+								<li><?php 
+									$count_comment = $this->db->where( 'language',$this->lang->get_current_lang() )->where( 'comment_status', '0' )->where( 'comment_spam_status', 'normal' )->count_all_results( 'comments' );
+									echo anchor( 'site-admin/comment', lang( 'admin_nav_comment' ).( $count_comment > 0 ? ' '.'<span class="badge badge-important">'.$count_comment.'</span>' : '' ) );
+									?> 
 								<?php endif; ?> 
 							</ul>
 						</li>
@@ -108,25 +137,42 @@
 							<?php echo $this->modules_model->load_admin_nav(); ?> 
 						</li>
 						<li><?php echo anchor( '#', lang( 'admin_nav_extensions' ), array( 'onclick' => 'return false;' ) ); ?> 
-							<?php if ( check_admin_permission( 'modules_manage_perm', 'modules_viewall_perm' ) || check_admin_permission( 'themes_manage_perm', 'themes_viewall_perm' ) ): ?> 
+							<?php if ( check_admin_permission( 'modules_manage_perm', 'modules_viewall_perm' ) || check_admin_permission( 'themes_manage_perm', 'themes_viewall_perm' ) || check_admin_permission( 'siteman_perm', 'siteman_manage_perm' ) ): ?> 
 							<ul>
 								<?php if ( check_admin_permission( 'modules_manage_perm', 'modules_viewall_perm' ) ): ?><li><?php echo anchor( 'site-admin/module', lang( 'admin_nav_modules_manager' ) ); ?></li><?php endif; ?> 
 								<?php if ( check_admin_permission( 'themes_manage_perm', 'themes_viewall_perm' ) ): ?><li><?php echo anchor( 'site-admin/themes', lang( 'admin_nav_themes_manager' ) ); ?></li><?php endif; ?> 
+								<?php if ( check_admin_permission( 'siteman_perm', 'siteman_manage_perm' ) ): ?><li><?php echo anchor( 'site-admin/siteman', lang( 'admin_nav_multisite_manager' ) ); ?></li><?php endif; ?> 
 							</ul>
 							<?php endif; ?> 
 						</li>
 					</ul>
-					<div class="clear"></div>
-				</div>
-			</div>
+					<div class="clearfix"></div>
+				</div><!--.navigations-->
+			</div><!--.header-->
+			
+			
 			<div class="body-wrap">
+				<?php if ( isset( $global_status['msg'] ) && isset( $global_status['status'] ) && !empty( $global_status ) ) { ?> 
+				<div class="alert alert-<?php echo $global_status['status']; ?> fade in">
+					<button class="close" data-dismiss="alert" type="button">&times;</button>
+					<?php echo $global_status['msg']; ?> 
+				</div>
+				<?php } // endif; 
+				unset( $global_status );
+				?> 
 				
 				<?php if ( isset( $page_content ) ) {echo $page_content;} ?> 
 				
-			</div>
+			</div><!--.body-wrap-->
+			
+			
 		</div>
+
+
+
 		<div class="footer">
 			<?php echo lang( 'admin_credit' ); ?> 
-		</div>
+		</div><!--.footer-->
+		
 		
 <?php $this->load->view( 'site-admin/inc_html_foot' ); ?>

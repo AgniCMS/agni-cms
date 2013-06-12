@@ -67,11 +67,12 @@ class login extends MY_Controller {
 		$this->load->library( array( 'securimage/securimage', 'session' ) );
 		
 		// read account error. eg. duplicate login error from check_login() in account model.
-		$account_error = $this->session->flashdata( 'account_error' );
-		if ( $account_error != null ) {
-			$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $account_error . '</div>';
+		$form_status = $this->session->flashdata('form_status');
+		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
+			$output['form_status'] = $form_status['form_status'];
+			$output['form_status_message'] = $form_status['form_status_message'];
 		}
-		unset( $account_error );
+		unset($form_status);
 		
 		// count login fail
 		if ( $this->session->userdata( 'fail_count' ) >= 3 || $this->session->userdata( 'show_captcha' ) == true ) {
@@ -97,7 +98,8 @@ class login extends MY_Controller {
 			$this->form_validation->set_rules( 'username', 'lang:account_username', 'trim|required' );
 			$this->form_validation->set_rules( 'password', 'lang:account_password', 'trim|required' );
 			if ( $this->form_validation->run() == false ) {
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$login_fail_last_time = $this->account_model->login_fail_last_time( $data['username'] );
 				$count_login_fail = $this->account_model->count_login_fail( $data['username'] );
@@ -130,13 +132,19 @@ class login extends MY_Controller {
 					unset( $login_fail_last_time, $count_login_fail );
 					
 					if ( !$this->input->is_ajax_request() ) {
+						// if not ajax request
+						
+						// if set go to, redirect to there
 						if ( isset( $output['go_to'] ) ) {
 							redirect( $this->input->get( 'rdr' ) );
 						} else {
 							redirect( 'site-admin' );
 						}
 					} else {
+						// if ajax request
 						$output['form_status'] = true;
+						
+						// if set go to, send to there
 						if ( isset( $output['go_to'] ) ) {
 							$output['go_to'] = $this->input->get( 'rdr', true );
 						} else {
@@ -151,7 +159,8 @@ class login extends MY_Controller {
 						$this->session->set_userdata( 'show_captcha', true );
 					}
 					
-					$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 				unset( $login_fail_last_time, $count_login_fail );
 			}
@@ -201,10 +210,12 @@ class login extends MY_Controller {
 			// check result
 			if ( $result === true ) {
 				$output['result'] = true;
-				$output['form_status'] = '<div class="txt_success alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $this->lang->line( 'account_please_check_email_confirm_resetpw' ) . '</div>';
+				$output['form_status'] = 'success';
+				$output['form_status_message'] = $this->lang->line('account_please_check_email_confirm_resetpw');
 			} else {
 				$output['result'] = false;
-				$output['form_status'] = '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>' . $result . '</div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = $result;
 			}
 			unset( $email, $result );
 		}

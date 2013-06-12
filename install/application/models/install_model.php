@@ -56,6 +56,7 @@ class install_model extends CI_Model {
 		$this->db->set( 'config_value', $data['account_email'] );
 		$this->db->where( 'config_name', 'comment_admin_notify_emails' );
 		$this->db->update( 'config' );
+		
 		// set super admin account value-----------------------------------------------------------------------------
 		$this->db->set( 'account_username', $data['account_username'] );
 		$this->db->set( 'account_email', $data['account_email'] );
@@ -63,6 +64,29 @@ class install_model extends CI_Model {
 		$this->db->set( 'account_timezone', $data['timezones'] );
 		$this->db->where( 'account_id', '1' );
 		$this->db->update( 'accounts' );
+		
+		// install site on sites table -------------------------------------------------------------------------------------
+		$query = $this->db->where( 'site_id', '1' )->get( 'sites' );
+		if ( $query->num_rows() <= 0 ) {
+			$this->db->set( 'site_name', $data['site_name'] )
+					->set( 'site_domain', $_SERVER['HTTP_HOST'] )
+					->set( 'site_status', '1' )
+					->set( 'site_create', time() )
+					->set( 'site_create_gmt', local_to_gmt( time() ) )
+					->set( 'site_update', time() )
+					->set( 'site_update_gmt', local_to_gmt( time() ) )
+					->insert( 'sites' );
+		} else {
+			$this->db->set( 'site_name', $data['site_name'] )
+					->set( 'site_domain', $_SERVER['HTTP_HOST'] )
+					->set( 'site_status', '1' )
+					->set( 'site_update', time() )
+					->set( 'site_update_gmt', local_to_gmt( time() ) )
+					->where( 'site_id', '1' )
+					->update( 'sites' );
+		}
+		$query->free_result();
+		
 		// done
 		$output['result'] = true;
 		return $output;
@@ -78,7 +102,7 @@ class install_model extends CI_Model {
 			$this->post_port = $this->db_port;
 		}
 		//
-		$sql_file = $this->load->file( dirname(APPPATH).'/agni-install.sql', true );
+		$sql_file = $this->load->file( dirname(APPPATH).'/agni-empty-install.sql', true );
 		// standardize new line
 		$sql_file = str_replace( array( "\r\n", "\r"), "\n", $sql_file );
 		// choose 1 that match in .sql file
@@ -87,6 +111,7 @@ class install_model extends CI_Model {
 		$asql = explode(";\n", $sql_file);
 		// connect db
 		$link = mysqli_connect( $this->db_host, $this->db_username, $this->db_password, $this->db_name, $this->db_port );
+		
 		// check empty db?----------------------------------------------------------------------------------------------
 		if ( $result = mysqli_query( $link, 'SHOW TABLES;' ) ) {
 			$i = 0;
@@ -101,6 +126,7 @@ class install_model extends CI_Model {
 			}
 		}
 		unset( $i , $row, $result );
+		
 		// import db------------------------------------------------------------------------------------------------------
 		$i = 0;
 		foreach ( $asql as $key ) {
@@ -120,6 +146,7 @@ class install_model extends CI_Model {
 			$output['result_text'] = lang( 'agni_fail_install_db' );
 			return $output;
 		}
+		
 		// write database file-------------------------------------------------------------------------------------------
 		$this->load->helper( 'file' );
 		// read database.php.bak
@@ -136,9 +163,11 @@ class install_model extends CI_Model {
 			$output['result_text'] = lang( 'agni_cant_write_database_php' );
 			return $output;
 		}
-		// generate hash text in config file----------------------------------------------------------------------------
+		
+		// generate hash text and prefix and names in config file----------------------------------------------------------------------------
 		$this->load->helper( 'string' );
 		$new_encryption_key = random_string( 'alnum', 9 );
+		$new_cookie_prefix = random_string( 'alpha', 3 ).'_';
 		$new_csrf_token = random_string( 'alpha', 5 ).'_token';
 		$new_csrf_cookie = random_string( 'alpha', 5 ).'_cookie';
 		// read config.php.bak
@@ -147,6 +176,7 @@ class install_model extends CI_Model {
 		$config_php = preg_replace( "#\\\$config\['language_abbr'\] = '(.*)';#", '\$config[\'language_abbr\'] = \''.$this->lang->get_current_lang( false ).'\';', $config_php );
 		$config_php = preg_replace( "#\\\$config\['log_threshold'\] = (\d);#", '\$config[\'log_threshold\'] = 0;', $config_php );
 		$config_php = preg_replace( "#\\\$config\['encryption_key'\] = '(.*)';#", '\$config[\'encryption_key\'] = \''.$new_encryption_key.'\';', $config_php );
+		$config_php = preg_replace( "#\\\$config\['cookie_prefix\'] = '(.*)';#", '\$config[\'cookie_prefix\'] = \''.$new_cookie_prefix.'\';', $config_php );
 		$config_php = preg_replace( "#\\\$config\['csrf_token_name'\] = '(.*)';#", '\$config[\'csrf_token_name\'] = \''.$new_csrf_token.'\';', $config_php );
 		$config_php = preg_replace( "#\\\$config\['csrf_cookie_name'\] = '(.*)';#", '\$config[\'csrf_cookie_name\'] = \''.$new_csrf_cookie.'\';', $config_php );
 		// write to config.php
@@ -159,10 +189,69 @@ class install_model extends CI_Model {
 			$output['result_text'] = lang( 'agni_cant_write_config_php' );
 			return $output;
 		}
+		
+		// update required data in db ---------------------------------------------------------------------------------------------------
+		// get configured from files
+		include_once( '../application/config/database.php' );
+		
+		// reformat config for manual connect db
+		foreach ( $db['default'] as $key => $item ) {
+			$db[$key] = $item;
+		}
+		
+		// this step connected to db. if fail or wrong settings, it should throw error.
+		$this->load->database( $db );
+		
+		$this->load->helper( array( 'date' ) );
+		$data['site_domain'] = $this->input->server( 'HTTP_HOST' );
+		$data['site_create'] = time();
+		$data['site_create_gmt'] = local_to_gmt( time() );
+		$data['site_update'] = time();
+		$data['site_update_gmt'] = local_to_gmt( time() );
+		$this->db->where( 'site_id', '1' )
+			   ->update( $this->db_table_prefix.'sites', $data );
+		unset( $data );
+		// update required data in db ---------------------------------------------------------------------------------------------------
+		
 		// done
 		$output['result'] = true;
 		return $output;
 	}// install_db
+	
+	
+	function install_sample_data( $sample_data = '' ) {
+		// get configured from files
+		include_once( '../application/config/database.php' );
+		
+		// reformat config for manual connect db
+		foreach ( $db['default'] as $key => $item ) {
+			$db[$key] = $item;
+		}
+		
+		// this step connected to db. if fail or wrong settings, it should throw error.
+		$this->load->database( $db );
+		
+		$sql_file = $this->load->file( dirname(APPPATH).'/'.$sample_data.'.sql', true );
+		
+		// standardize new line
+		$sql_file = str_replace( array( "\r\n", "\r"), "\n", $sql_file );
+		
+		// choose 1 that match in .sql file
+		#$sql_file = preg_replace("/\#(.*)\n$/", "", $sql_file);// ลบพวก comment ใน sql แบบ # table xxxx ออก
+		$sql_file = preg_replace("/--(.*)\n/", "", $sql_file);// ลบพวก comment ในแบบ -- table xxxx ออก
+		
+		$asql = explode(";\n", $sql_file);
+		
+		foreach ( $asql as $key ) {
+			$key = trim( $key );
+			$key = str_replace( '`an_', '`'.$db['dbprefix'], $key );
+			if ( $key != null ) {
+				$this->db->query( $key );
+			}
+		}
+		
+		return true;
+	}// install_sample_data
 	
 	
 	function test_connect_db( $db_host = '', $db_username = '', $db_password = '', $db_name = '', $db_port = '' ) {

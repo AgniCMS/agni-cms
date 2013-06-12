@@ -24,7 +24,7 @@ function ajax_admin_fpw( thisobj ) {
 		success: function( data ) {
 			$( '.fpw-button' ).removeAttr( 'disabled' );
 			$( '.ajax_fpw_status' ).html( '' );
-			$( '.form-status-fpw' ).html(data.form_status);
+			$( '.form-status-fpw' ).html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 			if ( data.result == true ) {
 				$( '.form-fpw' ).hide( 'fade', {}, 'fast' );
 			} else {
@@ -60,7 +60,7 @@ function ajax_admin_login( thisobj ) {
 			} else {
 				$( '.login-button' ).removeAttr( 'disabled' );
 				$( '.ajax_status' ).html( '' );
-				$( '.form-status' ).html(data.form_status);
+				$( '.form-status' ).html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 				
 				$('.captcha').attr( 'src', base_url+'public/images/securimage_show.php?' + Math.random() );
 				$('.login-username').focus();
@@ -234,7 +234,7 @@ var delay = (function(){
 $(document).ready(function() {
 	$('.login-username').focus();// auto focus at input username [login page]
 	
-	$('#js-check').removeClass('ico-no').addClass('ico-yes');// jquery checked javascript requirement at login page
+	$('#js-check').removeClass('icon-remove').addClass('icon-ok');// jquery checked javascript requirement at login page
 	
 	$('.forget-toggle').click(function() {
 		$('.forget-form').toggle('fade');

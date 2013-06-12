@@ -19,17 +19,17 @@ class themes_model extends CI_Model {
 	function __construct() {
 		parent::__construct();
 		
-		$this->_setup_module_dir();
+		$this->_setup_theme_dir();
 	}// __construct
 	
 	
 	/**
-	 * _setup_module_dir
+	 * _setup_theme_dir
 	 */
-	function _setup_module_dir() {
+	function _setup_theme_dir() {
 		$this->config->load( 'agni' );
 		$this->theme_dir = $this->config->item( 'agni_theme_path' );
-	}// _setup_module_dir
+	}// _setup_theme_dir
 	
 	
 	/**
@@ -39,6 +39,13 @@ class themes_model extends CI_Model {
 	function add_theme() {
 		// load agni config
 		$this->config->load( 'agni' );
+		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Add new theme';
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		// config upload
 		$config['upload_path'] = $this->config->item( 'agni_upload_path' ).'unzip';
@@ -118,16 +125,21 @@ class themes_model extends CI_Model {
 	}// add_theme
 	
 	
+	/**
+	 * delete_theme
+	 * @param string $theme_system_name
+	 * @return boolean
+	 */
 	function delete_theme( $theme_system_name = '' ) {
 		if ( $theme_system_name == null ) {return false;}
 		
 		// check if theme is default in admin or front
-		if ( $this->is_default( $theme_system_name ) || $this->is_default( $theme_system_name, 'admin' ) ) {
+		if ( $this->is_default_one( $theme_system_name ) || $this->is_default_one( $theme_system_name, 'admin' ) ) {
 			return $this->lang->line( 'themes_delete_fail_enabled' );
 		}
 		
 		// check if enabled
-		if ( $this->is_enabled( $theme_system_name ) ) {
+		if ( $this->is_enabled_one( $theme_system_name ) ) {
 			return $this->lang->line( 'themes_delete_fail_enabled' );
 		}
 		
@@ -145,6 +157,14 @@ class themes_model extends CI_Model {
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		$this->db->delete( 'blocks' );
 		
+		// delete from theme_sites
+		// get theme_id
+		$theme_db = $this->get_themes_data( array( 'theme_system_name' => $theme_system_name ) );
+		if ( $theme_db != null ) {
+			$this->db->where( 'theme_id', $theme_db->theme_id );
+			$this->db->delete( 'theme_sites' );
+		}
+		
 		// delete from db.
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		$this->db->delete( 'themes' );
@@ -158,6 +178,13 @@ class themes_model extends CI_Model {
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Delete theme '.$theme_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		return true;
 	}// delete_theme
@@ -176,13 +203,33 @@ class themes_model extends CI_Model {
 			return false;
 		}
 		
-		$this->db->where( 'theme_system_name', $theme_system_name );
+		// get site_id
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
+		// get theme db
+		$theme_db = $this->get_themes_data( array( 'theme_system_name' => $theme_system_name ) );
+		$theme_id = '';
+		if ( $theme_db != null ) {
+			$theme_id = $theme_db->theme_id;
+		}
+		unset( $theme_db );
+		
+		$this->db->where( 'theme_id', $theme_id );
+		$this->db->where( 'site_id', $site_id );
 		$this->db->set( 'theme_enable', '0' );
-		$this->db->update( 'themes' );
+		$this->db->update( 'theme_sites' );
 		
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Disable theme '.$theme_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		return true;
 	}// do_disable
@@ -193,7 +240,7 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean 
 	 */
-	function do_enable( $theme_system_name = '' ) {
+	function do_enable( $theme_system_name = '', $site_id = '' ) {
 		if ( $theme_system_name == null ) {return false;}
 		
 		// check if there is front folder or site-admin folder for this theme
@@ -201,31 +248,41 @@ class themes_model extends CI_Model {
 			return false;
 		}
 		
+		if ( $site_id == null ) {
+			// get site_id
+			$this->load->model( 'siteman_model' );
+			$site_id = $this->siteman_model->get_site_id();
+		}
+		
 		// check if is in db?
 		$this->db->where( 'theme_system_name', $theme_system_name );
 		if ( $this->db->count_all_results( 'themes' ) <= 0 ) {
 			// not in db, use insert.
 			$pdata = $this->read_theme_metadata( $theme_system_name.'/'.$theme_system_name.'.info'  );
+			
 			// check if enabled
 			if ( $this->is_enabled( $theme_system_name ) ) {
 				return true;
 			}
-			//
+			
 			$this->db->trans_start();
 			$this->db->set( 'theme_system_name', $theme_system_name );
 			$this->db->set( 'theme_name', ( empty($pdata['name']) ? $theme_system_name : $pdata['name'] ) );
 			$this->db->set( 'theme_url', ( !empty($pdata['url']) ? $pdata['url'] : null ) );
 			$this->db->set( 'theme_version', ( !empty($pdata['version']) ? $pdata['version'] : null ) );
 			$this->db->set( 'theme_description', ( !empty($pdata['description']) ? $pdata['description'] : null ) );
-			$this->db->set( 'theme_enable', '1' );
 			$this->db->insert( 'themes' );
 			$this->db->trans_complete();
+			
 			// check transaction
 			if ( $this->db->trans_status() === false ) {
 				$this->db->trans_rollback();
 				return false;
 			}
 		} else {
+			// get theme data from theme name.info
+			$pdata = $this->read_theme_metadata( $theme_system_name.'/'.$theme_system_name.'.info'  );
+			
 			// in db, use update
 			$this->db->trans_start();
 			$this->db->where( 'theme_system_name', $theme_system_name );
@@ -233,9 +290,9 @@ class themes_model extends CI_Model {
 			$this->db->set( 'theme_url', ( !empty($pdata['url']) ? $pdata['url'] : null ) );
 			$this->db->set( 'theme_version', ( !empty($pdata['version']) ? $pdata['version'] : null ) );
 			$this->db->set( 'theme_description', ( !empty($pdata['description']) ? $pdata['description'] : null ) );
-			$this->db->set( 'theme_enable', '1' );
 			$this->db->update( 'themes' );
 			$this->db->trans_complete();
+			
 			// check transaction
 			if ( $this->db->trans_status() === false ) {
 				$this->db->trans_rollback();
@@ -243,9 +300,45 @@ class themes_model extends CI_Model {
 			}
 		}
 		
+		// set enable in theme_sties table --------------------------------------------------------------------------------------------
+		$theme_db = $this->get_themes_data( array( 'theme_system_name' => $theme_system_name ) );
+		
+		if ( $theme_db != null ) {
+			// check if theme is inserted in theme_sites table
+			$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+			$this->db->where( 'theme_system_name', $theme_system_name );
+			$this->db->where( 'site_id', $site_id );
+			
+			if ( $this->db->count_all_results( 'themes' ) <= 0 ) {
+				// not in table, insert
+				$data['theme_id'] = $theme_db->theme_id;
+				$data['site_id'] = $site_id;
+				$data['theme_enable'] = '1';
+				$this->db->insert( 'theme_sites', $data );
+				unset( $data );
+			} else {
+				// use update
+				$data['theme_enable'] = '1';
+				$this->db->where( 'theme_id', $theme_db->theme_id );
+				$this->db->where( 'site_id', $site_id );
+				$this->db->update( 'theme_sites', $data );
+				unset( $data );
+			}
+		}
+		
+		unset( $theme_db );
+		// set enable in theme_sties table --------------------------------------------------------------------------------------------
+		
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Enable theme '.$theme_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		return true;
 	}// do_enable
@@ -261,12 +354,18 @@ class themes_model extends CI_Model {
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
 		
+		// get site_id
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
 		// check cached
-		if ( false === $theme_val = $this->cache->get( 'themedefault_'.$check_for.$return ) ) {
+		if ( false === $theme_val = $this->cache->get( 'themedefault_'.$site_id.'_'.$check_for.$return ) ) {
+			$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+			$this->db->where( 'site_id', $site_id );
 			if ( $check_for == 'admin' ) {
-				$this->db->where( 'theme_default_admin', '1' );
+				$this->db->where( 'theme_sites.theme_default_admin', '1' );
 			} else {
-				$this->db->where( 'theme_default', '1' );
+				$this->db->where( 'theme_sites.theme_default', '1' );
 			}
 			
 			$query = $this->db->get( 'themes' );
@@ -278,13 +377,28 @@ class themes_model extends CI_Model {
 			$query->free_result();
 			unset( $query );
 			
-			$this->cache->save( 'themedefault_'.$check_for.$return, $row->$return, 2678400 );
+			$this->cache->save( 'themedefault_'.$site_id.'_'.$check_for.$return, $row->$return, 2678400 );
 			
 			return $row->$return;
 		}
 		
 		return $theme_val;
 	}// get_default_theme
+	
+	
+	/**
+	 * get_themes_data
+	 * @param array $data
+	 * @return mixed
+	 */
+	function get_themes_data( $data = array() ) {
+		if ( is_array( $data ) && !empty( $data ) ) {
+			$this->db->where( $data );
+		}
+		$query = $this->db->get( 'themes' );
+		
+		return $query->row();
+	}// get_themes_data
 	
 	
 	/**
@@ -295,17 +409,54 @@ class themes_model extends CI_Model {
 	 */
 	function is_default( $theme_system_name = '', $check_for = 'front' ) {
 		if ( $theme_system_name == null ) {return false;}
+		
+		// get site id
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
+		$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+		$this->db->where( 'site_id', $site_id );
 		$this->db->where( 'theme_system_name', $theme_system_name );
+		
 		if ( $check_for == 'admin' ) {
-			$this->db->where( 'theme_default_admin', '1' );
+			$this->db->where( 'theme_sites.theme_default_admin', '1' );
 		} else {
-			$this->db->where( 'theme_default', '1' );
+			$this->db->where( 'theme_sites.theme_default', '1' );
 		}
+		
 		if ( $this->db->count_all_results( 'themes' ) ) {
 			return true;
 		}
+		
 		return false;
 	}// is_default
+	
+	
+	/**
+	 * is_default_one
+	 * check this theme is default atleast one site.
+	 * @param string $theme_system_name
+	 * @param admin|front $check_for
+	 * @return boolean 
+	 */
+	function is_default_one( $theme_system_name = '', $check_for = 'front' ) {
+		if ( $theme_system_name == null ) {return false;}
+		
+		$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+		$this->db->where( 'theme_system_name', $theme_system_name );
+		
+		if ( $check_for == 'admin' ) {
+			$this->db->where( 'theme_sites.theme_default_admin', '1' );
+		} else {
+			$this->db->where( 'theme_sites.theme_default', '1' );
+		}
+		
+		if ( $this->db->count_all_results( 'themes' ) ) {
+			return true;
+		}
+		
+		return false;
+	}// is_default_one
 	
 	
 	/**
@@ -313,21 +464,32 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean 
 	 */
-	function is_enabled( $theme_system_name = '' ) {
+	function is_enabled( $theme_system_name = '', $site_id = '' ) {
 		if ( $theme_system_name == null ) {return false;}
+		
+		if ( $site_id == null ) {
+			// get site id
+			$this->load->model( 'siteman_model' );
+			$site_id = $this->siteman_model->get_site_id();
+		}
+		
 		// load cache driver
 		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
+		
 		// check cached
-		if ( false === $theme_val = $this->cache->get( 'isthemeenable_'.$theme_system_name ) ) {
+		if ( false === $theme_val = $this->cache->get( 'isthemeenable_'.$theme_system_name.'_'.$site_id ) ) {
+			$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
 			$this->db->where( 'theme_system_name', $theme_system_name );
-			$this->db->where( 'theme_enable', '1' );
+			$this->db->where( 'site_id', $site_id );
+			$this->db->where( 'theme_sites.theme_enable', '1' );
 			if ( $this->db->count_all_results( 'themes' ) ) {
-				$this->cache->save( 'isthemeenable_'.$theme_system_name, 'true', 2678400 );// 31 days (ควรจะนานยิ่งนานยิ่งดีเพราะมันถูกเรียกจาก loop ซึ่งถ้าไม่นานมันจะทำงานหนักมากเป็นช่วงๆ)
+				$this->cache->save( 'isthemeenable_'.$theme_system_name.'_'.$site_id, 'true', 2678400 );// 31 days (ควรจะนานยิ่งนานยิ่งดีเพราะมันถูกเรียกจาก loop ซึ่งถ้าไม่นานมันจะทำงานหนักมากเป็นช่วงๆ)
 				return true;
 			}
-			$this->cache->save( 'isthemeenable_'.$theme_system_name, 'false', 2678400 );
+			$this->cache->save( 'isthemeenable_'.$theme_system_name.'_'.$site_id, 'false', 2678400 );
 			return false;
 		}
+		
 		// return cache
 		if ( $theme_val == 'true' ) {
 			return true;
@@ -335,6 +497,27 @@ class themes_model extends CI_Model {
 			return false;
 		}
 	}// is_enabled
+	
+	
+	/**
+	 * is_enabled_one
+	 * check this theme is enabled atleast one site
+	 * @param string $theme_system_name
+	 * @return boolean 
+	 */
+	function is_enabled_one( $theme_system_name = '' ) {
+		if ( $theme_system_name == null ) {return false;}
+		
+		$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+		$this->db->where( 'theme_system_name', $theme_system_name );
+		$this->db->where( 'theme_sites.theme_enable', '1' );
+		
+		if ( $this->db->count_all_results( 'themes' ) ) {
+			return true;
+		}
+		
+		return false;
+	}// is_enabled_one
 	
 	
 	/**
@@ -379,7 +562,13 @@ class themes_model extends CI_Model {
 	 * @return mixed 
 	 */
 	function list_enabled_themes() {
-		$this->db->where( 'theme_enable', '1' );
+		// get site id
+		$this->load->model( 'siteman_model' );
+		$site_id = $this->siteman_model->get_site_id();
+		
+		$this->db->join( 'theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner' );
+		$this->db->where( 'site_id', $site_id );
+		$this->db->where( 'theme_sites.theme_enable', '1' );
 		$this->db->order_by( 'theme_name', 'asc' );
 		
 		$query = $this->db->get( 'themes' );
@@ -395,6 +584,36 @@ class themes_model extends CI_Model {
 		
 		return null;
 	}// list_enabled_themes
+	
+	
+	/**
+	 * list_theme_use_in_sites
+	 * list theme used in any sites.
+	 * @param string $theme_system_name
+	 * @return mixed
+	 */
+	function list_theme_use_in_sites( $theme_system_name = '' ) {
+		// get theme_id
+		$theme_db = $this->get_themes_data( array( 'theme_system_name' => $theme_system_name ) );
+		if ( $theme_db == null ) {
+			return null;
+		}
+		$theme_id = $theme_db->theme_id;
+		unset( $theme_db );
+		
+		// list theme enabled in any sites
+		$this->db->join( 'sites', 'sites.site_id = theme_sites.site_id', 'left' )
+			   ->where( 'theme_sites.theme_id', $theme_id )
+			   ->where( 'theme_enable', '1' );
+		$query = $this->db->get( 'theme_sites' );
+		
+		$output['total'] = $query->num_rows();
+		$output['items'] = $query->result();
+		
+		$query->free_result();
+		unset( $query );
+		return $output;
+	}// list_theme_use_in_sites
 	
 	
 	/**
@@ -428,9 +647,10 @@ class themes_model extends CI_Model {
 	/**
 	 * render_area
 	 * @param string $area_name
+	 * @param mixed $attributes send values as attirbutes from controller, view
 	 * @return string 
 	 */
-	function render_area( $area_name = '' ) {
+	function render_area($area_name = '', $attributes = '') {
 		// load widget class
 		$this->load->helper( 'widget' );
 		
@@ -452,9 +672,28 @@ class themes_model extends CI_Model {
 			$i = 0;
 			foreach ( $results as $row ) {
 				$block_except_uri = explode( "\n", $row->block_except_uri );
-				if ( ( $row->block_except_uri != null && in_array( $current_uri, $block_except_uri ) ) ) {
-					unset( $results[$i] );
+				
+				if ( strpos( $row->block_except_uri, '*' ) !== false && is_array( $block_except_uri ) ) {
+					// remove exception uri /* eg. book/* including book, book/magazine, book/comic/action
+					$unset = false;
+					
+					foreach ( $block_except_uri as $uri ) {
+						$uri = str_replace( array( '/*', '*' ), '', $uri );
+						if ( strpos( $current_uri, $uri ) !== false ) {
+							$unset = true;
+						}
+					}
+					
+					if ( $unset === true ) {
+						unset( $results[$i], $unset, $uri );
+					}
+				} else {
+					if ( ( $row->block_except_uri != null && in_array( $current_uri, $block_except_uri ) ) ) {
+						unset( $results[$i] );
+					}
 				}
+				
+				unset( $row, $block_except_uri );
 				$i++;
 			}
 			// end cut except uri---------------------------------------------------------------------
@@ -463,9 +702,28 @@ class themes_model extends CI_Model {
 			$i = 0;
 			foreach ( $results as $row ) {
 				$block_only_uri = explode( "\n", $row->block_only_uri );
-				if ( $row->block_only_uri != null && !in_array( $current_uri, $block_only_uri ) ) {
-					unset( $results[$i] );
+				
+				if ( strpos( $row->block_only_uri, '*' ) !== false && is_array( $block_only_uri ) ) {
+					// remove show only uri /* eg. book/* including book, book/magazine, book/comic/action
+					$unset = false;
+					
+					foreach ( $block_only_uri as $uri ) {
+						$uri = str_replace( array( '/*', '*' ), '', $uri );
+						if ( strpos( $current_uri, $uri ) === false ) {
+							$unset = true;
+						}
+					}
+					
+					if ( $unset === true ) {
+						unset( $results[$i], $unset, $uri );
+					}
+				} else {
+					if ( $row->block_only_uri != null && !in_array( $current_uri, $block_only_uri ) ) {
+						unset( $results[$i] );
+					}
 				}
+				
+				unset( $row, $block_only_uri );
 				$i++;
 			}
 			// end loop cut to show only uri---------------------------------------------------------
@@ -479,7 +737,7 @@ class themes_model extends CI_Model {
 					if ( file_exists( config_item( 'modules_uri' ).$row->block_file ) ) {
 						$output .= '<div class="each-block block-id-'.$row->block_id.' block-'.$row->block_name.'">';
 						ob_start();
-						widget::run( $row->block_name, $row->block_file, $row->block_values, $row );
+						widget::run( $row->block_name, $row->block_file, $row->block_values, $row, $attributes );
 						$output .= ob_get_contents();
 						ob_end_clean();
 						$output .= '</div>';
@@ -552,14 +810,14 @@ class themes_model extends CI_Model {
 	 * @param admin|front $set_for
 	 * @return boolean 
 	 */
-	function set_default( $theme_system_name = '', $set_for = 'front' ) {
+	function set_default( $theme_system_name = '', $set_for = 'front', $site_id = '' ) {
 		if ( $theme_system_name == null ) {return false;}
 		
 		// check if theme was enabled
-		if ( $this->is_enabled( $theme_system_name ) ) {
+		if ( $this->is_enabled( $theme_system_name, $site_id ) ) {
 			// theme was enabled, update to default below.
 		} else {
-			if ( !$this->do_enable( $theme_system_name ) ) {
+			if ( !$this->do_enable( $theme_system_name, $site_id ) ) {
 				return false;
 			}
 		}
@@ -571,29 +829,52 @@ class themes_model extends CI_Model {
 			if ( !file_exists( $this->theme_dir.$theme_system_name.'/front' ) ) {return false;}
 		}
 		
-		// unset default for all other themes
-		$this->db->where( 'theme_system_name !=', $theme_system_name );
-		if ( $set_for == 'admin' ) {
-			$this->db->where( 'theme_default_admin', '1' );
-			$this->db->set( 'theme_default_admin', '0' );
-		} else {
-			$this->db->where( 'theme_default', '1' );
-			$this->db->set( 'theme_default', '0' );
+		if ( $site_id == null ) {
+			// get site id
+			$this->load->model( 'siteman_model' );
+			$site_id = $this->siteman_model->get_site_id();
 		}
-		$this->db->update( 'themes' );
+		
+		// get theme data
+		$theme_db = $this->get_themes_data( array( 'theme_system_name' => $theme_system_name ) );
+		$theme_id = '';
+		if ( $theme_db != null ) {
+			$theme_id = $theme_db->theme_id;
+		}
+		unset( $theme_db );
+		
+		// unset default for all other themes
+		$this->db->where( 'theme_id !=', $theme_id );
+		$this->db->where( 'site_id', $site_id );
+		if ( $set_for == 'admin' ) {
+			$this->db->where( 'theme_sites.theme_default_admin', '1' );
+			$this->db->set( 'theme_sites.theme_default_admin', '0' );
+		} else {
+			$this->db->where( 'theme_sites.theme_default', '1' );
+			$this->db->set( 'theme_sites.theme_default', '0' );
+		}
+		$this->db->update( 'theme_sites' );
 		
 		// update to default
-		$this->db->where( 'theme_system_name', $theme_system_name );
+		$this->db->where( 'theme_id', $theme_id );
+		$this->db->where( 'site_id', $site_id );
 		if ( $set_for == 'admin' ) {
-			$this->db->set( 'theme_default_admin', '1' );
+			$this->db->set( 'theme_sites.theme_default_admin', '1' );
 		} else {
-			$this->db->set( 'theme_default', '1' );
+			$this->db->set( 'theme_sites.theme_default', '1' );
 		}
-		$this->db->update( 'themes' );
+		$this->db->update( 'theme_sites' );
 		
 		// delete cache
 		$this->config_model->delete_cache( 'themedefault_' );
 		$this->config_model->delete_cache( 'isthemeenable_' );
+		
+		// system log
+		$log['sl_type'] = 'theme';
+		$log['sl_message'] = 'Set default theme '.$theme_system_name;
+		$this->load->model( 'syslog_model' );
+		$this->syslog_model->add_new_log( $log );
+		unset( $log );
 		
 		// done
 		return true;

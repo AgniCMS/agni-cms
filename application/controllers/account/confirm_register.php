@@ -30,6 +30,13 @@ class confirm_register extends MY_Controller {
 	
 	
 	function index( $username = '', $confirm_code = '' ) {
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
+		$breadcrumb[] = array('text' => lang('account_confirm_register'), 'url' => current_url());
+		$output['breadcrumb'] = $breadcrumb;
+		unset($breadcrumb);
+		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
+		
 		// check in db
 		$this->db->where( 'account_username', $username );
 		$this->db->where( 'account_confirm_code', $confirm_code );
@@ -45,11 +52,13 @@ class confirm_register extends MY_Controller {
 			$this->db->where( 'account_id', $row->account_id );
 			$this->db->update( 'accounts' );
 			
-			$output['form_status'] = '<div class="txt_success alert alert-success">' . $this->lang->line( 'account_confirm_register_completed' ) . '</div>';
+			$output['form_status'] = 'success';
+			$output['form_status_message'] = $this->lang->line('account_confirm_register_completed');
 			
 			$this->modules_plug->do_action( 'account_register_confirmed', array( 'account_id' => $row->account_id, 'account_username' => $username, 'account_email' => $row->account_email ) );
 		} else {
-			$output['form_status'] = '<div class="txt_error alert alert-error">' . $this->lang->line( 'account_confirm_register_invalid' ) . '</div>';
+			$output['form_status'] = 'error';
+			$output['form_status_message'] = $this->lang->line('account_confirm_register_invalid');
 		}
 		
 		// head tags output ##############################

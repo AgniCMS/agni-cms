@@ -78,13 +78,6 @@ class comment extends MY_Controller {
 				// send object to view for use.
 				$outval['comment'] = $comment;
 				
-				// show avatar url
-				if ( $comment->account_avatar != null ) {
-					$outval['comment_avatar'] = base_url().$comment->account_avatar;
-				} else {
-					$outval['comment_avatar'] = base_url().'public/images/default-avatar.png';
-				}
-				
 				// comment_body_value
 				$outval['comment_content'] = $this->comments_model->modify_content( $comment->comment_body_value );
 				
@@ -170,14 +163,35 @@ class comment extends MY_Controller {
 		// not found a comment.
 		if ( $row == null ) { redirect(); }
 		
-		// check permissions
-		if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_own_perm', $account_id ) && $row->account_id != $account_id ) {
-			if ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_other_perm', $account_id ) ) {
-				redirect();
-			}
-		} elseif ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_delete_own_perm', $account_id ) && $row->account_id == $account_id ) {
+		// check permissions for both own and others---------------------------------------------------------------------------------
+		if ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm') === false && $row->account_id == $account_id) {
+			// user has NO permission to edit own and editing own.
+			unset($row, $account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_delete_yours')
+				)
+			);
 			redirect();
-		}
+		} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm') === false && $row->account_id != $account_id) {
+			// user has NO permission to edit others and editing others.
+			unset($row, $account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_delete_others')
+				)
+			);
+			redirect();
+		} 
+		// check permissions for both own and others---------------------------------------------------------------------------------
 		
 		// set value for confirm delete
 		$output['post_id'] = $row->post_id;
@@ -253,14 +267,35 @@ class comment extends MY_Controller {
 		// not found a comment.
 		if ( $row == null ) { redirect(); }
 		
-		// check permissions
-		if ( $this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_own_perm', $account_id ) && $row->account_id != $account_id ) {
-			if ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_other_perm', $account_id ) ) {
-				redirect();
-			}
-		} elseif ( !$this->account_model->check_admin_permission( 'comment_perm', 'comment_edit_own_perm', $account_id ) && $row->account_id == $account_id ) {
+		// check permissions -------------------------------------------------------------------------------------------------------------------
+		if ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm') === false && $row->account_id == $account_id) {
+			// user has NO permission to edit own and editing own.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_edit_yours')
+				)
+			);
+			redirect();
+		} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm') === false && $row->account_id != $account_id) {
+			// user has NO permission to edit others and editing others.
+			unset($row, $my_account_id);
+			// flash error permission message
+			$this->load->library( 'session' );
+			$this->session->set_flashdata(
+				'form_status',
+				array(
+					'form_status' => 'error',
+					'form_status_message' => $this->lang->line('comment_you_have_no_permission_edit_others')
+				)
+			);
 			redirect();
 		}
+		// check permissions -------------------------------------------------------------------------------------------------------------------
 		
 		// set values for edit
 		$output['post_id'] = $row->post_id;
@@ -287,7 +322,8 @@ class comment extends MY_Controller {
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				return '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				$result = $this->comments_model->edit( $data );
 				
@@ -300,7 +336,8 @@ class comment extends MY_Controller {
 						redirect( 'post/'.$row->post_uri_encoded.'?per_page='.$gotopage.'#comment-id-'.$comment_id );
 					}
 				} else {
-					return '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
 				}
 			}
 			
@@ -381,7 +418,12 @@ class comment extends MY_Controller {
 		
 		// post method, new comment posting
 		if ( $this->input->post() ) {
-			$output['form_status'] = $this->post_comment();
+			$post_comment = $this->post_comment();
+			if (isset($post_comment['form_status']) && isset($post_comment['form_status_message'])) {
+				$output['form_status'] = $post_comment['form_status'];
+				$output['form_status_message'] = $post_comment['form_status_message'];
+			}
+			unset($post_comment);
 			
 			// re-populate form
 			$output['name'] = htmlspecialchars( trim( $this->input->post( 'name' ) ) );
@@ -394,7 +436,7 @@ class comment extends MY_Controller {
 	}// list_comments
 	
 	
-	function post_comment() {
+	private function post_comment() {
 		$account_id = (int) trim( $this->input->post( 'account_id' ) );
 		if ( $account_id == null ) {$account_id = '0';}
 		
@@ -412,12 +454,15 @@ class comment extends MY_Controller {
 			$this->form_validation->set_rules( 'comment_body_value', 'lang:comment_comment', 'trim|required|xss_clean' );
 			
 			if ( $this->form_validation->run() == false ) {
-				return '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				$output['form_status'] = 'error';
+				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
+				return $output;
 			} else {
 				
 				// set data for insert
 				$data['parent_id'] = trim( $this->input->post( 'parent_id' ) );
 					if ( !is_numeric( $data['parent_id'] ) ) {$data['parent_id'] = '0';}
+				$data['language'] = $this->lang->get_current_lang();
 				$data['post_id'] = (int)trim( $this->input->post( 'post_id' ) );
 				$data['account_id'] = $account_id;
 				$data['name'] = htmlspecialchars( trim( $this->input->post( 'name' ) ), ENT_QUOTES, config_item( 'charset' ) );
@@ -432,13 +477,17 @@ class comment extends MY_Controller {
 				} else {
 					$data['comment_status'] = (int) 0;
 					
-					// any api check spam add here.
+					// module plug check spam. --------------------------------------------------------
 					$data['permalink_url'] = urldecode( current_url() );
+					
 					$spam_result = $this->modules_plug->do_action( 'comment_spam_check', $data );
-					$data['comment_spam_status'] = $spam_result;
-					if ( !is_string( $spam_result ) ) {
+					
+					if (isset($spam_result['comment_spam_check']) && is_array($spam_result['comment_spam_check'])) {
+						$data['comment_spam_status'] = array_shift(array_values($spam_result['comment_spam_check']));
+					} else {
 						$data['comment_spam_status'] = 'normal';
 					}
+					// module plug check spam. --------------------------------------------------------
 					
 					unset( $data['permalink_url'] );
 				}
@@ -498,10 +547,14 @@ class comment extends MY_Controller {
 						$gotopage = $this->comments_model->get_comment_display_page( $result['id'], $this->mode );
 						redirect( current_url().'?per_page='.$gotopage.'#comment-id-'.$result['id'] );
 					} else {
-						return '<div class="txt_success alert alert-success">'.$this->lang->line( 'comment_user_wait_approve' ).'</div>';
+						$output['form_status'] = 'success';
+						$output['form_status_message'] = $this->lang->line('comment_user_wait_approve');
+						return $output;
 					}
 				} else {
-					return '<div class="txt_error alert alert-error">'.$result.'</div>';
+					$output['form_status'] = 'error';
+					$output['form_status_message'] = $result;
+					return $output;
 				}
 				
 			}// endif form validation

@@ -4,10 +4,13 @@
 	<div class="cmd-left">
 		<button type="button" class="bb-button btn" onclick="window.location=site_url+'site-admin/themes/add';"><?php echo lang( 'admin_add' ); ?></button>
 	</div>
-	<div class="clear"></div>
+	<div class="clearfix"></div>
 </div>
 
-<?php if ( isset( $form_status ) ) {echo $form_status;} ?> 
+<?php if (isset($form_status) && isset($form_status_message)) { ?> 
+<div class="alert alert-<?php echo $form_status; ?>"><button type="button" class="close" data-dismiss="alert">&times;</button><?php echo $form_status_message; ?></div>
+<?php } ?> 
+
 
 <h2><?php echo lang( 'themes_enabled_themes' ); ?></h2>
 <div class="list-themes list-themes-enabled">
@@ -37,6 +40,7 @@
 	<?php endif; ?> 
 </div>
 
+
 <h2><?php echo lang( 'themes_disabled_themes' ); ?></h2>
 <div class="list-themes">
 	<?php if ( isset( $list_item['items'] ) && is_array( $list_item['items'] ) ): ?> 
@@ -60,20 +64,25 @@
 </div>
 <?php if ( isset( $pagination ) ) {echo $pagination;} ?>
 
-<?php echo form_open( 'site-admin/themes/defaultadmin/' ); ?> 
-<fieldset class="fieldset-theme-admin">
-	<legend><?php echo lang( 'themes_administration' ); ?></legend>
+
+<?php echo form_open( 'site-admin/themes/defaultadmin/', array( 'class' => 'form-inline' ) ); ?> 
+<div class="theme-admin">
+	<h2><?php echo lang( 'themes_administration' ); ?></h2>
 	
-		<select name="theme_system_name">
-			<?php if ( isset( $list_item['items'] ) && is_array( $list_item['items'] ) ): ?> 
-			<?php foreach ( $list_item['items'] as $key ): ?> 
-			<?php if ( $key['theme_admin'] == true ): ?> 
-			<option value="<?php echo $key['theme_system_name']; ?>"<?php if ( $theme_admin_name == $key['theme_system_name'] ): ?> selected="selected"<?php endif; ?>><?php if ( !empty( $key['theme_name'] ) ): ?><?php echo $key['theme_name']; ?><?php else: ?><?php echo $key['theme_system_name']; ?><?php endif; ?></option>
-			<?php endif; ?> 
-			<?php endforeach; ?> 
-			<?php endif; ?> 
-		</select>
-		<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
+	<div class="control-group">
+		<div class="controls">
+			<select name="theme_system_name">
+				<?php if ( isset( $list_item['items'] ) && is_array( $list_item['items'] ) ): ?> 
+				<?php foreach ( $list_item['items'] as $key ): ?> 
+				<?php if ( $key['theme_admin'] == true ): ?> 
+				<option value="<?php echo $key['theme_system_name']; ?>"<?php if ( $theme_admin_name == $key['theme_system_name'] ): ?> selected="selected"<?php endif; ?>><?php if ( !empty( $key['theme_name'] ) ): ?><?php echo $key['theme_name']; ?><?php else: ?><?php echo $key['theme_system_name']; ?><?php endif; ?></option>
+				<?php endif; ?> 
+				<?php endforeach; ?> 
+				<?php endif; ?> 
+			</select>
+			<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
+		</div>
+	</div>
 	
-</fieldset>
+</div>
 <?php echo form_close(); ?> 

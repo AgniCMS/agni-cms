@@ -1,0 +1,1 @@
+<?php $this->load->view( 'front/templates/post/post_view' ); ?> 

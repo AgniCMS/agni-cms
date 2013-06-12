@@ -79,7 +79,7 @@ if ( !function_exists( 'show_category_nested_sortable' ) ) {
 		}
 		foreach ($array as $item) {
 
-			$output .= '<li id="list_'.$item->tid.'"><div><span class="sort-handle">&nbsp;</span> ' . anchor( 'site-admin/category/edit/'.$item->tid, $item->t_name ) . '</div>';
+			$output .= '<li id="list_'.$item->tid.'"><div><span class="sort-handle icon-move">&nbsp;</span> ' . anchor( 'site-admin/category/edit/'.$item->tid, $item->t_name ) . '</div>';
 
 			if (property_exists($item, 'childs')) {
 				$output .= show_category_nested_sortable( $item->childs, false );

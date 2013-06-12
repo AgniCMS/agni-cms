@@ -23,14 +23,6 @@ class blog_install extends admin_controller {
 	
 	
 	function index() {
-		$this->db->where( 'module_system_name', $this->module_system_name );
-		$query = $this->db->get( 'modules' );
-		if ( $query->num_rows() <= 0 ) {
-			$query->free_result();
-			echo 'Installed.';
-			return null;
-		}
-		
 		// install module table.
 		if ( !$this->db->table_exists( 'blog' ) ) {
 			$sql = 'CREATE TABLE `'.$this->db->dbprefix('blog').'` (
@@ -43,14 +35,16 @@ class blog_install extends admin_controller {
 			$this->db->query( $sql );
 		}
 		
-		// install module to system
-		$this->db->set( 'module_install', '1' );
-		$this->db->where( 'module_system_name', $this->module_system_name );
-		$this->db->update( 'modules' );
-		
 		// done
 		$this->load->library( 'session' );
-		$this->session->set_flashdata( 'form_status', '<div class="txt_success alert alert-success">'.$this->lang->line( 'blog_install_completed' ).'</div>' );
+		$this->session->set_flashdata(
+			'form_status',
+			array(
+				'form_status' => 'success',
+				'form_status_message' => $this->lang->line('blog_install_completed')
+			)
+		);
+		
 		// go back
 		redirect( 'site-admin/module' );
 	}

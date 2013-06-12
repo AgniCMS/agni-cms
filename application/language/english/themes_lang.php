@@ -26,6 +26,7 @@ $lang['themes_manager'] = 'Theme manager';
 $lang['themes_no'] = 'No';
 $lang['themes_no_name'] = 'No name';
 $lang['themes_select_file'] = 'Select a file';
+$lang['themes_still_in_use_in_these_site'] = 'The theme %s still in use in these site. You have to disable this theme in these site before delete.';
 $lang['themes_themes'] = 'Themes';
 $lang['themes_wrong_structure'] = 'The zip structure of theme is invalid.';
 $lang['themes_yes'] = 'Yes';

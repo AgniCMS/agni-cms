@@ -1,4 +1,9 @@
 <?php
+// 22/03/2013 (v2.67)
+// - New method: ->each(function($fileName, $fileInfo) use ($zip)), works as jQuery.
+//   Example: $z->each(function($filename) use ($z){ $z->unzip($filename, "unc/".basename($filename)); });
+// 25/07/2012 (v2.664)
+// - unzip was NOT respecting chmod parameters, and always setting to 0777. (thanks to Stef Dawson, http://stefdawson.com)
 // 19/08/2011 (v2.663)
 // - unzipAll was using double slashes (path//filename) to save files. (thanks to Karen Peyton).
 // 09/08/2010 (v2.662)
@@ -7,7 +12,7 @@
 // - Fixed E_STRICT notice: "Only variables should be passed by reference". Thanks Erik W.
 // 24/03/2010 (v2.66)
 // - Fixed bug inside unzipAll when dirname is "." (thanks to Thorsten Groth)
-// - Added character "´" to the string conversion table (ex: caixa d´água)
+// - Added character "ï¿½" to the string conversion table (ex: caixa dï¿½ï¿½gua)
 // 27/02/2010
 // - Removed PHP4 support (file_put_contents redeclaration).
 // 04/12/2009 (v2.65)
@@ -22,7 +27,7 @@
 // - New method: getLastError()
 
 ##############################################################
-# Class dUnzip2 v2.663
+# Class dUnzip2 v2.67
 #
 #  Author: Alexandre Tedeschi (d)
 #  E-Mail: alexandrebr at gmail dot com
@@ -42,6 +47,7 @@
 #
 #  Methods:
 #  * dUnzip2($filename)         - Constructor - Opens $filename
+#  * each($cbEach)              - Calls $cbEach($filename, $fileinfo) on each compressed file
 #  * getList([$stopOnFile])     - Retrieve the file list
 #  * getExtraInfo($zipfilename) - Retrieve more information about compressed file
 #  * getZipInfo([$entry])       - Retrieve ZIP file details.
@@ -60,7 +66,7 @@
 
 class dUnzip2{
 	Function getVersion(){
-		return "2.663";
+		return "2.67";
 	}
 	// Public
 	var $fileName;
@@ -182,6 +188,19 @@ class dUnzip2{
 			$this->endOfCentral;
 	}
 	
+	Function each ($cbEachCompreesedFile){
+		// cbEachCompreesedFile(filename, fileinfo);
+		if(!is_callable($cbEachCompreesedFile))
+			die("dUnzip2: You called 'each' method, but failed to provide an Callback as argument. Usage: \$zip->each(function(\$filename, \$fileinfo) use (\$zip){ ... \$zip->unzip(\$filename, 'uncompress/\$filename'); }).");
+		
+		$lista = $this->getList();
+		if(sizeof($lista)) foreach($lista as $fileName=>$fileInfo){
+			if(false === call_user_func($cbEachCompreesedFile, $fileName, $fileInfo)){
+				return false;
+			}
+		}
+		return true;
+	}
 	Function unzip($compressedFileName, $targetFileName=false, $applyChmod=0777){
 		if(!sizeof($this->compressedList)){
 			$this->debugMsg(1, "Trying to unzip before loading file list... Loading it!");
@@ -214,7 +233,7 @@ class dUnzip2{
 			);
 		unset($toUncompress);
 		if($applyChmod && $targetFileName)
-			chmod($targetFileName, 0777);
+			chmod($targetFileName, $applyChmod);
 		
 		return $ret;
 	}
@@ -529,8 +548,8 @@ class dUnzip2{
 		$from = "\xb7\xb5\xb6\xc7\x8e\x8f\x92\x80\xd4\x90\xd2\xd3\xde\xd6\xd7\xd8\xd1\xa5\xe3\xe0".
 		        "\xe2\xe5\x99\x9d\xeb\xe9\xea\x9a\xed\xe8\xe1\x85\xa0\x83\xc6\x84\x86\x91\x87\x8a".
 				"\x82\x88\x89\x8d\xa1\x8c\x8b\xd0\xa4\x95\xa2\x93\xe4\x94\x9b\x97\xa3\x96\xec\xe7".
-				"\x98ï";
-		$to   = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûışÿ´";
+				"\x98ï¿½";
+		$to   = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
 
 		return strtr($filename, $from, $to);
 	}

@@ -7,16 +7,17 @@
 	if ( isset( $pagination ) ) {echo $pagination;}
 	?>
 	
-	<?php if ( $comment_allow == 1 ): ?> 
+	<?php if ( $comment_allow == 1 ) { ?> 
 	
 	<h2 class="comment-add-title" id="addcomment"><?php echo $comment_add_title; ?></h2>
-	<?php if ( check_admin_permission( 'comment_perm', 'comment_allowpost_perm', $account_id ) ): ?>
-	<?php $this->load->view( 'front/templates/comment/comment_form' ); ?> 
-	<?php else: ?>
-	<div><?php echo lang( 'comment_need_member' ); ?></div>
-	<?php endif; ?> 
 	
-	<?php endif; ?> 
+	<?php if ( check_admin_permission( 'comment_perm', 'comment_allowpost_perm', $account_id ) ) { ?>
+	<?php $this->load->view( 'front/templates/comment/comment_form' ); ?> 
+	<?php } else { ?>
+	<div><?php echo lang( 'comment_need_member' ); ?></div>
+	<?php } //endif; ?> 
+	
+	<?php } //endif; ?> 
 		
 </section>
 <?php endif; ?> 
