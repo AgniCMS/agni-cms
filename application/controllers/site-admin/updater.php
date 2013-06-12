@@ -35,6 +35,8 @@ class updater extends admin_controller {
 	
 	
 	private function _no_core_update() {
+		$this->load->library('session');
+		$this->session->unset_userdata('global_status');
 		// show no update available.
 		
 		// head tags output ##############################
