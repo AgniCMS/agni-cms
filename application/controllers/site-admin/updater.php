@@ -135,7 +135,7 @@ class updater extends admin_controller {
 					$this->ftp->close();
 					
 					// if base path is not correct
-					if ( !is_array( $result ) || ( is_array( $result ) && (!in_array( '/application', $result ) && !in_array('application', $result)) ) ) {
+					if ( !is_array( $result ) || ( is_array( $result ) && (!in_array($data['ftp_basepath'].'/application', $result) && !in_array($data['ftp_basepath'].'application', $result) && !in_array('application', $result) && !in_array('/application', $result)) ) ) {
 						$output['form_status'] = 'error';
 						$output['form_status_message'] = $this->lang->line('updater_incorrect_ftp_basepath');
 					} else {

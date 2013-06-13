@@ -179,8 +179,8 @@ class agni_update {
 		// copy config .bak to .php and paste reserved variables. -------------------------------------------------------------
 		// if use ftp rewrite method, chmod config.php and database.php to 666(writable) before.
 		if( $rewrite_method == 'ftp' ) {
-			$ci->filesystem->chmod( 'application/config/config.php', '0777' );
-			$ci->filesystem->chmod( 'application/config/database.php', '0777' );
+			$ci->filesystem->chmod( 'application/config/config.php', '0666' );
+			$ci->filesystem->chmod( 'application/config/database.php', '0666' );
 		}
 		
 		// read config.php.bak ---------------------------------------------------------------
