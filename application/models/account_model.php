@@ -1591,9 +1591,23 @@ class account_model extends CI_Model {
 		$account_id = $this->db->insert_id();
 		
 		// add level
-		$this->db->set( 'level_group_id', '3' );
-		$this->db->set( 'account_id', $account_id );
-		$this->db->insert( 'account_level' );
+		$this->load->model('siteman_model');
+		$list_site = $this->siteman_model->list_websites_all();
+		
+		if (isset($list_site['items']) && is_array(($list_site['items']))) {
+			foreach ($list_site['items'] as $site) {
+				$site_table_prefix = '';
+
+				if ($site->site_id != '1') {
+					$site_table_prefix = $site->site_id . '_';
+				}
+				
+				$this->db->set( 'level_group_id', '3' );
+				$this->db->set( 'account_id', $account_id );
+				$this->db->insert( $this->db->dbprefix($site_table_prefix . 'account_level') );
+			}
+		}
+		unset($list_site, $site);
 		
 		// module plug here
 		$this->modules_plug->do_action( 'account_register', $data );
