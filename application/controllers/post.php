@@ -362,7 +362,7 @@ class post extends MY_Controller {
 		}
 		
 		// add view count.
-		$this->db->query('UPDATE ' . $this->db->dbprefix('posts') . ' SET view_count = view_count+1 WHERE post_id = ' . $this->db->escape($row->post_id));
+		$this->db->query('UPDATE ' . $this->db->dbprefix(SITE_TABLE . 'posts') . ' SET view_count = view_count+1 WHERE post_id = ' . $this->db->escape($row->post_id));
 		
 		// head tags output ##############################
 		if ( $row->meta_title != null ) {
