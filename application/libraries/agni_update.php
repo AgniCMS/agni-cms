@@ -444,9 +444,25 @@ class agni_update {
 				if ( $update->targetVersion == '' || ( $update->targetVersion != '' && $update->targetVersion <= $cfg['agni_version']['value'] ) ) {
 					// if download link is not null and exists.
 					if ( $update->download != null && $this->url_exists( $update->download, array( '301', '302' ) ) ) {
-						$data['agni_version'] = (string) $update->version;
-						$ci->config_model->save($data);
-						unset( $data );
+						$ci->load->model('siteman_model');
+						
+						// get all sites from sites table
+						$list_site = $ci->siteman_model->list_websites_all();
+						
+						if (isset($list_site['items']) && is_array($list_site['items'])) {
+							// loop update config in all sites that we are using current version.
+							foreach ($list_site['items'] as $row) {
+								$site_table_prefix = '';
+								
+								if ($row->site_id != '1') {
+									$site_table_prefix = $row->site_id . '_';
+								}
+								
+								$this->db->where('config_name', 'agni_version')
+										->set('config_value', (string) $update->version)
+										->update($this->db->dbprefix($site_table_prefix . 'config'));
+							}
+						}
 
 						break;
 					}
