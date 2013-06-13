@@ -458,7 +458,7 @@ class agni_update {
 									$site_table_prefix = $row->site_id . '_';
 								}
 								
-								$this->db->where('config_name', 'agni_version')
+								$ci->db->where('config_name', 'agni_version')
 										->set('config_value', (string) $update->version)
 										->update($this->db->dbprefix($site_table_prefix . 'config'));
 							}
