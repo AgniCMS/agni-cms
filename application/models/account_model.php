@@ -1340,7 +1340,7 @@ class account_model extends CI_Model {
 		}
 		
 		// delete cache of this account id
-		if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) && isset( $cm_account['email'] ) ) {
+		if ( isset( $cm_account['id'] ) && isset( $cm_account['username'] ) ) {
 			$this->config_model->delete_cache( 'chkacc_'.$cm_account['id'].'_' );
 		}
 		
