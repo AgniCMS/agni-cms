@@ -9,10 +9,12 @@
  *
  */
 
-class login extends MY_Controller {
+class login extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,7 +25,8 @@ class login extends MY_Controller {
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
 		$breadcrumb[] = array('text' => lang('account_login'), 'url' => current_url());
@@ -72,6 +75,7 @@ class login extends MY_Controller {
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('account_username', 'lang:account_username', 'trim|required');
 			$this->form_validation->set_rules('account_password', 'lang:account_password', 'trim|required');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';

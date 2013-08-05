@@ -9,10 +9,12 @@
  *
  */
 
-class register extends MY_Controller {
+class register extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,7 +25,8 @@ class register extends MY_Controller {
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		if ($this->config_model->load_single('member_allow_register') == '0') {redirect($this->base_url);}// check for allowed register?
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
@@ -48,6 +51,7 @@ class register extends MY_Controller {
 			$this->form_validation->set_rules('account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean');
 			$this->form_validation->set_rules('account_password', 'lang:account_password', 'trim|required');
 			$this->form_validation->set_rules('account_confirm_password', 'lang:account_confirm_password', 'trim|required|matches[account_password]');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';

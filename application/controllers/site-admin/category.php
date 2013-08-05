@@ -9,10 +9,12 @@
  *
  */
 
-class category extends admin_controller {
+class category extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -29,12 +31,14 @@ class category extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('category_perm' => array('category_viewall_perm', 'category_add_perm', 'category_edit_perm', 'category_delete_perm', 'category_sort_perm'));
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('category_perm', 'category_add_perm') != true) {redirect('site-admin');}
 		
@@ -68,6 +72,7 @@ class category extends admin_controller {
 			// validate form
 			$this->form_validation->set_rules("t_name", "lang:category_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -114,7 +119,8 @@ class category extends admin_controller {
 	}// add
 	
 	
-	function ajax_nameuri() {
+	public function ajax_nameuri() 
+	{
 		if ($this->input->post() && $this->input->is_ajax_request()) {
 			
 			$t_name = trim($this->input->post('t_name'));
@@ -132,7 +138,8 @@ class category extends admin_controller {
 	}// ajax_nameuri
 	
 	
-	function ajax_sort() {
+	public function ajax_sort() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('category_perm', 'category_sort_perm') != true) {return null;}
 		
@@ -164,7 +171,8 @@ class category extends admin_controller {
 	}// ajax_sort
 	
 	
-	function edit($tid = '') {
+	public function edit($tid = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('category_perm', 'category_edit_perm') != true) {redirect('site-admin');}
 		
@@ -234,6 +242,7 @@ class category extends admin_controller {
 			// validate form
 			$this->form_validation->set_rules("t_name", "lang:category_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -281,7 +290,8 @@ class category extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('category_perm', 'category_viewall_perm') != true) {redirect('site-admin');}
 		
@@ -318,7 +328,8 @@ class category extends admin_controller {
 	}// index
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		$id = $this->input->post('id');
 		if (!is_array($id)) {redirect('site-admin/category');}
 		$act = trim($this->input->post('act'));

@@ -9,15 +9,18 @@
  *
  */
  
-class blog_model extends CI_Model {
+class blog_model extends CI_Model 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function add($data = array()) {
+	public function add($data = array()) 
+	{
 		// get account_id
 		$ca_account = $this->account_model->get_account_cookie('admin');
 		$this->db->set('account_id', $ca_account['id']);
@@ -25,40 +28,49 @@ class blog_model extends CI_Model {
 		$this->db->set('blog_content', $data['blog_content']);
 		$this->db->set('blog_date', time());
 		$this->db->insert('blog');
+		
 		return true;
 	}// add
 	
 	
-	function delete($blog_id = '') {
+	public function delete($blog_id = '') 
+	{
 		$this->db->where('blog_id', $blog_id);
 		$this->db->delete('blog');
+		
 		return true;
 	}// delete
 	
 	
-	function edit($data = array()) {
+	public function edit($data = array()) 
+	{
 		$this->db->set('blog_title', $data['blog_title']);
 		$this->db->set('blog_content', $data['blog_content']);
 		$this->db->where('blog_id', $data['blog_id']);
 		$this->db->update('blog');
+		
 		return true;
 	}// edit
 	
 	
-	function list_item($list_for = 'front') {
+	public function list_item($list_for = 'front') 
+	{
 		$sql = 'select * from '.$this->db->dbprefix('blog').' as b';
 		$sql .= ' left join '.$this->db->dbprefix('accounts').' as a';
 		$sql .= ' on b.account_id = a.account_id';
+		
 		// order and sort
 		$orders = strip_tags(trim($this->input->get('orders')));
 		$orders = ($orders != null ? $orders : 'blog_id');
 		$sort = strip_tags(trim($this->input->get('sort')));
 		$sort = ($sort != null ? $sort : 'desc');
 		$sql .= ' order by ' . $orders . ' ' . $sort;
+		
 		// query for count total
 		$query = $this->db->query($sql);
 		$total = $query->num_rows();
 		$query->free_result();
+		
 		// pagination-----------------------------
 		$this->load->library('pagination');
 		if ($list_for == 'admin') {
@@ -80,14 +92,18 @@ class blog_model extends CI_Model {
 		$this->pagination->initialize($config);
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
+		
 		$sql .= ' limit '.($this->input->get('per_page') == null ? '0' : $this->input->get('per_page')).', '.$config['per_page'].';';
+		
 		$query = $this->db->query($sql);
+		
 		if ($query->num_rows() > 0) {
 			$output['total'] = $total;
 			$output['items'] = $query->result();
 			$query->free_result();
 			return $output;
 		}
+		
 		$query->free_result();
 		return null;
 	}// list_item

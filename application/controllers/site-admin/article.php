@@ -9,10 +9,12 @@
  *
  */
 
-class article extends admin_controller {
+class article extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -29,7 +31,8 @@ class article extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array(
 				'post_article_perm' => 
 					array(
@@ -48,7 +51,8 @@ class article extends admin_controller {
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_add_perm') != true) {redirect('site-admin');}
 		
@@ -170,7 +174,8 @@ class article extends admin_controller {
 	}// add
 	
 	
-	function ajax_nameuri() {
+	public function ajax_nameuri() 
+	{
 		if ($this->input->post() && $this->input->is_ajax_request()) {
 			
 			$post_name = trim($this->input->post('post_name'));
@@ -188,7 +193,8 @@ class article extends admin_controller {
 	}// ajax_nameuri
 	
 	
-	function ajax_searchtag() {
+	public function ajax_searchtag() 
+	{
 		$_GET['q'] = trim($this->input->get('term'));
 		
 		$this->taxonomy_model->tax_type = 'tag';
@@ -213,7 +219,8 @@ class article extends admin_controller {
 	}// ajax_searchtag
 	
 	
-	function del_rev($post_id = '', $revision_id = '') {
+	public function del_rev($post_id = '', $revision_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('post_article_perm', 'post_delete_revision') != true) {redirect('site-admin');}
 		
@@ -254,7 +261,8 @@ class article extends admin_controller {
 	}// del_rev
 	
 	
-	function delete($post_id = '') {
+	public function delete($post_id = '') 
+	{
 		// check permission (both canNOT delete own and delete other => get out)
 		if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_delete_own_perm') != true && $this->account_model->check_admin_permission('post_article_perm', 'post_article_delete_other_perm') != true) {redirect('site-admin');}
 		
@@ -340,7 +348,8 @@ class article extends admin_controller {
 	}// delete
 	
 	
-	function edit($post_id = '') {
+	public function edit($post_id = '') 
+	{
 		// check permission (both canNOT edit own and edit other => get out)
 		if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_edit_own_perm') != true && $this->account_model->check_admin_permission('post_article_perm', 'post_article_edit_other_perm') != true) {redirect('site-admin');}
 		
@@ -580,7 +589,8 @@ class article extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_viewall_perm') != true) {redirect('site-admin');}
 		
@@ -626,7 +636,8 @@ class article extends admin_controller {
 	}// index
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie('admin');
 		$my_account_id = $ca_account['id'];
@@ -712,7 +723,8 @@ class article extends admin_controller {
 	}// process_bulk
 	
 	
-	function reorder($post_id = '', $tid = '', $move = '') {
+	public function reorder($post_id = '', $tid = '', $move = '') 
+	{
 		// check permission
 		if (!$this->account_model->check_admin_permission('post_article_perm', 'post_article_sort_perm')) {redirect('site-admin/article');}
 		
@@ -789,7 +801,8 @@ class article extends admin_controller {
 	}// reorder
 	
 	
-	function revert($post_id = '', $revision_id = '') {
+	public function revert($post_id = '', $revision_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('post_article_perm', 'post_revert_revision') != true) {redirect('site-admin');}
 		

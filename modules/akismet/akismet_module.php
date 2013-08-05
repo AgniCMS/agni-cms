@@ -6,15 +6,18 @@
  * Author: vee w.
  * Author URL: http://www.okvee.net
   */
-class akismet_module {
+class akismet_module 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		
 	}// __construct
 	
 	
-	function _get_akismet_api() {
+	public function _get_akismet_api() 
+	{
 		// DO NOT get api config value from config_model because it maybe access to cache from browser.
 		$ci =& get_instance();
 		$ci->db->where('config_name', 'akismet_api');
@@ -35,7 +38,8 @@ class akismet_module {
 	}// _get_akismet_api
 	
 	
-	function comment_admin_index_options() {
+	public function comment_admin_index_options() 
+	{
 		$ci =& get_instance();
 		$output = '';
 		if ($ci->account_model->check_admin_permission('akismet_perm', 'akismet_set_spam_perm')) {
@@ -49,7 +53,8 @@ class akismet_module {
 	}// comment_admin_index_options
 	
 	
-	function comment_admin_index_top() {
+	public function comment_admin_index_top() 
+	{
 		$ci =& get_instance();
 		// load language
 		$ci->lang->load('akismet/akismet');
@@ -59,7 +64,8 @@ class akismet_module {
 	}// comment_admin_index_top
 	
 	
-	function comment_admin_process($cmds = array()) {
+	public function comment_admin_process($cmds = array()) 
+	{
 		if (!is_array($cmds['id']) || !isset($cmds['act'])) {return;}
 		$ci =& get_instance();
 		//
@@ -78,7 +84,7 @@ class akismet_module {
 						$row = $query->row();
 						$query->free_result();
 						// load akismet class
-						include_once(dirname(__FILE__).'/libraries/Akismet.class.php ');
+						include_once dirname(__FILE__).'/libraries/Akismet.class.php';
 						$akismet = new Akismet(site_url(), $akismet_api);
 						if ($akismet->isKeyValid()) {
 							$akismet->setCommentAuthor($row->name);
@@ -111,7 +117,7 @@ class akismet_module {
 						$row = $query->row();
 						$query->free_result();
 						// load akismet class
-						include_once(dirname(__FILE__).'/libraries/Akismet.class.php ');
+						include_once dirname(__FILE__).'/libraries/Akismet.class.php';
 						$akismet = new Akismet(site_url(), $akismet_api);
 						if ($akismet->isKeyValid()) {
 							$akismet->setCommentAuthor($row->name);
@@ -132,7 +138,8 @@ class akismet_module {
 	}// comment_admin_process
 	
 	
-	function comment_spam_check($data = array()) {
+	public function comment_spam_check($data = array()) 
+	{
 		$ci =& get_instance();
 		
 		// get akismet api
@@ -141,7 +148,7 @@ class akismet_module {
 		if ($akismet_api == null) {return $data;}
 		
 		// load akismet class
-		include(dirname(__FILE__).'/libraries/Akismet.class.php');
+		include dirname(__FILE__).'/libraries/Akismet.class.php';
 		
 		$akismet = new Akismet(site_url(), $akismet_api);
 		

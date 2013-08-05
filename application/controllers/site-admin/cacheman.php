@@ -7,10 +7,12 @@
  *
  */
  
-class cacheman extends admin_controller {
+class cacheman extends admin_controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -21,12 +23,14 @@ class cacheman extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('cache_perm' => array('cache_perm_manage', 'cache_perm_clear_all'));
 	}// _define_permission
 	
 	
-	function do_action() {
+	public function do_action() 
+	{
 		// filter post action only
 		if ($this->input->post()) {
 			
@@ -63,7 +67,8 @@ class cacheman extends admin_controller {
 	}// do_action
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('cache_perm', 'cache_perm_manage') != true) {redirect('site-admin');}
 		

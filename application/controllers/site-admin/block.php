@@ -9,10 +9,12 @@
  *
  */
  
-class block extends admin_controller {
+class block extends admin_controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -26,12 +28,14 @@ class block extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('block_perm' => array('block_viewall_perm', 'block_add_perm', 'block_edit_perm', 'block_delete_perm', 'block_sort_perm'));
 	}// _define_permission
 	
 	
-	function ajax_add($theme_system_name = '') {
+	public function ajax_add($theme_system_name = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('block_perm', 'block_add_perm') != true) {return null;}
 		
@@ -68,7 +72,8 @@ class block extends admin_controller {
 	}// ajax_add
 	
 	
-	function ajax_change_status($block_id = '') {
+	public function ajax_change_status($block_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('block_perm', 'block_edit_perm') != true) {return null;}
 		
@@ -92,7 +97,8 @@ class block extends admin_controller {
 	}// ajax_change_status
 	
 	
-	function ajax_delete($block_id = '') {
+	public function ajax_delete($block_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('block_perm', 'block_delete_perm') != true) {return null;}
 		
@@ -110,7 +116,8 @@ class block extends admin_controller {
 	}// ajax_delete
 	
 	
-	function ajax_load_area($theme_system_name = '', $area_name = '') {
+	public function ajax_load_area($theme_system_name = '', $area_name = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('block_perm', 'block_viewall_perm') != true) {return null;}
 		
@@ -135,7 +142,8 @@ class block extends admin_controller {
 	}// ajax_load_area
 	
 	
-	function ajax_sort() {
+	public function ajax_sort() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('block_perm', 'block_sort_perm') != true) {return null;}
 		
@@ -161,7 +169,8 @@ class block extends admin_controller {
 	}// ajax_sort
 	
 	
-	function edit($block_id = '') {
+	public function edit($block_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('block_perm', 'block_edit_perm') != true) {redirect('site-admin');}
 		
@@ -232,7 +241,8 @@ class block extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('block_perm', 'block_viewall_perm') != true) {redirect('site-admin');}
 		

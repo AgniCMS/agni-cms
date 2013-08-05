@@ -7,19 +7,24 @@
  *
  */
  
-class index extends MY_Controller {
+class index extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
+		
 		// load
 		$this->load->model(array('install_model'));
+		
 		// load helper
 		$this->load->helper(array('cookie', 'date', 'form'));
 	}// __construct
 	
 	
-	function ajax_install_sample_data() {
+	public function ajax_install_sample_data() 
+	{
 		if (!$this->input->is_ajax_request()) {return false;}
 		
 		if ($_POST) {
@@ -40,7 +45,8 @@ class index extends MY_Controller {
 	}// ajax_install_sample_data
 	
 	
-	function ajax_test_db() {
+	public function ajax_test_db() 
+	{
 		if ($_POST) {
 			$db_name = trim($this->input->post('db_name'));
 			$db_username = trim($this->input->post('db_username'));
@@ -57,37 +63,43 @@ class index extends MY_Controller {
 	}// ajax_test_db
 	
 	
-	function finished() {
+	public function finished() 
+	{
 		// check verified
 		$verify = get_cookie('agni_install_verify');
 		if ($verify == null || $verify == 'fail') {
 			delete_cookie('agni_install_verify');
 			redirect('./');
 		}
+		
 		// check step2
 		$step2 = get_cookie('agni_install_step2');
 		if ($step2 == null || $step2 != 'pass') {
 			delete_cookie('agni_install_step2');
 			redirect('./');
 		}
+		
 		// check step3
 		$step3 = get_cookie('agni_install_step3');
 		if ($step3 == null || $step3 != 'pass') {
 			delete_cookie('agni_install_step3');
 			redirect('index/step3');
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->lang->line('agni_agnicms').' &gt; '.$this->lang->line('agni_install');
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page('template/finished_view', $output);
 	}// finished
 	
 	
-	function index() {
+	public function index() 
+	{
 		// list check result-----------------------------------------------------------------------------------------------
 		
 		// web server
@@ -150,6 +162,7 @@ class index extends MY_Controller {
 				}
 			}
 		}
+		
 		if (empty($not_installed_extensions)) {
 			// verified pass!
 			$list_verify['agni_vf_php_extensions']['value'] = lang('agni_enable');
@@ -165,17 +178,6 @@ class index extends MY_Controller {
 				$list_verify['agni_vf_php_extensions']['result_text'] = sprintf(lang('agni_php_missing_extensions'), implode(', ', $not_installed_extensions));
 			}
 		}
-		/*foreach ($required_extensions as $required_extension) {
-			if (in_array($required_extension, $extensions)) {
-				$list_verify['agni_vf_php_extensions']['value'] = lang('agni_enable');
-				$list_verify['agni_vf_php_extensions']['result'] = 'pass';
-			} else {
-				$list_verify['agni_vf_php_extensions']['value'] = lang('agni_disable');
-				$list_verify['agni_vf_php_extensions']['result'] = 'fail';
-				$list_verify['agni_vf_php_extensions']['result_text'] = sprintf(lang('agni_php_required_extensions'), implode(', ', $required_extensions)).'<br />'.sprintf(lang('agni_php_installed_extensions'), implode(', ', $extensions));
-				break;
-			}
-		}*/
 		// php extensions----------------------------------------------------------------
 		
 		// db support
@@ -220,18 +222,21 @@ class index extends MY_Controller {
 		
 		$output['list_verify'] = $list_verify;
 		$output['list_verify_writable'] = $list_verify_write;
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->lang->line('agni_agnicms').' &gt; '.$this->lang->line('agni_install');
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page('template/index_view', $output);
 	}// index
 	
 	
-	function step2() {
+	public function step2() 
+	{
 		// check verified
 		$verify = get_cookie('agni_install_verify');
 		if ($verify == null || $verify == 'fail') {
@@ -247,12 +252,14 @@ class index extends MY_Controller {
 			$db_host = trim($this->input->post('db_host'));
 			$db_port = trim($this->input->post('db_port'));
 			$db_table_prefix = trim($this->input->post('db_table_prefix'));
+			
 			// form validate
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('db_name', 'lang:agni_db_name', 'trim|required');
 			$this->form_validation->set_rules('db_username', 'lang:agni_db_username', 'trim|required');
 			$this->form_validation->set_rules('db_password', 'lang:agni_db_password', 'trim|required');
 			$this->form_validation->set_rules('db_host', 'lang:agni_db_host', 'trim|required');
+			
 			if ($this->form_validation->run() === false) {
 				$output['form_status'] = '<div class="alert alert-error"><ul>'.validation_errors('<li>', '</li>').'</ul></div>';
 			} else {
@@ -279,18 +286,21 @@ class index extends MY_Controller {
 				}
 			}
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->lang->line('agni_agnicms').' &gt; '.$this->lang->line('agni_install');
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page('template/step2_view', $output);
 	}// step2
 	
 	
-	function step3() {
+	public function step3() 
+	{
 		// check verified
 		$verify = get_cookie('agni_install_verify');
 		if ($verify == null || $verify == 'fail') {
@@ -356,12 +366,14 @@ class index extends MY_Controller {
 				}
 			}
 		}
+		
 		// head tags output ##############################
 		$output['page_title'] = $this->lang->line('agni_agnicms').' &gt; '.$this->lang->line('agni_install');
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
+		
 		// output
 		$this->generate_page('template/step3_view', $output);
 	}// step3

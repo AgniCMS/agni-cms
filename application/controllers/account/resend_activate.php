@@ -9,10 +9,12 @@
  *
  */
 
-class resend_activate extends MY_Controller {
+class resend_activate extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,7 +25,8 @@ class resend_activate extends MY_Controller {
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
 		$breadcrumb[] = array('text' => lang('account_resend_verify_email'), 'url' => current_url());

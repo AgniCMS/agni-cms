@@ -9,10 +9,12 @@
  *
  */
  
-class menu extends admin_controller {
+class menu extends admin_controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -26,7 +28,8 @@ class menu extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('menu_perm' => 
 					array(
 						'menu_viewall_group_perm', 
@@ -43,7 +46,8 @@ class menu extends admin_controller {
 	}// _define_permission
 	
 	
-	function addgroup() {
+	public function addgroup() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('menu_perm', 'menu_add_group_perm') != true) {redirect('site-admin');}
 		
@@ -101,7 +105,8 @@ class menu extends admin_controller {
 	}// addgroup
 	
 	
-	function ajax_additem() {
+	public function ajax_additem() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('menu_perm', 'menu_add_perm') != true) {exit;}
 		
@@ -158,7 +163,8 @@ class menu extends admin_controller {
 	}// ajax_additem
 	
 	
-	function ajax_deleteitem() {
+	public function ajax_deleteitem() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('menu_perm', 'menu_delete_perm') != true) {exit;}
 		
@@ -179,7 +185,8 @@ class menu extends admin_controller {
 	}// ajax_delete
 	
 	
-	function ajax_edititem($mi_id = '') {
+	public function ajax_edititem($mi_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('menu_perm', 'menu_edit_perm') != true) {exit;}
 		
@@ -245,7 +252,8 @@ class menu extends admin_controller {
 	}// ajax_edititem
 	
 	
-	function ajax_searchpost($post_type = '') {
+	public function ajax_searchpost($post_type = '') 
+	{
 		// load language
 		$this->lang->load('post');
 		
@@ -279,7 +287,8 @@ class menu extends admin_controller {
 	}// ajax_searchpost
 	
 	
-	function ajax_searchtag() {
+	public function ajax_searchtag() 
+	{
 		// search value
 		$_GET['q'] = trim($this->input->get('term'));
 		
@@ -309,7 +318,8 @@ class menu extends admin_controller {
 	}// ajax_searchtag
 	
 	
-	function ajax_sortitem($mg_id = '') {
+	public function ajax_sortitem($mg_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('menu_perm', 'menu_sort_perm') != true) {exit;}
 		
@@ -339,7 +349,8 @@ class menu extends admin_controller {
 	}// ajax_sortitem
 	
 	
-	function editgroup($mg_id = '') {
+	public function editgroup($mg_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('menu_perm', 'menu_edit_group_perm') != true) {redirect('site-admin');}
 		
@@ -409,7 +420,8 @@ class menu extends admin_controller {
 	}// editgroup
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('menu_perm', 'menu_viewall_group_perm') != true) {redirect('site-admin');}
 		
@@ -444,7 +456,8 @@ class menu extends admin_controller {
 	}// index
 	
 	
-	function item($mg_id = '') {
+	public function item($mg_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('menu_perm', 'menu_viewall_menu_perm') != true) {redirect('site-admin');}
 		
@@ -490,7 +503,8 @@ class menu extends admin_controller {
 	}// item
 	
 	
-	function process_group() {
+	public function process_group() 
+	{
 		$id = $this->input->post('id');
 		$act = trim($this->input->post('act'));
 		

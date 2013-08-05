@@ -9,10 +9,12 @@
  *
  */
  
-class search extends MY_Controller {
+class search extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -27,7 +29,8 @@ class search extends MY_Controller {
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		$q = trim($this->input->get('q'));
 		$output['q'] = htmlspecialchars($q, ENT_QUOTES, config_item('charset'));
 		

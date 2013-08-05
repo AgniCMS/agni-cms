@@ -9,10 +9,12 @@
  *
  */
  
-class author extends MY_Controller {
+class author extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		// load model
 		$this->load->model(array('posts_model'));
@@ -28,13 +30,19 @@ class author extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($att1 = '', $att2 = '') {
+	public function _remap($att1 = '', $att2 = '') 
+	{
 		$this->index($att1, $att2);
 	}// _remap
 	
 	
-	function index($username = '', $att2 = '') {
-		if (!empty($att2)) {show_404(); exit;}// prevent duplicate content (localhost/author/authorname and localhost/author/authorname/aaa can be same result, just 404 it). good for seo.
+	public function index($username = '', $att2 = '') 
+	{
+		// prevent duplicate content (localhost/author/authorname and localhost/author/authorname/aaa can be same result, just 404 it). good for seo.
+		if (!empty($att2)) {
+			show_404();
+			exit;
+		}
 		
 		// get account cookie
 		$cm_account = $this->account_model->get_account_cookie('member');

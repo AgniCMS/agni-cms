@@ -9,10 +9,12 @@
  *
  */
  
-class tag extends MY_Controller {
+class tag extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -30,14 +32,19 @@ class tag extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($att1 = '', $att2 = '') {
+	public function _remap($att1 = '', $att2 = '') 
+	{
 		$this->index($att1, $att2);
 	}// _remap
 	
 	
-	function index($uri = '', $att2 = '') {
+	public function index($uri = '', $att2 = '') 
+	{
 		// prevent duplicate content (localhost/tag/tagname and localhost/tag/tagname/aaa can be same result, just 404 it). good for seo.
-		if (!empty($att2)) {show_404(); exit;}
+		if (!empty($att2)) {
+			show_404();
+			exit;
+		}
 		
 		// load tag data for title, metas
 		$data['t_uri_encoded'] = $uri;

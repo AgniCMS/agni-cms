@@ -9,10 +9,12 @@
  *
  */
 
-class account_level extends admin_controller {
+class account_level extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,12 +25,14 @@ class account_level extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('account_lv_perm' => array('account_lv_manage_perm', 'account_lv_add_perm', 'account_lv_edit_perm', 'account_lv_delete_perm', 'account_lv_sort_perm'));
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_add_perm') != true) {redirect('site-admin');}
 		
@@ -40,6 +44,7 @@ class account_level extends admin_controller {
 			// load form validation
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('level_name', 'lang:account_level', 'trim|strip_tags|required');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -80,7 +85,8 @@ class account_level extends admin_controller {
 	}// add
 	
 	
-	function ajaxsort() {
+	public function ajaxsort() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_sort_perm') != true) {redirect('site-admin');}
 		
@@ -113,7 +119,8 @@ class account_level extends admin_controller {
 	}// ajaxsort
 	
 	
-	function edit($level_group_id = '') {
+	public function edit($level_group_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_edit_perm') != true) {redirect('site-admin');}
 		
@@ -138,6 +145,7 @@ class account_level extends admin_controller {
 			// load form validation
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('level_name', 'lang:account_level', 'trim|strip_tags|required');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -178,7 +186,8 @@ class account_level extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_manage_perm') != true) {redirect('site-admin');}
 		
@@ -206,7 +215,8 @@ class account_level extends admin_controller {
 	}// index
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		$id = $this->input->post('id');
 		$act = trim($this->input->post('act'));
 		

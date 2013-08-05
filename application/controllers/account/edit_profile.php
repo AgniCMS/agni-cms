@@ -9,10 +9,12 @@
  *
  */
 
-class edit_profile extends MY_Controller {
+class edit_profile extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,7 +25,8 @@ class edit_profile extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($att1 = '', $att2 = '') {
+	public function _remap($att1 = '', $att2 = '') 
+	{
 		if ($att1 == 'delete-avatar') {
 			$this->delete_avatar();
 		} else {
@@ -32,7 +35,8 @@ class edit_profile extends MY_Controller {
 	}// _remap
 	
 	
-	function delete_avatar() {
+	public function delete_avatar() 
+	{
 		// get id
 		$account_id = trim($this->input->post('account_id'));
 		
@@ -51,7 +55,8 @@ class edit_profile extends MY_Controller {
 	}// delete_avatar
 	
 	
-	function index() {
+	public function index() 
+	{
 		// is member login?
 		if (!$this->account_model->is_member_login()) {redirect(site_url());}
 		

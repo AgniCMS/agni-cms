@@ -9,24 +9,30 @@
  *
  */
  
-class akismet_admin extends MX_Controller {
+class akismet_admin extends MX_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
+		
 		// load helper
 		$this->load->helper(array('url'));
+		
 		// load language
 		$this->lang->load('akismet/akismet');
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('akismet_perm' => array('akismet_config_perm', 'akismet_set_spam_perm', 'akismet_set_notspam_perm'));
 	}// _define_permission
 	
 	
-	function admin_nav() {
+	public function admin_nav() 
+	{
 		return '<li>' . anchor('#', lang('akismet_akismet'), array('onclick' => 'return false')) . '
 				<ul>
 					<li>' . anchor('akismet/site-admin/akismet/config', lang('akismet_config')) . '</li>

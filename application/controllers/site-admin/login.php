@@ -9,10 +9,12 @@
  *
  */
 
-class login extends MY_Controller {
+class login extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -27,13 +29,15 @@ class login extends MY_Controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		// return array('page name, controller' => array('action1', 'action2 or more more'));
 		return array('account_admin_login' => array('account_admin_login'));
 	}// _define_permission
 	
 	
-	function _browser_check() {
+	public function _browser_check() 
+	{
 		// load library
 		$this->load->library(array('Browser'));
 		
@@ -52,7 +56,8 @@ class login extends MY_Controller {
 	}// _browser_check
 	
 	
-	function index() {
+	public function index() 
+	{
 		// set theme to admin default theme (this controller use front controller NOT admin controller, if front controller set to others it can mess up theme and style.)
 		$theme_system_name = $this->themes_model->get_default_theme('admin');
 		$this->theme_path = base_url().config_item('agni_theme_path').$theme_system_name.'/';// for use in css
@@ -97,6 +102,7 @@ class login extends MY_Controller {
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules('username', 'lang:account_username', 'trim|required');
 			$this->form_validation->set_rules('password', 'lang:account_password', 'trim|required');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -189,12 +195,14 @@ class login extends MY_Controller {
 	}// index
 	
 	
-	function resetpw() {
+	public function resetpw() 
+	{
 		if (!$this->input->is_ajax_request()) {redirect('site-admin');}
 		if ($this->input->post()) {
 			// load libraries
 			$this->load->library(array('form_validation', 'securimage/securimage'));
 			$this->form_validation->set_rules('email', 'lang:account_email', 'trim|required|valid_email');
+			
 			if ($this->form_validation->run() == false) {
 				$result = validation_errors('<div>', '</div>');
 			} else {

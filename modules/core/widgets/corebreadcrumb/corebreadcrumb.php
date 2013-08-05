@@ -10,21 +10,24 @@
  *
  */
 
-class corebreadcrumb extends widget {
+class corebreadcrumb extends widget 
+{
 	
 	
 	public $title;
 	public $description;
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		$this->lang->load('core/coremd');
 		$this->title = $this->lang->line('coremd_breadcrumb_title');
 		$this->description = $this->lang->line('coremd_breadcrumb_desc');
 	}// __construct
 	
 	
-	function run() {
+	public function run() 
+	{
 		if ((current_url() == site_url()) || (current_url().'/' == site_url('/')) || (current_url() == site_url('/'))) {
 			// on home page = not show.
 			return ;
@@ -78,6 +81,7 @@ class corebreadcrumb extends widget {
 					$this->db->where('uri_encoded', $segment);
 					$this->db->where('url_alias.language', $this->lang->get_current_lang());
 					$query = $this->db->get('url_alias');
+					
 					if ($query->num_rows() > 0) {
 						$row = $query->row();
 						$query->free_result();
@@ -92,6 +96,7 @@ class corebreadcrumb extends widget {
 							$output .= '<li>'.anchor($this->uri->uri_string(), $row->post_name).'</li>';
 						}
 					}
+					
 					// other pages that doesn't in url alias.
 					switch($segment) {
 						case 'search':
@@ -102,7 +107,9 @@ class corebreadcrumb extends widget {
 							break;
 					}
 				}
+				
 				$output .= '</ul>';
+				
 				$this->cache->save('breadcrumb_'.md5(current_url()), $output, 3600);
 			}
 		}

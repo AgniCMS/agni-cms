@@ -1,7 +1,8 @@
 <?php
 
 if (!function_exists('show_category_nested_block')) {
-	function show_category_nested_block($array, $nohome = false) {
+	function show_category_nested_block($array, $nohome = false) 
+	{
 		$ci =& get_instance();
 
 		if (!is_array($array))

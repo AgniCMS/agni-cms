@@ -7,10 +7,12 @@
  *
  */
  
-class MY_Lang extends CI_Lang {
+class MY_Lang extends CI_Lang 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -28,7 +30,7 @@ class MY_Lang extends CI_Lang {
 	 * @param 	string	alternative path to look for language file
 	 * @return	mixed
 	 */
-	function load($langfile = '', $idiom = '', $return = FALSE, $add_suffix = TRUE, $alt_path = '')
+	public function load($langfile = '', $idiom = '', $return = FALSE, $add_suffix = TRUE, $alt_path = '')
 	{
 		$langfile = str_replace('.php', '', $langfile);
 
@@ -115,7 +117,8 @@ class MY_Lang extends CI_Lang {
 	 * agni install get current language
 	 * @return string 
 	 */
-	function get_current_lang($return_full = true) {
+	public function get_current_lang($return_full = true) 
+	{
 		$ci =& get_instance();
 		$ci->load->helper('cookie');
 		if (get_cookie('agni_install_lang') != null) {

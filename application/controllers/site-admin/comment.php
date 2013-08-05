@@ -9,10 +9,12 @@
  *
  */
  
-class comment extends admin_controller {
+class comment extends admin_controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -26,7 +28,8 @@ class comment extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array(
 				'comment_perm' =>
 					array(
@@ -43,7 +46,8 @@ class comment extends admin_controller {
 	}// _define_permission
 	
 	
-	function edit($comment_id = '') {
+	public function edit($comment_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm') != true && $this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm') != true) {redirect('site-admin');}
 		
@@ -161,7 +165,8 @@ class comment extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('comment_perm', 'comment_viewall_perm') != true) {redirect('site-admin');}
 		
@@ -203,7 +208,8 @@ class comment extends admin_controller {
 	}// index
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie('admin');
 		$my_account_id = $ca_account['id'];

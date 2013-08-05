@@ -9,14 +9,16 @@
  *
  */
 
-class posts_model extends CI_Model {
+class posts_model extends CI_Model 
+{
 	
 	
 	public $language;
 	public $post_type;// article, page, ...
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		// set language
 		$this->language = $this->lang->get_current_lang();
@@ -30,7 +32,8 @@ class posts_model extends CI_Model {
 	 * @param array $data_tax_index
 	 * @return mixed 
 	 */
-	function add($data_posts = array(), $data_post_revision = array(), $data_tax_index = array()) {
+	public function add($data_posts = array(), $data_post_revision = array(), $data_tax_index = array()) 
+	{
 		if (empty($data_posts) || !is_array($data_posts) || empty($data_post_revision) || !is_array($data_post_revision)) {return false;}
 		
 		// there are 4 table for add data to article and 3 table for add data to  page
@@ -122,7 +125,8 @@ class posts_model extends CI_Model {
 	 * @param integer $post_id
 	 * @return boolean 
 	 */
-	function delete($post_id = '') {
+	public function delete($post_id = '') 
+	{
 		if (!is_numeric($post_id)) {return false;}
 		
 		// delete from menu items ------------------------------------------------------------------------------------
@@ -202,7 +206,8 @@ class posts_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function edit($data_posts = array(), $data_post_revision = array(), $data_tax_index = array(), $data = array()) {
+	public function edit($data_posts = array(), $data_post_revision = array(), $data_tax_index = array(), $data = array()) 
+	{
 		if (empty($data_posts) || !is_array($data_posts) || empty($data_post_revision) || !is_array($data_post_revision)) {return false;}
 		
 		// there are 4 table for add data to article and 3 table for add data to  page
@@ -387,7 +392,8 @@ class posts_model extends CI_Model {
 	 * @param integer $tid
 	 * @return integer 
 	 */
-	function get_last_tax_position($tid = '') {
+	public function get_last_tax_position($tid = '') 
+	{
 		if (!is_numeric($tid)) {return false;}
 		
 		$this->db->where('tid', $tid);
@@ -414,7 +420,8 @@ class posts_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_post_data($data = array()) {
+	public function get_post_data($data = array()) 
+	{
 		if (!is_array($data)) {return null;}
 		
 		$this->db->join('taxonomy_index', 'posts.post_id = taxonomy_index.post_id', 'left outer');
@@ -456,7 +463,8 @@ class posts_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_post_revision_data($data = array()) {
+	public function get_post_revision_data($data = array()) 
+	{
 		$this->db->join('post_fields', 'post_fields.post_id = post_revision.post_id', 'left outer');
 		$this->db->join('accounts', 'accounts.account_id = post_revision.account_id', 'left');
 		$this->db->join('posts', 'posts.post_id = post_revision.post_id', 'inner');
@@ -482,7 +490,8 @@ class posts_model extends CI_Model {
 	 * @param object $row
 	 * @return boolean 
 	 */
-	function is_allow_delete_post($row = '') {
+	public function is_allow_delete_post($row = '') 
+	{
 		if (!is_object($row) || $row == null || !isset($row->post_type)) {return false;}
 		
 		// get my account id
@@ -517,7 +526,8 @@ class posts_model extends CI_Model {
 	 * @param object $row
 	 * @return boolean 
 	 */
-	function is_allow_edit_post($row = '') {
+	public function is_allow_edit_post($row = '') 
+	{
 		if (!is_object($row) || $row == null || !isset($row->post_type)) {return false;}
 		
 		// get my account id
@@ -552,7 +562,8 @@ class posts_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function list_item($list_for = 'front', $data = array()) {
+	public function list_item($list_for = 'front', $data = array()) 
+	{
 		$this->db->join('taxonomy_index', 'taxonomy_index.post_id = posts.post_id', 'left outer');
 		$this->db->join('accounts', 'accounts.account_id = posts.account_id', 'left');
 		$this->db->join('post_fields', 'post_fields.post_id = posts.post_id', 'left outer');
@@ -679,7 +690,8 @@ class posts_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function list_revision($data = array()) {
+	public function list_revision($data = array()) 
+	{
 		$this->db->join('accounts', 'post_revision.account_id = accounts.account_id', 'left');
 		if (isset($data['post_id'])) {
 			$this->db->where('post_id', $data['post_id']);
@@ -701,7 +713,8 @@ class posts_model extends CI_Model {
 	 * @param string $content
 	 * @return string 
 	 */
-	function modify_content($content = '', $post_type = '') {
+	public function modify_content($content = '', $post_type = '') 
+	{
 		if ($this->modules_plug->has_filter('post_modifybody_value')) {
 			// modify content by plugin
 			$content = $this->modules_plug->do_filter('post_modifybody_value', $content, $post_type);
@@ -722,7 +735,8 @@ class posts_model extends CI_Model {
 	 * @param integer $id
 	 * @return string 
 	 */
-	function nodup_uri($uri, $editmode = false, $id = '') {
+	public function nodup_uri($uri, $editmode = false, $id = '') 
+	{
 		$uri = url_title($uri);
 		
 		// load url model for check disallowed uri
@@ -770,7 +784,8 @@ class posts_model extends CI_Model {
 	 * @param integer $post_id
 	 * @return boolean 
 	 */
-	function update_total_comment($post_id = '') {
+	public function update_total_comment($post_id = '') 
+	{
 		if (!is_numeric($post_id)) {return false;}
 		
 		$this->db->where('post_id', $post_id);

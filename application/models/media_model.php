@@ -9,10 +9,12 @@
  *
  */
  
-class media_model extends CI_Model {
+class media_model extends CI_Model 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -22,7 +24,8 @@ class media_model extends CI_Model {
 	 * @param array $data
 	 * @return array
 	 */
-	function add_data_only($data = array()) {
+	public function add_data_only($data = array()) 
+	{
 		// set additional data for insert.
 		$data['file_add'] = time();
 		$data['file_add_gmt'] = local_to_gmt(time());
@@ -48,17 +51,23 @@ class media_model extends CI_Model {
 	 * @param float $gdBloat
 	 * @return mixed 
 	 */
-	function checkMemAvailbleForResize($filename, $targetX, $targetY, $returnRequiredMem = false, $gdBloat = 1.68) {
+	public function checkMemAvailbleForResize($filename, $targetX, $targetY, $returnRequiredMem = false, $gdBloat = 1.68) 
+	{
 		$maxMem = ((int) ini_get('memory_limit') * 1024) * 1024;
 		$imageSizeInfo = getimagesize($filename);
 		$srcGDBytes = ceil((($imageSizeInfo[0] * $imageSizeInfo[1]) * 3) * $gdBloat);
 		$targetGDBytes = ceil((($targetX * $targetY) * 3) * $gdBloat);
 		$totalMemRequired = $srcGDBytes + $targetGDBytes + memory_get_usage();
 		log_message('debug', 'File: '.$filename.'; MemLimit: '.$maxMem.'; MemRequired: '.$totalMemRequired.';');
-		if ($returnRequiredMem)
+		
+		if ($returnRequiredMem) {
 			return $srcGDBytes + $targetGDBytes;
-		if ($totalMemRequired > $maxMem)
+		}
+		
+		if ($totalMemRequired > $maxMem) {
 			return false;
+		}
+		
 		return true;
 	}// checkMemAvailbleForResize
 	
@@ -68,7 +77,8 @@ class media_model extends CI_Model {
 	 * @param integer $file_id
 	 * @return boolean 
 	 */
-	function delete($file_id = '') {
+	public function delete($file_id = '') 
+	{
 		// remove feature image from posts
 		$this->db->set('post_feature_image', null);
 		$this->db->where('post_feature_image', $file_id);
@@ -102,7 +112,8 @@ class media_model extends CI_Model {
 	 * @param string $folder
 	 * @return boolean
 	 */
-	function delete_folder($folder = '') {
+	public function delete_folder($folder = '') 
+	{
 		$this->load->helper(array('directory', 'file'));
 		
 		// delete files in db that folder field contain folder value
@@ -126,7 +137,7 @@ class media_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function edit($data = array()){
+	public function edit($data = array()){
 		if (!is_array($data)) {return false;}
 		
 		$this->db->where('file_id', $data['file_id']);
@@ -141,7 +152,8 @@ class media_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_file_data_db($data = array()) {
+	public function get_file_data_db($data = array()) 
+	{
 		$this->db->join('accounts', 'files.account_id = accounts.account_id', 'left');
 		if (!empty($data)) {
 			$this->db->where($data);
@@ -165,7 +177,8 @@ class media_model extends CI_Model {
 	 * @param img|null $return_element
 	 * @return string 
 	 */
-	function get_img($file_id = '', $return_element = 'img') {
+	public function get_img($file_id = '', $return_element = 'img') 
+	{
 		if (!is_numeric($file_id)) {return null;}
 		
 		// check cached
@@ -197,7 +210,8 @@ class media_model extends CI_Model {
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	function list_item($list_for = 'front', $data = array()) {
+	public function list_item($list_for = 'front', $data = array()) 
+	{
 		$this->db->join('accounts', 'accounts.account_id = files.account_id', 'left');
 		
 		if (isset($data['folder'])) {
@@ -308,7 +322,8 @@ class media_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function move_file($data = array()) {
+	public function move_file($data = array()) 
+	{
 		$this->load->library('media_filesys');
 		
 		foreach ($data['ids'] as $id) {
@@ -343,7 +358,8 @@ class media_model extends CI_Model {
 	 * @param string $new_name
 	 * @return boolean
 	 */
-	function rename_folder($current_path = '', $current_folder = '', $new_name = '') {
+	public function rename_folder($current_path = '', $current_folder = '', $new_name = '') 
+	{
 		// prevent double slash
 		$current_path = rtrim($current_path, '/');
 		
@@ -416,7 +432,8 @@ class media_model extends CI_Model {
 	 * upload_media
 	 * @return mixed 
 	 */
-	function upload_media() {
+	public function upload_media() 
+	{
 		
 		// get account id from cookie
 		$ca_account = $this->account_model->get_account_cookie('admin');

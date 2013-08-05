@@ -9,15 +9,18 @@
  *
  */
 
-class logout extends admin_controller {
+class logout extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		$this->account_model->logout();
 		
 		redirect('site-admin');

@@ -7,12 +7,3 @@
  * Author URL: http://www.okvee.net
  * 
  */
-
-class core_module {
-	
-	
-	function __construct() {
-	}// __construct
-	
-	
-}

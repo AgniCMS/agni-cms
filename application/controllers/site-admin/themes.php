@@ -9,10 +9,12 @@
  *
  */
 
-class themes extends admin_controller {
+class themes extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -26,12 +28,14 @@ class themes extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('themes_manage_perm' => array('themes_viewall_perm', 'themes_add_perm', 'themes_enable_disable_perm', 'themes_set_default_perm', 'themes_delete_perm'));
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_add_perm') != true) {redirect('site-admin');}
 		
@@ -66,7 +70,8 @@ class themes extends admin_controller {
 	}// add
 	
 	
-	function defaultadmin() {
+	public function defaultadmin() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_set_default_perm') != true) {redirect('site-admin');}
 		
@@ -102,7 +107,8 @@ class themes extends admin_controller {
 	}// defaultadmin
 	
 	
-	function defaults($theme_system_name = '') {
+	public function defaults($theme_system_name = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_set_default_perm') != true) {redirect('site-admin');}
 		
@@ -135,7 +141,8 @@ class themes extends admin_controller {
 	}// defaults
 	
 	
-	function delete($theme_system_name = '') {
+	public function delete($theme_system_name = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_delete_perm') != true) {redirect('site-admin');}
 		
@@ -183,7 +190,8 @@ class themes extends admin_controller {
 	}// delete
 	
 	
-	function disable($theme_system_name = '') {
+	public function disable($theme_system_name = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_enable_disable_perm') != true) {redirect('site-admin');}
 		
@@ -215,7 +223,8 @@ class themes extends admin_controller {
 	}// disable
 	
 	
-	function enable($theme_system_name = '') {
+	public function enable($theme_system_name = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_enable_disable_perm') != true) {redirect('site-admin');}
 		
@@ -248,7 +257,8 @@ class themes extends admin_controller {
 	}// enable
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_viewall_perm') != true) {redirect('site-admin');}
 		

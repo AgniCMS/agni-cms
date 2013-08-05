@@ -11,14 +11,16 @@
  *
  */
 
-class permission_model extends CI_Model {
+class permission_model extends CI_Model 
+{
 	
 	
 	private $app_admin;
 	private $mx_path;
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		$this->app_admin = APPPATH.'controllers/site-admin/';// always end with slash trail.
@@ -30,7 +32,8 @@ class permission_model extends CI_Model {
 	 * fetch_permissions
 	 * @return array 
 	 */
-	function fetch_permissions() {
+	public function fetch_permissions() 
+	{
 		$permission_array = array();
 		
 		// fetch _define_permission from application controllers admin
@@ -89,7 +92,8 @@ class permission_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return array
 	 */
-	function fetch_permissions_module($module_system_name = '') {
+	public function fetch_permissions_module($module_system_name = '') 
+	{
 		if ($module_system_name == null) {return false;}
 		
 		$permission_array = array();
@@ -129,7 +133,8 @@ class permission_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean
 	 */
-	function has_permission($module_system_name = '') {
+	public function has_permission($module_system_name = '') 
+	{
 		if ($module_system_name == null) {return false;}
 		
 		// load cache driver
@@ -172,7 +177,8 @@ class permission_model extends CI_Model {
 	 * for check permission settings
 	 * @return array 
 	 */
-	function list_permissions_check($data = array()) {
+	public function list_permissions_check($data = array()) 
+	{
 		$output = array();
 		
 		if (is_array($data) && !empty($data)) {
@@ -193,7 +199,8 @@ class permission_model extends CI_Model {
 	 * reset_permissions
 	 * @return boolean 
 	 */
-	function reset_permissions() {
+	public function reset_permissions() 
+	{
 		$this->config_model->delete_cache('check_admin_permission_');
 		
 		// empty permissions db
@@ -215,7 +222,8 @@ class permission_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function save_permissions($data = array()) {
+	public function save_permissions($data = array()) 
+	{
 		foreach ($data['level_group_id'] as $key => $lv_groups) {
 			foreach ($lv_groups as $level_group_id) {
 				// check if permission is in db or not.

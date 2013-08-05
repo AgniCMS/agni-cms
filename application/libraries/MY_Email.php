@@ -1,13 +1,18 @@
 <?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
-class MY_Email extends CI_Email {
-	function __construct($config = array()) {
+class MY_Email extends CI_Email 
+{
+	
+	
+	public function __construct($config = array()) 
+	{
 		parent::__construct($config);
 		$this->load_config();
 	}
 	
 	
-	function load_config() {
+	public function load_config() 
+	{
 		$this->ci =& get_instance();
 		$this->ci->load->model('config_model');
 		$config_email = $this->ci->config_model->load(array('mail_protocol', 'mail_mailpath', 'mail_smtp_host', 'mail_smtp_user', 'mail_smtp_pass', 'mail_smtp_port'));
@@ -37,7 +42,7 @@ class MY_Email extends CI_Email {
 	 * @param	string
 	 * @return	void
 	 */
-	function subject($subject)
+	public function subject($subject)
 	{
 		$subject = "=?UTF-8?B?".base64_encode($subject)."?=";
 		//$subject = $this->_prep_q_encoding($subject);

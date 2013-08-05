@@ -9,10 +9,12 @@
  *
  */
  
-class post extends MY_Controller {
+class post extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -28,7 +30,8 @@ class post extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($att1 = '', $att2 = '') {
+	public function _remap($att1 = '', $att2 = '') 
+	{
 		if ($att1 == 'preview') {
 			return $this->preview();
 		} elseif ($att1 == 'revision') {
@@ -39,7 +42,8 @@ class post extends MY_Controller {
 	}// _remap
 	
 	
-	function preview() {
+	public function preview() 
+	{
 		if (! $this->input->post()) {return null;}
 		
 		// get POST data.
@@ -128,7 +132,8 @@ class post extends MY_Controller {
 	}// preview
 	
 	
-	function revision($arr = '') {
+	public function revision($arr = '') 
+	{
 		if (!isset($arr[0]) && !isset($arr[1])) {redirect();}
 		$post_id = $arr[0];
 		$revision_id = $arr[1];
@@ -247,7 +252,8 @@ class post extends MY_Controller {
 	}// revision
 	
 	
-	function view($post_uri = '') {
+	public function view($post_uri = '') 
+	{
 		// load post from db by uri
 		$data['posts.post_uri_encoded'] = $post_uri;
 		$data['posts_status'] = '1';

@@ -9,14 +9,16 @@
  * this model works with url. eg: check allowed and disallowed uri in taxterm or posts, manage url redirect.
  */
  
-class url_model extends CI_Model {
+class url_model extends CI_Model 
+{
 	
 	
 	public $c_type;
 	public $language;
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// set language
@@ -29,7 +31,8 @@ class url_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function add_redirect($data = array()) {
+	public function add_redirect($data = array()) 
+	{
 		if (!is_array($data)) {return false;}
 		
 		// re-check uri
@@ -56,7 +59,8 @@ class url_model extends CI_Model {
 	 * @param integer $alias_id 
 	 * @return boolean
 	 */
-	function delete_redirect($alias_id = '') {
+	public function delete_redirect($alias_id = '') 
+	{
 		$this->db->where('c_type', $this->c_type);
 		$this->db->where('alias_id', $alias_id);
 		$this->db->delete('url_alias');
@@ -70,7 +74,8 @@ class url_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function edit_redirect($data = array()) {
+	public function edit_redirect($data = array()) 
+	{
 		if (!is_array($data)) {return false;}
 		
 		// re-check uri
@@ -96,7 +101,8 @@ class url_model extends CI_Model {
 	 * @param string $redirect_to
 	 * @return string 
 	 */
-	function encode_redirect_to($redirect_to = '') {
+	public function encode_redirect_to($redirect_to = '') 
+	{
 		if ($redirect_to == null) {return null;}
 		
 		return urlencode_except_slash($redirect_to);
@@ -108,7 +114,8 @@ class url_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_url_alias_data_db($data = array()) {
+	public function get_url_alias_data_db($data = array()) 
+	{
 		if (!empty($data)) {
 			$this->db->where($data);
 		}
@@ -119,7 +126,8 @@ class url_model extends CI_Model {
 	}// get_url_alias_data_db
 	
 	
-	function list_item($list_for = 'admin') {
+	public function list_item($list_for = 'admin') 
+	{
 		$this->db->where('c_type', $this->c_type);
 		$this->db->where('language', $this->language);
 		$q = trim($this->input->get('q'));
@@ -218,7 +226,8 @@ class url_model extends CI_Model {
 	 * @param integer $id
 	 * @return string 
 	 */
-	function nodup_uri($uri, $editmode = false, $id = '') {
+	public function nodup_uri($uri, $editmode = false, $id = '') 
+	{
 		$uri = $this->validate_allow_url($uri);
 		
 		// prevent url_title cut slash out (/)------------------------------------------------
@@ -293,7 +302,8 @@ class url_model extends CI_Model {
 	 * @param string $uri
 	 * @return string 
 	 */
-	function validate_allow_url($uri = '') {
+	public function validate_allow_url($uri = '') 
+	{
 		if ($uri == null) {return null;}
 		
 		// any disallowed uri list here as array

@@ -10,7 +10,8 @@
  */
 
 
-class agni_update {
+class agni_update 
+{
 	
 	
 	public $agni_update_core_name = 'agni_update_core';
@@ -22,7 +23,8 @@ class agni_update {
 	 * check update core and insert/update to queue.
 	 * @return boolean
 	 */
-	function check_update_core() {
+	public function check_update_core() 
+	{
 		// get CI instance
 		$ci =& get_instance();
 		
@@ -83,7 +85,8 @@ class agni_update {
 	 * @param string $xml_url target xml url
 	 * @return mixed return SimpleXML object on success, or return false on failure.
 	 */
-	function get_xml($xml_url = '') {
+	public function get_xml($xml_url = '') 
+	{
 		libxml_use_internal_errors(true);
 		
 		try {
@@ -114,7 +117,8 @@ class agni_update {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function update_core_copy_files($data = array()) {
+	public function update_core_copy_files($data = array()) 
+	{
 		// check required $data
 		if (!isset($data['downloaded_file']) || !isset($data['unzip_path'])) {
 			die('Missing required data in $data. '.__FILE__.' '.__LINE__);
@@ -185,6 +189,7 @@ class agni_update {
 		
 		// read config.php.bak ---------------------------------------------------------------
 		$config_php = read_file('application/config/config.php.bak');
+		$config_php = preg_replace("#\\\$config\['index_page'\] = '(.*)';#", '\$config[\'index_page\'] = \''.$bak_config['index_page'].'\';', $config_php);
 		$config_php = preg_replace("#\\\$config\['uri_protocol'\] = '(.*)';#", '\$config[\'uri_protocol\'] = \''.$bak_config['uri_protocol'].'\';', $config_php);
 		$config_php = preg_replace("#\\\$config\['url_suffix'\] = '(.*)';#", '\$config[\'url_suffix\'] = \''.$bak_config['url_suffix'].'\';', $config_php);
 		$config_php = preg_replace("#\\\$config\['language'\] = '(.*)';#", '\$config[\'language\'] = \''.$bak_config['language'].'\';', $config_php);
@@ -261,7 +266,8 @@ class agni_update {
 	 * 
 	 * @return boolean
 	 */
-	function update_core_database() {
+	public function update_core_database() 
+	{
 		include_once('application/config/migration.php');
 		// if migration disabled
 		if (isset($config['migration_enabled']) && $config['migration_enabled'] === false) {
@@ -282,7 +288,8 @@ class agni_update {
 	 * download update, extract zipped file
 	 * @return mixed
 	 */
-	function update_core_download() {
+	public function update_core_download() 
+	{
 		// get CI instance
 		$ci =& get_instance();
 		
@@ -355,7 +362,8 @@ class agni_update {
 	 * @param string $downloaded_file
 	 * @return mixed
 	 */
-	function update_core_extract($downloaded_file = '') {
+	public function update_core_extract($downloaded_file = '') 
+	{
 		if ($downloaded_file == null) {return false;}
 		
 		// if downloaded file is not exists, or exists but not a file
@@ -481,7 +489,8 @@ class agni_update {
 	 * @param array $disallow_status disallow http code
 	 * @return boolean
 	 */
-	function url_exists($url = '', $disallow_status = array()) {
+	public function url_exists($url = '', $disallow_status = array()) 
+	{
 		// if this server has no curl.
 		if (!function_exists('curl_close') || !function_exists('curl_exec') || !function_exists('curl_getinfo') || !function_exists('curl_init') || !function_exists('curl_setopt')) {
 			if (function_exists('get_headers')) {

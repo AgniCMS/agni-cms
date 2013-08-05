@@ -9,10 +9,12 @@
  *
  */
 
-class config_model extends CI_Model {
+class config_model extends CI_Model 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -22,7 +24,8 @@ class config_model extends CI_Model {
 	 * @param string $partial_name
 	 * @return boolean 
 	 */
-	function delete_cache($partial_name = '') {
+	public function delete_cache($partial_name = '') 
+	{
 		if (empty($partial_name)) {return false;}
 		
 		// if partial is ALL (clean cache)
@@ -60,7 +63,8 @@ class config_model extends CI_Model {
 	 * @param array $fields
 	 * @return array 
 	 */
-	function load($fields = array()) {
+	public function load($fields = array()) 
+	{
 		if (! is_array($fields)) {return $this->load_single($fields);}
 		if (empty($fields)) {return array();}
 		
@@ -83,7 +87,8 @@ class config_model extends CI_Model {
 	}// load
 	
 	
-	function load_single($config_name = '', $return_field = 'config_value') {
+	public function load_single($config_name = '', $return_field = 'config_value') 
+	{
 		if (empty($config_name)) {return null;}
 		
 		// load cache driver
@@ -130,7 +135,8 @@ class config_model extends CI_Model {
 	}// load_single
 	
 	
-	function save($data = array()) {
+	public function save($data = array()) 
+	{
 		if (empty($data)) {return false;}
 		if (!is_array($data)) {return false;}
 		
@@ -163,7 +169,8 @@ class config_model extends CI_Model {
 	}// save
 	
 	
-	function save_frontpage_category($data = array()) {
+	public function save_frontpage_category($data = array()) 
+	{
 		if (!isset($data['content_frontpage_category'])) {return false;}
 		
 		$this->db->where('language', $this->lang->get_current_lang());

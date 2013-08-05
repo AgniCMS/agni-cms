@@ -11,10 +11,12 @@
  *
  */
 
-class html_model extends CI_Model {
+class html_model extends CI_Model 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -23,7 +25,8 @@ class html_model extends CI_Model {
 	 * gen_front_body_class
 	 * @return string 
 	 */
-	function gen_front_body_class($class = '') {
+	public function gen_front_body_class($class = '') 
+	{
 		$class = ' '.$class;
 		
 		// gen front class
@@ -51,7 +54,8 @@ class html_model extends CI_Model {
 	 * @param array $tags
 	 * @return string 
 	 */
-	function gen_tags($tags = array()) {
+	public function gen_tags($tags = array()) 
+	{
 		if (!is_array($tags) || empty($tags)) {return null;}
 		
 		$output = '';
@@ -68,7 +72,8 @@ class html_model extends CI_Model {
 	 * @param string $title
 	 * @return string 
 	 */
-	function gen_title($title = '') {
+	public function gen_title($title = '') 
+	{
 		$cfg = $this->config_model->load(array('site_name', 'page_title_separator'));
 		
 		if (!empty($cfg)) {

@@ -11,13 +11,15 @@
  *
  */
  
-class comment extends MY_Controller {
+class comment extends MY_Controller 
+{
 	
 	
 	private $mode = 'thread';// comment mode.
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -44,7 +46,8 @@ class comment extends MY_Controller {
 	 * @param string $mode
 	 * @return string 
 	 */
-	function comment_view($comments = '', $mode = 'thread') {
+	public function comment_view($comments = '', $mode = 'thread') 
+	{
 		
 		if (!isset($comments['items'])) {return '<p class="list-comment-no-comment no-comment">'.$this->lang->line('comment_no_comment').'</p>';}
 		
@@ -133,7 +136,8 @@ class comment extends MY_Controller {
 	}// comment_view
 	
 	
-	function delete($comment_id = '') {
+	public function delete($comment_id = '') 
+	{
 		if (!is_numeric($comment_id)) {redirect();}
 		
 		// account id from cookie
@@ -237,7 +241,8 @@ class comment extends MY_Controller {
 	}// delete
 	
 	
-	function edit($comment_id = '') {
+	public function edit($comment_id = '') 
+	{
 		if (!is_numeric($comment_id)) {redirect();}
 		
 		// account id from cookie
@@ -358,7 +363,8 @@ class comment extends MY_Controller {
 	}// edit
 	
 	
-	function list_comments($comment_allow = '', $post_id = '', $comment_id = '') {
+	public function list_comments($comment_allow = '', $post_id = '', $comment_id = '') 
+	{
 		if (!is_numeric($comment_allow) || !is_numeric($post_id)) {return false;}
 		
 		// set output post_id and comment_id
@@ -436,7 +442,8 @@ class comment extends MY_Controller {
 	}// list_comments
 	
 	
-	private function post_comment() {
+	private function post_comment() 
+	{
 		$account_id = (int) trim($this->input->post('account_id'));
 		if ($account_id == null) {$account_id = '0';}
 		

@@ -9,10 +9,12 @@
  *
  */
 
-class changeemail2 extends MY_Controller {
+class changeemail2 extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,12 +25,14 @@ class changeemail2 extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($attr1 = '', $attr2 = '') {
+	public function _remap($attr1 = '', $attr2 = '') 
+	{
 		$this->index($attr1, $attr2);
 	}// _remap
 	
 	
-	function index($account_id = '', $confirm_code = '') {
+	public function index($account_id = '', $confirm_code = '') 
+	{
 		$confirm_code = (isset($confirm_code[0]) ? $confirm_code[0] : '');
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------

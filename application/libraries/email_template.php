@@ -4,14 +4,17 @@
  * @copyright http://okvee.net
  */
 
-class email_template {
+class email_template 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		
 	}// __construct
 	
-	function read_template($email_file = '') {
+	public function read_template($email_file = '') 
+	{
 		if ($email_file == null) {return null;}
 		
 		$CI =& get_instance();

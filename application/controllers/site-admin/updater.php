@@ -9,10 +9,12 @@
  * 
  */
 
-class updater extends admin_controller {
+class updater extends admin_controller 
+{
 
 
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -29,12 +31,14 @@ class updater extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('updater_perm' => array('updater_update_core_perm'/*, 'updater_update_modules_perm'*/));
 	}// _define_permission
 	
 	
-	private function _no_core_update() {
+	private function _no_core_update() 
+	{
 		$this->load->library('session');
 		$this->session->unset_userdata('global_status');
 		// show no update available.
@@ -51,7 +55,8 @@ class updater extends admin_controller {
 	}// _no_core_update
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('updater_perm', 'updater_update_core_perm') != true) {redirect('site-admin');}
 		
@@ -169,7 +174,8 @@ class updater extends admin_controller {
 	}// index
 	
 	
-	function step2() {
+	public function step2() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('updater_perm', 'updater_update_core_perm') != true) {redirect('site-admin');}
 		
@@ -278,7 +284,8 @@ class updater extends admin_controller {
 	}// step2
 	
 	
-	public function step3() {
+	public function step3() 
+	{
 		$cfg = $this->config_model->load(array('agni_version'));
 		
 		$output['agni_version'] = (isset($cfg['agni_version']['value']) ? $cfg['agni_version']['value'] : '');

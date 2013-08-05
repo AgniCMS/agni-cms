@@ -10,7 +10,8 @@
  */
 
 
-class media_filesys {
+class media_filesys 
+{
 	
 	
 	// base directory for prevent user back to system files. (no end slash trail)
@@ -25,7 +26,8 @@ class media_filesys {
 	 * @param string $name_check
 	 * @return mixed
 	 */
-	function create_folder($path_create = '', $name_check = '') {
+	public function create_folder($path_create = '', $name_check = '') 
+	{
 		if (!preg_match("/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $name_check)) {
 			return lang('media_new_folder_disallowed_characters');
 		}
@@ -55,7 +57,8 @@ class media_filesys {
 	 * @param string $path2
 	 * @return boolean
 	 */
-	function is_over_limit_base($path1 = '', $path2 = '') {
+	public function is_over_limit_base($path1 = '', $path2 = '') 
+	{
 		if ($path1 == null) {
 			$path1 = $this->base_dir;
 		}
@@ -84,7 +87,8 @@ class media_filesys {
 	 * @param boolean $split_folder_file
 	 * @return array
 	 */
-	function list_dir($split_folder_file = true) {
+	public function list_dir($split_folder_file = true) 
+	{
 		if ($this->base_dir != null) {
 			// check browse parent folder upper base_dir or not?
 			if ($this->is_over_limit_base($this->base_dir, $this->current_path)) {
@@ -142,7 +146,8 @@ class media_filesys {
 	 * list folder files recursively
 	 * @return array
 	 */
-	function list_dir_and_sub() {
+	public function list_dir_and_sub() 
+	{
 		if ($this->base_dir != null) {
 			// this method is list all folders and sub. we do not need to set browse_path to current anymore.
 			$browse_path = $this->base_dir;
@@ -175,7 +180,8 @@ class media_filesys {
 	 * @param string $new_path
 	 * @return boolean
 	 */
-	function move_file($old_path = '', $new_path = '') {
+	public function move_file($old_path = '', $new_path = '') 
+	{
 		if (file_exists($old_path) && is_file($old_path)) {
 			$result = copy($old_path, $new_path);
 			
@@ -196,7 +202,8 @@ class media_filesys {
 	 * @param string $new_name
 	 * @return mixed
 	 */
-	function rename_folder($current_path = '', $current_folder = '', $new_name = '') {
+	public function rename_folder($current_path = '', $current_folder = '', $new_name = '') 
+	{
 		if ($this->is_over_limit_base($this->base_dir, $current_path.'/') === true || $current_path == $this->base_dir) {
 			return 'Hack attempt!';
 		}

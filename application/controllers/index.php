@@ -9,10 +9,12 @@
  *
  */
 
-class index extends MY_Controller {
+class index extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -29,14 +31,20 @@ class index extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($att1 = '') {
-		if (is_numeric($att1) || $att1 == null || $att1 == 'index') {
-			$this->index();
+	public function _remap($att1 = '', $att2 = '') 
+	{
+		// if there is uri like this http://domain/installed_dir/index, http://domain/installed_dir/index/index
+		// redirect to base url to prevent duplicate content. good for seo.
+		if ($this->uri->segment(1) != null) {
+			redirect(base_url());
 		}
+		
+		$this->index();
 	}// _remap
 	
 	
-	function index() {
+	public function index() 
+	{
 		// if there is custom home module plug.
 		if ($this->modules_plug->has_action('front_home_controller')) {
 			return $this->modules_plug->do_action('front_home_controller');

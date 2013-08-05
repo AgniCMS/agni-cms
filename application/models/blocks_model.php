@@ -9,10 +9,12 @@
  *
  */
  
-class blocks_model extends CI_Model {
+class blocks_model extends CI_Model 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -22,7 +24,8 @@ class blocks_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function add_to_area($data = array()) {
+	public function add_to_area($data = array()) 
+	{
 		// set additional data for insert to db
 		$data['position'] = $this->get_latest_position($data['theme_system_name'], $data['area_name']);
 		$data['language'] = $this->lang->get_current_lang();
@@ -42,7 +45,8 @@ class blocks_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function edit($data = array()) {
+	public function edit($data = array()) 
+	{
 		// set 'block_values' field data.----------------------
 		$value = array();
 		foreach ($this->input->post() as $key => $item) {
@@ -68,7 +72,8 @@ class blocks_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_block_db($data = array()) {
+	public function get_block_db($data = array()) 
+	{
 		if (!empty($data)) {
 			$this->db->where($data);
 		}
@@ -86,7 +91,8 @@ class blocks_model extends CI_Model {
 	 * @param string $datatype
 	 * @return string 
 	 */
-	function get_block_data($block_name = '', $block_file = '', $datatype = 'title') {
+	public function get_block_data($block_name = '', $block_file = '', $datatype = 'title') 
+	{
 		if (file_exists($this->config->item('modules_uri').$block_file)) {
 			// load helper
 			$this->load->helper('widget');
@@ -114,7 +120,8 @@ class blocks_model extends CI_Model {
 	 * @param string $area_name
 	 * @return integer
 	 */
-	function get_latest_position($theme_system_name = '', $area_name = '') {
+	public function get_latest_position($theme_system_name = '', $area_name = '') 
+	{
 		if (empty($theme_system_name) || empty($area_name)) {return 1;}
 		
 		$this->db->where('theme_system_name', $theme_system_name);
@@ -142,7 +149,8 @@ class blocks_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return mixed 
 	 */
-	function list_blocks_in_areas($theme_system_name = '') {
+	public function list_blocks_in_areas($theme_system_name = '') 
+	{
 		// get all areas in this theme
 		$list_areas = $this->themes_model->list_areas($theme_system_name);
 		
@@ -173,7 +181,8 @@ class blocks_model extends CI_Model {
 	 * @param string $area_name
 	 * @return string 
 	 */
-	function render_area($area_name = '') {
+	public function render_area($area_name = '') 
+	{
 		return $this->themes_model->render_area($area_name);
 	}// render_area
 	

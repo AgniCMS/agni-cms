@@ -11,7 +11,8 @@
  */
 
 
-class filesystem {
+class filesystem 
+{
 	
 	
 	public $ftp_hostname;
@@ -25,7 +26,8 @@ class filesystem {
 	public $use_ftp = false;
 	
 	
-	public function __construct($use_ftp = false) {
+	public function __construct($use_ftp = false) 
+	{
 		// if use ftp.
 		if ($use_ftp == true) {
 			$this->use_ftp = true;
@@ -60,7 +62,8 @@ class filesystem {
 	}// __construct
 	
 	
-	public function chmod($path = '', $chmod = '0777') {
+	public function chmod($path = '', $chmod = '0777') 
+	{
 		if ($this->use_ftp === false) {
 			$old = umask(0);
 			$result = chmod($path, $chmod);
@@ -100,7 +103,8 @@ class filesystem {
 	 * @param string $destination
 	 * @return boolean
 	 */
-	public function copy($source = '', $destination = '') {
+	public function copy($source = '', $destination = '') 
+	{
 		// if path is not end with slash trail, add to it.
 		if (substr($destination, -1) !== '/') {
 			$destination .= '/';
@@ -134,7 +138,8 @@ class filesystem {
 	 * @param octal $chmod
 	 * @return boolean
 	 */
-	public function mkdir($path = '', $chmod = '0777') {
+	public function mkdir($path = '', $chmod = '0777') 
+	{
 		// if path is not end with slash trail, add to it.
 		if (substr($path, -1) !== '/') {
 			$path .= '/';
@@ -181,7 +186,8 @@ class filesystem {
 	 * @param string $path
 	 * @return boolean
 	 */
-	public function rmdir($path = '') {
+	public function rmdir($path = '') 
+	{
 		// if path is not end with slash trail, add to it.
 		if (substr($path, -1) !== '/') {
 			$path .= '/';
@@ -224,7 +230,8 @@ class filesystem {
 	 * set up ftp config array for use in ftp connect method.
 	 * @return array
 	 */
-	private function set_ftp_config() {
+	private function set_ftp_config() 
+	{
 		$output['hostname'] = $this->ftp_hostname;
 		$output['username'] = $this->ftp_username;
 		$output['password'] = $this->ftp_password;

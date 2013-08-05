@@ -9,10 +9,12 @@
  *
  */
  
-class page extends admin_controller {
+class page extends admin_controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -29,7 +31,8 @@ class page extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array(
 				'post_page_perm' => 
 					array(
@@ -47,7 +50,8 @@ class page extends admin_controller {
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_add_perm') != true) {redirect('site-admin');}
 		
@@ -162,7 +166,8 @@ class page extends admin_controller {
 	}// add
 	
 	
-	function ajax_nameuri() {
+	public function ajax_nameuri() 
+	{
 		if ($this->input->post() && $this->input->is_ajax_request()) {
 			
 			$post_name = trim($this->input->post('post_name'));
@@ -179,7 +184,8 @@ class page extends admin_controller {
 	}// ajax_nameuri
 	
 	
-	function del_rev($post_id = '', $revision_id = '') {
+	public function del_rev($post_id = '', $revision_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('post_page_perm', 'post_delete_revision') != true) {redirect('site-admin');}
 		
@@ -218,7 +224,8 @@ class page extends admin_controller {
 	}// del_rev
 	
 	
-	function delete($post_id = '') {
+	public function delete($post_id = '') 
+	{
 		// check permission (both canNOT delete own and delete other => get out)
 		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_own_perm') != true && $this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_other_perm') != true) {redirect('site-admin');}
 		
@@ -305,7 +312,8 @@ class page extends admin_controller {
 	}// delete
 	
 	
-	function edit($post_id = '') {
+	public function edit($post_id = '') 
+	{
 		// check permission (both canNOT edit own and edit other => get out)
 		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_own_perm') != true && $this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_other_perm') != true) {redirect('site-admin');}
 		
@@ -513,7 +521,8 @@ class page extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_viewall_perm') != true) {redirect('site-admin');}
 		
@@ -557,7 +566,8 @@ class page extends admin_controller {
 	}// index
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie('admin');
 		$my_account_id = $ca_account['id'];
@@ -643,7 +653,8 @@ class page extends admin_controller {
 	}// process_bulk
 	
 	
-	function revert($post_id = '', $revision_id = '') {
+	public function revert($post_id = '', $revision_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('post_page_perm', 'post_revert_revision') != true) {redirect('site-admin');}
 		

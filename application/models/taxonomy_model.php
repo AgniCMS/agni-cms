@@ -9,14 +9,16 @@
  *
  */
 
-class taxonomy_model extends CI_Model {
+class taxonomy_model extends CI_Model 
+{
 	
 	
 	public $language;
 	public $tax_type; // taxonomy type. category, tag, ...
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		// set language
 		$this->language = $this->lang->get_current_lang();
@@ -31,7 +33,8 @@ class taxonomy_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function add($data = array()) {
+	public function add($data = array()) 
+	{
 		if (empty($data)) {return false;}
 		
 		// check uri
@@ -74,7 +77,8 @@ class taxonomy_model extends CI_Model {
 	 * @param integer $tid
 	 * @return boolean 
 	 */
-	function delete($tid) {
+	public function delete($tid) 
+	{
 		if (!is_numeric($tid)) {return false;}
 		
 		// delete from menu items ------------------------------------------------------------------------------------
@@ -146,7 +150,8 @@ class taxonomy_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function edit($data = array(), $data_ua = array(), $data_mi = array()) {
+	public function edit($data = array(), $data_ua = array(), $data_mi = array()) 
+	{
 		if (empty($data)) {return false;}
 		
 		// check uri
@@ -200,7 +205,8 @@ class taxonomy_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_taxonomy_index_data($data = array()) {
+	public function get_taxonomy_index_data($data = array()) 
+	{
 		if (isset($data['post_id'])) {
 			$this->db->where('post_id', $data['post_id']);
 		}
@@ -224,7 +230,8 @@ class taxonomy_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_taxonomy_term_data_db($data = array()) {
+	public function get_taxonomy_term_data_db($data = array()) 
+	{
 		if ($this->tax_type != null) {
 			$this->db->where('t_type', $this->tax_type);
 		}
@@ -246,7 +253,8 @@ class taxonomy_model extends CI_Model {
 	 * create array object from the code of arnaud576875
 	 * @link http://stackoverflow.com/questions/4843945/php-tree-structure-for-categories-and-sub-categories-without-looping-a-query
 	 */
-	function list_item() {
+	public function list_item() 
+	{
 		$this->db->where('language', $this->language);
 		$this->db->where('t_type', $this->tax_type);
 		$this->db->order_by('t_name', 'asc');
@@ -276,7 +284,8 @@ class taxonomy_model extends CI_Model {
 	 * get total taxonomy from list_item method.
 	 * @return integer
 	 */
-	function list_item_total() {
+	public function list_item_total() 
+	{
 		// copy these query from list_item() method
 		$this->db->where('language', $this->language);
 		$this->db->where('t_type', $this->tax_type);
@@ -294,7 +303,8 @@ class taxonomy_model extends CI_Model {
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	function list_tags($list_for = 'front') {
+	public function list_tags($list_for = 'front') 
+	{
 		$this->db->where('language', $this->language);
 		$this->db->where('t_type', $this->tax_type);
 		
@@ -392,7 +402,8 @@ class taxonomy_model extends CI_Model {
 	 * @param type $post_id
 	 * @return null 
 	 */
-	function list_taxterm_index($post_id = '', $nohome_category = false) {
+	public function list_taxterm_index($post_id = '', $nohome_category = false) 
+	{
 		$home_category_id = $this->config_model->load_single('content_frontpage_category', $this->lang->get_current_lang());
 		
 		//
@@ -425,7 +436,8 @@ class taxonomy_model extends CI_Model {
 	 * @param integer $id
 	 * @return string 
 	 */
-	function nodup_uri($uri, $editmode = false, $id = '') {
+	public function nodup_uri($uri, $editmode = false, $id = '') 
+	{
 		$uri = url_title($uri);
 		
 		// load url model for check disallowed uri
@@ -480,7 +492,8 @@ class taxonomy_model extends CI_Model {
 	 * @param string $return_field
 	 * @return string 
 	 */
-	function show_taxterm_info($check_val = '', $check_field = 'tid', $return_field = 't_name') {
+	public function show_taxterm_info($check_val = '', $check_field = 'tid', $return_field = 't_name') 
+	{
 		$this->db->where('language', $this->language);
 		$this->db->where('t_type', $this->tax_type);
 		$this->db->where($check_field, $check_val);
@@ -503,7 +516,8 @@ class taxonomy_model extends CI_Model {
 	 * @param type $tid
 	 * @return string 
 	 */
-	function show_uri_tree($tid = '') {
+	public function show_uri_tree($tid = '') 
+	{
 		$end_depth = 'no';
 		do {
 			$this->db->where('tid', $tid);
@@ -546,7 +560,8 @@ class taxonomy_model extends CI_Model {
 	 * @param integer $tid
 	 * @return boolean 
 	 */
-	function update_total_post($tid = '') {
+	public function update_total_post($tid = '') 
+	{
 		if (!is_numeric($tid)) {return false;}
 		$this->db->where('tid', $tid);
 		$total = $this->db->count_all_results('taxonomy_index');
@@ -582,7 +597,8 @@ class taxonomy_model extends CI_Model {
 	 * @param   int     $level  The nlevel to assign to the current node
 	 * @param   int     &$n     A reference to the running tally for the n-value
 	 */
-	function _generateTreeData(&$arr, $id, $level) {
+	public function _generateTreeData(&$arr, $id, $level) 
+	{
 		$arr[$id]->nlevel = $level;
 
 		// loop over the node's children and process their data
@@ -599,7 +615,8 @@ class taxonomy_model extends CI_Model {
 	 *
 	 * @return  array   An indexed array of fields to select
 	 */
-	function _getFields() {
+	public function _getFields() 
+	{
 		return array($this->fields['id'], $this->fields['parent'], 't_type', 'nlevel');
 	}
 	
@@ -609,7 +626,8 @@ class taxonomy_model extends CI_Model {
 	 *
 	 * @return  array       The tree with the node's child data
 	 */
-	function _getTreeWithChildren() {
+	public function _getTreeWithChildren() 
+	{
 		$idField = $this->fields['id'];
 		$parentField = $this->fields['parent'];
 
@@ -645,7 +663,8 @@ class taxonomy_model extends CI_Model {
 	/**
 	 * Rebuilds the tree data and saves it to the database
 	 */
-	function rebuild() {
+	public function rebuild() 
+	{
 		$data = $this->_getTreeWithChildren();
 		
 		$level = 0; // need a variable to hold the running level tally

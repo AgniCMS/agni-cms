@@ -28,13 +28,15 @@
  *
  */
 
-class widget {
+class widget 
+{
 	
 	
 	public $module_path;
 	
 	
-	function __get($var) {
+	public function __get($var) 
+	{
 		global $CI;
 		return $CI->$var;
 	}
@@ -47,12 +49,13 @@ class widget {
 	 * @param mixed $values
 	 * @return type 
 	 */
-	function run($name = '', $file = '', $values = '', $dbobj = '') {
+	public function run($name = '', $file = '', $values = '', $dbobj = '') 
+	{
 		$args = func_get_args();
 		
 		$this->module_path = config_item('modules_uri');
 		
-		include_once($this->module_path.$file);
+		include_once $this->module_path.$file;
 
 		if (class_exists($name)) {
 			$name = strtolower($name);

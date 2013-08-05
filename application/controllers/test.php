@@ -12,16 +12,19 @@
  *
  */
 
-class test extends MY_Controller {
+/*class test extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		$this->load->helper(array('language'));
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		//show_404();// should enable this function in production site for not showing test page to public.
 		$this->theme_path = base_url().config_item('agni_theme_path').'quick-start/';// ค่านี้ ถ้าไม่เซ็ค ระบบจะโหลดจาก theme หลักมาแทน โดยเฉพาะ css จะโหลดจาก theme หลัก
 		//$this->theme_system_name = 'test';// ค่านี้ ถ้าไม่เซ็ต ระบบจะโหลดจาก theme หลักมาแทน, ถ้าเซ็ต ก็ไม่จำเป็นต้องเซ็ตตรง generate_page ก็ได้
@@ -42,5 +45,5 @@ class test extends MY_Controller {
 	}// index
 	
 
-}
+}*/
 

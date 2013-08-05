@@ -9,10 +9,12 @@
  * 
  */
 
-class syslog_model extends CI_Model {
+class syslog_model extends CI_Model 
+{
 
 
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -22,7 +24,8 @@ class syslog_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function add_new_log($data = array()) {
+	public function add_new_log($data = array()) 
+	{
 		// if not set account_id, get it from cookie.
 		if (!isset($data['account_id'])) {
 			$ca_account = $this->account_model->get_account_cookie('admin');
@@ -93,7 +96,8 @@ class syslog_model extends CI_Model {
 	 * @param integer $day_old
 	 * @return boolean
 	 */
-	function purge_old_log($day_old = 90) {
+	public function purge_old_log($day_old = 90) 
+	{
 		if ($day_old < 90 || !is_numeric($day_old)) {
 			$day_old = 90;
 		}

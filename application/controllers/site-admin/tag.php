@@ -9,10 +9,12 @@
  *
  */
 
-class tag extends admin_controller {
+class tag extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -29,12 +31,14 @@ class tag extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('tag_perm' => array('tag_viewall_perm', 'tag_add_perm', 'tag_edit_perm', 'tag_delete_perm'));
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('tag_perm', 'tag_add_perm') != true) {redirect('site-admin');}
 		
@@ -65,6 +69,7 @@ class tag extends admin_controller {
 			// validate form
 			$this->form_validation->set_rules("t_name", "lang:tag_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -125,7 +130,8 @@ class tag extends admin_controller {
 	}// add
 	
 	
-	function ajax_nameuri() {
+	public function ajax_nameuri() 
+	{
 		if ($this->input->post() && $this->input->is_ajax_request()) {
 			
 			$t_name = trim($this->input->post('t_name'));
@@ -143,7 +149,8 @@ class tag extends admin_controller {
 	}// ajax_nameuri
 	
 	
-	function edit($tid = '') {
+	public function edit($tid = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('tag_perm', 'tag_edit_perm') != true) {redirect('site-admin');}
 		
@@ -210,6 +217,7 @@ class tag extends admin_controller {
 			// validate form
 			$this->form_validation->set_rules("t_name", "lang:tag_name", "trim|required");
 			$this->form_validation->set_rules("t_uri", "lang:admin_uri", "trim|min_length[3]|required");
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -264,7 +272,8 @@ class tag extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('tag_perm', 'tag_viewall_perm') != true) {redirect('site-admin');}
 		
@@ -299,7 +308,8 @@ class tag extends admin_controller {
 	}// index
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		$id = $this->input->post('id');
 		if (!is_array($id)) {redirect('site-admin/tag');}
 		$act = trim($this->input->post('act'));

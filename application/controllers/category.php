@@ -9,10 +9,12 @@
  *
  */
  
-class category extends MY_Controller {
+class category extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -30,12 +32,14 @@ class category extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($att1 = '', $att2 = '') {
+	public function _remap($att1 = '', $att2 = '') 
+	{
 		$this->index($att1, $att2);
 	}// _remap
 	
 	
-	function index($att1 = '', $att2 = '') {
+	public function index($att1 = '', $att2 = '') 
+	{
 		
 		// get the last attribute as uri (if exists).
 		if (empty($att2)) {

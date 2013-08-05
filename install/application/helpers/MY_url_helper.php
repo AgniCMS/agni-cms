@@ -11,7 +11,8 @@
 
 
 if (!function_exists('language_switch')) {
-	function language_switch() {
+	function language_switch() 
+	{
 		$CI =& get_instance();
 		if ($CI->config->item('lang_ignore')) {
 			$user_lang = $_COOKIE[$CI->config->item('cookie_prefix').'user_lang'];
@@ -43,7 +44,8 @@ if (!function_exists('language_switch')) {
 
 
 if (!function_exists('language_switch_admin')) {
-	function language_switch_admin() {
+	function language_switch_admin() 
+	{
 		$CI =& get_instance();
 		if ($CI->config->item('lang_ignore')) {
 			$user_lang = $_COOKIE[$CI->config->item('cookie_prefix').'user_lang'];
@@ -74,7 +76,8 @@ if (!function_exists('language_switch_admin')) {
 }
 
 
-function language_switch_select() {
+function language_switch_select() 
+{
 	$CI =& get_instance();
 	// get current language
 	$CI->load->helper('cookie');
@@ -96,7 +99,8 @@ function language_switch_select() {
 
 
 if (!function_exists('url_title')) {
-	function url_title($str, $separator = 'dash', $lowercase = false) {
+	function url_title($str, $separator = 'dash', $lowercase = false) 
+	{
 		if ($separator == 'dash') {
 			$search = '_';
 			$replace = '-';
@@ -129,7 +133,8 @@ if (!function_exists('url_title')) {
 
 
 if (!function_exists('urlencode_except_slash')) {
-	function urlencode_except_slash($url = '') {
+	function urlencode_except_slash($url = '') 
+	{
 		if ($url == null) {return null;}
 		//
 		$url_raw = explode('/', $url);

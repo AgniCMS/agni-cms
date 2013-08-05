@@ -9,10 +9,12 @@
  *
  */
 
-class account_permission extends admin_controller {
+class account_permission extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -26,12 +28,14 @@ class account_permission extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('account_permission_perm' => array('account_permission_manage_perm'));
 	}// _define_permission
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
 		
@@ -63,7 +67,8 @@ class account_permission extends admin_controller {
 	}// index
 	
 	
-	function module($module_system_name = '') {
+	public function module($module_system_name = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin/modules');}
 		
@@ -120,7 +125,8 @@ class account_permission extends admin_controller {
 	}// module
 	
 	
-	function reset() {
+	public function reset() 
+	{
 		// filter method post only.
 		if (strtolower($this->input->server('REQUEST_METHOD')) != 'post') {redirect('site-admin/account-permission');}
 		
@@ -131,7 +137,8 @@ class account_permission extends admin_controller {
 	}// reset
 	
 	
-	function save() {
+	public function save() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
 		

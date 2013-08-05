@@ -9,10 +9,12 @@
  *
  */
 
-class forgotpw extends MY_Controller {
+class forgotpw extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,7 +25,8 @@ class forgotpw extends MY_Controller {
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
 		$breadcrumb[] = array('text' => lang('account_forget_userpass'), 'url' => current_url());
@@ -40,6 +43,7 @@ class forgotpw extends MY_Controller {
 			// load libraries
 			$this->load->library(array('form_validation', 'securimage/securimage'));
 			$this->form_validation->set_rules('account_email', 'lang:account_email', 'trim|required|valid_email');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';

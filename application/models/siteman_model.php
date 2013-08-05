@@ -1,6 +1,7 @@
 <?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
-class siteman_model extends CI_Model {
+class siteman_model extends CI_Model 
+{
 	
 	
 	// this is core tables that require to copy when create new site.
@@ -56,7 +57,8 @@ class siteman_model extends CI_Model {
 					);
 
 
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -66,7 +68,8 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function add_site($data = array()) {
+	public function add_site($data = array()) 
+	{
 		// additional data for inserting
 		$data['site_create'] = time();
 		$data['site_create_gmt'] = local_to_gmt(time());
@@ -117,7 +120,8 @@ class siteman_model extends CI_Model {
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	function copy_newsite_table($site_id = '') {
+	public function copy_newsite_table($site_id = '') 
+	{
 		foreach ($this->core_tables as $table) {
 			if ($table == 'account_level' || $table == 'account_level_group' || $table == 'config') {
 				// this table needs to copy data
@@ -144,7 +148,8 @@ class siteman_model extends CI_Model {
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	function delete_site($site_id = '') {
+	public function delete_site($site_id = '') 
+	{
 		// do not allow admin/user delete first site.
 		if ($site_id == '1') {
 			return false;
@@ -193,7 +198,8 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function edit_site($data = array()) {
+	public function edit_site($data = array()) 
+	{
 		// additional data for updating
 		$data['site_update'] = time();
 		$data['site_update_gmt'] = local_to_gmt(time());
@@ -236,7 +242,8 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_site_data_db($data = array()) {
+	public function get_site_data_db($data = array()) 
+	{
 		if (!empty($data)) {
 			$this->db->where($data);
 		}
@@ -257,7 +264,8 @@ class siteman_model extends CI_Model {
 	 * @param boolean $enabled_only
 	 * @return integer
 	 */
-	function get_site_id($enabled_only = true) {
+	public function get_site_id($enabled_only = true) 
+	{
 		$site_domain = $this->input->server('HTTP_HOST');
 		
 		// get site info from db
@@ -281,7 +289,8 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function list_websites($data = array()) {
+	public function list_websites($data = array()) 
+	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
 		}
@@ -374,7 +383,8 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function list_websites_all($data = array()) {
+	public function list_websites_all($data = array()) 
+	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
 		}

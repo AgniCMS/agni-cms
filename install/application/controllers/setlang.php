@@ -7,15 +7,18 @@
  *
  */
  
-class setlang extends MY_Controller {
+class setlang extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		$lang = trim($this->input->get('lang'));
 		$lang_arr = $this->config->item('lang_uri_abbr');
 		if (isset($lang_arr[$lang])) {

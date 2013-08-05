@@ -9,14 +9,16 @@
  *
  */
 
-class themes_model extends CI_Model {
+class themes_model extends CI_Model 
+{
 	
 	
 	private $theme_dir;
 	public $theme_system_name;
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		$this->_setup_theme_dir();
@@ -26,7 +28,8 @@ class themes_model extends CI_Model {
 	/**
 	 * _setup_theme_dir
 	 */
-	function _setup_theme_dir() {
+	public function _setup_theme_dir() 
+	{
 		$this->config->load('agni');
 		$this->theme_dir = $this->config->item('agni_theme_path');
 	}// _setup_theme_dir
@@ -36,7 +39,8 @@ class themes_model extends CI_Model {
 	 * add_theme
 	 * @return mixed 
 	 */
-	function add_theme() {
+	public function add_theme() 
+	{
 		// load agni config
 		$this->config->load('agni');
 		
@@ -61,7 +65,7 @@ class themes_model extends CI_Model {
 		
 		// trying to extract ZIP
 		if (isset($data) && is_array($data) && !empty($data)) {
-			require_once(APPPATH.'/libraries/dunzip/dUnzip2.inc.php');
+			require_once APPPATH.'/libraries/dunzip/dUnzip2.inc.php';
 			
 			$zip = new dUnzip2($data['full_path']);
 			$zip->debug = false;
@@ -130,7 +134,8 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean
 	 */
-	function delete_theme($theme_system_name = '') {
+	public function delete_theme($theme_system_name = '') 
+	{
 		if ($theme_system_name == null) {return false;}
 		
 		// check if theme is default in admin or front
@@ -195,7 +200,8 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean 
 	 */
-	function do_disable($theme_system_name = '') {
+	public function do_disable($theme_system_name = '') 
+	{
 		if ($theme_system_name == null) {return false;}
 		
 		// check if theme is default in admin or front
@@ -240,7 +246,8 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean 
 	 */
-	function do_enable($theme_system_name = '', $site_id = '') {
+	public function do_enable($theme_system_name = '', $site_id = '') 
+	{
 		if ($theme_system_name == null) {return false;}
 		
 		// check if there is front folder or site-admin folder for this theme
@@ -350,7 +357,8 @@ class themes_model extends CI_Model {
 	 * @param string $return
 	 * @return string 
 	 */
-	function get_default_theme($check_for = 'front', $return = 'theme_system_name') {
+	public function get_default_theme($check_for = 'front', $return = 'theme_system_name') 
+	{
 		// load cache driver
 		$this->load->driver('cache', array('adapter' => 'file'));
 		
@@ -391,7 +399,8 @@ class themes_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_themes_data($data = array()) {
+	public function get_themes_data($data = array()) 
+	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
 		}
@@ -407,7 +416,8 @@ class themes_model extends CI_Model {
 	 * @param admin|front $check_for
 	 * @return boolean 
 	 */
-	function is_default($theme_system_name = '', $check_for = 'front') {
+	public function is_default($theme_system_name = '', $check_for = 'front') 
+	{
 		if ($theme_system_name == null) {return false;}
 		
 		// get site id
@@ -439,7 +449,8 @@ class themes_model extends CI_Model {
 	 * @param admin|front $check_for
 	 * @return boolean 
 	 */
-	function is_default_one($theme_system_name = '', $check_for = 'front') {
+	public function is_default_one($theme_system_name = '', $check_for = 'front') 
+	{
 		if ($theme_system_name == null) {return false;}
 		
 		$this->db->join('theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner');
@@ -464,7 +475,8 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean 
 	 */
-	function is_enabled($theme_system_name = '', $site_id = '') {
+	public function is_enabled($theme_system_name = '', $site_id = '') 
+	{
 		if ($theme_system_name == null) {return false;}
 		
 		if ($site_id == null) {
@@ -505,7 +517,8 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return boolean 
 	 */
-	function is_enabled_one($theme_system_name = '') {
+	public function is_enabled_one($theme_system_name = '') 
+	{
 		if ($theme_system_name == null) {return false;}
 		
 		$this->db->join('theme_sites', 'theme_sites.theme_id = themes.theme_id', 'inner');
@@ -524,7 +537,8 @@ class themes_model extends CI_Model {
 	 * list_all_themes
 	 * @return mixed 
 	 */
-	function list_all_themes() {
+	public function list_all_themes() 
+	{
 		$dir = $this->scan_theme_dir();
 		
 		$output['items'] = $dir;
@@ -533,7 +547,8 @@ class themes_model extends CI_Model {
 	}// list_all_themes
 	
 	
-	function list_areas($theme_system_name = '') {
+	public function list_areas($theme_system_name = '') 
+	{
 		// load helper
 		$this->load->helper('file');
 		
@@ -561,7 +576,8 @@ class themes_model extends CI_Model {
 	 * list_enabled_themes
 	 * @return mixed 
 	 */
-	function list_enabled_themes() {
+	public function list_enabled_themes() 
+	{
 		// get site id
 		$this->load->model('siteman_model');
 		$site_id = $this->siteman_model->get_site_id();
@@ -592,7 +608,8 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return mixed
 	 */
-	function list_theme_use_in_sites($theme_system_name = '') {
+	public function list_theme_use_in_sites($theme_system_name = '') 
+	{
 		// get theme_id
 		$theme_db = $this->get_themes_data(array('theme_system_name' => $theme_system_name));
 		if ($theme_db == null) {
@@ -621,7 +638,8 @@ class themes_model extends CI_Model {
 	 * @param string $theme_item
 	 * @return mixed 
 	 */
-	function read_theme_metadata($theme_item = '') {
+	public function read_theme_metadata($theme_item = '') 
+	{
 		if (empty($theme_item)) {return null;}
 		
 		// load helper
@@ -650,7 +668,8 @@ class themes_model extends CI_Model {
 	 * @param mixed $attributes send values as attirbutes from controller, view
 	 * @return string 
 	 */
-	function render_area($area_name = '', $attributes = '') {
+	public function render_area($area_name = '', $attributes = '') 
+	{
 		// load widget class
 		$this->load->helper('widget');
 		
@@ -767,7 +786,8 @@ class themes_model extends CI_Model {
 	 * scan_theme_dir
 	 * @return mixed 
 	 */
-	function scan_theme_dir() {
+	public function scan_theme_dir() 
+	{
 		$map = scandir($this->theme_dir);
 		
 		if (is_array($map) && !empty($map)) {
@@ -810,7 +830,8 @@ class themes_model extends CI_Model {
 	 * @param admin|front $set_for
 	 * @return boolean 
 	 */
-	function set_default($theme_system_name = '', $set_for = 'front', $site_id = '') {
+	public function set_default($theme_system_name = '', $set_for = 'front', $site_id = '') 
+	{
 		if ($theme_system_name == null) {return false;}
 		
 		// check if theme was enabled
@@ -886,7 +907,8 @@ class themes_model extends CI_Model {
 	 * @param string $theme_system_name
 	 * @return string 
 	 */
-	function show_theme_screenshot($theme_system_name = '', $size = 'normal') {
+	public function show_theme_screenshot($theme_system_name = '', $size = 'normal') 
+	{
 		if ($theme_system_name == null) {
 			return base_url().'public/images/no-screenshot.png';
 		}

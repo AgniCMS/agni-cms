@@ -9,10 +9,12 @@
  *
  */
 
-class config extends admin_controller {
+class config extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -32,12 +34,14 @@ class config extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('config_global' => array('config_global'));
 	}// _define_permission
 	
 	
-	function ajax_test_ftp() {
+	public function ajax_test_ftp() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('config_global', 'config_global') != true) {redirect('site-admin');}
 		
@@ -79,7 +83,8 @@ class config extends admin_controller {
 	}// ajax_test_ftp
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('config_global', 'config_global') != true) {redirect('site-admin');}
 		
@@ -188,6 +193,7 @@ class config extends admin_controller {
 			$this->form_validation->set_rules('content_items_perpage', 'lang:config_content_items_perpage', 'trim|required|integer|xss_clean');
 			$this->form_validation->set_rules('comment_perpage', 'lang:config_comment_perpage', 'trim|required|integer|xss_clean');
 			$this->form_validation->set_rules('comment_admin_notify_emails', 'lang:config_comment_admin_notify_emails', 'trim|required|valid_email|xss_clean');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';

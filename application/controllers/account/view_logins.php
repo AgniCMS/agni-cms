@@ -9,10 +9,12 @@
  *
  */
 
-class view_logins extends MY_Controller {
+class view_logins extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,7 +25,8 @@ class view_logins extends MY_Controller {
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		// is member login?
 		if (!$this->account_model->is_member_login()) {redirect(site_url());}
 		

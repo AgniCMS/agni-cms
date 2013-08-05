@@ -12,15 +12,18 @@
  * 
  */
 
-class cron extends MY_Controller {
+class cron extends MY_Controller 
+{
 
 
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function check_queue_update_core() {
+	public function check_queue_update_core() 
+	{
 		// to prevent user call to cron too often, use cache to check.
 		// set site_id
 		$site_id = $this->siteman_model->get_site_id();
@@ -60,7 +63,8 @@ class cron extends MY_Controller {
 	}// check_queue_update_core
 	
 	
-	function index() {
+	public function index() 
+	{
 		// to prevent user call to cron too often, use cache to check.
 		// set site_id
 		$site_id = $this->siteman_model->get_site_id();

@@ -9,10 +9,12 @@
  *
  */
 
-class account extends admin_controller {
+class account extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,12 +25,14 @@ class account extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('account_perm' => array('account_manage_perm', 'account_add_perm', 'account_edit_perm', 'account_delete_perm', 'account_viewlog_perm', 'account_deletelog_perm'));
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_perm', 'account_add_perm') != true) {redirect('site-admin');}
 		
@@ -58,6 +62,7 @@ class account extends admin_controller {
 			$this->form_validation->set_rules('account_birthdate', 'lang:account_birthdate', 'trim|preg_match_date');
 			$this->form_validation->set_rules('account_status', 'lang:account_status', 'trim|required');
 			$this->form_validation->set_rules('level_group_id', 'lang:account_level', 'trim|required');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -105,7 +110,8 @@ class account extends admin_controller {
 	}// add
 	
 	
-	function delete_avatar() {
+	public function delete_avatar() 
+	{
 		$account_id = trim($this->input->post('account_id'));
 		
 		// load account cookie for check edit self?
@@ -134,7 +140,8 @@ class account extends admin_controller {
 	}// delete_avatar
 	
 	
-	function delete_log($account_id = '') {
+	public function delete_log($account_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_perm', 'account_deletelog_perm') != true) {redirect('site-admin');}
 		
@@ -169,7 +176,8 @@ class account extends admin_controller {
 	}// delete_log
 	
 	
-	function edit($account_id = '') {
+	public function edit($account_id = '') 
+	{
 		// load account cookie for check edit self?
 		$ca_account = $this->account_model->get_account_cookie('admin');
 		if (!isset($ca_account['id'])) {redirect('site-admin');}
@@ -250,6 +258,7 @@ class account extends admin_controller {
 			$this->form_validation->set_rules('account_birthdate', 'lang:account_birthdate', 'trim|preg_match_date');
 			$this->form_validation->set_rules('account_status', 'lang:account_status', 'trim|required');
 			$this->form_validation->set_rules('level_group_id', 'lang:account_level', 'trim|required');
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -297,7 +306,8 @@ class account extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('account_perm', 'account_manage_perm') != true) {redirect('site-admin');}
 		
@@ -331,7 +341,8 @@ class account extends admin_controller {
 	}// index
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		$id = $this->input->post('id');
 		$act = trim($this->input->post('act'));
 		
@@ -363,7 +374,8 @@ class account extends admin_controller {
 	}// process_bulk
 	
 	
-	function viewlog($account_id = '') {
+	public function viewlog($account_id = '') 
+	{
 		if (!is_numeric($account_id)) {redirect('site-admin');}
 		
 		// check permission

@@ -9,13 +9,15 @@
  *
  */
  
-class menu_model extends CI_Model {
+class menu_model extends CI_Model 
+{
 	
 	
 	public $language;
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// set language
@@ -31,7 +33,8 @@ class menu_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function add_group($data = array()) {
+	public function add_group($data = array()) 
+	{
 		// set additional data
 		$data['language'] = $this->language;
 		
@@ -45,7 +48,8 @@ class menu_model extends CI_Model {
 	 * @param array $data 
 	 * @return boolean
 	 */
-	function add_item($data = array()) {
+	public function add_item($data = array()) 
+	{
 		// set additional data for insert to db.
 		$data['position'] = $this->get_mi_newposition($data['mg_id'], $this->language);
 		$data['language'] = $this->language;
@@ -106,7 +110,8 @@ class menu_model extends CI_Model {
 	 * @param integer $mg_id
 	 * @return boolean 
 	 */
-	function delete_group($mg_id = '') {
+	public function delete_group($mg_id = '') 
+	{
 		if (!is_numeric($mg_id)) {return false;}
 		
 		// delete from menu items table
@@ -121,7 +126,8 @@ class menu_model extends CI_Model {
 	}// delete_group
 	
 	
-	function delete_item($mi_id = '') {
+	public function delete_item($mi_id = '') 
+	{
 		// delete children items
 		$this->db->where('parent_id', $mi_id);
 		$this->db->where('language', $this->language);
@@ -148,7 +154,8 @@ class menu_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function edit_group($data = array()) {
+	public function edit_group($data = array()) 
+	{
 		$this->db->where('language', $this->language);
 		$this->db->where('mg_id', $data['mg_id']);
 		$this->db->update('menu_groups', $data);
@@ -162,7 +169,8 @@ class menu_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function edit_item($data = array()) {
+	public function edit_item($data = array()) 
+	{
 		if (isset($data['mi_id'])) {
 			$this->db->where('mi_id', $data['mi_id']);
 		}
@@ -178,7 +186,8 @@ class menu_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_mg_data_db($data = array()) {
+	public function get_mg_data_db($data = array()) 
+	{
 		if (!empty($data)) {
 			$this->db->where($data);
 		}
@@ -194,7 +203,8 @@ class menu_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_mi_data_db($data = array()) {
+	public function get_mi_data_db($data = array()) 
+	{
 		if (!empty($data)) {
 			$this->db->where($data);
 		}
@@ -211,7 +221,8 @@ class menu_model extends CI_Model {
 	 * @param string $language
 	 * @return int 
 	 */
-	function get_mi_newposition($mg_id = '', $language = '') {
+	public function get_mi_newposition($mg_id = '', $language = '') 
+	{
 		$this->db->where('mg_id', $mg_id);
 		$this->db->where('language', $language);
 		$this->db->order_by('position', 'desc');
@@ -234,7 +245,8 @@ class menu_model extends CI_Model {
 	 * @param boolean $limit
 	 * @return mixed 
 	 */
-	function list_group($limit = true) {
+	public function list_group($limit = true) 
+	{
 		$this->db->where('language', $this->language);
 		
 		// orders & sort
@@ -309,7 +321,8 @@ class menu_model extends CI_Model {
 	 * @param integer $mg_id
 	 * @return mixed 
 	 */
-	function list_item($mg_id = '') {
+	public function list_item($mg_id = '') 
+	{
 		if (!is_numeric($mg_id)) {return null;}
 		
 		$this->db->where('mg_id', $mg_id);
@@ -354,7 +367,8 @@ class menu_model extends CI_Model {
 	 * @param   int     $level  The nlevel to assign to the current node
 	 * @param   int     &$n     A reference to the running tally for the n-value
 	 */
-	function _generateTreeData(&$arr, $id, $level) {
+	public function _generateTreeData(&$arr, $id, $level) 
+	{
 		$arr[$id]->nlevel = $level;
 
 		// loop over the node's children and process their data
@@ -371,7 +385,8 @@ class menu_model extends CI_Model {
 	 *
 	 * @return  array   An indexed array of fields to select
 	 */
-	function _getFields() {
+	public function _getFields() 
+	{
 		return array($this->fields['id'], $this->fields['parent'], 'mg_id', 'nlevel');
 	}
 	
@@ -381,7 +396,8 @@ class menu_model extends CI_Model {
 	 *
 	 * @return  array       The tree with the node's child data
 	 */
-	function _getTreeWithChildren() {
+	public function _getTreeWithChildren() 
+	{
 		$idField = $this->fields['id'];
 		$parentField = $this->fields['parent'];
 
@@ -416,7 +432,8 @@ class menu_model extends CI_Model {
 	/**
 	 * Rebuilds the tree data and saves it to the database
 	 */
-	function rebuild() {
+	public function rebuild() 
+	{
 		$data = $this->_getTreeWithChildren();
 		
 		$level = 0; // need a variable to hold the running level tally

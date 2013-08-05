@@ -9,10 +9,12 @@
  *
  */
 
-class module extends admin_controller {
+class module extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -26,12 +28,14 @@ class module extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('modules_manage_perm' => array('modules_viewall_perm', 'modules_add_perm', 'modules_activate_deactivate_perm', 'modules_uninstall_perm', 'modules_delete_perm'));
 	}// _define_permission
 	
 	
-	function activate($module_system_name = '', $site_id = '') {
+	public function activate($module_system_name = '', $site_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 		
@@ -62,7 +66,8 @@ class module extends admin_controller {
 	}// activate
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_add_perm') != true) {redirect('site-admin');}
 		
@@ -100,7 +105,8 @@ class module extends admin_controller {
 	}// add
 	
 	
-	function deactivate($module_system_name = '', $site_id = '') {
+	public function deactivate($module_system_name = '', $site_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 		
@@ -131,7 +137,8 @@ class module extends admin_controller {
 	}// deactivate
 	
 	
-	function delete() {
+	public function delete() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_delete_perm') != true) {redirect('site-admin');}
 		
@@ -163,7 +170,8 @@ class module extends admin_controller {
 	}// delete
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission 
 		// special! to allow admin go to manage module's permission, we need to check at least 1 of these 2 permission.
 		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_viewall_perm') != true
@@ -212,7 +220,8 @@ class module extends admin_controller {
 	}// index
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		$id = $this->input->post('id');
 		if (!is_array($id)) {redirect('site-admin/module');}
 		$act = trim($this->input->post('act'));
@@ -324,7 +333,8 @@ class module extends admin_controller {
 	}// process_bulk
 	
 	
-	function uninstall($module_system_name = '', $site_id = '') {
+	public function uninstall($module_system_name = '', $site_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_uninstall_perm') != true) {redirect('site-admin');}
 		

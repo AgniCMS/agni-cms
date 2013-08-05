@@ -7,7 +7,8 @@
  *
  */
  
-class install_model extends CI_Model {
+class install_model extends CI_Model 
+{
 	
 	
 	public $db_name;
@@ -20,12 +21,14 @@ class install_model extends CI_Model {
 	public $post_port = null;// for check later that input post enter port or not
 
 
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function install_configured($data = array()) {
+	public function install_configured($data = array()) 
+	{
 		if (!is_array($data)) {
 			$output['result'] = false;
 			$output['result_text'] = 'Error in install config model.';
@@ -93,7 +96,8 @@ class install_model extends CI_Model {
 	}// install_configured
 	
 	
-	function install_db() {
+	public function install_db() 
+	{
 		//
 		if ($this->db_port == null) {
 			$this->db_port = ini_get("mysqli.default_port");
@@ -219,7 +223,8 @@ class install_model extends CI_Model {
 	}// install_db
 	
 	
-	function install_sample_data($sample_data = '') {
+	public function install_sample_data($sample_data = '') 
+	{
 		// get configured from files
 		include_once('../application/config/database.php');
 		
@@ -254,7 +259,8 @@ class install_model extends CI_Model {
 	}// install_sample_data
 	
 	
-	function test_connect_db($db_host = '', $db_username = '', $db_password = '', $db_name = '', $db_port = '') {
+	public function test_connect_db($db_host = '', $db_username = '', $db_password = '', $db_name = '', $db_port = '') 
+	{
 		if ($db_host == null || $db_username == null || $db_password == null || $db_name == null) {
 			return false;
 		}

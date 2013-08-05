@@ -9,10 +9,12 @@
  * 
  */
 
-class queue_model extends CI_Model {
+class queue_model extends CI_Model 
+{
 
 
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -22,7 +24,8 @@ class queue_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function add_queue($data = array()) {
+	public function add_queue($data = array()) 
+	{
 		$this->db->insert('queue', $data);
 		
 		// get inserted id
@@ -38,7 +41,8 @@ class queue_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function delete_queue($data = array()) {
+	public function delete_queue($data = array()) 
+	{
 		if (!is_array($data) || (is_array($data) && empty($data))) {return false;}
 		
 		$this->db->where($data)
@@ -53,7 +57,8 @@ class queue_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function edit_queue($data = array()) {
+	public function edit_queue($data = array()) 
+	{
 		$this->db->where('queue_id', $data['queue_id'])
 			   ->update('queue', $data);
 		
@@ -68,7 +73,8 @@ class queue_model extends CI_Model {
 	 * @param array|string $data
 	 * @return mixed
 	 */
-	function get_queue_data($data = array()) {
+	public function get_queue_data($data = array()) 
+	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
 		} elseif (is_string($data)) {
@@ -86,7 +92,8 @@ class queue_model extends CI_Model {
 	 * @param string $queue_name
 	 * @return boolean
 	 */
-	function is_queue_exists($queue_name = '') {
+	public function is_queue_exists($queue_name = '') 
+	{
 		$this->db->where('queue_name', $queue_name);
 		
 		if ($this->db->count_all_results('queue') >= 1) {

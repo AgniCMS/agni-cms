@@ -9,10 +9,12 @@
  *
  */
 
-class resetpw2 extends MY_Controller {
+class resetpw2 extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,12 +25,14 @@ class resetpw2 extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($attr1 = '', $attr2 = '') {
+	public function _remap($attr1 = '', $attr2 = '') 
+	{
 		$this->index($attr1, $attr2);
 	}// _remap
 	
 	
-	function index($account_id = '', $confirm_code = '') {
+	public function index($account_id = '', $confirm_code = '') 
+	{
 		$confirm_code = (isset($confirm_code[0]) ? $confirm_code[0] : '');
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
@@ -70,6 +74,7 @@ class resetpw2 extends MY_Controller {
 						$this->load->library('form_validation');
 						$this->form_validation->set_rules('new_password', 'lang:account_new_password', 'trim|required|matches[conf_new_password]');
 						$this->form_validation->set_rules('conf_new_password', 'lang:account_confirm_new_password', 'trim|required');
+						
 						if ($this->form_validation->run() == false) {
 							$output['form_status'] = 'error';
 							$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';

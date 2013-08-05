@@ -9,15 +9,18 @@
  *
  */
 
-class index extends admin_controller {
+class index extends admin_controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		// load session for flashdata
 		$this->load->library('session');
 		$form_status = $this->session->flashdata('form_status');

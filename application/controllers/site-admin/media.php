@@ -9,10 +9,12 @@
  *
  */
  
-class media extends admin_controller {
+class media extends admin_controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -30,7 +32,8 @@ class media extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array(
 			'media_perm' => 
 				array(
@@ -47,7 +50,8 @@ class media extends admin_controller {
 	}// _define_permission
 	
 	
-	function ajax_delete_folder() {
+	public function ajax_delete_folder() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
 		// check both permission
@@ -74,7 +78,8 @@ class media extends admin_controller {
 	}// ajax_delete_folder
 	
 	
-	function ajax_crop() {
+	public function ajax_crop() 
+	{
 		// check both permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
 		
@@ -194,7 +199,8 @@ class media extends admin_controller {
 	}// ajax_crop
 	
 	
-	function ajax_new_folder() {
+	public function ajax_new_folder() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
 		
@@ -226,7 +232,8 @@ class media extends admin_controller {
 	}// ajax_new_folder
 	
 	
-	function ajax_rename_folder() {
+	public function ajax_rename_folder() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
 		
@@ -257,7 +264,8 @@ class media extends admin_controller {
 	}// ajax_rename_folder
 	
 	
-	function ajax_resize() {
+	public function ajax_resize() 
+	{
 		// check both permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
 		
@@ -353,7 +361,8 @@ class media extends admin_controller {
 	}// ajax_resize
 	
 	
-	function copy($file_id = '') {
+	public function copy($file_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_copy_perm') != true) {redirect('site-admin');}
 		
@@ -444,7 +453,8 @@ class media extends admin_controller {
 	}// copy
 	
 	
-	function edit($file_id = '') {
+	public function edit($file_id = '') 
+	{
 		// check both permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
 		
@@ -542,13 +552,15 @@ class media extends admin_controller {
 	}// edit
 	
 	
-	function get_img($file_id = '', $return_element = 'img') {
+	public function get_img($file_id = '', $return_element = 'img') 
+	{
 		echo $this->media_model->get_img($file_id, $return_element);
 		return ;
 	}// get_img
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_viewall_perm') != true) {redirect('site-admin');}
 		
@@ -611,7 +623,8 @@ class media extends admin_controller {
 	}// index
 	
 	
-	function move_file($ids = '') {
+	public function move_file($ids = '') 
+	{
 		// check both permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
 		
@@ -706,7 +719,8 @@ class media extends admin_controller {
 	}// move_file
 	
 	
-	function popup() {
+	public function popup() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_viewall_perm') != true) {return null;}
 		
@@ -769,7 +783,8 @@ class media extends admin_controller {
 	}// popup
 	
 	
-	function process_bulk() {
+	public function process_bulk() 
+	{
 		// get account id
 		$ca_account = $this->account_model->get_account_cookie('admin');
 		$my_account_id = $ca_account['id'];
@@ -821,7 +836,8 @@ class media extends admin_controller {
 	}// process_bulk
 	
 	
-	function upload() {
+	public function upload() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('media_perm', 'media_upload_perm') != true) {redirect('site-admin');}
 		

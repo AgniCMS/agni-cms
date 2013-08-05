@@ -9,19 +9,22 @@
  *
  */
 
-class modules_model extends CI_Model {
+class modules_model extends CI_Model 
+{
 	
 	
 	private $module_dir;
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		$this->_setup_module_dir();
 	}// __construct
 	
 	
-	function _setup_module_dir() {
+	public function _setup_module_dir() 
+	{
 		$this->config->load('agni');
 		$this->module_dir = $this->config->item('modules_uri');
 	}// _setup_module_dir
@@ -31,7 +34,8 @@ class modules_model extends CI_Model {
 	 * add module
 	 * @return mixed 
 	 */
-	function add_module() {
+	public function add_module() 
+	{
 		// load agni config
 		$this->config->load('agni');
 		
@@ -124,7 +128,8 @@ class modules_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	function delete_a_module($module_system_name = '') {
+	public function delete_a_module($module_system_name = '') 
+	{
 		// uninstall module controller
 		$this->load->module(array($module_system_name.'_uninstall'));
 		$find_uninstall = Modules::find($module_system_name.'_uninstall', $module_system_name, 'controllers/');
@@ -197,7 +202,8 @@ class modules_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	function do_activate($module_system_name = '', $site_id = '') {
+	public function do_activate($module_system_name = '', $site_id = '') 
+	{
 		$pdata = $this->read_module_metadata($module_system_name.'/'.$module_system_name.'_module.php' );
 		
 		// check if module is inserted
@@ -273,7 +279,8 @@ class modules_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	function do_deactivate($module_system_name = '', $site_id = '') {
+	public function do_deactivate($module_system_name = '', $site_id = '') 
+	{
 		$this->db->trans_start();
 		
 		$query = $this->db->where('module_system_name', $module_system_name)
@@ -319,7 +326,8 @@ class modules_model extends CI_Model {
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	function do_uninstall($module_system_name = '', $site_id = '') {
+	public function do_uninstall($module_system_name = '', $site_id = '') 
+	{
 		$this->db->trans_start();
 		
 		$query = $this->db->where('module_system_name', $module_system_name)
@@ -375,7 +383,8 @@ class modules_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_modules_data($data = array()) {
+	public function get_modules_data($data = array()) 
+	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
 		}
@@ -391,7 +400,8 @@ class modules_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	function is_activated($module_system_name = '', $site_id = '') {
+	public function is_activated($module_system_name = '', $site_id = '') 
+	{
 		if ($module_system_name == null) {return false;}
 		if ($site_id == null) {return false;}
 		
@@ -435,7 +445,8 @@ class modules_model extends CI_Model {
 	 * @param string $module_system_name
 	 * @return boolean
 	 */
-	function is_activated_one($module_system_name = '') {
+	public function is_activated_one($module_system_name = '') 
+	{
 		if ($module_system_name == null) {return false;}
 		
 		$this->db->join('module_sites', 'module_sites.module_id = modules.module_id', 'inner')
@@ -455,7 +466,8 @@ class modules_model extends CI_Model {
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	function is_installed($module_system_name = '', $site_id = '') {
+	public function is_installed($module_system_name = '', $site_id = '') 
+	{
 		if ($module_system_name == null) {return false;}
 		if ($site_id == null) {return false;}
 		
@@ -497,7 +509,8 @@ class modules_model extends CI_Model {
 	 * list all modules
 	 * @return mixed 
 	 */
-	function list_all_modules() {
+	public function list_all_modules() 
+	{
 		$dir = $this->scan_module_dir();
 		
 		if (is_array($dir))
@@ -555,7 +568,8 @@ class modules_model extends CI_Model {
 	 * list_all_widgets
 	 * @return mixed 
 	 */
-	function list_all_widgets() {
+	public function list_all_widgets() 
+	{
 		$this->db->join('module_sites', 'module_sites.module_id = modules.module_id', 'inner');
 		$this->db->where('module_sites.module_enable', '1');
 		$this->db->group_by('modules.module_id');
@@ -614,7 +628,7 @@ class modules_model extends CI_Model {
 	 * load_admin_nav
 	 * @return string|null 
 	 */
-	function load_admin_nav() 
+	public function load_admin_nav() 
 	{
 		set_site_id();
 		
@@ -674,7 +688,8 @@ class modules_model extends CI_Model {
 	 * @param string $module_item
 	 * @return array 
 	 */
-	function read_module_metadata($module_item = '') {
+	public function read_module_metadata($module_item = '') 
+	{
 		if (empty($module_item)) {return null;}
 		
 		// load helper
@@ -705,7 +720,8 @@ class modules_model extends CI_Model {
 	 *scan module directory
 	 * @return mixed 
 	 */
-	function scan_module_dir() {
+	public function scan_module_dir() 
+	{
 		$this->load->model('siteman_model');
 		
 		$map = scandir($this->module_dir);
@@ -755,7 +771,8 @@ class modules_model extends CI_Model {
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	function set_install_module($module_system_name = '', $site_id = '') {
+	public function set_install_module($module_system_name = '', $site_id = '') 
+	{
 		if ($module_system_name == null || !is_numeric($site_id)) {return null;}
 		
 		$this->db->where('module_system_name', $module_system_name);

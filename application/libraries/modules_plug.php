@@ -9,7 +9,8 @@
  *
  */
 
-class modules_plug {
+class modules_plug 
+{
 	
 	
 	public $ci;
@@ -18,7 +19,7 @@ class modules_plug {
 	private $modules;// store module enable from db.
 	
 	
-	function __construct() 
+	public function __construct() 
 	{
 		$this->ci =& get_instance();
 		// load modules plug and store in property array for reduce too many connection while calling each action

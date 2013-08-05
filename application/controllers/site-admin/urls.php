@@ -7,10 +7,12 @@
  *
  */
  
-class urls extends admin_controller {
+class urls extends admin_controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -27,12 +29,14 @@ class urls extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('urls_perm' => array('urls_perm_view_all', 'urls_perm_add', 'urls_perm_edit', 'urls_perm_delete'));
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('urls_perm', 'urls_perm_add') != true) {redirect('site-admin');}
 		
@@ -94,7 +98,8 @@ class urls extends admin_controller {
 	}// add
 	
 	
-	function ajax_check_uri() {
+	public function ajax_check_uri() 
+	{
 		if ($this->input->post() && $this->input->is_ajax_request()) {
 			$uri = trim($this->input->post('uri'));
 			$nodupedit = trim($this->input->post('nodupedit'));
@@ -110,7 +115,8 @@ class urls extends admin_controller {
 	}// ajax_check_uri
 	
 	
-	function edit($alias_id = '') {
+	public function edit($alias_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('urls_perm', 'urls_perm_edit') != true) {redirect('site-admin');}
 		
@@ -187,7 +193,8 @@ class urls extends admin_controller {
 	}// edit
 	
 	
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('urls_perm', 'urls_perm_view_all') != true) {redirect('site-admin');}
 		
@@ -222,7 +229,8 @@ class urls extends admin_controller {
 	}// index
 	
 	
-	function multiple() {
+	public function multiple() 
+	{
 		$id = $this->input->post('id');
 		$act = trim($this->input->post('act'));
 		

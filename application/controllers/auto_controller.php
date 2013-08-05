@@ -12,20 +12,24 @@
  *
  */
  
-class auto_controller extends MY_Controller {
+class auto_controller extends MY_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function _remap() {
+	public function _remap() 
+	{
 		$this->index();
 	}// _remap
 	
 	
-	function index() {
+	public function index() 
+	{
 		$att1 = $this->uri->segment(1);
 		
 		// set att2 and prevent some of att2 match att1.

@@ -9,10 +9,12 @@
  *
  */
 
-class siteman extends admin_controller {
+class siteman extends admin_controller 
+{
 
 
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load model
@@ -26,12 +28,14 @@ class siteman extends admin_controller {
 	}// __construct
 	
 	
-	function _define_permission() {
+	public function _define_permission() 
+	{
 		return array('siteman_perm' => array('siteman_manage_perm', 'siteman_add_perm', 'siteman_edit_perm', 'siteman_delete_perm'));
 	}// _define_permission
 	
 	
-	function add() {
+	public function add() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_add_perm') != true) {redirect('site-admin');}
 		
@@ -52,6 +56,7 @@ class siteman extends admin_controller {
 			// validate form
 			$this->form_validation->set_rules("site_name", "lang:siteman_site_name", "trim|required");
 			$this->form_validation->set_rules("site_domain", "lang:siteman_site_domain", "trim|required");
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -92,7 +97,8 @@ class siteman extends admin_controller {
 	}// add
 	
 	
-	function edit($site_id = '') {
+	public function edit($site_id = '') 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_edit_perm') != true) {redirect('site-admin');}
 		
@@ -127,6 +133,7 @@ class siteman extends admin_controller {
 			// validate form
 			$this->form_validation->set_rules("site_name", "lang:siteman_site_name", "trim|required");
 			$this->form_validation->set_rules("site_domain", "lang:siteman_site_domain", "trim|required");
+			
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
@@ -167,7 +174,8 @@ class siteman extends admin_controller {
 	}// edit
 
 
-	function index() {
+	public function index() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_manage_perm') != true) {redirect('site-admin');}
 		
@@ -203,7 +211,8 @@ class siteman extends admin_controller {
 	}// index
 	
 	
-	function multiple() {
+	public function multiple() 
+	{
 		$id = $this->input->post('id');
 		if (!is_array($id)) {redirect('site-admin/siteman');}
 		$act = trim($this->input->post('act'));

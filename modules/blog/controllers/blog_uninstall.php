@@ -12,18 +12,21 @@
  * 
  */
 
-class blog_uninstall extends admin_controller {
+class blog_uninstall extends admin_controller 
+{
 	
 	
 	public $module_system_name = 'blog';
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}
 	
 	
-	function index() {
+	public function index() 
+	{
 		// uninstall module table
 		if ($this->db->table_exists('blog')) {
 			$sql = 'DROP TABLE `'.$this->db->dbprefix('blog').'`;';

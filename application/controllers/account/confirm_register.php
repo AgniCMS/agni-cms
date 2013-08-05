@@ -9,10 +9,12 @@
  *
  */
 
-class confirm_register extends MY_Controller {
+class confirm_register extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		
 		// load helper
@@ -23,13 +25,15 @@ class confirm_register extends MY_Controller {
 	}// __construct
 	
 	
-	function _remap($att1 = '', $att2 = '') {
+	public function _remap($att1 = '', $att2 = '') 
+	{
 		if (isset($att2[0])) {$att2 = $att2[0];}// get confirm code in array
 		$this->index($att1, $att2);
 	}// _remap
 	
 	
-	function index($username = '', $confirm_code = '') {
+	public function index($username = '', $confirm_code = '') 
+	{
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
 		$breadcrumb[] = array('text' => lang('account_confirm_register'), 'url' => current_url());

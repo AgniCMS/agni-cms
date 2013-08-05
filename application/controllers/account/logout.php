@@ -9,15 +9,18 @@
  *
  */
 
-class logout extends MY_Controller {
+class logout extends MY_Controller 
+{
 
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
 	
-	function index() {
+	public function index() 
+	{
 		$this->account_model->logout();
 		
 		// go back

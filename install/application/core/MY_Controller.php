@@ -7,13 +7,17 @@
  *
  */
  
-class MY_Controller extends CI_Controller {
+class MY_Controller extends CI_Controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
+		
 		// load helper
 		$this->load->helper(array('language', 'url'));
+		
 		// load language
 		$this->lang->load('agni');
 	}// __construct
@@ -24,7 +28,8 @@ class MY_Controller extends CI_Controller {
 	 * @param string $page
 	 * @param string $output 
 	 */
-	function generate_page($page = '', $output = '') {
+	public function generate_page($page = '', $output = '') 
+	{
 		$output['page_content'] = $this->load->view($page, $output, true);
 		$this->load->view('template', $output);
 	}// generate_page

@@ -9,17 +9,20 @@
  *
  */
  
-class akismet extends admin_controller {
+class akismet extends admin_controller 
+{
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 		// load helper
 		$this->load->helper('form');
 	}// __construct
 	
 	
-	function config() {
+	public function config() 
+	{
 		// check permission
 		if ($this->account_model->check_admin_permission('akismet_perm', 'akismet_config_perm') != true) {redirect('site-admin');}
 		
@@ -72,7 +75,8 @@ class akismet extends admin_controller {
 	}// config
 	
 	
-	function index() {
+	public function index() 
+	{
 		
 	}// index
 	

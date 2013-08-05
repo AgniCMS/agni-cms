@@ -9,13 +9,15 @@
  *
  */
  
-class comments_model extends CI_Model {
+class comments_model extends CI_Model 
+{
 	
 	
 	public $divs = 1;// for use with comment threaded
 	
 	
-	function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}// __construct
 	
@@ -25,7 +27,8 @@ class comments_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function add($data = array()) {
+	public function add($data = array()) 
+	{
 		// load posts model
 		$this->load->model('posts_model');
 		
@@ -164,7 +167,8 @@ class comments_model extends CI_Model {
 	 * @param integer $comment_id
 	 * @return boolean 
 	 */
-	function delete($comment_id = '') {
+	public function delete($comment_id = '') 
+	{
 		if (!is_numeric($comment_id)) {return false;}
 		
 		// delete all comment children from comments table
@@ -194,7 +198,8 @@ class comments_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function edit($data = array()) {
+	public function edit($data = array()) 
+	{
 		// additional data for comments table
 		$data['comment_update'] = time();
 		$data['comment_update_gmt'] = local_to_gmt(time());
@@ -214,7 +219,8 @@ class comments_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_comment_data_db($data = array()) {
+	public function get_comment_data_db($data = array()) 
+	{
 		$this->db->join('posts', 'comments.post_id = posts.post_id', 'left');
 		$this->db->join('accounts', 'comments.account_id = accounts.account_id', 'left outer');
 		
@@ -234,7 +240,8 @@ class comments_model extends CI_Model {
 	 * @param string $mode
 	 * @return integer 
 	 */
-	function get_comment_display_page($comment_id = '', $mode = 'thread') {
+	public function get_comment_display_page($comment_id = '', $mode = 'thread') 
+	{
 		// account id from cookie
 		$cm_account = $this->account_model->get_account_cookie('admin');
 		$account_id = $cm_account['id'];
@@ -283,7 +290,8 @@ class comments_model extends CI_Model {
 	 * 
 	 * @param integer $i
 	 */
-	function int2vancode($i = 0) {
+	public function int2vancode($i = 0) 
+	{
 		$num = base_convert((int) $i, 10, 36);
 		$length = strlen($num);
 
@@ -298,7 +306,8 @@ class comments_model extends CI_Model {
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	function list_item($post_id = '',$mode = 'thread', $list_for = 'front') {
+	public function list_item($post_id = '',$mode = 'thread', $list_for = 'front') 
+	{
 		// comment view permission
 		$comment_view_permission = $this->account_model->check_admin_permission('comment_perm', 'comment_viewall_perm');
 		
@@ -432,7 +441,8 @@ class comments_model extends CI_Model {
 	 * @param string $content
 	 * @return string 
 	 */
-	function modify_content($content = '') {
+	public function modify_content($content = '') 
+	{
 		if ($this->modules_plug->has_filter('comment_modifybody_value')) {
 			// modify content by plugin
 			$content = $this->modules_plug->do_filter('comment_modifybody_value', $content);
@@ -453,7 +463,8 @@ class comments_model extends CI_Model {
 	 * 
 	 * @param integer $c
 	 */
-	function vancode2int($c = '00') {
+	public function vancode2int($c = '00') 
+	{
 		return base_convert(substr($c, 1), 36, 10);
 	}// vancode2int
 	
