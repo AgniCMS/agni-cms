@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * @package agni cms
@@ -13,9 +13,9 @@ class MY_Controller extends CI_Controller {
 	function __construct() {
 		parent::__construct();
 		// load helper
-		$this->load->helper( array( 'language', 'url' ) );
+		$this->load->helper(array('language', 'url'));
 		// load language
-		$this->lang->load( 'agni' );
+		$this->lang->load('agni');
 	}// __construct
 	
 	
@@ -24,9 +24,9 @@ class MY_Controller extends CI_Controller {
 	 * @param string $page
 	 * @param string $output 
 	 */
-	function generate_page( $page = '', $output = '' ) {
-		$output['page_content'] = $this->load->view( $page, $output, true );
-		$this->load->view( 'template', $output );
+	function generate_page($page = '', $output = '') {
+		$output['page_content'] = $this->load->view($page, $output, true);
+		$this->load->view('template', $output);
 	}// generate_page
 	
 	

@@ -1,4 +1,4 @@
-<h1><?php echo lang( 'updater_updater' ); ?></h1>
+<h1><?php echo lang('updater_updater'); ?></h1>
 
 <p><?php printf(lang('updater_update_completed_now_you_are_running_agnicms_version'), $agni_version); ?></p>
 

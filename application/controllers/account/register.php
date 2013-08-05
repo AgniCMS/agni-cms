@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -16,15 +16,15 @@ class register extends MY_Controller {
 		parent::__construct();
 		
 		// load helper
-		$this->load->helper( array( 'date', 'form', 'language' ) );
+		$this->load->helper(array('date', 'form', 'language'));
 		
 		// load language
-		$this->lang->load( 'account' );
+		$this->lang->load('account');
 	}// __construct
 	
 	
 	function index() {
-		if ( $this->config_model->load_single( 'member_allow_register' ) == '0' ) {redirect( $this->base_url );}// check for allowed register?
+		if ($this->config_model->load_single('member_allow_register') == '0') {redirect($this->base_url);}// check for allowed register?
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
@@ -34,28 +34,28 @@ class register extends MY_Controller {
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		
 		// get plugin captcha for check
-		$output['plugin_captcha'] = $this->modules_plug->do_filter( 'account_register_show_captcha' );
+		$output['plugin_captcha'] = $this->modules_plug->do_filter('account_register_show_captcha');
 		
 		// save action (register action)
-		if ( $this->input->post() ) {
-			$data['account_username'] = htmlspecialchars( trim( $this->input->post( 'account_username' ) ), ENT_QUOTES, config_item( 'charset' ) );
-			$data['account_email'] = strip_tags( trim( $this->input->post( 'account_email', true ) ) );
-			$data['account_password'] = trim( $this->input->post( 'account_password' ) );
+		if ($this->input->post()) {
+			$data['account_username'] = htmlspecialchars(trim($this->input->post('account_username')), ENT_QUOTES, config_item('charset'));
+			$data['account_email'] = strip_tags(trim($this->input->post('account_email', true)));
+			$data['account_password'] = trim($this->input->post('account_password'));
 			
 			// load form validation
-			$this->load->library( 'form_validation' );
-			$this->form_validation->set_rules( 'account_username', 'lang:account_username', 'trim|required|xss_clean|min_length[1]' );
-			$this->form_validation->set_rules( 'account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean' );
-			$this->form_validation->set_rules( 'account_password', 'lang:account_password', 'trim|required' );
-			$this->form_validation->set_rules( 'account_confirm_password', 'lang:account_confirm_password', 'trim|required|matches[account_password]' );
-			if ( $this->form_validation->run() == false ) {
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('account_username', 'lang:account_username', 'trim|required|xss_clean|min_length[1]');
+			$this->form_validation->set_rules('account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean');
+			$this->form_validation->set_rules('account_password', 'lang:account_password', 'trim|required');
+			$this->form_validation->set_rules('account_confirm_password', 'lang:account_confirm_password', 'trim|required|matches[account_password]');
+			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// check plugin captcha
-				if ( $output['plugin_captcha'] != null ) {
+				if ($output['plugin_captcha'] != null) {
 					// use plugin captcha to check
-					$plug_captcha_check = $this->modules_plug->do_action( 'account_register_check_captcha', $_POST );
+					$plug_captcha_check = $this->modules_plug->do_action('account_register_check_captcha', $_POST);
 					
 					if (isset($plug_captcha_check['account_register_check_captcha']) && is_array($plug_captcha_check['account_register_check_captcha']) && in_array(true, $plug_captcha_check['account_register_check_captcha'], true)) {
 						$continue = true;
@@ -65,8 +65,8 @@ class register extends MY_Controller {
 					}
 				} else {
 					// use system captcha to check
-					$this->load->library( 'securimage/securimage' );
-					if ( $this->securimage->check( $this->input->post( 'captcha', true ) ) == false ) {
+					$this->load->library('securimage/securimage');
+					if ($this->securimage->check($this->input->post('captcha', true)) == false) {
 						$output['form_status'] = 'error';
 						$output['form_status_message'] = $this->lang->line('account_wrong_captcha_code');
 					} else {
@@ -74,19 +74,19 @@ class register extends MY_Controller {
 					}
 				}
 				// if captcha pass
-				if ( isset( $continue_register ) && $continue_register === true ) {
+				if (isset($continue_register) && $continue_register === true) {
 					// register action
-					$result = $this->account_model->register_account( $data );
+					$result = $this->account_model->register_account($data);
 					
-					if ( $result === true ) {
+					if ($result === true) {
 						$output['hide_register_form'] = true;
 						
 						// if confirm member by email, use msg check email. if confirm member by admin, use msg wait for admin moderation.
-						$member_verfication = $this->config_model->load( 'member_verification' );
-						if ( $member_verfication == '1' ) {
+						$member_verfication = $this->config_model->load('member_verification');
+						if ($member_verfication == '1') {
 							$output['form_status'] = 'success';
 							$output['form_status_message'] = $this->lang->line('account_registered_please_check_email');
-						} elseif ( $member_verfication == '2' ) {
+						} elseif ($member_verfication == '2') {
 							$output['form_status'] = 'success';
 							$output['form_status_message'] = $this->lang->line('account_registered_wait_admin_mod');
 						}
@@ -104,14 +104,14 @@ class register extends MY_Controller {
 		}
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_register' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('account_register'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		$this->generate_page( 'front/templates/account/register_view', $output );
+		$this->generate_page('front/templates/account/register_view', $output);
 	}// index
 	
 

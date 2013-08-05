@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
@@ -73,7 +73,7 @@ $config['language'] = 'thai';
 /* default language abbreviation */
 $config['language_abbr'] = 'th';
 /* set available language abbreviations */
-$config['lang_uri_abbr'] = array( 'en' => 'english', 'th' => 'thai' );
+$config['lang_uri_abbr'] = array('en' => 'english', 'th' => 'thai');
 /* hide the language segment (use cookie) */
 $config['lang_ignore'] = false;// choose by yourself @link http://stackoverflow.com/questions/6030765/session-vs-uri-multi-language-identifier
 /* hide language segment only default lang abbr. */
@@ -374,9 +374,9 @@ $config['proxy_ips'] = '';
 | Change modules path with this config.
 | do not change if possible.
  */
-$config['modules_locations'] = array( dirname( APPPATH ).'/modules/' => '../../modules/' );
+$config['modules_locations'] = array(dirname(APPPATH).'/modules/' => '../../modules/');
 $config['modules_uri'] = 'modules/'; // refer from base url.
-define( 'MODULE_PATH', dirname( APPPATH ).'/modules/' );// ใช้ในการ fetch modules permission ในไฟล์ permission_model.php
+define('MODULE_PATH', dirname(APPPATH).'/modules/');// ใช้ในการ fetch modules permission ในไฟล์ permission_model.php
 
 
 /* End of file config.php */

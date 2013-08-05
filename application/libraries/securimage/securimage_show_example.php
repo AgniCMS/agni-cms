@@ -48,7 +48,7 @@ $img->multi_text_color = array(new Securimage_Color("#3399ff"),
                                new Securimage_Color("#3333cc"),
                                new Securimage_Color("#6666ff"),
                                new Securimage_Color("#99cccc")
-                               );
+                              );
 $img->use_multi_text = true;
 $img->text_angle_minimum = -5;
 $img->text_angle_maximum = 5;

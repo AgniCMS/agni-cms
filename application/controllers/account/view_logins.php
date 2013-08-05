@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -16,16 +16,16 @@ class view_logins extends MY_Controller {
 		parent::__construct();
 		
 		// load helper
-		$this->load->helper( array( 'date', 'language' ) );
+		$this->load->helper(array('date', 'language'));
 		
 		// load language
-		$this->lang->load( 'account' );
+		$this->lang->load('account');
 	}// __construct
 	
 	
 	function index() {
 		// is member login?
-		if ( !$this->account_model->is_member_login() ) {redirect( site_url() );}
+		if (!$this->account_model->is_member_login()) {redirect(site_url());}
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
@@ -36,30 +36,30 @@ class view_logins extends MY_Controller {
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		
 		// get id
-		$cm_account = $this->account_model->get_account_cookie( 'member' );
+		$cm_account = $this->account_model->get_account_cookie('member');
 		
 		// load accounts table
-		$row = $this->account_model->get_account_data( array( 'account_id' => $cm_account['id'] ) );
-		if ( $row == null ) {
-			redirect( site_url() );
+		$row = $this->account_model->get_account_data(array('account_id' => $cm_account['id']));
+		if ($row == null) {
+			redirect(site_url());
 		}
 		$output['account'] = $row;
 		
 		// list logins
-		$output['list_item'] = $this->account_model->list_account_logins( $row->account_id );
+		$output['list_item'] = $this->account_model->list_account_logins($row->account_id);
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_view_logins' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('account_view_logins'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		if ( $this->input->is_ajax_request() ) {
-			$this->load->view( 'front/templates/account/view_logins_view', $output );
+		if ($this->input->is_ajax_request()) {
+			$this->load->view('front/templates/account/view_logins_view', $output);
 		} else {
-			$this->generate_page( 'front/templates/account/view_logins_view', $output );
+			$this->generate_page('front/templates/account/view_logins_view', $output);
 		}
 	}// index
 	

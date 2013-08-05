@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------
 | AUTO-LOADER
@@ -52,7 +52,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array( 'database', 'modules_plug' );
+$autoload['libraries'] = array('database', 'modules_plug');
 
 
 /*
@@ -64,7 +64,7 @@ $autoload['libraries'] = array( 'database', 'modules_plug' );
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array( 'language', 'siteinfo', 'url' );
+$autoload['helper'] = array('language', 'siteinfo', 'url');
 
 
 /*
@@ -80,7 +80,7 @@ $autoload['helper'] = array( 'language', 'siteinfo', 'url' );
 |
 */
 
-$autoload['config'] = array( 'agni' );
+$autoload['config'] = array('agni');
 
 
 /*
@@ -96,7 +96,7 @@ $autoload['config'] = array( 'agni' );
 |
 */
 
-$autoload['language'] = array( 'account', 'frontend' );
+$autoload['language'] = array('account', 'frontend');
 
 
 /*

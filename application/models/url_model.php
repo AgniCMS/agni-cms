@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * @package agni cms
@@ -29,20 +29,20 @@ class url_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function add_redirect( $data = array() ) {
-		if ( !is_array( $data ) ) {return false;}
+	function add_redirect($data = array()) {
+		if (!is_array($data)) {return false;}
 		
 		// re-check uri
-		$data['uri'] = $this->nodup_uri( $data['uri'] );
+		$data['uri'] = $this->nodup_uri($data['uri']);
 		
 		// additional data for insert
 		$data['c_type'] = $this->c_type;
-		$data['uri_encoded'] = urlencode_except_slash( $data['uri'] );
-		$data['redirect_to_encoded'] = $this->encode_redirect_to( $data['redirect_to'] );
+		$data['uri_encoded'] = urlencode_except_slash($data['uri']);
+		$data['redirect_to_encoded'] = $this->encode_redirect_to($data['redirect_to']);
 		$data['language'] = $this->language;
 		
 		// insert
-		$this->db->insert( 'url_alias', $data );
+		$this->db->insert('url_alias', $data);
 		
 		// get insert id and set result
 		$output['id'] = $this->db->insert_id();
@@ -56,10 +56,10 @@ class url_model extends CI_Model {
 	 * @param integer $alias_id 
 	 * @return boolean
 	 */
-	function delete_redirect( $alias_id = '' ) {
-		$this->db->where( 'c_type', $this->c_type );
-		$this->db->where( 'alias_id', $alias_id );
-		$this->db->delete( 'url_alias' );
+	function delete_redirect($alias_id = '') {
+		$this->db->where('c_type', $this->c_type);
+		$this->db->where('alias_id', $alias_id);
+		$this->db->delete('url_alias');
 		
 		return true;
 	}// delete_redirect
@@ -70,21 +70,21 @@ class url_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed 
 	 */
-	function edit_redirect( $data = array() ) {
-		if ( !is_array( $data ) ) {return false;}
+	function edit_redirect($data = array()) {
+		if (!is_array($data)) {return false;}
 		
 		// re-check uri
-		$data['uri'] = $this->nodup_uri( $data['uri'], true, $data['alias_id'] );
+		$data['uri'] = $this->nodup_uri($data['uri'], true, $data['alias_id']);
 		
 		// additional data for update
-		$data['uri_encoded'] = urlencode_except_slash( $data['uri'] );
-		$data['redirect_to_encoded'] = $this->encode_redirect_to( $data['redirect_to'] );
+		$data['uri_encoded'] = urlencode_except_slash($data['uri']);
+		$data['redirect_to_encoded'] = $this->encode_redirect_to($data['redirect_to']);
 		
 		// insert
-		$this->db->where( 'c_type', $this->c_type );
-		$this->db->where( 'language', $this->language );
-		$this->db->where( 'alias_id', $data['alias_id'] );
-		$this->db->update( 'url_alias', $data );
+		$this->db->where('c_type', $this->c_type);
+		$this->db->where('language', $this->language);
+		$this->db->where('alias_id', $data['alias_id']);
+		$this->db->update('url_alias', $data);
 		
 		$output['result'] = true;
 		return $output;
@@ -96,10 +96,10 @@ class url_model extends CI_Model {
 	 * @param string $redirect_to
 	 * @return string 
 	 */
-	function encode_redirect_to( $redirect_to = '' ) {
-		if ( $redirect_to == null ) {return null;}
+	function encode_redirect_to($redirect_to = '') {
+		if ($redirect_to == null) {return null;}
 		
-		return urlencode_except_slash( $redirect_to );
+		return urlencode_except_slash($redirect_to);
 	}// encode_redirect_to
 	
 	
@@ -108,22 +108,22 @@ class url_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_url_alias_data_db( $data = array() ) {
-		if ( !empty( $data ) ) {
-			$this->db->where( $data );
+	function get_url_alias_data_db($data = array()) {
+		if (!empty($data)) {
+			$this->db->where($data);
 		}
 		
-		$query = $this->db->get( 'url_alias' );
+		$query = $this->db->get('url_alias');
 		
 		return $query->row();
 	}// get_url_alias_data_db
 	
 	
-	function list_item( $list_for = 'admin' ) {
-		$this->db->where( 'c_type', $this->c_type );
-		$this->db->where( 'language', $this->language );
-		$q = trim( $this->input->get( 'q' ) );
-		if ( $q != null ) {
+	function list_item($list_for = 'admin') {
+		$this->db->where('c_type', $this->c_type);
+		$this->db->where('language', $this->language);
+		$q = trim($this->input->get('q'));
+		if ($q != null) {
 			$like_data[0]['field'] = 'url_alias.uri';
 			$like_data[0]['match'] = $q;
 			$like_data[1]['field'] = 'url_alias.uri_encoded';
@@ -134,40 +134,40 @@ class url_model extends CI_Model {
 			$like_data[3]['match'] = $q;
 			$like_data[4]['field'] = 'url_alias.redirect_code';
 			$like_data[4]['match'] = $q;
-			$this->db->like_group( $like_data );
-			unset( $like_data );
+			$this->db->like_group($like_data);
+			unset($like_data);
 		}
 		
 		// order and sort
-		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
-		$orders = ( $orders != null ? $orders : 'uri' );
-		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
-		$sort = ( $sort != null ? $sort : 'asc' );
-		$this->db->order_by( $orders, $sort );
+		$orders = strip_tags(trim($this->input->get('orders')));
+		$orders = ($orders != null ? $orders : 'uri');
+		$sort = strip_tags(trim($this->input->get('sort')));
+		$sort = ($sort != null ? $sort : 'asc');
+		$this->db->order_by($orders, $sort);
 		
 		// clone object before run $this->db->get()
 		$this_db = clone $this->db;
 		
 		// query for count total
-		$query = $this->db->get( 'url_alias' );
+		$query = $this->db->get('url_alias');
 		$total = $query->num_rows();
 		$query->free_result();
 		
 		// restore $this->db object
 		$this->db = $this_db;
-		unset( $this_db );
+		unset($this_db);
 		
 		// html encode for links.
-		$q = urlencode( htmlspecialchars( $q ) );
+		$q = urlencode(htmlspecialchars($q));
 		
 		// pagination-----------------------------
-		$this->load->library( 'pagination' );
-		if ( $list_for == 'admin' ) {
-			$config['base_url'] = site_url( $this->uri->uri_string() ).'?orders='.htmlspecialchars( $orders ).'&amp;sort='.htmlspecialchars( $sort ).( $q != null ?'&amp;q='.$q : '' );
+		$this->load->library('pagination');
+		if ($list_for == 'admin') {
+			$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort).($q != null ?'&amp;q='.$q : '');
 			$config['per_page'] = 20;
 		} else {
-			$config['base_url'] = site_url( $this->uri->uri_string() ).'?'.( $q != null ?'q='.$q : '' );
-			$config['per_page'] = $this->config_model->load_single( 'content_items_perpage' );
+			$config['base_url'] = site_url($this->uri->uri_string()).'?'.($q != null ?'q='.$q : '');
+			$config['per_page'] = $this->config_model->load_single('content_items_perpage');
 		}
 		$config['total_rows'] = $total;
 		// pagination tags customize for bootstrap css framework
@@ -190,16 +190,16 @@ class url_model extends CI_Model {
 		// end customize for bootstrap
 		$config['first_link'] = '|&lt;';
 		$config['last_link'] = '&gt;|';
-		$this->pagination->initialize( $config );
+		$this->pagination->initialize($config);
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
 		
 		// limit query
-		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
+		$this->db->limit($config['per_page'], ($this->input->get('per_page') == null ? '0' : $this->input->get('per_page')));
 		
-		$query = $this->db->get( 'url_alias' );
+		$query = $this->db->get('url_alias');
 		
-		if ( $query->num_rows() > 0 ) {
+		if ($query->num_rows() > 0) {
 			$output['total'] = $total;
 			$output['items'] = $query->result();
 			$query->free_result();
@@ -218,47 +218,47 @@ class url_model extends CI_Model {
 	 * @param integer $id
 	 * @return string 
 	 */
-	function nodup_uri( $uri, $editmode = false, $id = '' ) {
-		$uri = $this->validate_allow_url( $uri );
+	function nodup_uri($uri, $editmode = false, $id = '') {
+		$uri = $this->validate_allow_url($uri);
 		
 		// prevent url_title cut slash out (/)------------------------------------------------
-		$uri_raw = explode( '/', $uri );
+		$uri_raw = explode('/', $uri);
 		
-		if ( !is_array( $uri_raw ) ) {return null;}
+		if (!is_array($uri_raw)) {return null;}
 		
-		foreach ( $uri_raw as $uri ) {
-			$uri = url_title( $uri );
+		foreach ($uri_raw as $uri) {
+			$uri = url_title($uri);
 			$output[] = $uri;
 		}
-		unset( $uri_raw );
+		unset($uri_raw);
 		
 		// got array. merge it to string
-		if ( isset( $output ) && is_array( $output ) ) {
+		if (isset($output) && is_array($output)) {
 			$return = '';
 			
-			foreach ( $output as $a_output ) {
+			foreach ($output as $a_output) {
 				$return .= $a_output;
-				if ( $a_output != end( $output ) ) {
+				if ($a_output != end($output)) {
 					$return .= '/';
 				}
 			}
 			
 			$uri = $return;
-			unset( $return, $output, $a_output );
+			unset($return, $output, $a_output);
 		}
 		// end prevent url_title cut slash out (/)------------------------------------------------
 		
 		// start checking
-		if ( $editmode == true ) {
-			if ( !is_numeric( $id ) ) {return null;}
+		if ($editmode == true) {
+			if (!is_numeric($id)) {return null;}
 			
 			// no duplicate uri edit mode
-			$this->db->where( 'language', $this->language );
-			$this->db->where( 'c_type', $this->c_type );
-			$this->db->where( 'uri', $uri );
-			$this->db->where( 'alias_id', $id );
+			$this->db->where('language', $this->language);
+			$this->db->where('c_type', $this->c_type);
+			$this->db->where('uri', $uri);
+			$this->db->where('alias_id', $id);
 			
-			if ( $this->db->count_all_results( 'url_alias' ) > 0 ) {
+			if ($this->db->count_all_results('url_alias') > 0) {
 				// nothing change, return old value
 				return $uri;
 			}
@@ -266,24 +266,24 @@ class url_model extends CI_Model {
 		// loop check
 		$found = true;
 		$count = 0;
-		$uri = ( $uri == null ? 'rdr' : $uri );
+		$uri = ($uri == null ? 'rdr' : $uri);
 		
 		do {
 			$new_uri = ($count === 0 ? $uri : $uri . "-" . $count);
-			$this->db->where( 'language', $this->language );
-			$this->db->where( 'c_type', $this->c_type );
-			$this->db->where( 'uri', $new_uri );
+			$this->db->where('language', $this->language);
+			$this->db->where('c_type', $this->c_type);
+			$this->db->where('uri', $new_uri);
 			
-			if ( $this->db->count_all_results( 'url_alias' ) > 0 ) {
+			if ($this->db->count_all_results('url_alias') > 0) {
 				$found = true;
 			} else {
 				$found = false;
 			}
 			
 			$count++;
-		} while ( $found === true );
+		} while ($found === true);
 		
-		unset( $found, $count );
+		unset($found, $count);
 		return $new_uri;
 	}// nodup_uri
 	
@@ -293,8 +293,8 @@ class url_model extends CI_Model {
 	 * @param string $uri
 	 * @return string 
 	 */
-	function validate_allow_url( $uri = '' ) {
-		if ( $uri == null ) {return null;}
+	function validate_allow_url($uri = '') {
+		if ($uri == null) {return null;}
 		
 		// any disallowed uri list here as array
 		$disallowed_url = array(
@@ -356,7 +356,7 @@ class url_model extends CI_Model {
 		);
 		
 		// start to check
-		if ( in_array( $uri, $disallowed_url ) ) {
+		if (in_array($uri, $disallowed_url)) {
 			return 'disallowed-uri';
 		}
 		

@@ -39,43 +39,43 @@ class MY_Router extends MX_Router {
 				
 				/* ADD AGNI CMS MODULE CHECK */
 				// ใน router core ใช้ get_instance ไม่ได้ จึงใช้ $ci->db->get() ไม่ได้ เลยต้อง hardcode เอง.
-				require_once( APPPATH.'config/database.php' );
-				if ( !isset( $db ) ) {
-					require( APPPATH.'config/database.php' );
+				require_once(APPPATH.'config/database.php');
+				if (!isset($db)) {
+					require(APPPATH.'config/database.php');
 				}
-				$link = mysqli_connect( $db['default']['hostname'], $db['default']['username'], $db['default']['password'] ) or die( 'Can\'t connect to db.' );
-				$db_selected = mysqli_select_db( $link, $db['default']['database'] ) or die( 'Can\'t select db.' );
-				mysqli_query( $link, 'SET character_set_results='.$db['default']['char_set'] );
-				mysqli_query( $link, 'SET character_set_client='.$db['default']['char_set'] );
-				mysqli_query( $link, 'SET character_set_connection='.$db['default']['char_set'] );
+				$link = mysqli_connect($db['default']['hostname'], $db['default']['username'], $db['default']['password']) or die('Can\'t connect to db.');
+				$db_selected = mysqli_select_db($link, $db['default']['database']) or die('Can\'t select db.');
+				mysqli_query($link, 'SET character_set_results='.$db['default']['char_set']);
+				mysqli_query($link, 'SET character_set_client='.$db['default']['char_set']);
+				mysqli_query($link, 'SET character_set_connection='.$db['default']['char_set']);
 				// get site_id
-				$site_id = ( isset( $_GET['site_id'] ) ? $_GET['site_id'] : '' );
-				if ( $site_id == null ) {
-					$result = mysqli_query( $link, 'SELECT * FROM '.$db['default']['dbprefix'].'sites WHERE site_domain = \''.mysqli_real_escape_string( $link, $_SERVER['HTTP_HOST'] ).'\'' );
-					$row = mysqli_fetch_object( $result );
-					if ( $row != null ) {
+				$site_id = (isset($_GET['site_id']) ? $_GET['site_id'] : '');
+				if ($site_id == null) {
+					$result = mysqli_query($link, 'SELECT * FROM '.$db['default']['dbprefix'].'sites WHERE site_domain = \''.mysqli_real_escape_string($link, $_SERVER['HTTP_HOST']).'\'');
+					$row = mysqli_fetch_object($result);
+					if ($row != null) {
 						$site_id = $row->site_id;
-						mysqli_free_result( $result );
-						unset( $result, $row );
+						mysqli_free_result($result);
+						unset($result, $row);
 					} else {
 						// not found selected site.
-						mysqli_free_result( $result );
-						mysqli_close( $link );
-						unset( $link, $result, $row );
+						mysqli_free_result($result);
+						mysqli_close($link);
+						unset($link, $result, $row);
 						continue;
 					}
 				}
 				// check if this module in this site id is enable
-				$result = mysqli_query( $link, 'SELECT * FROM '.$db['default']['dbprefix'].'modules INNER JOIN '.$db['default']['dbprefix'].'module_sites ON '.$db['default']['dbprefix'].'module_sites.module_id = '.$db['default']['dbprefix'].'modules.module_id WHERE module_system_name = \''.$module.'\' AND '.$db['default']['dbprefix'].'module_sites.site_id = '.$site_id.' AND '.$db['default']['dbprefix'].'module_sites.module_enable = 1');
-				if ( mysqli_num_rows( $result ) <= 0 ) {
-					mysqli_free_result( $result );
-					mysqli_close( $link );
-					unset( $link, $db_selected );
+				$result = mysqli_query($link, 'SELECT * FROM '.$db['default']['dbprefix'].'modules INNER JOIN '.$db['default']['dbprefix'].'module_sites ON '.$db['default']['dbprefix'].'module_sites.module_id = '.$db['default']['dbprefix'].'modules.module_id WHERE module_system_name = \''.$module.'\' AND '.$db['default']['dbprefix'].'module_sites.site_id = '.$site_id.' AND '.$db['default']['dbprefix'].'module_sites.module_enable = 1');
+				if (mysqli_num_rows($result) <= 0) {
+					mysqli_free_result($result);
+					mysqli_close($link);
+					unset($link, $db_selected);
 					continue;
 				}
-				mysqli_free_result( $result );
-				mysqli_close( $link );
-				unset( $link, $db_selected );
+				mysqli_free_result($result);
+				mysqli_close($link);
+				unset($link, $db_selected);
 				/* END ADD AGNI CMS MODULE CHECK */
 				
 				$this->module = $module;
@@ -143,7 +143,7 @@ class MY_Router extends MX_Router {
 			// @edit: If no controller found, use 'default_controller' as defined in 'config/routes.php'
 			if (count($segments) > 0 && !file_exists(APPPATH . 'controllers/' . $this->fetch_directory() . $segments[0] . EXT)) {
 				array_unshift($segments, $this->default_controller);
-			} elseif ( empty($segments) && is_dir( APPPATH.'controllers/'.$this->directory ) ) {
+			} elseif (empty($segments) && is_dir(APPPATH.'controllers/'.$this->directory)) {
 				$segments = array($this->default_controller);
 			}
 			// @edit: END
@@ -157,9 +157,9 @@ class MY_Router extends MX_Router {
 				}
 			}
 			//print_r($segments);
-			if ( $this->directory.$segments[0] == $module.'/'.$this->default_controller ) {
+			if ($this->directory.$segments[0] == $module.'/'.$this->default_controller) {
 				// skip (for prevent show 404; use next if below)
-			} elseif ( count($segments) > 0 && file_exists( APPPATH . 'controllers/' . $this->fetch_directory() . $segments[0] . EXT ) ) {
+			} elseif (count($segments) > 0 && file_exists(APPPATH . 'controllers/' . $this->fetch_directory() . $segments[0] . EXT)) {
 				return $segments;
 			}
 		}*/ // NOT USE. because this part make auto_controller blank page when call category1/subcat1/. fix this thing later.

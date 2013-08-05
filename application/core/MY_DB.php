@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
 /**
  * Initialize the database
@@ -15,9 +15,9 @@ function &DB($params = '', $active_record_override = NULL)
 	if (is_string($params) AND strpos($params, '://') === FALSE)
 	{
 		// Is the config file in the environment folder?
-		if ( ! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php'))
+		if (! defined('ENVIRONMENT') OR ! file_exists($file_path = APPPATH.'config/'.ENVIRONMENT.'/database.php'))
 		{
-			if ( ! file_exists($file_path = APPPATH.'config/database.php'))
+			if (! file_exists($file_path = APPPATH.'config/database.php'))
 			{
 				show_error('The configuration file database.php does not exist.');
 			}
@@ -25,7 +25,7 @@ function &DB($params = '', $active_record_override = NULL)
 
 		include($file_path);
 
-		if ( ! isset($db) OR count($db) == 0)
+		if (! isset($db) OR count($db) == 0)
 		{
 			show_error('No database connection settings were found in the database config file.');
 		}
@@ -35,7 +35,7 @@ function &DB($params = '', $active_record_override = NULL)
 			$active_group = $params;
 		}
 
-		if ( ! isset($active_group) OR ! isset($db[$active_group]))
+		if (! isset($active_group) OR ! isset($db[$active_group]))
 		{
 			show_error('You have specified an invalid database connection group.');
 		}
@@ -88,7 +88,7 @@ function &DB($params = '', $active_record_override = NULL)
 	}
 
 	// No DB specified yet?  Beat them senseless...
-	if ( ! isset($params['dbdriver']) OR $params['dbdriver'] == '')
+	if (! isset($params['dbdriver']) OR $params['dbdriver'] == '')
 	{
 		show_error('You have not selected a database type to connect to.');
 	}
@@ -107,14 +107,14 @@ function &DB($params = '', $active_record_override = NULL)
 	$CI = & get_instance();
 	$prefix = $CI->config->item('subclass_prefix');
 
-	if ( file_exists( APPPATH.'core/'.$prefix.'DB_driver.php' ) ) {
-		require_once( APPPATH.'core/'.$prefix.'DB_driver.php' );
+	if (file_exists(APPPATH.'core/'.$prefix.'DB_driver.php')) {
+		require_once(APPPATH.'core/'.$prefix.'DB_driver.php');
 	} else {
 		// this is CI original code
 		require_once(BASEPATH.'database/DB_driver.php');
 	}
 
-	if ( ! isset($active_record) OR $active_record == TRUE)
+	if (! isset($active_record) OR $active_record == TRUE)
 	{
 		require_once(BASEPATH.'database/DB_active_rec.php');
 
@@ -122,20 +122,20 @@ function &DB($params = '', $active_record_override = NULL)
 		if (file_exists(APPPATH.'core/'.$prefix.'DB_active_rec.php'))
 		{
 			require_once(APPPATH.'core/'.$prefix.'DB_active_rec.php');
-			if ( ! class_exists('CI_DB'))
+			if (! class_exists('CI_DB'))
 			{
 				eval('class CI_DB extends '.$prefix.'DB_active_record { }');
 			}
 		} 
 		else 
 		{
-			if ( ! class_exists('CI_DB'))
+			if (! class_exists('CI_DB'))
 			{
 				// CI original code
 				eval('class CI_DB extends CI_DB_active_record { }');
 			}
 		}
-		/*if ( ! class_exists('CI_DB'))
+		/*if (! class_exists('CI_DB'))
 		{
 			eval('class CI_DB extends CI_DB_active_record { }');
 		}*/// CI original code
@@ -143,7 +143,7 @@ function &DB($params = '', $active_record_override = NULL)
 	// CI original code
 	else
 	{
-		if ( ! class_exists('CI_DB'))
+		if (! class_exists('CI_DB'))
 		{
 			eval('class CI_DB extends CI_DB_driver { }');
 		}

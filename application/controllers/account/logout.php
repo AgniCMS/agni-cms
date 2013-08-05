@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -21,11 +21,11 @@ class logout extends MY_Controller {
 		$this->account_model->logout();
 		
 		// go back
-		$this->load->library( 'user_agent' );
-		if ( $this->agent->is_referral() && $this->agent->referrer() != current_url() ) {
-			redirect( $this->agent->referrer() );
+		$this->load->library('user_agent');
+		if ($this->agent->is_referral() && $this->agent->referrer() != current_url()) {
+			redirect($this->agent->referrer());
 		} else {
-			redirect( site_url() );
+			redirect(site_url());
 		}
 	}// index
 	

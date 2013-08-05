@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * @package agni cms
@@ -16,20 +16,20 @@ class setlang extends MY_Controller {
 	
 	
 	function index() {
-		$lang = trim( $this->input->get( 'lang' ) );
-		$lang_arr = $this->config->item( 'lang_uri_abbr' );
-		if ( isset( $lang_arr[$lang] ) ) {
+		$lang = trim($this->input->get('lang'));
+		$lang_arr = $this->config->item('lang_uri_abbr');
+		if (isset($lang_arr[$lang])) {
 			// selected language is in array
 			// set language cookie
-			$this->load->helper( 'cookie' );
-			set_cookie( 'agni_install_lang', $lang, 86400 );// 24hrs = 86400seconds
+			$this->load->helper('cookie');
+			set_cookie('agni_install_lang', $lang, 86400);// 24hrs = 86400seconds
 		}
 		// go back
-		$this->load->library( 'user_agent' );
-		if ( $this->agent->is_referral() && $this->agent->referrer() != current_url() ) {
-			redirect( $this->agent->referrer() );
+		$this->load->library('user_agent');
+		if ($this->agent->is_referral() && $this->agent->referrer() != current_url()) {
+			redirect($this->agent->referrer());
 		} else {
-			redirect( './' );
+			redirect('./');
 		}
 	}// index
 	

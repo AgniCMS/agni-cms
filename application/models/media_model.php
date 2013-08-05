@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -22,13 +22,13 @@ class media_model extends CI_Model {
 	 * @param array $data
 	 * @return array
 	 */
-	function add_data_only( $data = array() ) {
+	function add_data_only($data = array()) {
 		// set additional data for insert.
 		$data['file_add'] = time();
-		$data['file_add_gmt'] = local_to_gmt( time() );
+		$data['file_add_gmt'] = local_to_gmt(time());
 		
 		// insert into db
-		$this->db->insert( 'files', $data );
+		$this->db->insert('files', $data);
 		
 		// done
 		$output['result'] = true;
@@ -54,7 +54,7 @@ class media_model extends CI_Model {
 		$srcGDBytes = ceil((($imageSizeInfo[0] * $imageSizeInfo[1]) * 3) * $gdBloat);
 		$targetGDBytes = ceil((($targetX * $targetY) * 3) * $gdBloat);
 		$totalMemRequired = $srcGDBytes + $targetGDBytes + memory_get_usage();
-		log_message( 'debug', 'File: '.$filename.'; MemLimit: '.$maxMem.'; MemRequired: '.$totalMemRequired.';' );
+		log_message('debug', 'File: '.$filename.'; MemLimit: '.$maxMem.'; MemRequired: '.$totalMemRequired.';');
 		if ($returnRequiredMem)
 			return $srcGDBytes + $targetGDBytes;
 		if ($totalMemRequired > $maxMem)
@@ -68,16 +68,16 @@ class media_model extends CI_Model {
 	 * @param integer $file_id
 	 * @return boolean 
 	 */
-	function delete( $file_id = '' ) {
+	function delete($file_id = '') {
 		// remove feature image from posts
-		$this->db->set( 'post_feature_image', null );
-		$this->db->where( 'post_feature_image', $file_id );
-		$this->db->update( 'posts' );
+		$this->db->set('post_feature_image', null);
+		$this->db->where('post_feature_image', $file_id);
+		$this->db->update('posts');
 		
 		// open db for get file path
-		$this->db->where( 'file_id', $file_id );
-		$query = $this->db->get( 'files' );
-		if ( $query->num_rows() <= 0 ) {
+		$this->db->where('file_id', $file_id);
+		$query = $this->db->get('files');
+		if ($query->num_rows() <= 0) {
 			$query->free_result();
 			return false;
 		}
@@ -85,13 +85,13 @@ class media_model extends CI_Model {
 		$query->free_result();
 		
 		// delete file
-		if ( file_exists( $row->file ) ) {
-			unlink( $row->file );
+		if (file_exists($row->file)) {
+			unlink($row->file);
 		}
 		
 		// delete from db
-		$this->db->where( 'file_id', $file_id );
-		$this->db->delete( 'files' );
+		$this->db->where('file_id', $file_id);
+		$this->db->delete('files');
 		
 		return true;
 	}// delete
@@ -102,18 +102,18 @@ class media_model extends CI_Model {
 	 * @param string $folder
 	 * @return boolean
 	 */
-	function delete_folder( $folder = '' ) {
-		$this->load->helper( array( 'directory', 'file' ) );
+	function delete_folder($folder = '') {
+		$this->load->helper(array('directory', 'file'));
 		
 		// delete files in db that folder field contain folder value
-		$this->db->like( 'folder', $folder, 'after' );
-		$query = $this->db->delete( 'files' );
+		$this->db->like('folder', $folder, 'after');
+		$query = $this->db->delete('files');
 		
-		if ( file_exists( $folder ) ) {
-			delete_files( $folder, true );
+		if (file_exists($folder)) {
+			delete_files($folder, true);
 			
-			if ( is_dir( $folder ) ) {
-				rmdir( $folder );
+			if (is_dir($folder)) {
+				rmdir($folder);
 			}
 		}
 		
@@ -126,11 +126,11 @@ class media_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean 
 	 */
-	function edit( $data = array() ){
-		if ( !is_array( $data ) ) {return false;}
+	function edit($data = array()){
+		if (!is_array($data)) {return false;}
 		
-		$this->db->where( 'file_id', $data['file_id'] );
-		$this->db->update( 'files', $data );
+		$this->db->where('file_id', $data['file_id']);
+		$this->db->update('files', $data);
 		
 		return true;
 	}// edit
@@ -141,15 +141,15 @@ class media_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_file_data_db( $data = array() ) {
-		$this->db->join( 'accounts', 'files.account_id = accounts.account_id', 'left' );
-		if ( !empty( $data ) ) {
-			$this->db->where( $data );
+	function get_file_data_db($data = array()) {
+		$this->db->join('accounts', 'files.account_id = accounts.account_id', 'left');
+		if (!empty($data)) {
+			$this->db->where($data);
 		}
 		
-		$query = $this->db->get( 'files' );
+		$query = $this->db->get('files');
 		
-		if ( $query->num_rows() > 0 ) {
+		if ($query->num_rows() > 0) {
 			return $query->row();
 		}
 		
@@ -165,22 +165,22 @@ class media_model extends CI_Model {
 	 * @param img|null $return_element
 	 * @return string 
 	 */
-	function get_img( $file_id = '', $return_element = 'img' ) {
-		if ( !is_numeric( $file_id ) ) {return null;}
+	function get_img($file_id = '', $return_element = 'img') {
+		if (!is_numeric($file_id)) {return null;}
 		
 		// check cached
-		if ( false === $get_img = $this->cache->get( 'media-get_img_'.$file_id.'_'.$return_element ) ) {
+		if (false === $get_img = $this->cache->get('media-get_img_'.$file_id.'_'.$return_element)) {
 			$data['file_id'] = $file_id;
-			$row = $this->get_file_data_db( $data );
+			$row = $this->get_file_data_db($data);
 			
-			if ( $row != null ) {
-				if ( $return_element == 'img' ) {
+			if ($row != null) {
+				if ($return_element == 'img') {
 					$output = '<img src="'.base_url().$row->file.'" alt="" />';
-					$this->cache->save( 'media-get_img_'.$file_id.'_'.$return_element, $output, 3600 );
+					$this->cache->save('media-get_img_'.$file_id.'_'.$return_element, $output, 3600);
 					return $output;
 				} else {
 					$output = base_url().$row->file;
-					$this->cache->save( 'media-get_img_'.$file_id.'_'.$return_element, $output, 3600 );
+					$this->cache->save('media-get_img_'.$file_id.'_'.$return_element, $output, 3600);
 					return $output;
 				}
 			}
@@ -197,16 +197,16 @@ class media_model extends CI_Model {
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	function list_item( $list_for = 'front', $data = array() ) {
-		$this->db->join( 'accounts', 'accounts.account_id = files.account_id', 'left' );
+	function list_item($list_for = 'front', $data = array()) {
+		$this->db->join('accounts', 'accounts.account_id = files.account_id', 'left');
 		
-		if ( isset( $data['folder'] ) ) {
-			$this->db->where( 'folder', $data['folder'] );
+		if (isset($data['folder'])) {
+			$this->db->where('folder', $data['folder']);
 		}
 		
-		$q = trim( $this->input->get( 'q' ) );
+		$q = trim($this->input->get('q'));
 		// search
-		if ( $q != null ) {
+		if ($q != null) {
 			$like_data[0]['field'] = 'files.file';
 			$like_data[0]['match'] = $q;
 			$like_data[1]['field'] = 'files.file_name';
@@ -223,45 +223,45 @@ class media_model extends CI_Model {
 			$like_data[6]['match'] = $q;
 			$like_data[7]['field'] = 'files.media_keywords';
 			$like_data[7]['match'] = $q;
-			$this->db->like_group( $like_data );
-			unset( $like_data );
+			$this->db->like_group($like_data);
+			unset($like_data);
 		}
-		$filter = trim( $this->input->get( 'filter', true ) );
-		$filter_val = trim( $this->input->get( 'filter_val', true ) );
-		if ( $filter != null && $filter_val != null ) {
-			$this->db->where( $filter, $filter_val );
+		$filter = trim($this->input->get('filter', true));
+		$filter_val = trim($this->input->get('filter_val', true));
+		if ($filter != null && $filter_val != null) {
+			$this->db->where($filter, $filter_val);
 		}
 		
 		// order, sort
-		$orders = trim( $this->input->get( 'orders', true ) );
-			if ( $orders == null ) {$orders = 'file_id';}
-		$sort = trim( $this->input->get( 'sort', true ) );
-			if ( $sort == null ) {$sort = 'desc';}
-		$this->db->order_by( $orders, $sort );
+		$orders = trim($this->input->get('orders', true));
+			if ($orders == null) {$orders = 'file_id';}
+		$sort = trim($this->input->get('sort', true));
+			if ($sort == null) {$sort = 'desc';}
+		$this->db->order_by($orders, $sort);
 		
 		// clone object before run $this->db->get()
 		$this_db = clone $this->db;
 		
 		// query for count total
-		$query = $this->db->get( 'files' );
+		$query = $this->db->get('files');
 		$total = $query->num_rows();
 		$query->free_result();
 		
 		// restore $this->db object
 		$this->db = $this_db;
-		unset( $this_db );
+		unset($this_db);
 		
 		// html encode for links.
-		$q = urlencode( htmlspecialchars( $q ) );
+		$q = urlencode(htmlspecialchars($q));
 		
 		// pagination-----------------------------
-		$this->load->library( 'pagination' );
-		if ( $list_for == 'admin' ) {
-			$config['base_url'] = site_url( $this->uri->uri_string() ).'?orders='.htmlspecialchars( $orders ).'&amp;sort='.htmlspecialchars( $sort ).'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.( $q != null ?'&amp;q='.$q : '' );
+		$this->load->library('pagination');
+		if ($list_for == 'admin') {
+			$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort).'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.($q != null ?'&amp;q='.$q : '');
 			$config['per_page'] = 20;
 		} else {
-			$config['base_url'] = site_url( $this->uri->uri_string() ).'?'.( $q != null ?'q='.$q : '' );
-			$config['per_page'] = $this->config_model->load_single( 'content_items_perpage' );
+			$config['base_url'] = site_url($this->uri->uri_string()).'?'.($q != null ?'q='.$q : '');
+			$config['per_page'] = $this->config_model->load_single('content_items_perpage');
 		}
 		$config['total_rows'] = $total;
 		// pagination tags customize for bootstrap css framework
@@ -284,14 +284,14 @@ class media_model extends CI_Model {
 		// end customize for bootstrap
 		$config['first_link'] = '|&lt;';
 		$config['last_link'] = '&gt;|';
-		$this->pagination->initialize( $config );
+		$this->pagination->initialize($config);
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
-		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
+		$this->db->limit($config['per_page'], ($this->input->get('per_page') == null ? '0' : $this->input->get('per_page')));
 		
-		$query = $this->db->get( 'files' );
+		$query = $this->db->get('files');
 		
-		if ( $query->num_rows() > 0 ) {
+		if ($query->num_rows() > 0) {
 			$output['total'] = $total;
 			$output['items'] = $query->result();
 			$query->free_result();
@@ -308,28 +308,28 @@ class media_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function move_file( $data = array() ) {
-		$this->load->library( 'media_filesys' );
+	function move_file($data = array()) {
+		$this->load->library('media_filesys');
 		
-		foreach ( $data['ids'] as $id ) {
-			$query = $this->db->where( 'file_id', $id )->get( 'files' );
+		foreach ($data['ids'] as $id) {
+			$query = $this->db->where('file_id', $id)->get('files');
 			
-			if ( $query->num_rows() > 0 ) {
+			if ($query->num_rows() > 0) {
 				$row = $query->row();
 				
-				$result = $this->media_filesys->move_file( $row->file, str_replace( $row->folder, $data['target_folder'].'/', $row->file ) );
+				$result = $this->media_filesys->move_file($row->file, str_replace($row->folder, $data['target_folder'].'/', $row->file));
 				
-				if ( $result == true ) {
+				if ($result == true) {
 					$data_update['file_id'] = $id;
-					$data_update['folder'] = str_replace( $row->folder, $data['target_folder'].'/', $row->folder );
-					$data_update['file'] = str_replace( $row->folder, $data['target_folder'].'/', $row->file );
-					$this->edit( $data_update );
-					unset( $data_update );
+					$data_update['folder'] = str_replace($row->folder, $data['target_folder'].'/', $row->folder);
+					$data_update['file'] = str_replace($row->folder, $data['target_folder'].'/', $row->file);
+					$this->edit($data_update);
+					unset($data_update);
 				}
 			}
 			
 			$query->free_result();
-			unset( $query, $row, $id );
+			unset($query, $row, $id);
 		}
 		
 		return true;
@@ -343,35 +343,35 @@ class media_model extends CI_Model {
 	 * @param string $new_name
 	 * @return boolean
 	 */
-	function rename_folder( $current_path = '', $current_folder = '', $new_name = '' ) {
+	function rename_folder($current_path = '', $current_folder = '', $new_name = '') {
 		// prevent double slash
-		$current_path = rtrim( $current_path, '/' );
+		$current_path = rtrim($current_path, '/');
 		
-		$query = $this->db->where( 'folder', $current_path.'/' )
-					->get( 'files' );
+		$query = $this->db->where('folder', $current_path.'/')
+					->get('files');
 		
-		foreach ( $query->result() as $row ) {
+		foreach ($query->result() as $row) {
 			// loop cut current folder and set new one. ---------------------------------------------
 			// eg: public/upload/image/ -> public/upload/images/
-			$current_path_exp = explode( '/', $current_path );
+			$current_path_exp = explode('/', $current_path);
 			$new_folder_name_path = '';
-			foreach ( $current_path_exp as $path ) {
-				if ( $path != $current_folder ) {
+			foreach ($current_path_exp as $path) {
+				if ($path != $current_folder) {
 					$new_folder_name_path .= $path.'/';
 				}
 			}
 			$new_folder_name_path .= $new_name.'/';
 
-			unset( $current_path_exp, $path );
+			unset($current_path_exp, $path);
 			// loop cut current folder and set new one. ---------------------------------------------
 			
 			$data['file_id'] = $row->file_id;
 			$data['folder'] = $new_folder_name_path;
-			$data['file'] = str_replace( $row->folder, $new_folder_name_path, $row->file );
+			$data['file'] = str_replace($row->folder, $new_folder_name_path, $row->file);
 			
-			$this->edit( $data );
+			$this->edit($data);
 			
-			unset( $new_folder_name_path, $data );
+			unset($new_folder_name_path, $data);
 			
 		}
 		
@@ -381,28 +381,28 @@ class media_model extends CI_Model {
 		$query = $this->db->like('folder', $current_path.'/', 'after')
 					->get('files');
 		
-		foreach ( $query->result() as $row2 ) {
+		foreach ($query->result() as $row2) {
 			// loop cut current folder and set new one. ---------------------------------------------
 			// eg: public/upload/image/ -> public/upload/images/
-			$current_path_exp = explode( '/', $current_path );
+			$current_path_exp = explode('/', $current_path);
 			$new_folder_name_path = '';
-			foreach ( $current_path_exp as $path ) {
-				if ( $path != $current_folder ) {
+			foreach ($current_path_exp as $path) {
+				if ($path != $current_folder) {
 					$new_folder_name_path .= $path.'/';
 				}
 			}
 			$new_folder_name_path .= $new_name.'/';
 
-			unset( $current_path_exp, $path );
+			unset($current_path_exp, $path);
 			// loop cut current folder and set new one. ---------------------------------------------
 			
 			$data['file_id'] = $row2->file_id;
-			$data['folder'] = str_replace( $current_path.'/', $new_folder_name_path, $row2->folder );
-			$data['file'] = str_replace( $current_path.'/', $new_folder_name_path, $row2->file );
+			$data['folder'] = str_replace($current_path.'/', $new_folder_name_path, $row2->folder);
+			$data['file'] = str_replace($current_path.'/', $new_folder_name_path, $row2->file);
 			
-			$this->edit( $data );
+			$this->edit($data);
 			
-			unset( $new_folder_name_path, $data );
+			unset($new_folder_name_path, $data);
 		}
 		
 		$query->free_result();
@@ -419,42 +419,42 @@ class media_model extends CI_Model {
 	function upload_media() {
 		
 		// get account id from cookie
-		$ca_account = $this->account_model->get_account_cookie( 'admin' );
+		$ca_account = $this->account_model->get_account_cookie('admin');
 		$account_id = $ca_account['id'];
-		unset( $ca_account );
+		unset($ca_account);
 		
-		$current_path = trim( $this->input->post( 'current_path' ) ).'/';
+		$current_path = trim($this->input->post('current_path')).'/';
 		
-		if ( $this->media_filesys->is_over_limit_base( $this->media_filesys->base_dir, $current_path ) ) {
-			unset( $ca_account, $account_id, $current_path );
+		if ($this->media_filesys->is_over_limit_base($this->media_filesys->base_dir, $current_path)) {
+			unset($ca_account, $account_id, $current_path);
 			return 'Hack Attempt!';
 		}
 		
-		if ( isset( $_FILES['file']['name'] ) && $_FILES['file']['name'] != null ) {
+		if (isset($_FILES['file']['name']) && $_FILES['file']['name'] != null) {
 			
-			if ( !file_exists( $current_path ) ) {
+			if (!file_exists($current_path)) {
 				// directory not exists? create one.
-				mkdir( $current_path, 0777, true );
+				mkdir($current_path, 0777, true);
 			}
 			
 			// config
 			$config['upload_path'] = $current_path;
-			$config['allowed_types'] = $this->config_model->load_single( 'media_allowed_types' );
+			$config['allowed_types'] = $this->config_model->load_single('media_allowed_types');
 			
-			if ( !preg_match( "/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $_FILES['file']['name'] ) ) {
+			if (!preg_match("/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $_FILES['file']['name'])) {
 				// this file has not safe file name. encrypt it.
 				$config['encrypt_name'] = true;
 			}
 			
 			$this->load->library('upload', $config);
 			
-			if ( ! $this->upload->do_upload("file") ) {
-				return $this->upload->display_errors( '<div>', '</div>' );
+			if (! $this->upload->do_upload("file")) {
+				return $this->upload->display_errors('<div>', '</div>');
 			} else {
 				$filedata = $this->upload->data();
 			}
 			
-			$fileext = strtolower( $filedata['file_ext'] );
+			$fileext = strtolower($filedata['file_ext']);
 			
 			if ($fileext == ".jpg" || $fileext == ".jpeg" || $fileext == ".gif" || $fileext == ".png") {
 				// resize images?
@@ -462,7 +462,7 @@ class media_model extends CI_Model {
 			}
 			
 			// get file size
-			$size = get_file_info( $config['upload_path'].$filedata['raw_name'].$filedata['file_ext'], 'size' );
+			$size = get_file_info($config['upload_path'].$filedata['raw_name'].$filedata['file_ext'], 'size');
 			
 			// insert into db
 			$data['account_id'] = $account_id;
@@ -476,8 +476,8 @@ class media_model extends CI_Model {
 			$data['file_size'] = $size['size'];
 			$data['media_name'] = $filedata['file_name'];
 			$data['media_keywords'] = $filedata['file_name'];
-			$this->add_data_only( $data );
-			unset( $data );
+			$this->add_data_only($data);
+			unset($data);
 			
 			// done.
 			return true;

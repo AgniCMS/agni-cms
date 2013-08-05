@@ -37,9 +37,9 @@ class MY_Loader extends MX_Loader {
 		}
 
 		// Check if "custom DB file" exists, else include core one
-		if ( file_exists( APPPATH.'core/'.config_item( 'subclass_prefix' ).'DB.php' ) )
+		if (file_exists(APPPATH.'core/'.config_item('subclass_prefix').'DB.php'))
 		{
-			require_once( APPPATH.'core/'.config_item('subclass_prefix').'DB.php' );
+			require_once(APPPATH.'core/'.config_item('subclass_prefix').'DB.php');
 		}
 		else
 		{
@@ -101,7 +101,7 @@ class MY_Loader extends MX_Loader {
 			$ci_view = $view;
 		} elseif (file_exists($view_path.$use_theme.'/modules/'.$this->_module.'/'.$view.'.php')) {
 			// found in public/themes/theme_name/modules/module_name/view_name.php
-			$this->_ci_view_paths = array( $view_path.$use_theme.'/modules/'.$this->_module.'/' => true);
+			$this->_ci_view_paths = array($view_path.$use_theme.'/modules/'.$this->_module.'/' => true);
 			$ci_view = $view;
 		} else {
 			// found in modules
@@ -117,7 +117,7 @@ class MY_Loader extends MX_Loader {
 				$ci_view = $use_theme.'/mobile/'.$view;
 			} elseif (file_exists($view_path.$use_theme.'/mobile/modules/'.$this->_module.'/'.$view.'.php')) {
 				// found in public/themes/theme_name/mobile/modules/module_name/view_name.php
-				$this->_ci_view_paths = array( $view_path.$use_theme.'/mobile/modules/'.$this->_module.'/' => true);
+				$this->_ci_view_paths = array($view_path.$use_theme.'/mobile/modules/'.$this->_module.'/' => true);
 				$ci_view = $view;
 			}
 		}

@@ -86,8 +86,8 @@
 ]
 ] To access the bits, use the following code:
 ] $d = $zip->getExtraInfo('file.txt');
-] echo ($d['external_attributes1']&1 )?"File is read-only.":"File is writeable.";
-] echo ($d['external_attributes1']&2 )?"File is hidden.":"File is not hidden.";
+] echo ($d['external_attributes1']&1)?"File is read-only.":"File is writeable.";
+] echo ($d['external_attributes1']&2)?"File is hidden.":"File is not hidden.";
 ] echo ($d['external_attributes1']&32)?"Archive attrib is set.":"Archive attrib not set.";
 
 ------------

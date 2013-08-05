@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 /*
 | -------------------------------------------------------------------
 | MIME TYPES
@@ -103,47 +103,47 @@
 
 // vee w. rewrite mimes.
 $mimes = array (
-			'7z'	=>	array( 'application/x-7z-compressed', 'application/octet-stream' ),
-			'aac'	=>	array( 'audio/x-aac', 'audio/aacp', 'audio/aac' ),
-			'ace'	=>	array( 'application/x-compressed', 'application/x-ace' ),
+			'7z'	=>	array('application/x-7z-compressed', 'application/octet-stream'),
+			'aac'	=>	array('audio/x-aac', 'audio/aacp', 'audio/aac'),
+			'ace'	=>	array('application/x-compressed', 'application/x-ace'),
 			'ai' => 'application/postscript',
 			'aif' => 'audio/x-aiff',
 			'aifc' => 'audio/x-aiff',
 			'aiff' => 'audio/x-aiff',
 			'avi' => 'video/x-msvideo',
 			'bin' => 'application/macbinary',
-			'bmp' => array( 'image/bmp', 'image/x-windows-bmp' ),
+			'bmp' => array('image/bmp', 'image/x-windows-bmp'),
 			'class' => 'application/octet-stream',
 			'cpt' => 'application/mac-compactpro',
 			'css' => 'text/css',
-			'csv' => array( 'application/csv', 'application/excel', 'application/octet-stream', 'application/vnd.ms-excel', 'application/vnd.msexcel', 'application/x-csv', 'text/comma-separated-values', 'text/csv', 'text/x-comma-separated-values', 'text/x-csv' ),
+			'csv' => array('application/csv', 'application/excel', 'application/octet-stream', 'application/vnd.ms-excel', 'application/vnd.msexcel', 'application/x-csv', 'text/comma-separated-values', 'text/csv', 'text/x-comma-separated-values', 'text/x-csv'),
 			'dcr' => 'application/x-director',
 			'dir' => 'application/x-director',
 			'dll' => 'application/octet-stream',
 			'dms' => 'application/octet-stream',
 			'doc' => 'application/msword',
-			'docx' => array( 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip' ),
+			'docx' => array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'),
 			'dvi' => 'application/x-dvi',
 			'dxr' => 'application/x-director',
 			'eml' => 'message/rfc822',
 			'eps' => 'application/postscript',
-			'exe' => array( 'application/octet-stream', 'application/x-msdownload' ),
-			'flv'	=>	array( 'video/x-flv', 'flv-application/octet-stream', 'video/mp4' ),
+			'exe' => array('application/octet-stream', 'application/x-msdownload'),
+			'flv'	=>	array('video/x-flv', 'flv-application/octet-stream', 'video/mp4'),
 			'gif' => 'image/gif',
 			'gtar' => 'application/x-gtar',
 			'gz' => 'application/x-gzip',
-			'h264' => array( 'video/h264' ),
-			'h.264' => array( 'video/h264' ),
+			'h264' => array('video/h264'),
+			'h.264' => array('video/h264'),
 			'hqx' => 'application/mac-binhex40',
 			'htm' => 'text/html',
 			'html' => 'text/html',
-			'jpe' => array( 'image/jpeg', 'image/pjpeg' ),
-			'jpeg' => array( 'image/jpeg', 'image/pjpeg' ),
-			'jpg' => array( 'image/jpeg', 'image/pjpeg' ),
+			'jpe' => array('image/jpeg', 'image/pjpeg'),
+			'jpeg' => array('image/jpeg', 'image/pjpeg'),
+			'jpg' => array('image/jpeg', 'image/pjpeg'),
 			'js' => 'application/x-javascript',
-			'json' => array( 'application/json', 'text/json' ),
+			'json' => array('application/json', 'text/json'),
 			'lha' => 'application/octet-stream',
-			'log' => array( 'text/plain', 'text/x-log' ),
+			'log' => array('text/plain', 'text/x-log'),
 			'lzh' => 'application/octet-stream',
 			'mid' => 'audio/midi',
 			'midi' => 'audio/midi',
@@ -151,20 +151,20 @@ $mimes = array (
 			'mov' => 'video/quicktime',
 			'movie' => 'video/x-sgi-movie',
 			'mp2' => 'audio/mpeg',
-			'mp3' => array( 'audio/mp3', 'audio/mpeg', 'audio/mpeg3', 'audio/mpg' ),
+			'mp3' => array('audio/mp3', 'audio/mpeg', 'audio/mpeg3', 'audio/mpg'),
 			'mpe' => 'video/mpeg',
 			'mpeg' => 'video/mpeg',
 			'mpg' => 'video/mpeg',
 			'mpga' => 'audio/mpeg',
 			'oda' => 'application/oda',
-			'pdf' => array( 'application/pdf', 'application/x-download' ),
+			'pdf' => array('application/pdf', 'application/x-download'),
 			'php' => 'application/x-httpd-php',
 			'php3' => 'application/x-httpd-php',
 			'php4' => 'application/x-httpd-php',
 			'phps' => 'application/x-httpd-php-source',
 			'phtml' => 'application/x-httpd-php',
-			'png' => array( 'image/png', 'image/x-png' ),
-			'ppt' => array( 'application/powerpoint', 'application/vnd.ms-powerpoint' ),
+			'png' => array('image/png', 'image/x-png'),
+			'ppt' => array('application/powerpoint', 'application/vnd.ms-powerpoint'),
 			'ps' => 'application/postscript',
 			'psd' => 'application/x-photoshop',
 			'qt' => 'video/quicktime',
@@ -184,44 +184,44 @@ $mimes = array (
 			'swf' => 'application/x-shockwave-flash',
 			'tar' => 'application/x-tar',
 			'text' => 'text/plain',
-			'tgz' => array( 'application/x-gzip-compressed', 'application/x-tar' ),
+			'tgz' => array('application/x-gzip-compressed', 'application/x-tar'),
 			'tif' => 'image/tiff',
 			'tiff' => 'image/tiff',
 			'txt' => 'text/plain',
-			'wav' => array( 'audio/wav', 'audio/wave', 'audio/x-wav' ),
+			'wav' => array('audio/wav', 'audio/wave', 'audio/x-wav'),
 			'wbxml' => 'application/wbxml',
-			'webm' => array( 'audio/webm', 'video/webm' ),
+			'webm' => array('audio/webm', 'video/webm'),
 			'wmlc' => 'application/wmlc',
-			'word' => array( 'application/msword', 'application/octet-stream' ),
+			'word' => array('application/msword', 'application/octet-stream'),
 			'xht' => 'application/xhtml+xml',
 			'xhtml' => 'application/xhtml+xml',
 			'xl' => 'application/excel',
-			'xls' => array( 'application/excel', 'application/msexcel', 'application/vnd.ms-excel' ),
-			'xlsx' => array( 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip' ),
+			'xls' => array('application/excel', 'application/msexcel', 'application/vnd.ms-excel'),
+			'xlsx' => array('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'),
 			'xml' => 'text/xml',
 			'xsl' => 'text/xml',
-			'zip' => array( 'application/x-zip', 'application/x-zip-compressed', 'application/zip', 'application/octet-stream' ),
+			'zip' => array('application/x-zip', 'application/x-zip-compressed', 'application/zip', 'application/octet-stream'),
 	);
 /*
  * use this code to write mimes
-require( APPPATH.'/config/mimes.php' );
-ksort( $mimes );
+require(APPPATH.'/config/mimes.php');
+ksort($mimes);
 echo '<pre>';
 echo '$mimes = array ('."\n";
-foreach ( $mimes as $key => $item ) {
+foreach ($mimes as $key => $item) {
 	echo "\t\t\t'$key' => ";
-	if ( !is_array( $item ) ) {
+	if (!is_array($item)) {
 		echo "'$item',\n";
 	} else {
-		echo 'array( ';
-		sort( $item );
-		foreach ( $item as $sitem ) {
+		echo 'array(';
+		sort($item);
+		foreach ($item as $sitem) {
 			echo "'$sitem'";
-			if ( end( $item ) != $sitem ) {
+			if (end($item) != $sitem) {
 				echo ', ';
 			}
 		}
-		echo ' ),';
+		echo '),';
 		echo "\n";
 	}
 }

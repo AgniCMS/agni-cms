@@ -516,7 +516,7 @@ class Securimage {
 	function Securimage()
 	{
 		// Initialize session or attach to existing
-		if ( session_id() == '' ) { // no session has been started yet, which is needed for validation
+		if (session_id() == '') { // no session has been started yet, which is needed for validation
 			if (trim($this->session_name) != '') {
 				session_name($this->session_name); // set session name if provided
 			}
@@ -1247,7 +1247,7 @@ class Securimage {
 			$file['size']            = $data['ChunkSize'] + 8;
 			$file['data']            = $body;
 
-			if ( ($p = strpos($file['data'], 'LIST')) !== false) {
+			if (($p = strpos($file['data'], 'LIST')) !== false) {
 				// If the LIST data is not at the end of the file, this will probably break your sound file
 				$info         = substr($file['data'], $p + 4, 8);
 				$data         = unpack('Vlength/Vjunk', $info);
@@ -1277,7 +1277,7 @@ class Securimage {
 				$files[$i]['sample_rate'],
 				$files[$i]['sample_rate'] * (($files[$i]['bits_per_sample'] * $files[$i]['channels']) / 8),
 				($files[$i]['bits_per_sample'] * $files[$i]['channels']) / 8,
-				$files[$i]['bits_per_sample'] );
+				$files[$i]['bits_per_sample']);
 
 				$out_data .= pack('C4', ord('d'), ord('a'), ord('t'), ord('a'));
 

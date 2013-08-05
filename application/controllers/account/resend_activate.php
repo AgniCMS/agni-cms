@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -16,10 +16,10 @@ class resend_activate extends MY_Controller {
 		parent::__construct();
 		
 		// load helper
-		$this->load->helper( array( 'form', 'language' ) );
+		$this->load->helper(array('form', 'language'));
 		
 		// load language
-		$this->lang->load( 'account' );
+		$this->lang->load('account');
 	}// __construct
 	
 	
@@ -31,28 +31,28 @@ class resend_activate extends MY_Controller {
 		unset($breadcrumb);
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		
-		// method post ( re-send action )
-		if ( $this->input->post() ) {
-			$data['account_email'] = trim( $this->input->post( 'account_email' ) );
+		// method post (re-send action)
+		if ($this->input->post()) {
+			$data['account_email'] = trim($this->input->post('account_email'));
 			
 			// load form validation
-			$this->load->library( 'form_validation' );
-			$this->form_validation->set_rules( 'account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean' );
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean');
 			
-			if ( $this->form_validation->run() == false ) {
+			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// check for registered email but not confirm
-				$this->db->where( 'account_email', $data['account_email'] );
-				$this->db->where( 'account_status', '0' );
-				$this->db->where( 'account_status_text', null );
-				$this->db->where( 'account_new_email', null );
-				$this->db->where( 'account_new_password', null );
-				$this->db->where( 'account_confirm_code != NULL' );
-				$query = $this->db->get( 'accounts' );
+				$this->db->where('account_email', $data['account_email']);
+				$this->db->where('account_status', '0');
+				$this->db->where('account_status_text', null);
+				$this->db->where('account_new_email', null);
+				$this->db->where('account_new_password', null);
+				$this->db->where('account_confirm_code != NULL');
+				$query = $this->db->get('accounts');
 				
-				if ( $query->num_rows() <= 0 ) {
+				if ($query->num_rows() <= 0) {
 					$query->free_result();
 					
 					$output['form_status'] = 'error';
@@ -62,17 +62,17 @@ class resend_activate extends MY_Controller {
 					$query->free_result();
 					
 					// generate confirm code
-					$this->load->helper( 'string' );
-					$data['account_confirm_code'] = random_string( 'alnum', '6' );
+					$this->load->helper('string');
+					$data['account_confirm_code'] = random_string('alnum', '6');
 					$data['account_username'] = $row->account_username;
 					
 					// re-send email
-					$result = $this->account_model->send_register_email( $data );
+					$result = $this->account_model->send_register_email($data);
 					
-					if ( $result === true ) {
-						$this->db->set( 'account_confirm_code', $data['account_confirm_code'] );
-						$this->db->where( 'account_id', $row->account_id );
-						$this->db->update( 'accounts' );
+					if ($result === true) {
+						$this->db->set('account_confirm_code', $data['account_confirm_code']);
+						$this->db->where('account_id', $row->account_id);
+						$this->db->update('accounts');
 						$output['form_status'] = 'success';
 						$output['form_status_message'] = $this->lang->line('account_registered_please_check_email');
 					} else {
@@ -80,7 +80,7 @@ class resend_activate extends MY_Controller {
 						$output['form_status_message'] = $result;
 					}
 					
-					unset( $result, $row, $query );
+					unset($result, $row, $query);
 				}
 			}
 			// re-populate form
@@ -88,14 +88,14 @@ class resend_activate extends MY_Controller {
 		}
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_resend_verify_email' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('account_resend_verify_email'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		$this->generate_page( 'front/templates/account/resend_activate_view', $output );
+		$this->generate_page('front/templates/account/resend_activate_view', $output);
 	}// index
 	
 

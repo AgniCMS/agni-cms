@@ -15,38 +15,38 @@
  * @param string $time time must be gmt
  * @return string 
  */
-function gmt_date( $dateformat = 'Y-m-d H:i:s', $time = '', $gmt = '' ) {
-	if ( empty( $dateformat ) ) {$dateformat = 'Y-m-d H:i:s';}
+function gmt_date($dateformat = 'Y-m-d H:i:s', $time = '', $gmt = '') {
+	if (empty($dateformat)) {$dateformat = 'Y-m-d H:i:s';}
 	
-	if ( empty( $time ) ) {
+	if (empty($time)) {
 		return null;
-	} elseif ( ! isValidTimeStamp( $time ) ) {
+	} elseif (! isValidTimeStamp($time)) {
 		// convert datetime to timestamp
-		$time = strtotime( $time );
+		$time = strtotime($time);
 	}
 	
 	// get instance
 	$CI =& get_instance();
-	if ( $gmt == null ) {
+	if ($gmt == null) {
 		// get gmt from global config
-		$CI->load->model( 'config_model' );
-		$global_gmt = $CI->config_model->load_single( 'site_timezone' );
+		$CI->load->model('config_model');
+		$global_gmt = $CI->config_model->load_single('site_timezone');
 		
 		// load account_model
-		$CI->load->model( 'account_model' );
+		$CI->load->model('account_model');
 		
 		// get account cookie
-		$cm = $CI->account_model->get_account_cookie( 'member' );
+		$cm = $CI->account_model->get_account_cookie('member');
 		
-		if ( ! isset( $cm['id'] ) ) {
+		if (! isset($cm['id'])) {
 			// not member, not login get gmt value from config
 			$gmt = $global_gmt;
 		} else {
-			if ( $gmt == null ) {
-				$gmt = $CI->account_model->show_accounts_info( $cm['id'], 'account_id', 'account_timezone' );
+			if ($gmt == null) {
+				$gmt = $CI->account_model->show_accounts_info($cm['id'], 'account_id', 'account_timezone');
 				
 				// still cannot got gmt?
-				if ( $gmt == null ) {
+				if ($gmt == null) {
 					// set gmt from global config
 					$gmt = $global_gmt;
 				}
@@ -54,7 +54,7 @@ function gmt_date( $dateformat = 'Y-m-d H:i:s', $time = '', $gmt = '' ) {
 		}
 	}
 	
-	return date( $dateformat, gmt_to_local( $time, $gmt ) );
+	return date($dateformat, gmt_to_local($time, $gmt));
 }// gmt_date
 
 
@@ -62,8 +62,8 @@ function gmt_date( $dateformat = 'Y-m-d H:i:s', $time = '', $gmt = '' ) {
  * gmtdate
  * alias of gmt_date
  */
-function gmtdate( $dateformat = '', $time = '' ) {
-	return gmt_date( $dateformat, $time );
+function gmtdate($dateformat = '', $time = '') {
+	return gmt_date($dateformat, $time);
 }// gmtdate
 
 

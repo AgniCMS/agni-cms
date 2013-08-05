@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -16,15 +16,15 @@ class edit_profile extends MY_Controller {
 		parent::__construct();
 		
 		// load helper
-		$this->load->helper( array( 'date', 'form', 'language' ) );
+		$this->load->helper(array('date', 'form', 'language'));
 		
 		// load language
-		$this->lang->load( 'account' );
+		$this->lang->load('account');
 	}// __construct
 	
 	
-	function _remap( $att1 = '', $att2 = '' ) {
-		if ( $att1 == 'delete-avatar' ) {
+	function _remap($att1 = '', $att2 = '') {
+		if ($att1 == 'delete-avatar') {
 			$this->delete_avatar();
 		} else {
 			$this->index();
@@ -34,26 +34,26 @@ class edit_profile extends MY_Controller {
 	
 	function delete_avatar() {
 		// get id
-		$account_id = trim( $this->input->post( 'account_id' ) );
+		$account_id = trim($this->input->post('account_id'));
 		
 		// delete avatar
-		$this->account_model->delete_account_avatar( $account_id );
+		$this->account_model->delete_account_avatar($account_id);
 		
 		// return
-		if ( !$this->input->is_ajax_request() ) {
-			redirect( 'account/edit-profile' );
+		if (!$this->input->is_ajax_request()) {
+			redirect('account/edit-profile');
 		} else {
 			$output['result'] = true;
-			$this->output->set_content_type( 'application/json' );
-			$this->output->set_output( json_encode( $output ) );
-			unset( $output );
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($output));
+			unset($output);
 		}
 	}// delete_avatar
 	
 	
 	function index() {
 		// is member login?
-		if ( !$this->account_model->is_member_login() ) {redirect( site_url() );}
+		if (!$this->account_model->is_member_login()) {redirect(site_url());}
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
@@ -63,14 +63,14 @@ class edit_profile extends MY_Controller {
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		
 		// load configurations
-		$cfg = $this->config_model->load( array( 'allow_avatar', 'avatar_size', 'avatar_allowed_types' ) );
+		$cfg = $this->config_model->load(array('allow_avatar', 'avatar_size', 'avatar_allowed_types'));
 		$output['allow_avatar'] = $cfg['allow_avatar']['value'];
 		$output['avatar_size'] = $cfg['avatar_size']['value'];
 		$output['avatar_allowed_types'] = $cfg['avatar_allowed_types']['value'];
-		unset( $cfg );
+		unset($cfg);
 		
 		// load session for flashdata
-		$this->load->library( 'session' );
+		$this->load->library('session');
 		$form_status = $this->session->flashdata('form_status');
 		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
 			$output['form_status'] = $form_status['form_status'];
@@ -79,15 +79,15 @@ class edit_profile extends MY_Controller {
 		unset($form_status);
 		
 		// get id
-		$cm_account = $this->account_model->get_account_cookie( 'member' );
+		$cm_account = $this->account_model->get_account_cookie('member');
 		
 		// check from db
 		$data['account_id'] = $cm_account['id'];
 		$data['account_username'] = $cm_account['username'];
-		$row = $this->account_model->get_account_data( $data );
-		unset( $data );
+		$row = $this->account_model->get_account_data($data);
+		unset($data);
 		
-		if ( $row != null ) {
+		if ($row != null) {
 			$output['row'] = $row;
 			$output['account_id'] = $row->account_id;
 			$output['account_username'] = $row->account_username;
@@ -98,38 +98,38 @@ class edit_profile extends MY_Controller {
 			$output['account_timezone'] = $row->account_timezone;
 		} else {
 			// not found.
-			unset( $cm_account, $output );
-			redirect( site_url() );
+			unset($cm_account, $output);
+			redirect(site_url());
 		}
 		
 		// save action
-		if ( $this->input->post() ) {
+		if ($this->input->post()) {
 			$data['account_id'] = $row->account_id;
 			$data['account_old_email'] = $row->account_email;
 			$data['account_username'] = $row->account_username;
-			$data['account_email'] = strip_tags( trim( $this->input->post( 'account_email', true ) ) );
-			$data['account_password'] = trim( $this->input->post( 'account_password' ) );
-			$data['account_new_password'] = trim( $this->input->post( 'account_new_password' ) );
-			$data['account_fullname'] = htmlspecialchars( trim( $this->input->post( 'account_fullname' ) ),ENT_QUOTES, config_item( 'charset' ) );
-				if ( empty( $data['account_fullname'] ) ) {$data['account_fullname'] = null;}
-			$data['account_birthdate'] = strip_tags( trim( $this->input->post( 'account_birthdate' ) ) );
-				if ( empty( $data['account_birthdate'] ) ) {$data['account_birthdate'] = null;}
-			$data['account_timezone'] = trim( $this->input->post( 'account_timezone' ) );
-				if ( empty( $data['account_timezone'] ) ) {$data['account_timezone'] = $this->config_model->load_single( 'site_timezone' );}
+			$data['account_email'] = strip_tags(trim($this->input->post('account_email', true)));
+			$data['account_password'] = trim($this->input->post('account_password'));
+			$data['account_new_password'] = trim($this->input->post('account_new_password'));
+			$data['account_fullname'] = htmlspecialchars(trim($this->input->post('account_fullname')),ENT_QUOTES, config_item('charset'));
+				if (empty($data['account_fullname'])) {$data['account_fullname'] = null;}
+			$data['account_birthdate'] = strip_tags(trim($this->input->post('account_birthdate')));
+				if (empty($data['account_birthdate'])) {$data['account_birthdate'] = null;}
+			$data['account_timezone'] = trim($this->input->post('account_timezone'));
+				if (empty($data['account_timezone'])) {$data['account_timezone'] = $this->config_model->load_single('site_timezone');}
 			
 			// load form validation
-			$this->load->library( 'form_validation' );
-			$this->form_validation->set_rules( 'account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean' );
-			$this->form_validation->set_rules( 'account_birthdate', 'lang:account_birthdate', 'trim|preg_match_date' );
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean');
+			$this->form_validation->set_rules('account_birthdate', 'lang:account_birthdate', 'trim|preg_match_date');
 			
-			if ( $this->form_validation->run() == false ) {
+			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
-				$result = $this->account_model->member_edit_profile( $data );
+				$result = $this->account_model->member_edit_profile($data);
 				
-				if ( $result === true ) {
+				if ($result === true) {
 					// flash success msg to session
 					$this->session->set_flashdata(
 						'form_status',
@@ -138,12 +138,12 @@ class edit_profile extends MY_Controller {
 							'form_status_message' => $this->lang->line('account_saved')
 						)
 					);
-					redirect( current_url() );
+					redirect(current_url());
 				} else {
 					$output['form_status'] = 'error';
 					$output['form_status_message'] = $result;
 				}
-				unset( $result );
+				unset($result);
 			}
 			
 			// re-populate form
@@ -152,17 +152,17 @@ class edit_profile extends MY_Controller {
 			$output['account_birthdate'] = $data['account_birthdate'];
 			$output['account_timezone'] = $data['account_timezone'];
 		}
-		unset( $cm_account, $query );
+		unset($cm_account, $query);
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'account_edit_profile' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('account_edit_profile'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		$this->generate_page( 'front/templates/account/edit_profile_view', $output );
+		$this->generate_page('front/templates/account/edit_profile_view', $output);
 	}// index
 	
 

@@ -83,7 +83,7 @@ class Akismet {
 							'DOCUMENT_ROOT',
 							'SERVER_ADMIN',
 							'QUERY_STRING',
-							'PHP_SELF' );
+							'PHP_SELF');
 
 	/**
 	 * @param	string	$blogURL			The URL of your blog.

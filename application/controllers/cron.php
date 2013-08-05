@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH') ) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /** 
  * 
  * PHP version 5
@@ -26,35 +26,35 @@ class cron extends MY_Controller {
 		$site_id = $this->siteman_model->get_site_id();
 		
 		// check last run.
-		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
-		if ( false === $this->cache->get( 'site_id_'.$site_id.'_agnicms_checked_queue_update_core_cron_controller' ) ) {
-			$this->cache->save( 'site_id_'.$site_id.'_agnicms_checked_queue_update_core_cron_controller', 'true', 7200 );// 86400 seconds is 1 day
+		$this->load->driver('cache', array('adapter' => 'file'));
+		if (false === $this->cache->get('site_id_'.$site_id.'_agnicms_checked_queue_update_core_cron_controller')) {
+			$this->cache->save('site_id_'.$site_id.'_agnicms_checked_queue_update_core_cron_controller', 'true', 7200);// 86400 seconds is 1 day
 			
-			$this->load->library( 'agni_update' );
-			$this->load->model( 'queue_model' );
+			$this->load->library('agni_update');
+			$this->load->model('queue_model');
 			
 			// check queue of update core
-			$queue = $this->queue_model->get_queue_data( array( 'queue_name' => $this->agni_update->agni_update_core_name ) );
+			$queue = $this->queue_model->get_queue_data(array('queue_name' => $this->agni_update->agni_update_core_name));
 			
-			if ( $queue != null ) {
-				$queue_data = unserialize( $queue->queue_data );
+			if ($queue != null) {
+				$queue_data = unserialize($queue->queue_data);
 				
-				if ( isset( $queue_data['update_version'] ) && isset( $queue_data['update_available'] ) && $queue_data['update_available'] == true ) {
-					$this->load->library( 'session' );
-					$this->lang->load( 'updater' );
+				if (isset($queue_data['update_version']) && isset($queue_data['update_available']) && $queue_data['update_available'] == true) {
+					$this->load->library('session');
+					$this->lang->load('updater');
 					
 					// queue is available, set global status msg to update
-					$this->session->set_userdata( 'global_status', array( 
-												'msg' => sprintf( lang( 'updater_agnicms_version_is_available_please_update_now'), $queue_data['update_version'], site_url( 'site-admin/updater' ) ), 
+					$this->session->set_userdata('global_status', array(
+												'msg' => sprintf(lang('updater_agnicms_version_is_available_please_update_now'), $queue_data['update_version'], site_url('site-admin/updater')), 
 												'status' => 'warning' 
-											) );
+											));
 				}
 				
-				unset( $queue, $queue_data );
+				unset($queue, $queue_data);
 			}
 		}
 		
-		unset( $cfg, $site_id );
+		unset($cfg, $site_id);
 		
 		return true;
 	}// check_queue_update_core
@@ -66,24 +66,24 @@ class cron extends MY_Controller {
 		$site_id = $this->siteman_model->get_site_id();
 		
 		// check last run.
-		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
-		if ( false === $this->cache->get( 'site_id_'.$site_id.'_agnicms_had_run_cron_controller' ) ) {
-			$this->cache->save( 'site_id_'.$site_id.'_agnicms_had_run_cron_controller', 'true', 7200 );// 86400 seconds is 1 day
+		$this->load->driver('cache', array('adapter' => 'file'));
+		if (false === $this->cache->get('site_id_'.$site_id.'_agnicms_had_run_cron_controller')) {
+			$this->cache->save('site_id_'.$site_id.'_agnicms_had_run_cron_controller', 'true', 7200);// 86400 seconds is 1 day
 			
 			// system log
 			$log['sl_type'] = 'cron';
 			$log['sl_message'] = 'Run cron';
-			$this->load->model( 'syslog_model' );
-			$this->syslog_model->add_new_log( $log );
-			unset( $log );
+			$this->load->model('syslog_model');
+			$this->syslog_model->add_new_log($log);
+			unset($log);
 			
 			// get config
-			$cfg = $this->config_model->load( array( 'angi_auto_update' ) );
+			$cfg = $this->config_model->load(array('angi_auto_update'));
 			
 			// if this site enabled auto update.
-			if ( $cfg['angi_auto_update']['value'] == '1' ) {
+			if ($cfg['angi_auto_update']['value'] == '1') {
 				// load agni update library.
-				$this->load->library( 'agni_update' );
+				$this->load->library('agni_update');
 
 				// any cron job action call from here. ---------------------------------------------------------------------
 
@@ -93,7 +93,7 @@ class cron extends MY_Controller {
 			} // endif; angi_auto_update == 1
 		}
 		
-		unset( $cfg, $site_id );
+		unset($cfg, $site_id);
 		
 		return true;
 	}// index

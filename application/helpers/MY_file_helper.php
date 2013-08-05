@@ -16,31 +16,31 @@
  * @param integer $filesize
  * @return integer|float 
  */
-function easy_filesize( $filesize = 0 ) {
-	if ( !is_numeric( $filesize ) ) {$filesize = 0;}
+function easy_filesize($filesize = 0) {
+	if (!is_numeric($filesize)) {$filesize = 0;}
 	
 	//
-	if ( $filesize <= 1 ) {
+	if ($filesize <= 1) {
 		$output = $filesize.' B';
-	} elseif ( $filesize <= 1024 ) {
+	} elseif ($filesize <= 1024) {
 		$output = $filesize.' B';
-	} elseif ( $filesize <= 1048576 ) {
-		$output = number_format( $filesize/'1024', 2 ).' KB';
-	} elseif ( $filesize <= 1073741824 ) {
-		$output = number_format( $filesize/'1048576', 2 ).' MB';
-	} elseif ( $filesize <= 1099511627776 ) {
-		$output = number_format( $filesize/'1073741824', 2 ).' GB';
-	} elseif ( $filesize <= 1125899906842624 ) {
-		$output = number_format( $filesize/'1099511627776', 2 ).' TB';
-	} elseif ( $filesize <= 1152921504606846976 ) {
-		$output = number_format( $filesize/'1125899906842624', 2 ).' PB';
-	} elseif ( $filesize <= 1180591620717411303424 ) {
-		$output = number_format( $filesize/'1152921504606846976', 2 ).' EB';
+	} elseif ($filesize <= 1048576) {
+		$output = number_format($filesize/'1024', 2).' KB';
+	} elseif ($filesize <= 1073741824) {
+		$output = number_format($filesize/'1048576', 2).' MB';
+	} elseif ($filesize <= 1099511627776) {
+		$output = number_format($filesize/'1073741824', 2).' GB';
+	} elseif ($filesize <= 1125899906842624) {
+		$output = number_format($filesize/'1099511627776', 2).' TB';
+	} elseif ($filesize <= 1152921504606846976) {
+		$output = number_format($filesize/'1125899906842624', 2).' PB';
+	} elseif ($filesize <= 1180591620717411303424) {
+		$output = number_format($filesize/'1152921504606846976', 2).' EB';
 	} else {
-		$output = number_format( $filesize/'1180591620717411303424', 2 ).' ZB';
+		$output = number_format($filesize/'1180591620717411303424', 2).' ZB';
 	}
 	
-	return str_replace( '.00', '', $output );
+	return str_replace('.00', '', $output);
 }// easy_filesize
 
 
@@ -107,7 +107,7 @@ function smartCopy($source, $dest, $options = array('folderPermission' => 0777, 
 			$__dest = $dest;
 		}
 		$result = copy($source, $__dest);
-		if ( file_exists( $__dest ) )
+		if (file_exists($__dest))
 			chmod($__dest, $options['filePermission']);
 	} elseif (is_dir($source)) {
 		if ($dest[strlen($dest) - 1] == '/') {
@@ -116,23 +116,23 @@ function smartCopy($source, $dest, $options = array('folderPermission' => 0777, 
 			} else {
 				//Change parent itself and its contents
 				$dest = $dest . basename($source);
-				if ( !file_exists( $dest ) )
+				if (!file_exists($dest))
 					mkdir($dest);
-				if ( file_exists( $dest ) )
+				if (file_exists($dest))
 					chmod($dest, $options['filePermission']);
 			}
 		} else {
 			if ($source[strlen($source) - 1] == '/') {
 				//Copy parent directory with new name and all its content
-				if ( !file_exists( $dest ) )
+				if (!file_exists($dest))
 					mkdir($dest, $options['folderPermission']);
-				if ( file_exists( $dest ) )
+				if (file_exists($dest))
 					chmod($dest, $options['filePermission']);
 			} else {
 				//Copy parent directory with new name and all its content
-				if ( !file_exists( $dest ) )
+				if (!file_exists($dest))
 					mkdir($dest, $options['folderPermission']);
-				if ( file_exists( $dest ) )
+				if (file_exists($dest))
 					chmod($dest, $options['filePermission']);
 			}
 		}

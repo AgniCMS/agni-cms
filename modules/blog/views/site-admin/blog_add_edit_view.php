@@ -1,4 +1,4 @@
-<h1><?php if ( $this->uri->segment(4) == 'add' ) {echo lang( 'blog_new_post' );} else {echo lang( 'blog_edit_post' );} ?></h1>
+<h1><?php if ($this->uri->segment(4) == 'add') {echo lang('blog_new_post');} else {echo lang('blog_edit_post');} ?></h1>
 
 <?php echo form_open(); ?> 
 	<?php if (isset($form_status) && isset($form_status_message)) { ?> 
@@ -7,13 +7,13 @@
 
 	<div class="page-add-edit">
 
-		<label><?php echo lang( 'blog_title' ); ?>: <span class="txt_require">*</span>
-			<input type="text" name="blog_title" value="<?php if ( isset( $blog_title ) ) {echo $blog_title;} ?>" maxlength="255" />
+		<label><?php echo lang('blog_title'); ?>: <span class="txt_require">*</span>
+			<input type="text" name="blog_title" value="<?php if (isset($blog_title)) {echo $blog_title;} ?>" maxlength="255" />
 		</label>
-		<label><?php echo lang( 'blog_content' ); ?>: <span class="txt_require">*</span>
+		<label><?php echo lang('blog_content'); ?>: <span class="txt_require">*</span>
 			<!--insert media-->
-			<span class="ico16-media-insert insert-media" title="<?php echo lang( 'blog_insert_media' ); ?>" onclick="$('#media-popup').dialog('open');"><?php echo lang( 'blog_insert_media' ); ?></span>
-			<div id="media-popup" title="<?php echo lang( 'blog_insert_media' ); ?>" class="dialog"><iframe name="media-browser" id="media-browser" src="<?php echo site_url( 'site-admin/media/popup' ); ?>" class="media-browser-dialog iframe-in-dialog"></iframe></div>
+			<span class="ico16-media-insert insert-media" title="<?php echo lang('blog_insert_media'); ?>" onclick="$('#media-popup').dialog('open');"><?php echo lang('blog_insert_media'); ?></span>
+			<div id="media-popup" title="<?php echo lang('blog_insert_media'); ?>" class="dialog"><iframe name="media-browser" id="media-browser" src="<?php echo site_url('site-admin/media/popup'); ?>" class="media-browser-dialog iframe-in-dialog"></iframe></div>
 			<script type="text/javascript">
 				$(document).ready(function() {
 					$('#media-popup').dialog({
@@ -32,10 +32,10 @@
 				}
 			</script>
 			<!--end insert media-->
-			<textarea name="blog_content" cols="30" rows="20" class="blog-content"><?php if ( isset( $blog_content ) ) {echo $blog_content;} ?></textarea>
+			<textarea name="blog_content" cols="30" rows="20" class="blog-content"><?php if (isset($blog_content)) {echo $blog_content;} ?></textarea>
 		</label>
 		
-		<button type="submit" class="bb-button blog-save-button"><?php echo lang( 'admin_save' ); ?></button>
+		<button type="submit" class="bb-button blog-save-button"><?php echo lang('admin_save'); ?></button>
 	</div>
 	
 <?php echo form_close(); ?> 

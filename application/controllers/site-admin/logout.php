@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -20,7 +20,7 @@ class logout extends admin_controller {
 	function index() {
 		$this->account_model->logout();
 		
-		redirect( 'site-admin' );
+		redirect('site-admin');
 	}// index
 	
 

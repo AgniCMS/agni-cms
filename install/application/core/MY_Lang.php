@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * @package agni cms
@@ -50,17 +50,17 @@ class MY_Lang extends CI_Lang {
 		{
 			// agnicms installation multilanguage detect
 			$ci =& get_instance();
-			$ci->load->helper( 'cookie' );
-			if ( get_cookie( 'agni_install_lang' ) != null ) {
-				$deft_lang = get_cookie( 'agni_install_lang' );
-				$langs = $ci->config->item( 'lang_uri_abbr' );
-				if ( isset( $langs[$deft_lang] ) ) {
+			$ci->load->helper('cookie');
+			if (get_cookie('agni_install_lang') != null) {
+				$deft_lang = get_cookie('agni_install_lang');
+				$langs = $ci->config->item('lang_uri_abbr');
+				if (isset($langs[$deft_lang])) {
 					$idiom = $langs[$deft_lang];
 				}
 			}
 			// check again if above line fail.
-			if ( $idiom == '' ) {
-				$deft_lang = ( ! isset($config['language'])) ? 'english' : $config['language'];
+			if ($idiom == '') {
+				$deft_lang = (! isset($config['language'])) ? 'english' : $config['language'];
 				$idiom = ($deft_lang == '') ? 'english' : $deft_lang;
 			}
 		}
@@ -91,7 +91,7 @@ class MY_Lang extends CI_Lang {
 		}
 
 
-		if ( ! isset($lang))
+		if (! isset($lang))
 		{
 			log_message('error', 'Language file contains no data: language/'.$idiom.'/'.$langfile);
 			return;
@@ -115,14 +115,14 @@ class MY_Lang extends CI_Lang {
 	 * agni install get current language
 	 * @return string 
 	 */
-	function get_current_lang( $return_full = true ) {
+	function get_current_lang($return_full = true) {
 		$ci =& get_instance();
-		$ci->load->helper( 'cookie' );
-		if ( get_cookie( 'agni_install_lang' ) != null ) {
-			$deft_lang = get_cookie( 'agni_install_lang' );
-			$langs = $ci->config->item( 'lang_uri_abbr' );
-			if ( isset( $langs[$deft_lang] ) ) {
-				if ( $return_full === true ) {
+		$ci->load->helper('cookie');
+		if (get_cookie('agni_install_lang') != null) {
+			$deft_lang = get_cookie('agni_install_lang');
+			$langs = $ci->config->item('lang_uri_abbr');
+			if (isset($langs[$deft_lang])) {
+				if ($return_full === true) {
 					return $langs[$deft_lang];
 				} else {
 					return $deft_lang;
@@ -131,10 +131,10 @@ class MY_Lang extends CI_Lang {
 		}
 		// no language set
 		$config =& get_config();
-		$deft_lang = ( ! isset( $config['language'] ) ) ? 'english' : $config['language'];
-		$abbr = ( !isset( $config['language_abbr'] ) ) ? 'en' : $config['language_abbr'];
+		$deft_lang = (! isset($config['language'])) ? 'english' : $config['language'];
+		$abbr = (!isset($config['language_abbr'])) ? 'en' : $config['language_abbr'];
 		$idiom = ($deft_lang == '') ? 'english' : $deft_lang;
-		if ( $return_full === true ) {
+		if ($return_full === true) {
 			return $idiom;
 		} else {
 			return $abbr;

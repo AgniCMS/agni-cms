@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -34,7 +34,7 @@ class akismet_install extends admin_controller
 		// install config name ------------------------------------------------------------------------------------------------------------------
 		$this->db->where('config_name', 'akismet_api');
 		$query = $this->db->get('config');
-		if ( $query->num_rows() <= 0 ) {
+		if ($query->num_rows() <= 0) {
 			$this->db->set('config_name', 'akismet_api');
 			$this->db->set('config_value', null);
 			$this->db->set('config_description', 'Store akismet api key');

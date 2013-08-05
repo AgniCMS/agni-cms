@@ -9,10 +9,10 @@
  *
  */
 
-function config_load( $cfg_name = '', $return_field = 'config_value' ) {
+function config_load($cfg_name = '', $return_field = 'config_value') {
 	$CI =& get_instance();
-	$CI->load->model( 'config_model' );
-	return $CI->config_model->load_single( $cfg_name, $return_field );
+	$CI->load->model('config_model');
+	return $CI->config_model->load_single($cfg_name, $return_field);
 }// config_load
 
 
@@ -22,27 +22,27 @@ function config_load( $cfg_name = '', $return_field = 'config_value' ) {
  * @return null
  */
 function set_site_id() {
-	if ( !defined( 'SITE_ID' ) ) {
+	if (!defined('SITE_ID')) {
 		$CI =& get_instance();
 
 		// load model
-		$CI->load->model( array( 'siteman_model' ) );
+		$CI->load->model(array('siteman_model'));
 
 		// get domain name.
-		$site_domain = $CI->input->server( 'HTTP_HOST' );
+		$site_domain = $CI->input->server('HTTP_HOST');
 
 		// get site info eg site_id.
 		$data['site_domain'] = $site_domain;
 		$data['site_status'] = '1';
-		$site = $CI->siteman_model->get_site_data_db( $data );
-		unset( $data );
+		$site = $CI->siteman_model->get_site_data_db($data);
+		unset($data);
 
-		if ( $site == null ) {
-			define( 'SITE_ID', '1' );
+		if ($site == null) {
+			define('SITE_ID', '1');
 			return null;
 		}
 
-		define( 'SITE_ID', $site->site_id );
+		define('SITE_ID', $site->site_id);
 		return null;
 	}
 	
@@ -56,28 +56,28 @@ function set_site_id() {
  * @return boolean
  */
 function set_site_table() {
-	if ( !defined( 'SITE_TABLE' ) ) {
+	if (!defined('SITE_TABLE')) {
 		$CI =& get_instance();
 
 		// load model
-		$CI->load->model( array( 'siteman_model' ) );
+		$CI->load->model(array('siteman_model'));
 
 		// get domain name.
-		$site_domain = $CI->input->server( 'HTTP_HOST' );
+		$site_domain = $CI->input->server('HTTP_HOST');
 
 		// get site info eg site_id.
 		$data['site_domain'] = $site_domain;
 		$data['site_status'] = '1';
-		$site = $CI->siteman_model->get_site_data_db( $data );
-		unset( $data );
+		$site = $CI->siteman_model->get_site_data_db($data);
+		unset($data);
 
 		// if no site data in db or site_id = 1
-		if ( $site == null || ( $site != null && $site->site_id == '1' && $site->site_status == '1' ) ) {
-			define( 'SITE_TABLE', '' );
+		if ($site == null || ($site != null && $site->site_id == '1' && $site->site_status == '1')) {
+			define('SITE_TABLE', '');
 			return false;
 		}
 
-		define( 'SITE_TABLE', $site->site_id.'_' );
+		define('SITE_TABLE', $site->site_id.'_');
 		return true;
 	}
 	

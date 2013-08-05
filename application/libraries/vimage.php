@@ -469,7 +469,7 @@ class vimage {
 	 */
 	function zoom_crop_fit($width, $height, $startx = '', $starty = '') {
 		// no zoom
-		if ( $width > $height ) {// ครอปแนวนอน
+		if ($width > $height) {// ครอปแนวนอน
 			if ($this->image_height > $height) {// ภาพสูงกว่าครอป.
 				$newwidth = $width;
 				$newheight = ($this->image_height/$this->image_width)*$newwidth;
@@ -486,7 +486,7 @@ class vimage {
 				$startx = ($startx == null ?(($width/2) >= ($newwidth/2) ? ($width/2)-($newwidth/2) : "0") : $startx);
 				$starty = ($starty == null ? (($height/2) >= ($newheight/2) ? ($height/2)-($newheight/2) : "0") : $starty);
 			}
-		} elseif ( $height > $width ) {// ครอปแนวตั้ง
+		} elseif ($height > $width) {// ครอปแนวตั้ง
 			if ($this->image_width > $width) {// ภาพกว้างกว่าครอป
 				$newwidth = ($this->image_width/$this->image_height)*$height;
 				$newheight = $height;
@@ -507,13 +507,13 @@ class vimage {
 			if (($this->image_width >= $this->image_height) && ($this->image_width > $width)) {// รูปแนวนอนและภาพใหญ่กว่าครอป
 				$newwidth = ($this->image_width/$this->image_height)*$height;
 				$newheight = $height;
-				$startx = ($startx == null ? ( ($width/2)-($newwidth/2) ) : $startx);
+				$startx = ($startx == null ? (($width/2)-($newwidth/2)) : $startx);
 				$starty = ($starty == null ? (($height/2) >= ($newheight/2) ? ($height/2)-($newheight/2) : "0") : $starty);
 			} elseif (($this->image_width < $this->image_height) && ($this->image_height > $height)) {// รูปแนวตั้ง และภาพสูงกว่าครอป.
 				$newwidth = $width;
 				$newheight = ($this->image_height/$this->image_width)*$newwidth;
 				$startx = ($startx == null ?(($width/2) >= ($newwidth/2) ? ($width/2)-($newwidth/2) : "0") : $startx);
-				$starty = ($starty == null ? ( ($height/2)-($newheight/2) ) : $starty);
+				$starty = ($starty == null ? (($height/2)-($newheight/2)) : $starty);
 			} else {
 				$newwidth = $this->image_width;
 				$newheight = $this->image_height;
@@ -849,7 +849,7 @@ class vimage {
 		$wmtxt_width = 500;
 		$wmtxt_height = 20;
 		$wm_img_height = 30;// watermark image height
-		if ( $this->new_width < $wmtxt_width || $this->new_height < $wmtxt_height ) {return $this->new_image;}
+		if ($this->new_width < $wmtxt_width || $this->new_height < $wmtxt_height) {return $this->new_image;}
 		$im = imagecreatetruecolor($wmtxt_width, $wmtxt_height);
 		imagealphablending($im, false);
 		imagesavealpha($im, true);

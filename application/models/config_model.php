@@ -22,31 +22,31 @@ class config_model extends CI_Model {
 	 * @param string $partial_name
 	 * @return boolean 
 	 */
-	function delete_cache( $partial_name = '' ) {
-		if ( empty( $partial_name ) ) {return false;}
+	function delete_cache($partial_name = '') {
+		if (empty($partial_name)) {return false;}
 		
 		// if partial is ALL (clean cache)
-		if ( $partial_name == 'ALL' || $partial_name == 'clean' ) {
-			$this->load->driver( 'cache' );
+		if ($partial_name == 'ALL' || $partial_name == 'clean') {
+			$this->load->driver('cache');
 			
 			//return $this->cache->clean();// << DO NOT use this method because it is delete all index.html and .htaccess files
-			$map = scandir( 'application/cache' );
+			$map = scandir('application/cache');
 			
-			if ( is_array( $map ) && !empty( $map ) ) {
-				foreach ( $map as $key => $item ) {
-					if ( $item != '.' && $item != '..' && $item != 'index.html' && $item != '.htaccess' ) {
-						unlink( 'application/cache/'.$item );
+			if (is_array($map) && !empty($map)) {
+				foreach ($map as $key => $item) {
+					if ($item != '.' && $item != '..' && $item != 'index.html' && $item != '.htaccess') {
+						unlink('application/cache/'.$item);
 					}
 				}
 			}
 		}
 		
 		// delete cache
-		$map = scandir( 'application/cache' );
-		if ( is_array( $map ) && !empty( $map ) ) {
-			foreach ( $map as $key => $item ) {
-				if ( strpos( $item, $partial_name ) !== false ) {
-					unlink( 'application/cache/'.$item );
+		$map = scandir('application/cache');
+		if (is_array($map) && !empty($map)) {
+			foreach ($map as $key => $item) {
+				if (strpos($item, $partial_name) !== false) {
+					unlink('application/cache/'.$item);
 				}
 			}
 		}
@@ -60,15 +60,15 @@ class config_model extends CI_Model {
 	 * @param array $fields
 	 * @return array 
 	 */
-	function load( $fields = array() ) {
-		if ( ! is_array( $fields ) ) {return $this->load_single( $fields );}
-		if ( empty( $fields ) ) {return array();}
+	function load($fields = array()) {
+		if (! is_array($fields)) {return $this->load_single($fields);}
+		if (empty($fields)) {return array();}
 		
-		$this->db->where_in( 'config_name', $fields );
-		$query = $this->db->get( 'config' );
+		$this->db->where_in('config_name', $fields);
+		$query = $this->db->get('config');
 		
-		if ( $query->num_rows() > 0 ) {
-			foreach ( $query->result() as $row ) {
+		if ($query->num_rows() > 0) {
+			foreach ($query->result() as $row) {
 				$output[$row->config_name]['value'] = $row->config_value;
 				$output[$row->config_name]['core'] = $row->config_core;
 				$output[$row->config_name]['description'] = $row->config_description;
@@ -83,24 +83,24 @@ class config_model extends CI_Model {
 	}// load
 	
 	
-	function load_single( $config_name = '', $return_field = 'config_value' ) {
-		if ( empty( $config_name ) ) {return null;}
+	function load_single($config_name = '', $return_field = 'config_value') {
+		if (empty($config_name)) {return null;}
 		
 		// load cache driver
-		$this->load->driver( 'cache', array( 'adapter' => 'file' ) );
+		$this->load->driver('cache', array('adapter' => 'file'));
 		
 		// check cached
-		if ( false === $cfg_val = $this->cache->get( 'cfgload_'.SITE_TABLE.$config_name.'_'.$return_field ) ) {
-			if ( $config_name == 'content_frontpage_category' ) {
-				$this->db->where( 'language', $this->lang->get_current_lang() );
-				$query = $this->db->get( 'frontpage_category' );
+		if (false === $cfg_val = $this->cache->get('cfgload_'.SITE_TABLE.$config_name.'_'.$return_field)) {
+			if ($config_name == 'content_frontpage_category') {
+				$this->db->where('language', $this->lang->get_current_lang());
+				$query = $this->db->get('frontpage_category');
 				
-				if ( $query->num_rows() > 0 ) {
+				if ($query->num_rows() > 0) {
 					$row = $query->row();
 					$query->free_result();
-					unset( $query );
+					unset($query);
 					
-					$this->cache->save( 'cfgload_'.SITE_TABLE.$config_name.'_'.$return_field, $row->tid, 2678400 );
+					$this->cache->save('cfgload_'.SITE_TABLE.$config_name.'_'.$return_field, $row->tid, 2678400);
 					
 					return $row->tid;
 				}
@@ -108,15 +108,15 @@ class config_model extends CI_Model {
 				
 				return null;
 			} else {
-				$this->db->where( 'config_name', $config_name );
-				$query = $this->db->get( 'config' );
+				$this->db->where('config_name', $config_name);
+				$query = $this->db->get('config');
 				
-				if ( $query->num_rows() > 0 ) {
+				if ($query->num_rows() > 0) {
 					$row = $query->row();
 					$query->free_result();
-					unset( $query );
+					unset($query);
 					
-					$this->cache->save( 'cfgload_'.SITE_TABLE.$config_name.'_'.$return_field, $row->$return_field, 2678400 );
+					$this->cache->save('cfgload_'.SITE_TABLE.$config_name.'_'.$return_field, $row->$return_field, 2678400);
 					
 					return $row->$return_field;
 				}
@@ -130,55 +130,55 @@ class config_model extends CI_Model {
 	}// load_single
 	
 	
-	function save( $data = array() ) {
-		if ( empty( $data ) ) {return false;}
-		if ( !is_array( $data ) ) {return false;}
+	function save($data = array()) {
+		if (empty($data)) {return false;}
+		if (!is_array($data)) {return false;}
 		
-		foreach ( $data as $key => $item ) {
-			$this->db->set( 'config_value', $item );
-			$this->db->where( 'config_name', $key );
-			$this->db->update( 'config' );
+		foreach ($data as $key => $item) {
+			$this->db->set('config_value', $item);
+			$this->db->where('config_name', $key);
+			$this->db->update('config');
 			
 			// if it is site name, update in sites table too
-			if ( $key == 'site_name' ) {
-				$this->load->model( 'siteman_model' );
+			if ($key == 'site_name') {
+				$this->load->model('siteman_model');
 				
 				// set data for update
-				$data_site['site_id'] = $this->siteman_model->get_site_id( false );
+				$data_site['site_id'] = $this->siteman_model->get_site_id(false);
 				$data_site['site_name'] = $item;
-				$this->siteman_model->edit_site( $data_site );
+				$this->siteman_model->edit_site($data_site);
 				
-				unset( $data_site );
+				unset($data_site);
 			}
 		}
 		
-		$this->save_frontpage_category( $data );
+		$this->save_frontpage_category($data);
 		
 		// clear cfgload cache
-		$this->delete_cache( 'cfgload_'.SITE_TABLE );
-		$this->delete_cache( 'chkacc_' );
+		$this->delete_cache('cfgload_'.SITE_TABLE);
+		$this->delete_cache('chkacc_');
 		
 		// done
 		return true;
 	}// save
 	
 	
-	function save_frontpage_category( $data = array() ) {
-		if ( !isset( $data['content_frontpage_category'] ) ) {return false;}
+	function save_frontpage_category($data = array()) {
+		if (!isset($data['content_frontpage_category'])) {return false;}
 		
-		$this->db->where( 'language', $this->lang->get_current_lang() );
-		$query = $this->db->get( 'frontpage_category' );
+		$this->db->where('language', $this->lang->get_current_lang());
+		$query = $this->db->get('frontpage_category');
 		
-		if ( $query->num_rows() > 0 ) {
+		if ($query->num_rows() > 0) {
 			// exists, use update
-			$this->db->where( 'language', $this->lang->get_current_lang() );
-			$this->db->set( 'tid', $data['content_frontpage_category'] );
-			$this->db->update( 'frontpage_category' );
+			$this->db->where('language', $this->lang->get_current_lang());
+			$this->db->set('tid', $data['content_frontpage_category']);
+			$this->db->update('frontpage_category');
 		} else {
 			// not exists, use insert
-			$this->db->set( 'language', $this->lang->get_current_lang() );
-			$this->db->set( 'tid', $data['content_frontpage_category'] );
-			$this->db->insert( 'frontpage_category' );
+			$this->db->set('language', $this->lang->get_current_lang());
+			$this->db->set('tid', $data['content_frontpage_category']);
+			$this->db->insert('frontpage_category');
 		}
 		
 		return true;

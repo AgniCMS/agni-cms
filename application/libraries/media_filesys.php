@@ -25,24 +25,24 @@ class media_filesys {
 	 * @param string $name_check
 	 * @return mixed
 	 */
-	function create_folder( $path_create = '', $name_check = '' ) {
-		if ( !preg_match( "/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $name_check ) ) {
-			return lang( 'media_new_folder_disallowed_characters' );
+	function create_folder($path_create = '', $name_check = '') {
+		if (!preg_match("/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $name_check)) {
+			return lang('media_new_folder_disallowed_characters');
 		}
 		
-		if ( file_exists( $path_create ) && is_dir( $path_create ) ) {
-			return lang( 'media_new_folder_fail_folder_exists' );
+		if (file_exists($path_create) && is_dir($path_create)) {
+			return lang('media_new_folder_fail_folder_exists');
 		}
 		
-		$result = mkdir( $path_create, 0777, true );
+		$result = mkdir($path_create, 0777, true);
 		
-		if ( $result === true ) {
+		if ($result === true) {
 			return true;
 		}
 		
-		unset( $result );
+		unset($result);
 		
-		return lang( 'media_new_folder_failed_please_check_write_permission' );
+		return lang('media_new_folder_failed_please_check_write_permission');
 	}// create_folder
 	
 	
@@ -55,22 +55,22 @@ class media_filesys {
 	 * @param string $path2
 	 * @return boolean
 	 */
-	function is_over_limit_base( $path1 = '', $path2 = '' ) {
-		if ( $path1 == null ) {
+	function is_over_limit_base($path1 = '', $path2 = '') {
+		if ($path1 == null) {
 			$path1 = $this->base_dir;
 		}
 		
-		if ( $path2 == null ) {
+		if ($path2 == null) {
 			$path2 = $this->current_path;
 		}
 		
 		// in case  ?current_path=/base/dir/outer/ which is outside of 'base_dir'
-		if ( strpos( $path2, $path1 ) === false ) {
+		if (strpos($path2, $path1) === false) {
 			return true;
 		}
 		
 		// in case ?current_path=public/media/some/dir/../../../../../.. which browse upper base_dir level
-		if ( mb_strlen( realpath( $path1 ) ) > mb_strlen( realpath( $path2 ) ) ) {
+		if (mb_strlen(realpath($path1)) > mb_strlen(realpath($path2))) {
 			return true;
 		}
 		
@@ -84,10 +84,10 @@ class media_filesys {
 	 * @param boolean $split_folder_file
 	 * @return array
 	 */
-	function list_dir( $split_folder_file = true ) {
-		if ( $this->base_dir != null ) {
+	function list_dir($split_folder_file = true) {
+		if ($this->base_dir != null) {
 			// check browse parent folder upper base_dir or not?
-			if ( $this->is_over_limit_base( $this->base_dir, $this->current_path ) ) {
+			if ($this->is_over_limit_base($this->base_dir, $this->current_path)) {
 				$browse_path = $this->base_dir;
 			} else {
 				$browse_path = $this->current_path;
@@ -96,33 +96,33 @@ class media_filesys {
 			$browse_path = $this->current_path;
 		}
 		
-		if ( is_dir( $browse_path ) ) {
-			$fs = scandir( $browse_path );
+		if (is_dir($browse_path)) {
+			$fs = scandir($browse_path);
 		} else {
 			// current_path is not directory, return empty array.
 			return array();
 		}
 		
 		// sort for human understandable. for example system sort will be 1 10 11 2 3 4 5 6 7 8 9, but natsort will be 1 2 3 ... to 10
-		if ( is_array( $fs ) ) {
-			natsort( $fs );
+		if (is_array($fs)) {
+			natsort($fs);
 		}
 		
-		if ( $split_folder_file === true ) {
+		if ($split_folder_file === true) {
 			// split folders and files. folder comes first
 			$tmp_fs = array();
 			
-			if ( is_array( $fs ) && !empty( $fs ) ) {
+			if (is_array($fs) && !empty($fs)) {
 				// folder first.
-				foreach ( $fs as $file_folder ) {
-					if ( $file_folder == '.' || $file_folder == '..' || is_dir( $browse_path.'/'.$file_folder ) ) {
+				foreach ($fs as $file_folder) {
+					if ($file_folder == '.' || $file_folder == '..' || is_dir($browse_path.'/'.$file_folder)) {
 						$tmp_fs[] = $file_folder;
 					}
 				}
 				
 				// then file.
-				foreach ( $fs as $file_folder ) {
-					if ( $file_folder != '.' && $file_folder != '..' && is_file( $browse_path.'/'.$file_folder ) ) {
+				foreach ($fs as $file_folder) {
+					if ($file_folder != '.' && $file_folder != '..' && is_file($browse_path.'/'.$file_folder)) {
 						$tmp_fs[] = $file_folder;
 					}
 				}
@@ -130,7 +130,7 @@ class media_filesys {
 			
 			$fs = $tmp_fs;
 			
-			unset( $browse_path, $tmp_fs );
+			unset($browse_path, $tmp_fs);
 		}
 		
 		return $fs;
@@ -143,23 +143,23 @@ class media_filesys {
 	 * @return array
 	 */
 	function list_dir_and_sub() {
-		if ( $this->base_dir != null ) {
+		if ($this->base_dir != null) {
 			// this method is list all folders and sub. we do not need to set browse_path to current anymore.
 			$browse_path = $this->base_dir;
 			
 			// check browse parent folder upper base_dir or not?
-			if ( $this->is_over_limit_base( $this->base_dir, $this->current_path ) ) {
+			if ($this->is_over_limit_base($this->base_dir, $this->current_path)) {
 				$browse_path = $this->base_dir;
 			}
 		} else {
 			$browse_path = $this->current_path;
 		}
 		
-		if ( is_dir( $browse_path ) ) {
+		if (is_dir($browse_path)) {
 			$ci =& get_instance();
-			$ci->load->helper( array( 'directory' ) );
+			$ci->load->helper(array('directory'));
 			
-			$fs = directory_map( $browse_path );
+			$fs = directory_map($browse_path);
 		} else {
 			// current_path is not directory, return empty array.
 			return array();
@@ -175,12 +175,12 @@ class media_filesys {
 	 * @param string $new_path
 	 * @return boolean
 	 */
-	function move_file( $old_path = '', $new_path = '' ) {
-		if ( file_exists( $old_path ) && is_file( $old_path ) ) {
-			$result = copy( $old_path, $new_path );
+	function move_file($old_path = '', $new_path = '') {
+		if (file_exists($old_path) && is_file($old_path)) {
+			$result = copy($old_path, $new_path);
 			
-			if ( $result === true ) {
-				unlink( $old_path );
+			if ($result === true) {
+				unlink($old_path);
 			}
 			return $result;
 		}
@@ -196,43 +196,43 @@ class media_filesys {
 	 * @param string $new_name
 	 * @return mixed
 	 */
-	function rename_folder( $current_path = '', $current_folder = '', $new_name = '' ) {
-		if ( $this->is_over_limit_base($this->base_dir, $current_path.'/') === true || $current_path == $this->base_dir ) {
+	function rename_folder($current_path = '', $current_folder = '', $new_name = '') {
+		if ($this->is_over_limit_base($this->base_dir, $current_path.'/') === true || $current_path == $this->base_dir) {
 			return 'Hack attempt!';
 		}
 		
-		if ( !preg_match( "/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $new_name ) ) {
-			return lang( 'media_new_folder_disallowed_characters' );
+		if (!preg_match("/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $new_name)) {
+			return lang('media_new_folder_disallowed_characters');
 		}
 		
-		if ( !file_exists( $current_path ) || !is_dir( $current_path ) ) {
-			return lang( 'media_folder_not_exists' );
+		if (!file_exists($current_path) || !is_dir($current_path)) {
+			return lang('media_folder_not_exists');
 		}
 		
 		// loop cut current folder and set new one. --------------------------------------------------------
-		$current_path_exp = explode( '/', $current_path );
+		$current_path_exp = explode('/', $current_path);
 		$new_folder_name_path = '';
 		$i = 1;
-		foreach ( $current_path_exp as $path ) {
-			if ( $i < count( $current_path_exp ) ) {
+		foreach ($current_path_exp as $path) {
+			if ($i < count($current_path_exp)) {
 				$new_folder_name_path .= $path.'/';
 			}
 			$i++;
 		}
 		$new_folder_name_path .= $new_name;
 		
-		unset( $current_path_exp, $path );
+		unset($current_path_exp, $path);
 		// loop cut current folder and set new one. --------------------------------------------------------
 		
-		$result = rename( $current_path, $new_folder_name_path );
+		$result = rename($current_path, $new_folder_name_path);
 		
-		if ( $result === true ) {
+		if ($result === true) {
 			return true;
 		}
 		
-		unset( $new_folder_name_path, $result );
+		unset($new_folder_name_path, $result);
 		
-		return lang( 'media_rename_folder_failed_please_check_write_permission' );
+		return lang('media_rename_folder_failed_please_check_write_permission');
 	}// rename_folder
 	
 	

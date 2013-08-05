@@ -7,11 +7,11 @@
  */
 
 
-function ajax_admin_fpw( thisobj ) {
+function ajax_admin_fpw(thisobj) {
 	var serialize_val = thisobj.serialize();
 	
 	// disable submit button
-	$( '.fpw-button' ).attr( 'disabled', 'disabled' );
+	$('.fpw-button').attr('disabled', 'disabled');
 	
 	// set loading status
 	$('.ajax_fpw_status').html('<img src="'+base_url+'public/themes/system/site-admin/images/loading.gif" alt="" />');
@@ -21,30 +21,30 @@ function ajax_admin_fpw( thisobj ) {
 		type: 'POST',
 		data: serialize_val,
 		dataType: 'json',
-		success: function( data ) {
-			$( '.fpw-button' ).removeAttr( 'disabled' );
-			$( '.ajax_fpw_status' ).html( '' );
-			$( '.form-status-fpw' ).html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
-			if ( data.result == true ) {
-				$( '.form-fpw' ).hide( 'fade', {}, 'fast' );
+		success: function(data) {
+			$('.fpw-button').removeAttr('disabled');
+			$('.ajax_fpw_status').html('');
+			$('.form-status-fpw').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
+			if (data.result == true) {
+				$('.form-fpw').hide('fade', {}, 'fast');
 			} else {
-				$('.captcha').attr( 'src', base_url+'public/images/securimage_show.php?' + Math.random() );
+				$('.captcha').attr('src', base_url+'public/images/securimage_show.php?' + Math.random());
 			}
 		},
-		error: function( data, status, e ) {
-			alert( 'Request reset password error '+e );
-			$( '.fpw-button' ).removeAttr( 'disabled' );
+		error: function(data, status, e) {
+			alert('Request reset password error '+e);
+			$('.fpw-button').removeAttr('disabled');
 		}
 	});
 	return false;
 }// ajax_admin_fpw
 
 
-function ajax_admin_login( thisobj ) {
+function ajax_admin_login(thisobj) {
 	var serialize_val = thisobj.serialize();
 	
 	// disable submit button.
-	$( '.login-button' ).attr( 'disabled', 'disabled' );
+	$('.login-button').attr('disabled', 'disabled');
 	
 	// set loading status
 	$('.ajax_status').html('<img src="'+base_url+'public/themes/system/site-admin/images/loading.gif" alt="" />');
@@ -54,26 +54,26 @@ function ajax_admin_login( thisobj ) {
 		type: 'POST',
 		data: serialize_val,
 		dataType: 'json',
-		success: function( data ) {
-			if ( data.form_status === true ) {
+		success: function(data) {
+			if (data.form_status === true) {
 				window.location = data.go_to;
 			} else {
-				$( '.login-button' ).removeAttr( 'disabled' );
-				$( '.ajax_status' ).html( '' );
-				$( '.form-status' ).html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
+				$('.login-button').removeAttr('disabled');
+				$('.ajax_status').html('');
+				$('.form-status').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 				
-				$('.captcha').attr( 'src', base_url+'public/images/securimage_show.php?' + Math.random() );
+				$('.captcha').attr('src', base_url+'public/images/securimage_show.php?' + Math.random());
 				$('.login-username').focus();
-				if ( data.show_captcha == true ) {
-					$('.captcha-field').show( 'fade', {}, 'fast' );
+				if (data.show_captcha == true) {
+					$('.captcha-field').show('fade', {}, 'fast');
 				} else {
-					$('.captcha-field').hide( 'fade', {}, 'fast' );
+					$('.captcha-field').hide('fade', {}, 'fast');
 				}
 			}
 		},
-		error: function( data, status, e ) {
-			alert( 'Login error '+e );
-			$( '.login-button' ).removeAttr( 'disabled' );
+		error: function(data, status, e) {
+			alert('Login error '+e);
+			$('.login-button').removeAttr('disabled');
 		}
 	});
 	return false;
@@ -156,8 +156,8 @@ function htmlspecialchars_decode (string, quote_style) {
 }// htmlspecialchars_decode
 
 
-function insert_media( element ) {
-	element = htmlspecialchars_decode( element, 'ENT_QUOTES' );
+function insert_media(element) {
+	element = htmlspecialchars_decode(element, 'ENT_QUOTES');
 	tinyMCE.activeEditor.execCommand('mceInsertContent', false, element);
 	window.parent.close_dialog();
 	return false;

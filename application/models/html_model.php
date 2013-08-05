@@ -27,22 +27,22 @@ class html_model extends CI_Model {
 		$class = ' '.$class;
 		
 		// gen front class
-		if ( current_url() == base_url() || current_url() == site_url() ) {$class .= ' home';}
+		if (current_url() == base_url() || current_url() == site_url()) {$class .= ' home';}
 		
 		// gen logged in class
-		$cm_cookie = $this->account_model->get_account_cookie( 'member' );
-		if ( !isset( $cm_cookie['id'] ) || !isset( $cm_cookie['username'] ) || !isset( $cm_cookie['password'] ) || !isset( $cm_cookie['onlinecode'] ) ) {
+		$cm_cookie = $this->account_model->get_account_cookie('member');
+		if (!isset($cm_cookie['id']) || !isset($cm_cookie['username']) || !isset($cm_cookie['password']) || !isset($cm_cookie['onlinecode'])) {
 			$class .= ' not-logged-in';
-		} elseif ( isset( $cm_cookie['id'] ) ) {
+		} elseif (isset($cm_cookie['id'])) {
 			$class .= ' logged-in';
 		}
 		
-		$class .= ' '.str_replace( '/', '_', ltrim( urldecode( $this->uri->uri_string() ), '/' ) );
+		$class .= ' '.str_replace('/', '_', ltrim(urldecode($this->uri->uri_string()), '/'));
 		
 		// plugins here
-		$class .= ' '.$this->modules_plug->do_filter( 'front_html_body_class' );
+		$class .= ' '.$this->modules_plug->do_filter('front_html_body_class');
 		
-		return rtrim( $class );
+		return rtrim($class);
 	}// gen_front_body_class
 	
 	
@@ -51,11 +51,11 @@ class html_model extends CI_Model {
 	 * @param array $tags
 	 * @return string 
 	 */
-	function gen_tags( $tags = array() ) {
-		if ( !is_array( $tags ) || empty( $tags ) ) {return null;}
+	function gen_tags($tags = array()) {
+		if (!is_array($tags) || empty($tags)) {return null;}
 		
 		$output = '';
-		foreach ( $tags as $tag ) {
+		foreach ($tags as $tag) {
 			$output .= $tag."\n";
 		}
 		
@@ -68,7 +68,7 @@ class html_model extends CI_Model {
 	 * @param string $title
 	 * @return string 
 	 */
-	function gen_title( $title = '' ) {
+	function gen_title($title = '') {
 		$cfg = $this->config_model->load(array('site_name', 'page_title_separator'));
 		
 		if (!empty($cfg)) {

@@ -25,17 +25,17 @@ class blog_uninstall extends admin_controller {
 	
 	function index() {
 		// uninstall module table
-		if ( $this->db->table_exists( 'blog' ) ) {
+		if ($this->db->table_exists('blog')) {
 			$sql = 'DROP TABLE `'.$this->db->dbprefix('blog').'`;';
-			$this->db->query( $sql );
+			$this->db->query($sql);
 		}
 		
 		// disable module is the last step and required.
-		$this->load->model( 'modules_model' );
-		$this->modules_model->do_deactivate( $this->module_system_name, $this->input->get( 'site_id' ) );
+		$this->load->model('modules_model');
+		$this->modules_model->do_deactivate($this->module_system_name, $this->input->get('site_id'));
 		
 		// done
-		$this->load->library( 'session' );
+		$this->load->library('session');
 		$this->session->set_flashdata(
 			'form_status',
 			array(
@@ -44,7 +44,7 @@ class blog_uninstall extends admin_controller {
 			)
 		);
 		
-		redirect( 'site-admin/module' );
+		redirect('site-admin/module');
 	}
 	
 

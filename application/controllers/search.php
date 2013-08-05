@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -16,20 +16,20 @@ class search extends MY_Controller {
 		parent::__construct();
 		
 		// load model
-		$this->load->model( array( 'posts_model' ) );
+		$this->load->model(array('posts_model'));
 		
 		// load helper
-		$this->load->helper( array( 'date', 'language' ) );
+		$this->load->helper(array('date', 'language'));
 		
 		// load language
-		$this->lang->load( 'post' );
-		$this->lang->load( 'search' );
+		$this->lang->load('post');
+		$this->lang->load('search');
 	}// __construct
 	
 	
 	function index() {
-		$q = trim( $this->input->get( 'q' ) );
-		$output['q'] = htmlspecialchars( $q, ENT_QUOTES, config_item( 'charset' ) );
+		$q = trim($this->input->get('q'));
+		$output['q'] = htmlspecialchars($q, ENT_QUOTES, config_item('charset'));
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
@@ -38,23 +38,23 @@ class search extends MY_Controller {
 		unset($breadcrumb);
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		
-		if ( mb_strlen( $q ) > 1 ) {
+		if (mb_strlen($q) > 1) {
 			// search and list post
-			$output['list_item'] = $this->posts_model->list_item( 'front' );
-			if ( is_array( $output['list_item'] ) ) {
+			$output['list_item'] = $this->posts_model->list_item('front');
+			if (is_array($output['list_item'])) {
 				$output['pagination'] = $this->pagination->create_links();
 			}
 		}
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'search_search' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('search_search'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		$this->generate_page( 'front/templates/search/search_view', $output );
+		$this->generate_page('front/templates/search/search_view', $output);
 	}// index
 	
 	

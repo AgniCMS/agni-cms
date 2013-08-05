@@ -1,4 +1,4 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * Agni CMS
  * This file is a copy of system/database/DB_driver.php
@@ -122,7 +122,7 @@ class CI_DB_driver {
 		$this->conn_id = ($this->pconnect == FALSE) ? $this->db_connect() : $this->db_pconnect();
 
 		// No connection resource?  Throw an error
-		if ( ! $this->conn_id)
+		if (! $this->conn_id)
 		{
 			log_message('error', 'Unable to connect to the database');
 
@@ -138,7 +138,7 @@ class CI_DB_driver {
 		// Select the DB... assuming a database name is specified in the config file
 		if ($this->database != '')
 		{
-			if ( ! $this->db_select())
+			if (! $this->db_select())
 			{
 				log_message('error', 'Unable to select database: '.$this->database);
 
@@ -151,7 +151,7 @@ class CI_DB_driver {
 			else
 			{
 				// We've selected the DB. Now we set the character set
-				if ( ! $this->db_set_charset($this->char_set, $this->dbcollat))
+				if (! $this->db_set_charset($this->char_set, $this->dbcollat))
 				{
 					return FALSE;
 				}
@@ -175,7 +175,7 @@ class CI_DB_driver {
 	 */
 	function db_set_charset($charset, $collation)
 	{
-		if ( ! $this->_db_set_charset($this->char_set, $this->dbcollat))
+		if (! $this->_db_set_charset($this->char_set, $this->dbcollat))
 		{
 			log_message('error', 'Unable to set database connection charset: '.$this->char_set);
 
@@ -267,7 +267,7 @@ class CI_DB_driver {
 		}
 
 		// Verify table prefix and replace if necessary
-		if ( ($this->dbprefix != '' AND $this->swap_pre != '') AND ($this->dbprefix != $this->swap_pre) )
+		if (($this->dbprefix != '' AND $this->swap_pre != '') AND ($this->dbprefix != $this->swap_pre))
 		{
 			$sql = preg_replace("/(\W)".$this->swap_pre."(\S+?)/", "\\1".$this->dbprefix."\\2", $sql);
 		}
@@ -429,7 +429,7 @@ class CI_DB_driver {
 	{
 		$driver = 'CI_DB_'.$this->dbdriver.'_result';
 
-		if ( ! class_exists($driver))
+		if (! class_exists($driver))
 		{
 			include_once(BASEPATH.'database/DB_result.php');
 			include_once(BASEPATH.'database/drivers/'.$this->dbdriver.'/'.$this->dbdriver.'_result.php');
@@ -452,7 +452,7 @@ class CI_DB_driver {
 	 */
 	function simple_query($sql)
 	{
-		if ( ! $this->conn_id)
+		if (! $this->conn_id)
 		{
 			$this->initialize();
 		}
@@ -501,7 +501,7 @@ class CI_DB_driver {
 	 */
 	function trans_start($test_mode = FALSE)
 	{
-		if ( ! $this->trans_enabled)
+		if (! $this->trans_enabled)
 		{
 			return FALSE;
 		}
@@ -526,7 +526,7 @@ class CI_DB_driver {
 	 */
 	function trans_complete()
 	{
-		if ( ! $this->trans_enabled)
+		if (! $this->trans_enabled)
 		{
 			return FALSE;
 		}
@@ -589,7 +589,7 @@ class CI_DB_driver {
 			return $sql;
 		}
 
-		if ( ! is_array($binds))
+		if (! is_array($binds))
 		{
 			$binds = array($binds);
 		}
@@ -626,7 +626,7 @@ class CI_DB_driver {
 	 */
 	function is_write_type($sql)
 	{
-		if ( ! preg_match('/^\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\s+/i', $sql))
+		if (! preg_match('/^\s*"?(SET|INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|TRUNCATE|LOAD DATA|COPY|ALTER|GRANT|REVOKE|LOCK|UNLOCK)\s+/i', $sql))
 		{
 			return FALSE;
 		}
@@ -736,7 +736,7 @@ class CI_DB_driver {
 	{
 		$fields = $this->list_fields($table);
 
-		if ( ! is_array($fields))
+		if (! is_array($fields))
 		{
 			return FALSE;
 		}
@@ -800,7 +800,7 @@ class CI_DB_driver {
 	 */
 	function table_exists($table_name)
 	{
-		return ( ! in_array($this->_protect_identifiers($table_name, TRUE, FALSE, FALSE), $this->list_tables())) ? FALSE : TRUE;
+		return (! in_array($this->_protect_identifiers($table_name, TRUE, FALSE, FALSE), $this->list_tables())) ? FALSE : TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -868,7 +868,7 @@ class CI_DB_driver {
 	 */
 	function field_exists($field_name, $table_name)
 	{
-		return ( ! in_array($field_name, $this->list_fields($table_name))) ? FALSE : TRUE;
+		return (! in_array($field_name, $this->list_fields($table_name))) ? FALSE : TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -944,7 +944,7 @@ class CI_DB_driver {
 			$fields[$this->_protect_identifiers($key)] = $this->escape($val);
 		}
 
-		if ( ! is_array($where))
+		if (! is_array($where))
 		{
 			$dest = array($where);
 		}
@@ -957,7 +957,7 @@ class CI_DB_driver {
 
 				if ($val !== '')
 				{
-					if ( ! $this->_has_operator($key))
+					if (! $this->_has_operator($key))
 					{
 						$key .= ' =';
 					}
@@ -984,7 +984,7 @@ class CI_DB_driver {
 	function _has_operator($str)
 	{
 		$str = trim($str);
-		if ( ! preg_match("/(\s|<|>|!|=|is null|is not null)/i", $str))
+		if (! preg_match("/(\s|<|>|!|=|is null|is not null)/i", $str))
 		{
 			return FALSE;
 		}
@@ -1011,7 +1011,7 @@ class CI_DB_driver {
 			$function = $driver.$function;
 		}
 
-		if ( ! function_exists($function))
+		if (! function_exists($function))
 		{
 			if ($this->db_debug)
 			{
@@ -1086,7 +1086,7 @@ class CI_DB_driver {
 	 */
 	function cache_delete($segment_one = '', $segment_two = '')
 	{
-		if ( ! $this->_cache_init())
+		if (! $this->_cache_init())
 		{
 			return FALSE;
 		}
@@ -1103,7 +1103,7 @@ class CI_DB_driver {
 	 */
 	function cache_delete_all()
 	{
-		if ( ! $this->_cache_init())
+		if (! $this->_cache_init())
 		{
 			return FALSE;
 		}
@@ -1126,9 +1126,9 @@ class CI_DB_driver {
 			return TRUE;
 		}
 
-		if ( ! class_exists('CI_DB_Cache'))
+		if (! class_exists('CI_DB_Cache'))
 		{
-			if ( ! @include(BASEPATH.'database/DB_cache.php'))
+			if (! @include(BASEPATH.'database/DB_cache.php'))
 			{
 				return $this->cache_off();
 			}
@@ -1179,7 +1179,7 @@ class CI_DB_driver {
 		}
 		else
 		{
-			$message = ( ! is_array($error)) ? array(str_replace('%s', $swap, $LANG->line($error))) : $error;
+			$message = (! is_array($error)) ? array(str_replace('%s', $swap, $LANG->line($error))) : $error;
 		}
 
 		// Find the most likely culprit of the error by going through
@@ -1252,7 +1252,7 @@ class CI_DB_driver {
 	 */
 	function _protect_identifiers($item, $prefix_single = FALSE, $protect_identifiers = NULL, $field_exists = TRUE)
 	{
-		if ( ! is_bool($protect_identifiers))
+		if (! is_bool($protect_identifiers))
 		{
 			$protect_identifiers = $this->_protect_identifiers;
 		}
@@ -1309,7 +1309,7 @@ class CI_DB_driver {
 				{
 					foreach ($parts as $key => $val)
 					{
-						if ( ! in_array($val, $this->_reserved_identifiers))
+						if (! in_array($val, $this->_reserved_identifiers))
 						{
 							$parts[$key] = $this->_escape_identifiers($val);
 						}
@@ -1365,9 +1365,9 @@ class CI_DB_driver {
 					* and result from this posts to this an_2_posts.
 					*/
 					$CI =& get_instance();
-					$CI->load->model( 'siteman_model' );
+					$CI->load->model('siteman_model');
 					$site_wide_tables = $CI->siteman_model->site_wide_tables;
-					if ( !in_array( $parts[$i], $site_wide_tables ) ) { 
+					if (!in_array($parts[$i], $site_wide_tables)) { 
 						$parts[$i] = $this->dbprefix.SITE_TABLE.$parts[$i];
 					} else {
 						$parts[$i] = $this->dbprefix.$parts[$i];
@@ -1404,9 +1404,9 @@ class CI_DB_driver {
 				* and result from this posts to this an_2_posts.
 				*/
 				$CI =& get_instance();
-				$CI->load->model( 'siteman_model' );
+				$CI->load->model('siteman_model');
 				$site_wide_tables = $CI->siteman_model->site_wide_tables;
-				if ( !in_array( $item, $site_wide_tables ) ) {
+				if (!in_array($item, $site_wide_tables)) {
 					$item = $this->dbprefix.SITE_TABLE.$item;
 				} else {
 					$item = $this->dbprefix.$item;

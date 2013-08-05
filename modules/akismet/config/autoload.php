@@ -1,3 +1,3 @@
 <?php
 
-$autoload['language'] = array( 'akismet' );
+$autoload['language'] = array('akismet');

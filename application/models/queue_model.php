@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH') ) exit( 'No direct script access allowed' );
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /** 
  * 
  * PHP version 5
@@ -22,8 +22,8 @@ class queue_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function add_queue( $data = array() ) {
-		$this->db->insert( 'queue', $data );
+	function add_queue($data = array()) {
+		$this->db->insert('queue', $data);
 		
 		// get inserted id
 		$output['queue_id'] = $this->db->insert_id();
@@ -38,11 +38,11 @@ class queue_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function delete_queue( $data = array() ) {
-		if ( !is_array( $data ) || ( is_array( $data ) && empty( $data ) ) ) {return false;}
+	function delete_queue($data = array()) {
+		if (!is_array($data) || (is_array($data) && empty($data))) {return false;}
 		
-		$this->db->where( $data )
-			   ->delete( 'queue' );
+		$this->db->where($data)
+			   ->delete('queue');
 		
 		return true;
 	}// delete_queue
@@ -53,9 +53,9 @@ class queue_model extends CI_Model {
 	 * @param array $data
 	 * @return boolean
 	 */
-	function edit_queue( $data = array() ) {
-		$this->db->where( 'queue_id', $data['queue_id'] )
-			   ->update( 'queue', $data );
+	function edit_queue($data = array()) {
+		$this->db->where('queue_id', $data['queue_id'])
+			   ->update('queue', $data);
 		
 		$output['queue_id'] = $data['queue_id'];
 		$output['result'] = true;
@@ -68,14 +68,14 @@ class queue_model extends CI_Model {
 	 * @param array|string $data
 	 * @return mixed
 	 */
-	function get_queue_data( $data = array() ) {
-		if ( is_array( $data ) && !empty( $data ) ) {
-			$this->db->where( $data );
-		} elseif ( is_string( $data ) ) {
-			$this->db->where( $data );
+	function get_queue_data($data = array()) {
+		if (is_array($data) && !empty($data)) {
+			$this->db->where($data);
+		} elseif (is_string($data)) {
+			$this->db->where($data);
 		}
 		
-		$query = $this->db->get( 'queue' );
+		$query = $this->db->get('queue');
 		
 		return $query->row();
 	}// get_queue_data
@@ -86,10 +86,10 @@ class queue_model extends CI_Model {
 	 * @param string $queue_name
 	 * @return boolean
 	 */
-	function is_queue_exists( $queue_name = '' ) {
-		$this->db->where( 'queue_name', $queue_name );
+	function is_queue_exists($queue_name = '') {
+		$this->db->where('queue_name', $queue_name);
 		
-		if ( $this->db->count_all_results( 'queue' ) >= 1 ) {
+		if ($this->db->count_all_results('queue') >= 1) {
 			return true;
 		}
 		

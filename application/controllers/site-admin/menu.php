@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -16,19 +16,19 @@ class menu extends admin_controller {
 		parent::__construct();
 		
 		// load model
-		$this->load->model( array( 'menu_model', 'posts_model', 'taxonomy_model' ) );
+		$this->load->model(array('menu_model', 'posts_model', 'taxonomy_model'));
 		
 		// load helper
-		$this->load->helper( array( 'category', 'form', 'menu' ) );
+		$this->load->helper(array('category', 'form', 'menu'));
 		
 		// load language
-		$this->lang->load( 'menu' );
+		$this->lang->load('menu');
 	}// __construct
 	
 	
 	function _define_permission() {
-		return array( 'menu_perm' => 
-					array( 
+		return array('menu_perm' => 
+					array(
 						'menu_viewall_group_perm', 
 						'menu_add_group_perm', 
 						'menu_edit_group_perm', 
@@ -45,30 +45,30 @@ class menu extends admin_controller {
 	
 	function addgroup() {
 		// check permission
-		if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_add_group_perm' ) != true ) {redirect( 'site-admin' );}
+		if ($this->account_model->check_admin_permission('menu_perm', 'menu_add_group_perm') != true) {redirect('site-admin');}
 		
 		$output['mg_name'] = '';
 		$output['mg_description'] = '';
 		
 		// save action
-		if ( $this->input->post() ) {
-			$data['mg_name'] = htmlspecialchars( trim( $this->input->post( 'mg_name' ) ), ENT_QUOTES, config_item( 'charset' ) );
-			$data['mg_description'] = htmlspecialchars( trim( $this->input->post( 'mg_description' ) ), ENT_QUOTES, config_item( 'charset' ) );
-				if ( $data['mg_description'] == null ) {$data['mg_description'] = null;}
+		if ($this->input->post()) {
+			$data['mg_name'] = htmlspecialchars(trim($this->input->post('mg_name')), ENT_QUOTES, config_item('charset'));
+			$data['mg_description'] = htmlspecialchars(trim($this->input->post('mg_description')), ENT_QUOTES, config_item('charset'));
+				if ($data['mg_description'] == null) {$data['mg_description'] = null;}
 			
 			// load form validation
-			$this->load->library( 'form_validation' );
-			$this->form_validation->set_rules( 'mg_name', 'lang:menu_group_name', 'trim|required' );
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('mg_name', 'lang:menu_group_name', 'trim|required');
 			
-			if ( $this->form_validation->run() == false ) {
+			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$result = $this->menu_model->add_group( $data );
+				$result = $this->menu_model->add_group($data);
 				
-				if ( $result === true ) {
+				if ($result === true) {
 					// load session library
-					$this->load->library( 'session' );
+					$this->load->library('session');
 					$this->session->set_flashdata(
 						'form_status',
 						array(
@@ -77,7 +77,7 @@ class menu extends admin_controller {
 						)
 					);
 					
-					redirect( 'site-admin/menu' );
+					redirect('site-admin/menu');
 				} else {
 					$output['form_status'] = 'error';
 					$output['form_status_message'] = $result;
@@ -90,59 +90,59 @@ class menu extends admin_controller {
 		}
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'menu_menu' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('menu_menu'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		$this->generate_page( 'site-admin/templates/menu/menu_aegroup_view', $output );
+		$this->generate_page('site-admin/templates/menu/menu_aegroup_view', $output);
 	}// addgroup
 	
 	
 	function ajax_additem() {
 		// check permission
-		if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_add_perm' ) != true ) {exit;}
+		if ($this->account_model->check_admin_permission('menu_perm', 'menu_add_perm') != true) {exit;}
 		
-		if ( $this->input->is_ajax_request() ) {
-			$data['mg_id'] = trim( $this->input->post( 'mg_id' ) );
-			$data['mi_type'] = trim( $this->input->post( 'mi_type' ) );
-			$data['type_id'] = $this->input->post( 'type_id' );
-				if ( !is_array( $data['type_id'] ) ) {$data['type_id'] = trim( $data['type_id']);}
-				if ( $data['type_id'] == null ) {$data['type_id'] = null;}
-			$data['link_url'] = strip_tags( trim( $this->input->post( 'link_url' ) ) );
-				if ( $data['mi_type'] == 'link' && strpos( $data['link_url'], 'www.' ) !== false ) {$data['link_url'] = prep_url( $data['link_url'] );}
-				if ( $data['link_url'] == null ) {$data['link_url'] = null;}
-			$data['link_text'] = trim( $this->input->post( 'link_text' ) );
-				if ( $data['link_text'] == null ) {$data['link_text'] = null;}
-			$data['custom_link'] = trim( $this->input->post( 'custom_link' ) );
+		if ($this->input->is_ajax_request()) {
+			$data['mg_id'] = trim($this->input->post('mg_id'));
+			$data['mi_type'] = trim($this->input->post('mi_type'));
+			$data['type_id'] = $this->input->post('type_id');
+				if (!is_array($data['type_id'])) {$data['type_id'] = trim($data['type_id']);}
+				if ($data['type_id'] == null) {$data['type_id'] = null;}
+			$data['link_url'] = strip_tags(trim($this->input->post('link_url')));
+				if ($data['mi_type'] == 'link' && strpos($data['link_url'], 'www.') !== false) {$data['link_url'] = prep_url($data['link_url']);}
+				if ($data['link_url'] == null) {$data['link_url'] = null;}
+			$data['link_text'] = trim($this->input->post('link_text'));
+				if ($data['link_text'] == null) {$data['link_text'] = null;}
+			$data['custom_link'] = trim($this->input->post('custom_link'));
 			
 			// load form validation
-			$this->load->library( 'form_validation' );
+			$this->load->library('form_validation');
 			
-			if ( $data['mi_type'] == 'custom_link' ) {
-				$this->form_validation->set_rules( 'custom_link', 'lang:menu_custom_link', 'trim|required' );
-			} elseif ( $data['mi_type'] == 'link' ) {
-				$this->form_validation->set_rules( 'link_text', 'lang:menu_link_text', 'trim|required' );
-				$this->form_validation->set_rules( 'link_url', 'lang:menu_link_url', 'trim|required' );
+			if ($data['mi_type'] == 'custom_link') {
+				$this->form_validation->set_rules('custom_link', 'lang:menu_custom_link', 'trim|required');
+			} elseif ($data['mi_type'] == 'link') {
+				$this->form_validation->set_rules('link_text', 'lang:menu_link_text', 'trim|required');
+				$this->form_validation->set_rules('link_url', 'lang:menu_link_url', 'trim|required');
 			} else {
 				// this rule is just for making form_validation to work. without a single rule it will not work.
-				$this->form_validation->set_rules( 'link_text', 'lang:menu_link_text', 'trim' );
+				$this->form_validation->set_rules('link_text', 'lang:menu_link_text', 'trim');
 			}
 			
-			if ( $this->form_validation->run() == false ) {
+			if ($this->form_validation->run() == false) {
 				$output['result'] = false;
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 				
 				// log error in ajax help developer found the problem easier.
-				log_message( 'error', $output['form_status_message'] );
+				log_message('error', $output['form_status_message']);
 			} else {
 				// 
-				$result = $this->menu_model->add_item( $data );
+				$result = $this->menu_model->add_item($data);
 				
-				if ( $result === true ) {
+				if ($result === true) {
 					$output['result'] = true;
 				} else {
 					$output['result'] = false;
@@ -152,148 +152,148 @@ class menu extends admin_controller {
 			}
 			
 			// output
-			$this->output->set_content_type( 'application/json' );
-			$this->output->set_output( json_encode( $output ) );
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($output));
 		}
 	}// ajax_additem
 	
 	
 	function ajax_deleteitem() {
 		// check permission
-		if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_delete_perm' ) != true ) {exit;}
+		if ($this->account_model->check_admin_permission('menu_perm', 'menu_delete_perm') != true) {exit;}
 		
-		if ( $this->input->is_ajax_request() ) {
-			$mi_id = $this->input->post( 'mi_id' );
+		if ($this->input->is_ajax_request()) {
+			$mi_id = $this->input->post('mi_id');
 			
-			if ( !is_numeric( $mi_id ) ) {exit;}
+			if (!is_numeric($mi_id)) {exit;}
 			
-			$this->menu_model->delete_item( $mi_id );
+			$this->menu_model->delete_item($mi_id);
 			$this->menu_model->rebuild();
 			
 			//
 			$output['result'] = true;
 			
-			$this->output->set_content_type( 'application/json' );
-			$this->output->set_output( json_encode( $output ) );
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($output));
 		}
 	}// ajax_delete
 	
 	
-	function ajax_edititem( $mi_id = '' ) {
+	function ajax_edititem($mi_id = '') {
 		// check permission
-		if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_edit_perm' ) != true ) {exit;}
+		if ($this->account_model->check_admin_permission('menu_perm', 'menu_edit_perm') != true) {exit;}
 		
-		if ( $this->input->is_ajax_request() ) {
+		if ($this->input->is_ajax_request()) {
 			// get data for edit
 			$data['mi_id'] = $mi_id;
-			$row = $this->menu_model->get_mi_data_db( $data );
-			unset( $data );
+			$row = $this->menu_model->get_mi_data_db($data);
+			unset($data);
 			
-			if ( $row == null ) {exit;}
+			if ($row == null) {exit;}
 			
 			// store data for form
 			$output['mi_id'] = $mi_id;
-			$output['link_text'] = htmlspecialchars( $row->link_text, ENT_QUOTES, config_item( 'charset' ) );
-			$output['link_url'] = urldecode( $row->link_url );
-			$output['custom_link'] = htmlspecialchars( $row->custom_link, ENT_QUOTES, config_item( 'charset' ) );
+			$output['link_text'] = htmlspecialchars($row->link_text, ENT_QUOTES, config_item('charset'));
+			$output['link_url'] = urldecode($row->link_url);
+			$output['custom_link'] = htmlspecialchars($row->custom_link, ENT_QUOTES, config_item('charset'));
 			
 			// save action
-			if ( $this->input->post() ) {
+			if ($this->input->post()) {
 				
 				// data for update table
 				$data['mi_id'] = $mi_id;
-				$data['link_url'] = strip_tags( trim( $this->input->post( 'link_url' ) ) );
-					if ( $row->mi_type == 'link' && strpos( $data['link_url'], 'www.' ) !== false ) {$data['link_url'] = prep_url( $data['link_url'] );}
-					if ( $data['link_url'] == null ) {$data['link_url'] = null;}
+				$data['link_url'] = strip_tags(trim($this->input->post('link_url')));
+					if ($row->mi_type == 'link' && strpos($data['link_url'], 'www.') !== false) {$data['link_url'] = prep_url($data['link_url']);}
+					if ($data['link_url'] == null) {$data['link_url'] = null;}
 					// menu item type is not link, url encode it.
-					if ( $row->mi_type != 'link' ) {$data['link_url'] = urlencode( $data['link_url'] );}
-				if ( $row->mi_type == 'custom_link' ) {
-					$data['custom_link'] = trim( $this->input->post( 'custom_link' ) );
+					if ($row->mi_type != 'link') {$data['link_url'] = urlencode($data['link_url']);}
+				if ($row->mi_type == 'custom_link') {
+					$data['custom_link'] = trim($this->input->post('custom_link'));
 				} else {
-					$data['link_text'] = trim( $this->input->post( 'link_text' ) );
+					$data['link_text'] = trim($this->input->post('link_text'));
 				}
 				
 				// load form validation
-				$this->load->library( 'form_validation' );
+				$this->load->library('form_validation');
 				
 				// validate form
-				if ( $row->mi_type == 'custom_link' ) {
-					$this->form_validation->set_rules( 'custom_link', 'lang:menu_custom_link', 'trim|required' );
+				if ($row->mi_type == 'custom_link') {
+					$this->form_validation->set_rules('custom_link', 'lang:menu_custom_link', 'trim|required');
 				} else {
-					$this->form_validation->set_rules( 'link_text', 'lang:menu_link_text', 'trim|required' );
-					$this->form_validation->set_rules( 'link_url', 'lang:menu_link_url', 'trim|required' );
+					$this->form_validation->set_rules('link_text', 'lang:menu_link_text', 'trim|required');
+					$this->form_validation->set_rules('link_url', 'lang:menu_link_url', 'trim|required');
 				}
 				
-				if ( $this->form_validation->run() == false ) {
-					echo '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors( '<li>', '</li>' ).'</ul></div>';
+				if ($this->form_validation->run() == false) {
+					echo '<div class="txt_error alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><ul>'.validation_errors('<li>', '</li>').'</ul></div>';
 					exit;
 				} else {
 					// update menu item
-					$this->menu_model->edit_item( $data );
+					$this->menu_model->edit_item($data);
 					echo 'true';
 					exit;
 				}
 			}
 			
 			// output
-			if ( $row->mi_type == 'custom_link' ) {
-				$this->load->view( 'site-admin/templates/menu/menu_ajax_inlineedit_customlink', $output );
+			if ($row->mi_type == 'custom_link') {
+				$this->load->view('site-admin/templates/menu/menu_ajax_inlineedit_customlink', $output);
 			} else {
-				$this->load->view( 'site-admin/templates/menu/menu_ajax_inlineedit_link', $output );
+				$this->load->view('site-admin/templates/menu/menu_ajax_inlineedit_link', $output);
 			}
 		}
 	}// ajax_edititem
 	
 	
-	function ajax_searchpost( $post_type = '' ) {
+	function ajax_searchpost($post_type = '') {
 		// load language
-		$this->lang->load( 'post' );
+		$this->lang->load('post');
 		
 		// search value
-		$_GET['q'] = trim( $this->input->get( 'term' ) );
+		$_GET['q'] = trim($this->input->get('term'));
 		
 		// set post type in post_model
 		$this->posts_model->post_type = $post_type;
 		
 		// list posts
-		$list_posts = $this->posts_model->list_item( 'admin' );
+		$list_posts = $this->posts_model->list_item('admin');
 		
 		$output = '';
 		
-		if ( isset( $list_posts['items'] ) && is_array( $list_posts['items'] ) ) {
+		if (isset($list_posts['items']) && is_array($list_posts['items'])) {
 			$i = 0;
-			foreach ( $list_posts['items'] as $row ) {
+			foreach ($list_posts['items'] as $row) {
 				$output[$i]['id'] = $row->post_id;
 				$output[$i]['value'] = $row->post_name;
-				$output[$i]['status'] = ($row->post_status == '1' ? lang( 'post_published' ) : lang( 'post_draft' ) );
+				$output[$i]['status'] = ($row->post_status == '1' ? lang('post_published') : lang('post_draft'));
 				$i++;
 			}
 		}
 		
 		// clear unused items
-		unset( $list_posts, $i, $row );
+		unset($list_posts, $i, $row);
 		
 		// output
-		$this->output->set_content_type( 'application/json' );
-		$this->output->set_output( json_encode( $output ) );
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($output));
 	}// ajax_searchpost
 	
 	
 	function ajax_searchtag() {
 		// search value
-		$_GET['q'] = trim( $this->input->get( 'term' ) );
+		$_GET['q'] = trim($this->input->get('term'));
 		
 		// set taxterm type in taxonomy_model
 		$this->taxonomy_model->tax_type = 'tag';
 		
 		// list tags
-		$list_tags = $this->taxonomy_model->list_tags( 'admin' );
+		$list_tags = $this->taxonomy_model->list_tags('admin');
 		
 		$output = '';
 		
-		if ( isset( $list_tags['items'] ) && is_array( $list_tags['items'] ) ) {
+		if (isset($list_tags['items']) && is_array($list_tags['items'])) {
 			$i = 0;// important. can't use other number in array key. because jqueryui autocomplete count from 0 and +1 for each array
-			foreach ( $list_tags['items'] as $row ) {
+			foreach ($list_tags['items'] as $row) {
 				$output[$i]['id'] = $row->tid;
 				$output[$i]['value'] = $row->t_name;
 				$i++;
@@ -301,58 +301,58 @@ class menu extends admin_controller {
 		}
 		
 		// clear unused items
-		unset( $list_tags, $i, $row );
+		unset($list_tags, $i, $row);
 		
 		// output
-		$this->output->set_content_type( 'application/json' );
-		$this->output->set_output( json_encode( $output ) );
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($output));
 	}// ajax_searchtag
 	
 	
-	function ajax_sortitem( $mg_id = '' ) {
+	function ajax_sortitem($mg_id = '') {
 		// check permission
-		if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_sort_perm' ) != true ) {exit;}
+		if ($this->account_model->check_admin_permission('menu_perm', 'menu_sort_perm') != true) {exit;}
 		
-		if ( $this->input->is_ajax_request() ) {
-			foreach ( $this->input->post() as $key => $item ) {
-				if ( is_array($item) ) {
+		if ($this->input->is_ajax_request()) {
+			foreach ($this->input->post() as $key => $item) {
+				if (is_array($item)) {
 					$position = 1;
 					
-					foreach ( $item as $key1 => $item1 ) {
-						$item1 = str_replace( array( 'root', 'null' ), '0', $item1 );
+					foreach ($item as $key1 => $item1) {
+						$item1 = str_replace(array('root', 'null'), '0', $item1);
 						$this->db->set("parent_id", $item1);
-						$this->db->set( 'position', $position );
-						$this->db->where( 'mi_id', $key1 );
-						$this->db->where( 'mg_id', $mg_id );
-						$this->db->update( 'menu_items' );
+						$this->db->set('position', $position);
+						$this->db->where('mi_id', $key1);
+						$this->db->where('mg_id', $mg_id);
+						$this->db->update('menu_items');
 						$position++;
 					}
 				}
 			}
 			
-			unset( $key, $key1, $item, $item1 );
+			unset($key, $key1, $item, $item1);
 			
 			$this->menu_model->rebuild();
 			
-			echo '<div class="txt_success alert alert-success">'.$this->lang->line( 'admin_saved' ).'</div>';
+			echo '<div class="txt_success alert alert-success">'.$this->lang->line('admin_saved').'</div>';
 		}
 	}// ajax_sortitem
 	
 	
-	function editgroup( $mg_id = '' ) {
+	function editgroup($mg_id = '') {
 		// check permission
-		if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_edit_group_perm' ) != true ) {redirect( 'site-admin' );}
+		if ($this->account_model->check_admin_permission('menu_perm', 'menu_edit_group_perm') != true) {redirect('site-admin');}
 		
-		if ( !is_numeric( $mg_id ) ) {redirect( 'site-admin/menu' );}
+		if (!is_numeric($mg_id)) {redirect('site-admin/menu');}
 		
 		// open menu groups table for edit
 		$data['mg_id'] = $mg_id;
 		$data['language'] = $this->menu_model->language;
-		$row = $this->menu_model->get_mg_data_db( $data );
-		unset( $data );
+		$row = $this->menu_model->get_mg_data_db($data);
+		unset($data);
 		
 		// not found
-		if ( $row == null ) {redirect( 'site-admin/menu' );}
+		if ($row == null) {redirect('site-admin/menu');}
 		
 		// store data for form
 		$output['mg_name'] = $row->mg_name;
@@ -360,24 +360,24 @@ class menu extends admin_controller {
 		$output['row'] = $row;
 		
 		// save action
-		if ( $this->input->post() ) {
+		if ($this->input->post()) {
 			$data['mg_id'] = $mg_id;
-			$data['mg_name'] = htmlspecialchars( trim( $this->input->post( 'mg_name' ) ), ENT_QUOTES, config_item( 'charset' ) );
-			$data['mg_description'] = htmlspecialchars( trim( $this->input->post( 'mg_description' ) ), ENT_QUOTES, config_item( 'charset' ) );
-				if ( $data['mg_description'] == null ) {$data['mg_description'] = null;}
+			$data['mg_name'] = htmlspecialchars(trim($this->input->post('mg_name')), ENT_QUOTES, config_item('charset'));
+			$data['mg_description'] = htmlspecialchars(trim($this->input->post('mg_description')), ENT_QUOTES, config_item('charset'));
+				if ($data['mg_description'] == null) {$data['mg_description'] = null;}
 			
 			// load form validation
-			$this->load->library( 'form_validation' );
-			$this->form_validation->set_rules( 'mg_name', 'lang:menu_group_name', 'trim|required' );
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules('mg_name', 'lang:menu_group_name', 'trim|required');
 			
-			if ( $this->form_validation->run() == false ) {
+			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$result = $this->menu_model->edit_group( $data );
-				if ( $result === true ) {
+				$result = $this->menu_model->edit_group($data);
+				if ($result === true) {
 					// load session library
-					$this->load->library( 'session' );
+					$this->load->library('session');
 					$this->session->set_flashdata(
 						'form_status',
 						array(
@@ -385,7 +385,7 @@ class menu extends admin_controller {
 							'form_status_message' => $this->lang->line('admin_saved')
 						)
 					);
-					redirect( 'site-admin/menu' );
+					redirect('site-admin/menu');
 				} else {
 					$output['form_status'] = 'error';
 					$output['form_status_message'] = $result;
@@ -398,27 +398,27 @@ class menu extends admin_controller {
 		}
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'menu_menu' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('menu_menu'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		$this->generate_page( 'site-admin/templates/menu/menu_aegroup_view', $output );
+		$this->generate_page('site-admin/templates/menu/menu_aegroup_view', $output);
 	}// editgroup
 	
 	
 	function index() {
 		// check permission
-		if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_viewall_group_perm' ) != true ) {redirect( 'site-admin' );}
+		if ($this->account_model->check_admin_permission('menu_perm', 'menu_viewall_group_perm') != true) {redirect('site-admin');}
 		
 		// orders, sort for link
-		$output['orders'] = strip_tags( trim( $this->input->get( 'orders' ) ) );
-		$output['sort'] = ($this->input->get( 'sort' ) == null || $this->input->get( 'sort' ) == 'asc' ? 'desc' : 'asc' );
+		$output['orders'] = strip_tags(trim($this->input->get('orders')));
+		$output['sort'] = ($this->input->get('sort') == null || $this->input->get('sort') == 'asc' ? 'desc' : 'asc');
 		
 		// load session for flashdata
-		$this->load->library( 'session' );
+		$this->load->library('session');
 		$form_status = $this->session->flashdata('form_status');
 		if (isset($form_status['form_status']) && isset($form_status['form_status_message'])) {
 			$output['form_status'] = $form_status['form_status'];
@@ -428,37 +428,37 @@ class menu extends admin_controller {
 		
 		// list menu group
 		$output['list_group'] = $this->menu_model->list_group();
-		if ( is_array( $output['list_group'] ) ) {
+		if (is_array($output['list_group'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'menu_menu' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('menu_menu'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		$this->generate_page( 'site-admin/templates/menu/menu_allgroup_view', $output );
+		$this->generate_page('site-admin/templates/menu/menu_allgroup_view', $output);
 	}// index
 	
 	
-	function item( $mg_id = '' ) {
+	function item($mg_id = '') {
 		// check permission
-		if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_viewall_menu_perm' ) != true ) {redirect( 'site-admin' );}
+		if ($this->account_model->check_admin_permission('menu_perm', 'menu_viewall_menu_perm') != true) {redirect('site-admin');}
 		
-		if ( !is_numeric( $mg_id ) ) {redirect( 'site-admin/menu' );}
+		if (!is_numeric($mg_id)) {redirect('site-admin/menu');}
 		
 		$output['mg_id'] = $mg_id;
 		
 		// query menu_groups for display info.
 		$data['mg_id'] = $mg_id;
 		$data['language'] = $this->lang->get_current_lang();
-		$row = $this->menu_model->get_mg_data_db( $data );
-		unset( $data );
+		$row = $this->menu_model->get_mg_data_db($data);
+		unset($data);
 		
-		if ( $row == null ) {redirect( 'site-admin/menu' );}
+		if ($row == null) {redirect('site-admin/menu');}
 		
 		$output['mg'] = $row;
 		
@@ -468,48 +468,48 @@ class menu extends admin_controller {
 		
 		// pages for add
 		$this->posts_model->post_type = 'page';
-		$output['list_page'] = $this->posts_model->list_item( 'admin' );
-		if ( is_array( $output['list_page'] ) ) {
+		$output['list_page'] = $this->posts_model->list_item('admin');
+		if (is_array($output['list_page'])) {
 			$output['page_pagination'] = $this->pagination->create_links();
 		}
 		
 		// list menu_items
-		$output['list_item'] = $this->menu_model->list_item( $mg_id );
+		$output['list_item'] = $this->menu_model->list_item($mg_id);
 		
 		// head tags output ##############################
-		$output['page_title'] = $this->html_model->gen_title( $this->lang->line( 'menu_menu' ) );
+		$output['page_title'] = $this->html_model->gen_title($this->lang->line('menu_menu'));
 		// meta tags
 		// link tags
 		// script tags
 		// end head tags output ##############################
 		
 		// output
-		$this->output->set_header( 'Cache-Control: no-store, no-cache, must-revalidate' );
-		$this->output->set_header( 'Pragma: no-cache' );
-		$this->generate_page( 'site-admin/templates/menu/menu_allitem_view', $output );
+		$this->output->set_header('Cache-Control: no-store, no-cache, must-revalidate');
+		$this->output->set_header('Pragma: no-cache');
+		$this->generate_page('site-admin/templates/menu/menu_allitem_view', $output);
 	}// item
 	
 	
 	function process_group() {
-		$id = $this->input->post( 'id' );
-		$act = trim( $this->input->post( 'act' ) );
+		$id = $this->input->post('id');
+		$act = trim($this->input->post('act'));
 		
-		if ( $act == 'del' ) {
+		if ($act == 'del') {
 			// check permission
-			if ( $this->account_model->check_admin_permission( 'menu_perm', 'menu_delete_group_perm' ) != true ) {redirect( 'site-admin' );}
-			if ( is_array( $id ) ) {
-				foreach ( $id as $an_id ) {
-					$this->menu_model->delete_group( $an_id );
+			if ($this->account_model->check_admin_permission('menu_perm', 'menu_delete_group_perm') != true) {redirect('site-admin');}
+			if (is_array($id)) {
+				foreach ($id as $an_id) {
+					$this->menu_model->delete_group($an_id);
 				}
 			}
 		}
 		
 		// go back
-		$this->load->library( 'user_agent' );
-		if ( $this->agent->is_referral() ) {
-			redirect( $this->agent->referrer() );
+		$this->load->library('user_agent');
+		if ($this->agent->is_referral()) {
+			redirect($this->agent->referrer());
 		} else {
-			redirect( 'site-admin/account' );
+			redirect('site-admin/account');
 		}
 	}// process_group
 	

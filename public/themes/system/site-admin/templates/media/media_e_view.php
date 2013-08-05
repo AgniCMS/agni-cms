@@ -1,6 +1,6 @@
 <div class="page-edit-media">
 	
-	<h1><?php echo sprintf( lang( 'media_edit_file' ), $row->file_name ); ?></h1>
+	<h1><?php echo sprintf(lang('media_edit_file'), $row->file_name); ?></h1>
 	
 	<?php echo form_open(); ?> 
 		<div class="form-result">
@@ -17,7 +17,7 @@
 				<?php $media_type = 'image'; ?> 
 				
 				<div class="image-container">
-					<a href="<?php echo base_url().$row->file; ?>" class=" btn btn-small"><span class="icon-zoom-in"></span> <?php echo lang( 'media_view_full_image' ); ?></a>
+					<a href="<?php echo base_url().$row->file; ?>" class=" btn btn-small"><span class="icon-zoom-in"></span> <?php echo lang('media_view_full_image'); ?></a>
 					<div class="space-break"></div>
 					<div class="media-screenshot-placeholder">
 						<img src="<?php echo base_url().$row->file; ?>" alt="<?php echo $row->file_original_name; ?>" class="media-screenshot" id="media-image" />
@@ -25,7 +25,7 @@
 				</div>
 				
 				<?php } else { ?> 
-					<?php echo $this->modules_plug->do_filter( 'media_review', $row->file_id ); ?> 
+					<?php echo $this->modules_plug->do_filter('media_review', $row->file_id); ?> 
 				<?php } //endif; ?> 
 			</div>
 		</div><!--.row-fluid-->
@@ -34,11 +34,11 @@
 	
 		<div class="container">
 			<div class="row edit-image-row">
-				<?php list( $width, $height ) = getimagesize( $row->file ); ?> 
+				<?php list($width, $height) = getimagesize($row->file); ?> 
 					
 				<div class="span4">
 					<div class="row-fluid">
-						<label class="span2" for="resize-width"><?php echo lang( 'media_width' ); ?>: </label>
+						<label class="span2" for="resize-width"><?php echo lang('media_width'); ?>: </label>
 						<div class="span10">
 							<input type="text" name="width" value="<?php echo $width; ?>" class="newwidth input-block-level" id="resize-width" />
 						</div>
@@ -47,7 +47,7 @@
 
 				<div class="span4">
 					<div class="row-fluid">
-						<label class="span2" for="resize-height"><?php echo lang( 'media_height' ); ?>: </label>
+						<label class="span2" for="resize-height"><?php echo lang('media_height'); ?>: </label>
 						<div class="span10">
 							<input type="text" name="height" value="<?php echo $height; ?>" class="newheight input-block-level" id="resize-height" />
 						</div>
@@ -56,10 +56,10 @@
 
 				<div class="span4">
 					<label class="checkbox inline">
-						<input type="checkbox" name="aspect_ratio" value="yes" checked="checked" class="resize-ratio" /><?php echo lang( 'media_aspect_ratio' ); ?>
+						<input type="checkbox" name="aspect_ratio" value="yes" checked="checked" class="resize-ratio" /><?php echo lang('media_aspect_ratio'); ?>
 					</label>
 
-					<button type="button" class="bb-button resize-image btn pull-right" onclick="ajax_resize( <?php echo $row->file_id; ?> );"><?php echo lang( 'media_resize_now' ); ?></button>
+					<button type="button" class="bb-button resize-image btn pull-right" onclick="ajax_resize(<?php echo $row->file_id; ?>);"><?php echo lang('media_resize_now'); ?></button>
 
 					<div class="clearfix"></div>
 				</div>
@@ -73,8 +73,8 @@
 					<strong>Y1:</strong><span class="crop_y1"></span>
 					<strong>X2:</strong><span class="crop_x2"></span>
 					<strong>Y2:</strong><span class="crop_y2"></span>-->
-					<strong><?php echo lang( 'media_width' ); ?>:</strong><span class="crop_w"></span>
-					<strong><?php echo lang( 'media_height' ); ?>:</strong><span class="crop_h"></span>
+					<strong><?php echo lang('media_width'); ?>:</strong><span class="crop_w"></span>
+					<strong><?php echo lang('media_height'); ?>:</strong><span class="crop_h"></span>
 					
 					<input type="hidden" name="crop_x1" value="" class="input_crop_x1" />
 					<input type="hidden" name="crop_y1" value="" class="input_crop_y1" />
@@ -82,7 +82,7 @@
 					<input type="hidden" name="crop_y2" value="" class="input_crop_y2" />
 					<input type="hidden" name="crop_w" value="" class="input_crop_w" />
 					<input type="hidden" name="crop_h" value="" class="input_crop_h" />
-					<button type="button" class="btn" onclick="ajax_crop( <?php echo $row->file_id; ?> );"><?php echo lang('media_crop_selected_area'); ?></button>
+					<button type="button" class="btn" onclick="ajax_crop(<?php echo $row->file_id; ?>);"><?php echo lang('media_crop_selected_area'); ?></button>
 				</div>
 			</div><!--.edit-image-row .edit-image-crop-row-->
 			
@@ -92,28 +92,28 @@
 					<div class="edit-info-column">
 
 						<div class="control-group">
-							<label class="control-label"><?php echo lang( 'media_upload_by' ); ?>: </label>
+							<label class="control-label"><?php echo lang('media_upload_by'); ?>: </label>
 							<div class="controls">
 								<?php echo $row->account_username; ?> 
 							</div>
 						</div>
 
 						<div class="control-group">
-							<label class="control-label" for="media_name"><?php echo lang( 'media_name' ); ?>: </label>
+							<label class="control-label" for="media_name"><?php echo lang('media_name'); ?>: </label>
 							<div class="controls">
 								<input type="text" name="media_name" value="<?php echo $media_name; ?>" maxlength="255" class="input-block-level" id="media_name" />
 							</div>
 						</div>
 
 						<div class="control-group">
-							<label class="control-label" for="media_description"><?php echo lang( 'media_description' ); ?>: </label>
+							<label class="control-label" for="media_description"><?php echo lang('media_description'); ?>: </label>
 							<div class="controls">
 								<textarea name="media_description" cols="30" rows="7" class="input-block-level" id="media_description"><?php echo $media_description; ?></textarea>
 							</div>
 						</div>
 
 						<div class="control-group">
-							<label class="control-label" for="media_keywords"><?php echo lang( 'media_keywords' ); ?>: </label>
+							<label class="control-label" for="media_keywords"><?php echo lang('media_keywords'); ?>: </label>
 							<div class="controls">
 								<input type="text" name="media_keywords" value="<?php echo $media_keywords; ?>" maxlength="255" class="input-block-level" id="media_keywords" />
 							</div>
@@ -121,7 +121,7 @@
 
 						<div class="control-group">
 							<div class="controls">
-								<button type="submit" class="bb-button btn btn-primary"><?php echo lang( 'admin_save' ); ?></button>
+								<button type="submit" class="bb-button btn btn-primary"><?php echo lang('admin_save'); ?></button>
 							</div>
 						</div>
 
@@ -135,13 +135,13 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		<?php if ( isset( $media_type ) && $media_type == 'image' ): ?>
+		<?php if (isset($media_type) && $media_type == 'image'): ?>
 		// start preview auto size
 		$('.newwidth').keyup(function() {
-			preview_autosize( 'width' );
+			preview_autosize('width');
 		});
 		$('.newheight').keyup(function() {
-			preview_autosize( 'height' );
+			preview_autosize('height');
 		});
 		// end preview auto size
 		
@@ -151,8 +151,8 @@
 	});// jquery
 	
 	
-	<?php if ( isset( $media_type ) && $media_type == 'image' ) { ?> 
-	function ajax_crop( file_id ) {
+	<?php if (isset($media_type) && $media_type == 'image') { ?> 
+	function ajax_crop(file_id) {
 		var crop_x1 = $('.input_crop_x1').val();
 		var crop_y1 = $('.input_crop_y1').val();
 		var crop_x2 = $('.input_crop_x2').val();
@@ -160,7 +160,7 @@
 		var crop_w = $('.input_crop_w').val();
 		var crop_h = $('.input_crop_h').val();
 		
-		if ( crop_x1 == '' || crop_y1 == '' || crop_x2 == '' || crop_y2 == '' || crop_w == '' || crop_h == '' ) {
+		if (crop_x1 == '' || crop_y1 == '' || crop_x2 == '' || crop_y2 == '' || crop_w == '' || crop_h == '') {
 			// value not set
 			return false;
 		}
@@ -170,8 +170,8 @@
 			type: 'POST',
 			data: csrf_name+'='+csrf_value+'&file_id='+file_id+'&crop_x1='+crop_x1+'&crop_y1='+crop_y1+'&crop_x2='+crop_x2+'&crop_y2='+crop_y2+'&crop_w='+crop_w+'&crop_h='+crop_h,
 			dataType: 'json',
-			success: function( data ) {
-				if ( data.result == true ) {
+			success: function(data) {
+				if (data.result == true) {
 					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					$('.media-screenshot-placeholder').html('<img src="'+data.croped_img+'" alt="" id="media-image" />');
 					init_jcrop();
@@ -182,7 +182,7 @@
 					$('body,html').animate({scrollTop: 0}, 800);
 				}
 			},
-			error: function( data, status, e ) {
+			error: function(data, status, e) {
 				// 
 			}
 		});
@@ -192,8 +192,8 @@
 	<?php } ?> 
 	
 	
-	<?php if ( isset( $media_type ) && $media_type == 'image' ): ?>
-	function ajax_resize( file_id ) {
+	<?php if (isset($media_type) && $media_type == 'image'): ?>
+	function ajax_resize(file_id) {
 		var new_height = $('.newheight').val();
 		var new_width = $('.newwidth').val();
 		$.ajax({
@@ -201,8 +201,8 @@
 			type: 'POST',
 			data: csrf_name+'='+csrf_value+'&file_id='+file_id+'&width='+new_width+'&height='+new_height,
 			dataType: 'json',
-			success: function( data ) {
-				if ( data.result == true ) {
+			success: function(data) {
+				if (data.result == true) {
 					$('.form-result').html('<div class="alert alert-'+data.form_status+'">'+data.form_status_message+'</div>');
 					$('.media-screenshot-placeholder').html('<img src="'+data.resized_img+'" alt="" id="media-image" />');
 					init_jcrop();
@@ -213,7 +213,7 @@
 					$('body,html').animate({scrollTop: 0}, 800);
 				}
 			},
-			error: function( data, status, e ) {
+			error: function(data, status, e) {
 				//
 			}
 		});
@@ -226,7 +226,7 @@
 	}// clear_status
 	
 	
-	<?php if ( isset( $media_type ) && $media_type == 'image' ) { ?> 
+	<?php if (isset($media_type) && $media_type == 'image') { ?> 
 	function init_jcrop() {
 		$('#media-image').Jcrop({
 			onChange: showCropCoords,
@@ -236,26 +236,26 @@
 	<?php } ?> 
 	
 	
-	<?php if ( isset( $media_type ) && $media_type == 'image' ): ?>
-	function preview_autosize( which_size ) {
+	<?php if (isset($media_type) && $media_type == 'image'): ?>
+	function preview_autosize(which_size) {
 		var aspect_ratio = $('.resize-ratio').is(':checked');
 		var orig_height = '<?php echo $height; ?>';
 		var orig_width = '<?php echo $width; ?>';
 		var new_height = $('.newheight').val();
 		var new_width = $('.newwidth').val();
 		//
-		if ( aspect_ratio == true ) {
-			if ( !isNumber( new_height ) && which_size == 'height' ) {
+		if (aspect_ratio == true) {
+			if (!isNumber(new_height) && which_size == 'height') {
 				new_height = 1;
-			} else if ( !isNumber( new_width ) && which_size == 'width' ) {
+			} else if (!isNumber(new_width) && which_size == 'width') {
 				new_width = 1;
 			}
 			//
-			if ( which_size == 'height' ) {
-				set_width = Math.round( (orig_width/orig_height)*new_height );
+			if (which_size == 'height') {
+				set_width = Math.round((orig_width/orig_height)*new_height);
 				$('.newwidth').val(set_width);
-			} else if ( which_size == 'width' ) {
-				set_height = Math.round( (orig_height/orig_width)*new_width );
+			} else if (which_size == 'width') {
+				set_height = Math.round((orig_height/orig_width)*new_width);
 				$('.newheight').val(set_height);
 			}
 		}

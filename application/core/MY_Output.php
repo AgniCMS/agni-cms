@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
 class MY_Output extends CI_Output {
 	
@@ -24,17 +24,17 @@ class MY_Output extends CI_Output {
 				$URI->uri_string;
 		// buld query strings
 		$querystrings = $_SERVER['QUERY_STRING'];
-		if ( $querystrings != null ) {$querystrings = "?".$querystrings;}
+		if ($querystrings != null) {$querystrings = "?".$querystrings;}
 		$uri = $uri.$querystrings;
 
 		$filepath = $cache_path.md5($uri);
 
-		if ( ! @file_exists($filepath))
+		if (! @file_exists($filepath))
 		{
 			return FALSE;
 		}
 
-		if ( ! $fp = @fopen($filepath, FOPEN_READ))
+		if (! $fp = @fopen($filepath, FOPEN_READ))
 		{
 			return FALSE;
 		}
@@ -51,7 +51,7 @@ class MY_Output extends CI_Output {
 		fclose($fp);
 
 		// Strip out the embedded timestamp
-		if ( ! preg_match("/(\d+TS--->)/", $cache, $match))
+		if (! preg_match("/(\d+TS--->)/", $cache, $match))
 		{
 			return FALSE;
 		}
@@ -87,7 +87,7 @@ class MY_Output extends CI_Output {
 
 		$cache_path = ($path == '') ? APPPATH.'cache/' : $path;
 
-		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
+		if (! is_dir($cache_path) OR ! is_really_writable($cache_path))
 		{
 			log_message('error', "Unable to write cache file: ".$cache_path);
 			return;
@@ -98,12 +98,12 @@ class MY_Output extends CI_Output {
 				$CI->uri->uri_string();
 		// buld query strings
 		$querystrings = $_SERVER['QUERY_STRING'];
-		if ( $querystrings != null ) {$querystrings = "?".$querystrings;}
+		if ($querystrings != null) {$querystrings = "?".$querystrings;}
 		$uri = $uri.$querystrings;
 
 		$cache_path .= md5($uri);
 
-		if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
+		if (! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
 		{
 			log_message('error', "Unable to write cache file: ".$cache_path);
 			return;

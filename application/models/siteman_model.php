@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 
 class siteman_model extends CI_Model {
 	
@@ -66,46 +66,46 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function add_site( $data = array() ) {
+	function add_site($data = array()) {
 		// additional data for inserting
 		$data['site_create'] = time();
-		$data['site_create_gmt'] = local_to_gmt( time() );
+		$data['site_create_gmt'] = local_to_gmt(time());
 		$data['site_update'] = time();
-		$data['site_update_gmt'] = local_to_gmt( time() );
+		$data['site_update_gmt'] = local_to_gmt(time());
 		
 		// insert into db.
-		$this->db->insert( 'sites', $data );
+		$this->db->insert('sites', $data);
 		
 		// get site_id
 		$site_id = $this->db->insert_id();
 		
 		// start copy tables
-		$this->copy_newsite_table( $site_id );
+		$this->copy_newsite_table($site_id);
 		
 		// add new theme to new site -------------------------------------------------------------------------------------------------
-		$this->load->model( 'themes_model' );
+		$this->load->model('themes_model');
 		
 		$default_theme = $this->themes_model->get_default_theme();
-		$default_theme_admin = $this->themes_model->get_default_theme( 'admin' );
+		$default_theme_admin = $this->themes_model->get_default_theme('admin');
 		
-		$this->themes_model->set_default( $default_theme, 'front', $site_id );
-		$this->themes_model->set_default( $default_theme_admin, 'admin', $site_id );
+		$this->themes_model->set_default($default_theme, 'front', $site_id);
+		$this->themes_model->set_default($default_theme_admin, 'admin', $site_id);
 		
-		unset( $default_theme, $default_theme_admin );
+		unset($default_theme, $default_theme_admin);
 		// add new theme to new site -------------------------------------------------------------------------------------------------
 		
 		// set config for new site.
 		$config_site['config_value'] = $data['site_name'];
-		$this->db->where( 'config_name', 'site_name' );
-		$this->db->update( $this->db->dbprefix( $site_id.'_config' ), $config_site );
-		unset( $config_site );
+		$this->db->where('config_name', 'site_name');
+		$this->db->update($this->db->dbprefix($site_id.'_config'), $config_site);
+		unset($config_site);
 		
 		// system log
 		$log['sl_type'] = 'multisite';
 		$log['sl_message'] = 'Add new site';
-		$this->load->model( 'syslog_model' );
-		$this->syslog_model->add_new_log( $log );
-		unset( $log );
+		$this->load->model('syslog_model');
+		$this->syslog_model->add_new_log($log);
+		unset($log);
 		
 		return true;
 	}// add_site
@@ -117,22 +117,22 @@ class siteman_model extends CI_Model {
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	function copy_newsite_table( $site_id = '' ) {
-		foreach ( $this->core_tables as $table ) {
-			if ( $table == 'account_level' || $table == 'account_level_group' || $table == 'config' ) {
+	function copy_newsite_table($site_id = '') {
+		foreach ($this->core_tables as $table) {
+			if ($table == 'account_level' || $table == 'account_level_group' || $table == 'config') {
 				// this table needs to copy data
-				$sql = 'CREATE TABLE IF NOT EXISTS '.$this->db->dbprefix( $site_id.'_'.$table ).' SELECT * FROM '.$this->db->dbprefix( $table );
+				$sql = 'CREATE TABLE IF NOT EXISTS '.$this->db->dbprefix($site_id.'_'.$table).' SELECT * FROM '.$this->db->dbprefix($table);
 			} else {
-				$sql = 'CREATE TABLE IF NOT EXISTS '.$this->db->dbprefix( $site_id.'_'.$table ).' LIKE '.$this->db->dbprefix( $table );
+				$sql = 'CREATE TABLE IF NOT EXISTS '.$this->db->dbprefix($site_id.'_'.$table).' LIKE '.$this->db->dbprefix($table);
 			}
-			$this->db->query( $sql );
+			$this->db->query($sql);
 		}
 		
 		// change all accounts level to member (except admin and guest).
-		$this->db->where( 'account_id != 0' );
-		$this->db->where( 'account_id != 1' );
-		$this->db->set( 'level_group_id', '3' );
-		$this->db->update( $this->db->dbprefix( $site_id.'_account_level' ) );
+		$this->db->where('account_id != 0');
+		$this->db->where('account_id != 1');
+		$this->db->set('level_group_id', '3');
+		$this->db->update($this->db->dbprefix($site_id.'_account_level'));
 		
 		// done
 		return true;
@@ -144,44 +144,44 @@ class siteman_model extends CI_Model {
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	function delete_site( $site_id = '' ) {
+	function delete_site($site_id = '') {
 		// do not allow admin/user delete first site.
-		if ( $site_id == '1' ) {
+		if ($site_id == '1') {
 			return false;
 		}
 		
 		// delete related _sites table ----------------------------------------------------------------------------------------------------
 		// delete from account_sites table
-		$this->db->where( 'site_id', $site_id )->delete( 'account_sites' );
+		$this->db->where('site_id', $site_id)->delete('account_sites');
 		
 		// delete from module_sites table
-		$this->db->where( 'site_id', $site_id )->delete( 'module_sites' );
+		$this->db->where('site_id', $site_id)->delete('module_sites');
 		
 		// delete from syslog table
-		$this->db->where( 'site_id', $site_id )->delete( 'syslog' );
+		$this->db->where('site_id', $site_id)->delete('syslog');
 		
 		// delete from theme_sites table
-		$this->db->where( 'site_id', $site_id )->delete( 'theme_sites' );
+		$this->db->where('site_id', $site_id)->delete('theme_sites');
 		// delete related _sites table ----------------------------------------------------------------------------------------------------
 		
 		// drop siteNumber_ tables ------------------------------------------------------------------------------------------------------
 		$this->load->dbforge();
 		
 		// drop site tables
-		foreach ( $this->core_tables as $table ) {
-			$this->dbforge->drop_table( $site_id.'_'.$table );
+		foreach ($this->core_tables as $table) {
+			$this->dbforge->drop_table($site_id.'_'.$table);
 		}
 		// drop siteNumber_ tables ------------------------------------------------------------------------------------------------------
 		
 		// delete site from db
-		$this->db->delete( 'sites', array( 'site_id' => $site_id ) );
+		$this->db->delete('sites', array('site_id' => $site_id));
 		
 		// system log
 		$log['sl_type'] = 'multisite';
 		$log['sl_message'] = 'Delete site';
-		$this->load->model( 'syslog_model' );
-		$this->syslog_model->add_new_log( $log );
-		unset( $log );
+		$this->load->model('syslog_model');
+		$this->syslog_model->add_new_log($log);
+		unset($log);
 		
 		// done 
 		return true;
@@ -193,38 +193,38 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function edit_site( $data = array() ) {
+	function edit_site($data = array()) {
 		// additional data for updating
 		$data['site_update'] = time();
-		$data['site_update_gmt'] = local_to_gmt( time() );
+		$data['site_update_gmt'] = local_to_gmt(time());
 		
 		// filter data before update
-		if ( $data['site_id'] == '1' ) {
+		if ($data['site_id'] == '1') {
 			// site 1 always enabled.
 			$data['site_status'] = '1';
 		}
 		
 		// update to db
-		$this->db->where( 'site_id', $data['site_id'] );
-		$this->db->update( 'sites', $data );
+		$this->db->where('site_id', $data['site_id']);
+		$this->db->update('sites', $data);
 		
 		// set config for new site.
 		$config_site['config_value'] = $data['site_name'];
-		if ( $data['site_id'] == '1' ) {
+		if ($data['site_id'] == '1') {
 			$config_table = 'config';
 		} else {
 			$config_table = $data['site_id'].'_config';
 		}
-		$this->db->where( 'config_name', 'site_name' );
-		$this->db->update( $this->db->dbprefix( $config_table ), $config_site );
-		unset( $config_site );
+		$this->db->where('config_name', 'site_name');
+		$this->db->update($this->db->dbprefix($config_table), $config_site);
+		unset($config_site);
 		
 		// system log
 		$log['sl_type'] = 'multisite';
 		$log['sl_message'] = 'Update site';
-		$this->load->model( 'syslog_model' );
-		$this->syslog_model->add_new_log( $log );
-		unset( $log );
+		$this->load->model('syslog_model');
+		$this->syslog_model->add_new_log($log);
+		unset($log);
 		
 		// done
 		return true;
@@ -236,14 +236,14 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function get_site_data_db( $data = array() ) {
-		if ( !empty( $data ) ) {
-			$this->db->where( $data );
+	function get_site_data_db($data = array()) {
+		if (!empty($data)) {
+			$this->db->where($data);
 		}
 		
-		$query = $this->db->get( 'sites' );
+		$query = $this->db->get('sites');
 		
-		if ( $query->num_rows() > 0 ) {
+		if ($query->num_rows() > 0) {
 			return $query->row();
 		}
 		
@@ -257,18 +257,18 @@ class siteman_model extends CI_Model {
 	 * @param boolean $enabled_only
 	 * @return integer
 	 */
-	function get_site_id( $enabled_only = true ) {
-		$site_domain = $this->input->server( 'HTTP_HOST' );
+	function get_site_id($enabled_only = true) {
+		$site_domain = $this->input->server('HTTP_HOST');
 		
 		// get site info from db
 		$data['site_domain'] = $site_domain;
-		if ( $enabled_only === true ) {
+		if ($enabled_only === true) {
 			$data['site_status'] = '1';
 		}
-		$site = $this->get_site_data_db( $data );
-		unset( $data );
+		$site = $this->get_site_data_db($data);
+		unset($data);
 		
-		if ( $site != null ) {
+		if ($site != null) {
 			return $site->site_id;
 		}
 		
@@ -281,13 +281,13 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function list_websites( $data = array() ) {
-		if ( is_array( $data ) && !empty( $data ) ) {
-			$this->db->where( $data );
+	function list_websites($data = array()) {
+		if (is_array($data) && !empty($data)) {
+			$this->db->where($data);
 		}
 		
-		$q = trim( $this->input->get( 'q' ) );
-		if ( $q != null && $q != 'none' ) {
+		$q = trim($this->input->get('q'));
+		if ($q != null && $q != 'none') {
 			$like_data[0]['field'] = 'sites.site_id';
 			$like_data[0]['match'] = $q;
 			$like_data[1]['field'] = 'sites.site_name';
@@ -296,36 +296,36 @@ class siteman_model extends CI_Model {
 			$like_data[2]['match'] = $q;
 			$like_data[3]['field'] = 'sites.site_status';
 			$like_data[3]['match'] = $q;
-			$this->db->like_group( $like_data );
-			unset( $like_data );
+			$this->db->like_group($like_data);
+			unset($like_data);
 		}
 		
 		// order and sort
-		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
-		$orders = ( $orders != null ? $orders : 'site_id' );
-		$orders = ( !in_array( $orders, array( 'site_id', 'site_name', 'site_domain', 'site_status' ) ) ? 'site_id' : $orders );
-		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
-		$sort = ( $sort != null ? $sort : 'asc' );
-		$this->db->order_by( $orders, $sort );
+		$orders = strip_tags(trim($this->input->get('orders')));
+		$orders = ($orders != null ? $orders : 'site_id');
+		$orders = (!in_array($orders, array('site_id', 'site_name', 'site_domain', 'site_status')) ? 'site_id' : $orders);
+		$sort = strip_tags(trim($this->input->get('sort')));
+		$sort = ($sort != null ? $sort : 'asc');
+		$this->db->order_by($orders, $sort);
 		
 		// clone object before run $this->db->get()
 		$this_db = clone $this->db;
 		
 		// query for count total
-		$query = $this->db->get( 'sites' );
+		$query = $this->db->get('sites');
 		$total = $query->num_rows();
 		$query->free_result();
 		
 		// restore $this->db object
 		$this->db = $this_db;
-		unset( $this_db );
+		unset($this_db);
 		
 		// html encode for links.
-		$q = urlencode( htmlspecialchars( $q ) );
+		$q = urlencode(htmlspecialchars($q));
 		
 		// pagination-----------------------------
-		$this->load->library( 'pagination' );
-		$config['base_url'] = site_url( $this->uri->uri_string() ).'?orders='.htmlspecialchars( $orders ).'&amp;sort='.htmlspecialchars( $sort ).( $q != null ?'&amp;q='.$q : '' );
+		$this->load->library('pagination');
+		$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort).($q != null ?'&amp;q='.$q : '');
 		$config['per_page'] = 20;
 		$config['total_rows'] = $total;
 		// pagination tags customize for bootstrap css framework
@@ -348,16 +348,16 @@ class siteman_model extends CI_Model {
 		// end customize for bootstrap
 		$config['first_link'] = '|&lt;';
 		$config['last_link'] = '&gt;|';
-		$this->pagination->initialize( $config );
+		$this->pagination->initialize($config);
 		// pagination create links in controller or view. $this->pagination->create_links();
 		// end pagination-----------------------------
 		
 		// limit query
-		$this->db->limit( $config['per_page'], ( $this->input->get( 'per_page' ) == null ? '0' : $this->input->get( 'per_page' ) ) );
+		$this->db->limit($config['per_page'], ($this->input->get('per_page') == null ? '0' : $this->input->get('per_page')));
 		
-		$query = $this->db->get( 'sites' );
+		$query = $this->db->get('sites');
 		
-		if ( $query->num_rows() > 0 ) {
+		if ($query->num_rows() > 0) {
 			$output['total'] = $total;
 			$output['items'] = $query->result();
 			$query->free_result();
@@ -374,22 +374,22 @@ class siteman_model extends CI_Model {
 	 * @param array $data
 	 * @return mixed
 	 */
-	function list_websites_all( $data = array() ) {
-		if ( is_array( $data ) && !empty( $data ) ) {
-			$this->db->where( $data );
+	function list_websites_all($data = array()) {
+		if (is_array($data) && !empty($data)) {
+			$this->db->where($data);
 		}
 		
 		// order and sort
-		$orders = strip_tags( trim( $this->input->get( 'orders' ) ) );
-		$orders = ( $orders != null ? $orders : 'site_name' );
-		$orders = ( !in_array( $orders, array( 'site_id', 'site_name', 'site_domain', 'site_status' ) ) ? 'site_name' : $orders );
-		$sort = strip_tags( trim( $this->input->get( 'sort' ) ) );
-		$sort = ( $sort != null ? $sort : 'asc' );
-		$this->db->order_by( $orders, $sort );
+		$orders = strip_tags(trim($this->input->get('orders')));
+		$orders = ($orders != null ? $orders : 'site_name');
+		$orders = (!in_array($orders, array('site_id', 'site_name', 'site_domain', 'site_status')) ? 'site_name' : $orders);
+		$sort = strip_tags(trim($this->input->get('sort')));
+		$sort = ($sort != null ? $sort : 'asc');
+		$this->db->order_by($orders, $sort);
 		
-		$query = $this->db->get( 'sites' );
+		$query = $this->db->get('sites');
 		
-		if ( $query->num_rows() > 0 ) {
+		if ($query->num_rows() > 0) {
 			$output['total'] = $query->num_rows();
 			$output['items'] = $query->result();
 			$query->free_result();

@@ -1,4 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * 
  * PHP version 5
@@ -59,7 +59,7 @@ class MY_Lang extends MX_Lang {
 			 * add if (!$lan_ignore) to fix $this->uri->segment(n);
 			 * @author vee w.
 			 */
-			if ( !$lang_ignore ) {
+			if (!$lang_ignore) {
 				/* reset uri segments and uri string */
 				$URI->_reindex_segments(array_shift($URI->segments));
 			}
@@ -73,7 +73,7 @@ class MY_Lang extends MX_Lang {
 				 * hide lang abbr in url if ignore default is true and lang abbr = default abbr
 				 * @author vee w. 
 				 */
-				if ( $config['lang_ignore_default'] == false || ($config['lang_ignore_default'] == true && $lang_abbr != $default_abbr) ) {
+				if ($config['lang_ignore_default'] == false || ($config['lang_ignore_default'] == true && $lang_abbr != $default_abbr)) {
 					/* check and set the uri identifier */
 					$index_page .= empty($index_page) ? $lang_abbr : "/$lang_abbr";
 					/* reset the index_page value */
@@ -89,7 +89,7 @@ class MY_Lang extends MX_Lang {
 				 * hide lang abbr in url if ignore default is true and lang abbr = default abbr
 				 * @author vee w. 
 				 */
-				if ( $config['lang_ignore_default'] == false ) {
+				if ($config['lang_ignore_default'] == false) {
 					/* check and set the uri identifier to the default value */
 					$index_page .= empty($index_page) ? $default_abbr : "/$default_abbr";
 					if (strlen($lang_abbr) == 2) {
@@ -115,12 +115,12 @@ class MY_Lang extends MX_Lang {
 	 * @param boolean $return_abbr
 	 * @return string 
 	 */
-	function get_current_lang( $return_abbr = true ) {
+	function get_current_lang($return_abbr = true) {
 		global $CFG;
 		$config = & $CFG->config;
 		$lang_uri_abbr = $config['lang_uri_abbr'];
-		if ( $return_abbr ) {
-			return array_search( $config['language'], $lang_uri_abbr );
+		if ($return_abbr) {
+			return array_search($config['language'], $lang_uri_abbr);
 		} else {
 			return $config['language'];
 		}
@@ -211,7 +211,7 @@ class MY_Lang extends MX_Lang {
 
 		if ($idiom == '')
 		{
-			$deft_lang = ( ! isset($config['language'])) ? 'english' : $config['language'];
+			$deft_lang = (! isset($config['language'])) ? 'english' : $config['language'];
 			$idiom = ($deft_lang == '') ? 'english' : $deft_lang;
 		}
 
@@ -241,7 +241,7 @@ class MY_Lang extends MX_Lang {
 		}
 
 
-		if ( ! isset($lang))
+		if (! isset($lang))
 		{
 			log_message('error', 'Language file contains no data: language/'.$idiom.'/'.$langfile);
 			return;

@@ -24,19 +24,19 @@ class blog_install extends admin_controller {
 	
 	function index() {
 		// install module table.
-		if ( !$this->db->table_exists( 'blog' ) ) {
+		if (!$this->db->table_exists('blog')) {
 			$sql = 'CREATE TABLE `'.$this->db->dbprefix('blog').'` (
-			`blog_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-			`account_id` INT( 11 ) NOT NULL ,
-			`blog_title` VARCHAR( 255 ) NULL DEFAULT NULL ,
+			`blog_id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+			`account_id` INT(11) NOT NULL ,
+			`blog_title` VARCHAR(255) NULL DEFAULT NULL ,
 			`blog_content` TEXT NULL DEFAULT NULL ,
 			`blog_date` BIGINT NULL DEFAULT NULL
 			) ENGINE = InnoDB;';
-			$this->db->query( $sql );
+			$this->db->query($sql);
 		}
 		
 		// done
-		$this->load->library( 'session' );
+		$this->load->library('session');
 		$this->session->set_flashdata(
 			'form_status',
 			array(
@@ -46,7 +46,7 @@ class blog_install extends admin_controller {
 		);
 		
 		// go back
-		redirect( 'site-admin/module' );
+		redirect('site-admin/module');
 	}
 
 	
