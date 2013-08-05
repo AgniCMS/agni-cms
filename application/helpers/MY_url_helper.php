@@ -18,13 +18,15 @@
  * @param array $attributes
  * @return string
  */
-function anchor_path($uri = '', $title = '', $attributes = '') {
-	$anchor =  anchor($uri, $title, $attributes);
-	
-	$domain = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://').$_SERVER['HTTP_HOST'];
-	
-	return preg_replace('#href="'.$domain.'(.*)"#', 'href="$1"', $anchor);
-}// anchor
+if (!function_exists('anchor_path')) {
+	function anchor_path($uri = '', $title = '', $attributes = '') {
+		$anchor =  anchor($uri, $title, $attributes);
+
+		$domain = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443' ? 'https://' : 'http://').$_SERVER['HTTP_HOST'];
+
+		return preg_replace('#href="'.$domain.'(.*)"#', 'href="$1"', $anchor);
+	}// anchor_path
+}
 
 
 /**
@@ -132,6 +134,54 @@ if (!function_exists('language_switch_admin')) {
 		unset($user_lang, $langs, $switch_link, $key, $item, $CI);
 		return $output;
 	}// language_switch_admin
+}
+
+
+/**
+ * generate querystring except values in parameter array
+ * @uses generate_querystring_except(array('per_page', 'keyword')) will generate querystring like this.. => querystring1=value1&get2=value2&get3=value3
+ * @param array $param
+ * @param boolean $url_decode
+ * @return string
+ */
+if (!function_exists('generate_querystring_except')) {
+	function generate_querystring_except($param = array(), $url_decode = false) 
+	{
+		if (!is_array($param)) {
+			$param = array($param);
+		}
+		
+		$querystrings = $_SERVER['QUERY_STRING'];
+		$querystrings_exp = explode('&', $querystrings);
+
+		$output = '';
+		
+		if (is_array($querystrings_exp)) {
+			$output = '';
+
+			foreach ($querystrings_exp as $item) {
+				if ($item != null) {
+					$item_exp = explode('=', $item);
+
+					if (isset($item_exp[0]) && !in_array($item_exp[0], $param)) {
+						if ($url_decode === true) {
+							$output .= htmlspecialchars(urldecode($item));
+						} else {
+							$output .= $item;
+						}
+
+						if (end($querystrings_exp) != $item) {
+							$output .= '&amp;';
+						}
+					}
+				}
+			}// endforeach;
+		}
+
+		unset($item, $item_exp, $querystrings, $querystrings_exp);
+
+		return $output;
+	}
 }
 
 
