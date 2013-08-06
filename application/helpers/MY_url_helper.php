@@ -180,6 +180,10 @@ if (!function_exists('generate_querystring_except')) {
 
 		unset($item, $item_exp, $querystrings, $querystrings_exp);
 
+		// clear &amp; trail.
+		$output = rtrim($output, 'amp;');
+		$output = rtrim($output, '&');
+		
 		return $output;
 	}
 }
