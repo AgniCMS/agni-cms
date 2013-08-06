@@ -215,6 +215,37 @@ class comments_model extends CI_Model
 	
 	
 	/**
+	 * get comment fields from db
+	 * @param integer $comment_id
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function getCommentFields($comment_id = '', $data = array()) 
+	{
+		if (!is_numeric($comment_id)) {
+			return null;
+		}
+		
+		$this->db->from('comment_fields')
+				->where('comment_id', $comment_id);
+		
+		if (is_array($data) && !empty($data)) {
+			$this->db->where($data);
+		}
+		
+		$query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		}
+		
+		$query->free_result();
+		
+		return null;
+	}// getCommentFields
+	
+	
+	/**
 	 *  get comments data from db.
 	 * @param array $data
 	 * @return mixed

@@ -388,6 +388,37 @@ class posts_model extends CI_Model
 	
 	
 	/**
+	 * get post fields from db
+	 * @param integer $post_id
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function getPostFields($post_id = '', $data = array()) 
+	{
+		if (!is_numeric($post_id)) {
+			return null;
+		}
+		
+		$this->db->from('post_fields')
+				->where('post_id', $post_id);
+		
+		if (is_array($data) && !empty($data)) {
+			$this->db->where($data);
+		}
+		
+		$query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		}
+		
+		$query->free_result();
+		
+		return null;
+	}// getPostFields
+	
+	
+	/**
 	 * get_last_tax_position
 	 * @param integer $tid
 	 * @return integer 

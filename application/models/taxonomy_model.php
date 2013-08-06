@@ -201,6 +201,37 @@ class taxonomy_model extends CI_Model
 	
 	
 	/**
+	 * get taxonomy fields from db
+	 * @param integer $tid
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function getTaxonomyFields($tid = '', $data = array()) 
+	{
+		if (!is_numeric($tid)) {
+			return null;
+		}
+		
+		$this->db->from('taxonomy_fields')
+				->where('tid', $tid);
+		
+		if (is_array($data) && !empty($data)) {
+			$this->db->where($data);
+		}
+		
+		$query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		}
+		
+		$query->free_result();
+		
+		return null;
+	}// getTaxonomyFields
+	
+	
+	/**
 	 * get taxonomy index data.
 	 * @param array $data
 	 * @return mixed

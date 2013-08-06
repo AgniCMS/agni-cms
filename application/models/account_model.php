@@ -930,6 +930,12 @@ class account_model extends CI_Model
 	}// encrypt_password
 	
 	
+	/**
+	 * get account fields from db
+	 * @param integer $account_id
+	 * @param array $data
+	 * @return mixed
+	 */
 	public function getAccountFields($account_id = '', $data = array()) 
 	{
 		if (!is_numeric($account_id)) {
