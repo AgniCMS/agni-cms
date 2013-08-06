@@ -315,7 +315,9 @@ class account extends admin_controller
 		$output['sort'] = ($this->input->get('sort') == null || $this->input->get('sort') == 'asc' ? 'desc' : 'asc');
 		
 		// list item
-		$output['list_item'] = $this->account_model->listAccount('admin');
+		$data['list_for'] = 'admin';
+		$output['list_item'] = $this->account_model->listAccount($data);
+		unset($data);
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
