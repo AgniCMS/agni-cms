@@ -1160,10 +1160,10 @@ class account_model extends CI_Model
 	
 	/**
 	 * list accounts
-	 * @param admin|front $list_for
+	 * @param array $data
 	 * @return mixed 
 	 */
-	public function listAccount($list_for = 'front') 
+	public function listAccount($data = array()) 
 	{
 		// query sql
 		$this->db->join('account_level', 'account_level.account_id = accounts.account_id', 'left');
@@ -1208,9 +1208,13 @@ class account_model extends CI_Model
 		
 		// pagination-----------------------------
 		$this->load->library('pagination');
-		$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&sort='.htmlspecialchars($sort).($q != null ?'&q='.$q : '');
+		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
 		$config['total_rows'] = $total;
-		$config['per_page'] = ($list_for == 'admin' ? 20 : $this->config_model->load_single('content_items_perpage'));
+		if (isset($data['per_page']) && is_numeric($data['per_page'])) {
+			$config['per_page'] = $data['per_page'];
+		} else {
+			$config['per_page'] = (isset($data['list_for']) && $data['list_for'] == 'admin' ? 20 : $this->config_model->load_single('content_items_perpage'));
+		}
 		// pagination tags customize for bootstrap css framework
 		$config['num_links'] = 3;
 		$config['page_query_string'] = true;
@@ -1236,7 +1240,7 @@ class account_model extends CI_Model
 		// end pagination-----------------------------
 		
 		$this->db->limit($config['per_page'], ($this->input->get('per_page') == null ? '0' : $this->input->get('per_page')));
-		//$sql .= ' limit '.($this->input->get('per_page') == null ? '0' : $this->input->get('per_page')).', '.$config['per_page'].';';
+		
 		$query = $this->db->get('accounts');
 		
 		if ($query->num_rows() > 0) {
