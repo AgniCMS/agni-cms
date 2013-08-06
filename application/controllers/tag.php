@@ -49,7 +49,7 @@ class tag extends MY_Controller
 		// load tag data for title, metas
 		$data['t_uri_encoded'] = $uri;
 		$data['language'] = $this->lang->get_current_lang();
-		$row = $this->taxonomy_model->get_taxonomy_term_data_db($data);
+		$row = $this->taxonomy_model->getTaxonomyTermDataDb($data);
 		unset($data);
 		
 		if ($row == null) {
@@ -67,7 +67,7 @@ class tag extends MY_Controller
 		foreach ($segs as $segment) {
 			$data['t_uri_encoded'] = $segment;
 			$data['language'] = $this->lang->get_current_lang();
-			$row_seg = $this->taxonomy_model->get_taxonomy_term_data_db($data);
+			$row_seg = $this->taxonomy_model->getTaxonomyTermDataDb($data);
 			unset($data);
 			
 			if ($row_seg != null) {
@@ -93,7 +93,7 @@ class tag extends MY_Controller
 		
 		// list posts---------------------------------------------------------------
 		$_GET['tid'] = $row->tid;
-		$output['list_item'] = $this->posts_model->list_item('front');
+		$output['list_item'] = $this->posts_model->listPost('front');
 		
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();

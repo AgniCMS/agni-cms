@@ -24,7 +24,7 @@ class account_model extends CI_Model
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function add_account($data = array()) 
+	public function addAccount($data = array()) 
 	{
 		if (!is_array($data) || empty($data)) {return false;}
 		
@@ -33,7 +33,7 @@ class account_model extends CI_Model
 		$data2['level_group_id'] = $data['level_group_id'];
 		unset($data['level_group_id']);
 		
-		if (!$this->can_i_add_edit_account($data2['level_group_id'])) {
+		if (!$this->canIAddEditAccount($data2['level_group_id'])) {
 			return $this->lang->line('account_cannot_add_account_higher_your_level');
 		}
 		
@@ -57,7 +57,7 @@ class account_model extends CI_Model
 		$this->load->helper('date');
 		
 		// set value for insert in accounts table
-		$data['account_password'] = $this->encrypt_password($data['account_password']);
+		$data['account_password'] = $this->encryptPassword($data['account_password']);
 		$data['account_create'] = date('Y-m-d H:i:s', time());
 		$data['account_create_gmt'] = date('Y-m-d H:i:s', local_to_gmt(time()));// แปลงเป็น gmt0 แล้ว เมื่อจะเอามาใช้ก็ gmt_to_local(strtotime('account_create_gmt'), 'account_timezone');
 		
@@ -75,15 +75,15 @@ class account_model extends CI_Model
 		$this->modules_plug->do_action('account_add', $data);
 		
 		return true;
-	}// add_account
+	}// addAccount
 	
 	
 	/**
-	 * add_level_group
+	 * add level group
 	 * @param array $data
 	 * @return boolean 
 	 */
-	public function add_level_group($data = array()) 
+	public function addLevelGroup($data = array()) 
 	{
 		if (!is_array($data)) {return false;}
 		
@@ -104,50 +104,58 @@ class account_model extends CI_Model
 		$this->db->insert('account_level_group', $data);
 		
 		return true;
-	}// add_level_group
+	}// addLevelGroup
 	
 	
 	/**
 	 * add multisite login session
 	 * @param array $data
 	 */
-	public function add_login_session($data = array()) 
+	public function addLoginSession($data = array()) 
 	{
 		// load model
 		$this->load->model('siteman_model');
-		$site_id = $this->siteman_model->get_site_id();
+		$site_id = $this->siteman_model->getSiteId();
 
 		$query = $this->db->where('account_id', $data['account_id'])->where('site_id', $site_id)->get('account_sites');
+		
 		if ($query->num_rows() <= 0) {
 			// use insert
 			$this->db->set('account_id', $data['account_id'])
 				   ->set('site_id', $site_id)
 				   ->set('account_last_login', time())
 				   ->set('account_last_login_gmt', local_to_gmt(time()));
+			
 			if (isset($data['session_id'])) {
 				$this->db->set('account_online_code', $data['session_id']);
 			}
+			
 			$this->db->insert('account_sites');
 		} else {
 			// use update
 			$this->db->set('account_last_login', time())
 				   ->set('account_last_login_gmt', local_to_gmt(time()));
+			
 			if (isset($data['session_id'])) {
 				$this->db->set('account_online_code', $data['session_id']);
 			}
+			
 			$this->db->where('account_id', $data['account_id'])
 				   ->where('site_id', $site_id);
 			$this->db->update('account_sites');
 		}
-	}// add_login_session
+		
+		$query->free_result();
+		unset($query);
+	}// addLoginSession
 	
 	
 	/**
-	 * admin_login
+	 * admin login
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function admin_login($data = array()) 
+	public function adminLogIn($data = array()) 
 	{
 		if (!is_array($data) || empty($data)) {return false;}
 		
@@ -210,7 +218,7 @@ class account_model extends CI_Model
 							// add online code for multisite check ------------------------------------------------
 							$session_data['account_id'] = $row->account_id;
 							$session_data['session_id'] = $session_id;
-							$this->add_login_session($session_data);
+							$this->addLoginSession($session_data);
 							unset($session_data);
 							// add online code for multisite check ------------------------------------------------
 						} else {
@@ -220,13 +228,13 @@ class account_model extends CI_Model
 							$this->db->update('accounts');
 							// add online code for multisite check ------------------------------------------------
 							$session_data['account_id'] = $row->account_id;
-							$this->add_login_session($session_data);
+							$this->addLoginSession($session_data);
 							unset($session_data);
 							// add online code for multisite check ------------------------------------------------
 						}
 
 						// record log in
-						$this->admin_login_record($row->account_id, '1', 'Success');
+						$this->adminLoginRecord($row->account_id, '1', 'Success');
 						$query->free_result();
 
 						// module plug here.
@@ -237,7 +245,7 @@ class account_model extends CI_Model
 						// has no permission to login here
 						$query->free_result();
 
-						$this->admin_login_record($row->account_id, '0', 'Not allow to login to admin page.');
+						$this->adminLoginRecord($row->account_id, '0', 'Not allow to login to admin page.');
 
 						if (!$this->input->is_ajax_request()) {
 							redirect(base_url());
@@ -248,7 +256,7 @@ class account_model extends CI_Model
 				} else {
 					// password not match
 					// login failed.
-					$this->admin_login_record($row->account_id, '0', 'Wrong username or password');
+					$this->adminLoginRecord($row->account_id, '0', 'Wrong username or password');
 					$query->free_result();
 					unset($query, $row);
 
@@ -256,7 +264,7 @@ class account_model extends CI_Model
 				}
 			} else {
 				// account disabled
-				$this->admin_login_record($row->account_id, '0', 'Account was disabed.');
+				$this->adminLoginRecord($row->account_id, '0', 'Account was disabed.');
 				$query->free_result();
 				
 				return $this->lang->line('account_disabled') . ': ' . $row->account_status_text;
@@ -270,24 +278,24 @@ class account_model extends CI_Model
 		
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			$this->admin_login_record($row->account_id, '0', 'Wrong username or password');
+			$this->adminLoginRecord($row->account_id, '0', 'Wrong username or password');
 		}
 		
 		$query->free_result();
 		
 		return $this->lang->line('account_wrong_username_or_password');
-	}// admin_login
+	}// adminLogIn
 	
 	
 	/**
-	 * admin_login_record
+	 * adminLoginRecord
 	 * record log in.
 	 * @param integer $account_id
 	 * @param integer $attempt
 	 * @param string $attempt_text
 	 * @return boolean 
 	 */
-	public function admin_login_record($account_id = '', $attempt = '0', $attempt_text = '') 
+	public function adminLoginRecord($account_id = '', $attempt = '0', $attempt_text = '') 
 	{
 		if (!is_numeric($account_id) || !is_numeric($attempt)) {return false;}
 		
@@ -295,7 +303,7 @@ class account_model extends CI_Model
 		
 		// load model
 		$this->load->model('siteman_model');
-		$site_id = $this->siteman_model->get_site_id();
+		$site_id = $this->siteman_model->getSiteId();
 		
 		// load library
 		$this->load->library(array('Browser'));
@@ -317,18 +325,18 @@ class account_model extends CI_Model
 		$this->db->insert('account_logins');
 		
 		return true;
-	}// admin_login_record
+	}// adminLoginRecord
 	
 	
 	/**
-	 * can_i_add_edit_account
+	 * canIAddEditAccount
 	 * check that if user can add or edit account
 	 * if user level is higher priority than or equal to target's level priority, then ok.
 	 * @param integer $my_account_id
 	 * @param integer $target_level_id
 	 * @return boolean 
 	 */
-	public function can_i_add_edit_account($target_level_id = '', $my_account_id = '') 
+	public function canIAddEditAccount($target_level_id = '', $my_account_id = '') 
 	{
 		if (!is_numeric($target_level_id)) {return false;}
 		
@@ -342,14 +350,14 @@ class account_model extends CI_Model
 		}
 		
 		// get my level group id
-		$my_level_group_id = $this->show_account_level_info($my_account_id);
+		$my_level_group_id = $this->showAccountLevelInfo($my_account_id);
 		if ($my_level_group_id == false) {return false;}
 		
 		// get my level priority
-		$my_level_priority = $this->show_account_level_group_info($my_level_group_id, 'level_priority');
+		$my_level_priority = $this->showAccountLevelGroupInfo($my_level_group_id, 'level_priority');
 		
 		// get target level priority
-		$target_level_priority = $this->show_account_level_group_info($target_level_id, 'level_priority');
+		$target_level_priority = $this->showAccountLevelGroupInfo($target_level_id, 'level_priority');
 		if ($my_level_priority == false || $target_level_priority == false) {return false;}
 		
 		// check if higher? (higher is lower number, 1 is highest and 2 is lower)
@@ -358,11 +366,11 @@ class account_model extends CI_Model
 		}
 		
 		return false;
-	}// can_i_add_edit_account
+	}// canIAddEditAccount
 	
 	
 	/**
-	 * check_account
+	 * checkAccount
 	 * check if account is really logged in, account is enabled, is duplicate login
 	 * @param integer $id
 	 * @param string $username
@@ -370,7 +378,7 @@ class account_model extends CI_Model
 	 * @param string $onlinecode
 	 * @return boolean 
 	 */
-	public function check_account($id='', $username='', $password='', $onlinecode='') 
+	public function checkAccount($id='', $username='', $password='', $onlinecode='') 
 	{
 		// load other model
 		$this->load->model('config_model');
@@ -413,7 +421,7 @@ class account_model extends CI_Model
 		$this->load->driver('cache', array('adapter' => 'file'));
 		
 		$this->load->model('siteman_model');
-		$site_id = $this->siteman_model->get_site_id();
+		$site_id = $this->siteman_model->getSiteId();
 		
 		// check cached
 		if (false === $account_val = $this->cache->get('chkacc_'.$id.'_'.$site_id.'_'.$username.$password)) {
@@ -431,13 +439,13 @@ class account_model extends CI_Model
 					
 					// check if globa config not allow duplicate login
 					if ($this->config_model->load_single('duplicate_login') == '0') {
-						if ($this->is_duplicate_login($id, $onlinecode) === true) {
+						if ($this->isDuplicateLogin($id, $onlinecode) === true) {
 							// dup log in detected.
 							$query->free_result();
-							$this->config_model->delete_cache('chkacc_'.$id.'_'.$site_id.'_');
+							$this->config_model->deleteCache('chkacc_'.$id.'_'.$site_id.'_');
 							
 							// log out
-							$this->logout();
+							$this->logOut();
 							
 							// load langauge
 							$this->lang->load('account');
@@ -458,17 +466,17 @@ class account_model extends CI_Model
 					$query->free_result();
 					
 					// save to cache and return true
-					$this->cache->save('chkacc_'.$id.'_'.$site_id.'_'.$username.$password, $this->get_account_online_code($row->account_id, $site_id), 3600);
+					$this->cache->save('chkacc_'.$id.'_'.$site_id.'_'.$username.$password, $this->getAccountOnlineCode($row->account_id, $site_id), 3600);
 					return true;
 				} else {
 					// account was disabled
 					$query->free_result();
 					
 					// delete cache
-					$this->config_model->delete_cache('chkacc_'.$id.'_'.$site_id.'_');
+					$this->config_model->deleteCache('chkacc_'.$id.'_'.$site_id.'_');
 					
 					// log out
-					$this->logout();
+					$this->logOut();
 					return false;
 				}
 			}
@@ -476,10 +484,10 @@ class account_model extends CI_Model
 			$query->free_result();
 			
 			// delete cache
-			$this->config_model->delete_cache('chkacc_'.$id.'_'.$site_id.'_');
+			$this->config_model->deleteCache('chkacc_'.$id.'_'.$site_id.'_');
 			
 			// log out
-			$this->logout();
+			$this->logOut();
 			return false;
 		}
 		
@@ -491,10 +499,10 @@ class account_model extends CI_Model
 					// duplicate login detected
 					
 					// delete cache
-					$this->config_model->delete_cache('chkacc_'.$id.'_');
+					$this->config_model->deleteCache('chkacc_'.$id.'_');
 					
 					// log out
-					$this->logout();
+					$this->logOut();
 					
 					// load language
 					$this->lang->load('account');
@@ -507,7 +515,33 @@ class account_model extends CI_Model
 			// dup log in allowed or not allowed and check account pass!
 			return true;
 		}
-	}// check_account
+	}// checkAccount
+	
+	
+	/**
+	 * check password entered and hash one.
+	 * @param string $entered_password
+	 * @param string $hashed_password
+	 * @return boolean
+	 */
+	public function checkPassword($entered_password = '', $hashed_password = '') 
+	{
+		if ($this->modules_plug->has_filter('account_check_hash_password')) {
+			$result = $this->modules_plug->do_action('account_check_hash_password', array($entered_password, $hashed_password));
+			
+			if (isset($result['account_check_hash_password']) && is_array($result['account_check_hash_password'])) {
+				return array_shift(array_values($result['account_check_hash_password']));
+			}
+			
+			return false;
+		} else {
+			include_once 'application/libraries/PasswordHash.php';
+			$PasswordHash = new PasswordHash(12, false);
+			
+			// check password
+			return $PasswordHash->CheckPassword($entered_password, $hashed_password);
+		}
+	}// checkPassword
 	
 	
 	/**
@@ -583,38 +617,12 @@ class account_model extends CI_Model
 	
 	
 	/**
-	 * check password entered and hash one.
-	 * @param string $entered_password
-	 * @param string $hashed_password
-	 * @return boolean
-	 */
-	public function checkPassword($entered_password = '', $hashed_password = '') 
-	{
-		if ($this->modules_plug->has_filter('account_check_hash_password')) {
-			$result = $this->modules_plug->do_action('account_check_hash_password', array($entered_password, $hashed_password));
-			
-			if (isset($result['account_check_hash_password']) && is_array($result['account_check_hash_password'])) {
-				return array_shift(array_values($result['account_check_hash_password']));
-			}
-			
-			return false;
-		} else {
-			include_once 'application/libraries/PasswordHash.php';
-			$PasswordHash = new PasswordHash(12, false);
-			
-			// check password
-			return $PasswordHash->CheckPassword($entered_password, $hashed_password);
-		}
-	}// checkPassword
-	
-	
-	/**
-	 * count_login_fail 
+	 * count login fail 
 	 * count continuous log in fail.
 	 * @param string $username
 	 * @return mixed 
 	 */
-	public function count_login_fail($username = '') 
+	public function countLoginFail($username = '') 
 	{
 		if (empty($username)) {return false;}
 		
@@ -657,7 +665,7 @@ class account_model extends CI_Model
 		
 		$query->free_result();
 		return false;
-	}// count_login_fail
+	}// countLoginFail
 	
 	
 	/**
@@ -665,7 +673,7 @@ class account_model extends CI_Model
 	 * @param integer $account_id
 	 * @return boolean 
 	 */
-	public function delete_account($account_id = '') 
+	public function deleteAccount($account_id = '') 
 	{
 		// check if guest id, first id, not delete.
 		if ($account_id === '0' || $account_id === '1') {return false;}
@@ -688,7 +696,7 @@ class account_model extends CI_Model
 		$this->db->update('files');
 			
 		// delete avatar
-		$this->delete_account_avatar($account_id);
+		$this->deleteAccountAvatar($account_id);
 		
 		// delete account
 		$this->db->where('account_id', $account_id)->delete('account_fields');
@@ -698,7 +706,7 @@ class account_model extends CI_Model
 		$this->db->where('account_id', $account_id)->delete('accounts');
 		
 		// delete cache.
-		$this->config_model->delete_cache('ainf_');
+		$this->config_model->deleteCache('ainf_');
 		
 		// get account info for send to api
 		$this->db->where('account_id', $account_id);
@@ -714,16 +722,16 @@ class account_model extends CI_Model
 		unset($query);
 		
 		return true;
-	}// delete_account
+	}// deleteAccount
 	
 	
 	
 	/**
-	 * delete_account_avatar
+	 * delete account avatar
 	 * @param integer $account_id
 	 * @return boolean 
 	 */
-	public function delete_account_avatar($account_id = '') 
+	public function deleteAccountAvatar($account_id = '') 
 	{
 		if (!is_numeric($account_id)) {return false;}
 		
@@ -745,15 +753,15 @@ class account_model extends CI_Model
 		unset($account_id, $query);
 		
 		return true;
-	}// delete_account_avatar
+	}// deleteAccountAvatar
 	
 	
 	/**
-	 * delete_level_group
+	 * delete level group
 	 * @param integer $level_group_id
 	 * @return boolean 
 	 */
-	public function delete_level_group($level_group_id = '') 
+	public function deleteLevelGroup($level_group_id = '') 
 	{
 		// check if level_group_id is number
 		if (!is_numeric($level_group_id)) {return false;}
@@ -773,10 +781,10 @@ class account_model extends CI_Model
 		$this->db->where('level_group_id', $level_group_id)->delete('account_level_group');
 		
 		// delete cache
-		$this->config_model->delete_cache('alg_'.SITE_TABLE.$level_group_id);
+		$this->config_model->deleteCache('alg_'.SITE_TABLE.$level_group_id);
 		
 		return true;
-	}// delete_level_group
+	}// deleteLevelGroup
 	
 	
 	/**
@@ -784,7 +792,7 @@ class account_model extends CI_Model
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function edit_account($data = array()) 
+	public function editAccount($data = array()) 
 	{
 		if (!is_array($data) || empty($data)) {return false;}
 		
@@ -794,7 +802,7 @@ class account_model extends CI_Model
 		unset($data['level_group_id']);
 		
 		// check if changing target account to higher level than yours
-		if (!$this->can_i_add_edit_account($data2['level_group_id'])) {return $this->lang->line('account_cannot_edit_account_higher_your_level');}
+		if (!$this->canIAddEditAccount($data2['level_group_id'])) {return $this->lang->line('account_cannot_edit_account_higher_your_level');}
 		
 		// check if email change?
 		if ($data['account_old_email'] == $data['account_email']) {
@@ -819,7 +827,7 @@ class account_model extends CI_Model
 		
 		// if email changed, send confirm
 		if ($email_change == 'yes') {
-			$send_change_email = $this->send_change_email($data);
+			$send_change_email = $this->sendChangeEmail($data);
 			
 			if (isset($send_change_email['result']) && $send_change_email['result'] === true) {
 				$data['account_confirm_code'] = $send_change_email['confirm_code'];
@@ -831,7 +839,7 @@ class account_model extends CI_Model
 		
 		// check avatar upload
 		 if ($this->config_model->load_single('allow_avatar') == '1' && (isset($_FILES['account_avatar']['name']) && $_FILES['account_avatar']['name'] != null)) {
-			 $result = $this->upload_avatar($data['account_id']);
+			 $result = $this->uploadAvatar($data['account_id']);
 			 if (isset($result['result']) && $result['result'] === true) {
 				 $data['account_avatar'] = $result['account_avatar'];
 			 } else {
@@ -843,7 +851,7 @@ class account_model extends CI_Model
 		 // check password change and set password value for update in db.
 		if (!empty($data['account_new_password'])) {
 			$data['account_old_password_encrypted'] = $data['account_password'];
-			$data['account_new_password_encrypted'] = $this->encrypt_password($data['account_new_password']);
+			$data['account_new_password_encrypted'] = $this->encryptPassword($data['account_new_password']);
 			$get_old_password_from_db = $this->show_accounts_info($data['account_id'], 'account_id', 'account_password');
 			
 			// check old password is match in db.
@@ -870,7 +878,7 @@ class account_model extends CI_Model
 		$this->db->update('accounts', $data);
 		
 		// update or add level (if missing)
-		$current_lv_group_id = $this->show_account_level_info($data['account_id']);
+		$current_lv_group_id = $this->showAccountLevelInfo($data['account_id']);
 		if ($current_lv_group_id !== false) {
 			$this->db->set('level_group_id', $data2['level_group_id']);
 			$this->db->where('account_id', $data['account_id']);
@@ -882,23 +890,23 @@ class account_model extends CI_Model
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache('ainf_');
-		$this->config_model->delete_cache('chkacc_'.$data['account_id'].'_');
+		$this->config_model->deleteCache('ainf_');
+		$this->config_model->deleteCache('chkacc_'.$data['account_id'].'_');
 		
 		// module plug here
 		$data['level_group_id'] = $data2['level_group_id'];// set back for use in plugins
 		$this->modules_plug->do_action('account_admin_edit', $data);
 		
 		return true;
-	}// edit_account
+	}// editAccount
 	
 	
 	/**
-	 * edit_level_group
+	 * edit level group
 	 * @param array $data
 	 * @return boolean 
 	 */
-	public function edit_level_group($data = array()) 
+	public function editLevelGroup($data = array()) 
 	{
 		if (!is_array($data)) {return false;}
 		
@@ -907,18 +915,18 @@ class account_model extends CI_Model
 		$this->db->update('account_level_group', $data);
 		
 		// delete cache
-		$this->config_model->delete_cache('alg_'.SITE_TABLE);
+		$this->config_model->deleteCache('alg_'.SITE_TABLE);
 		
 		return true;
-	}// edit_level_group
+	}// editLevelGroup
 	
 	
 	/**
-	 * encrypt_password
+	 * encrypt password
 	 * @param string $password
 	 * @return string
 	 */
-	public function encrypt_password($password = '') 
+	public function encryptPassword($password = '') 
 	{
 		if (property_exists($this, 'modules_plug') && $this->modules_plug->has_filter('account_generate_hash_password')) {
 			return $this->modules_plug->do_filter('account_generate_hash_password', $password);
@@ -927,7 +935,34 @@ class account_model extends CI_Model
 			$PasswordHash = new PasswordHash(12, false);
 			return $PasswordHash->HashPassword($password);
 		}
-	}// encrypt_password
+	}// encryptPassword
+	
+	
+	/**
+	 * get account data in single row by condition.
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function getAccountData($data = array()) 
+	{
+		if (!is_array($data) || (is_array($data) && !isset($data['accounts.account_id']) && !isset($data['account_id']) && !isset($data['account_username']) && !isset($data['account_email']))) {
+			return false;
+		}
+		
+		// remove ambiguous column
+		if (isset($data['account_id'])) {
+			$data['accounts.account_id'] = $data['account_id'];
+			unset($data['account_id']);
+		}
+		
+		$this->db->select('*, accounts.account_id AS account_id, account_level.level_group_id AS level_group_id');
+		$this->db->join('account_level', 'account_level.account_id = accounts.account_id', 'left');
+		$this->db->join('account_level_group', 'account_level_group.level_group_id = account_level.level_group_id', 'left');
+		$this->db->where($data);
+		$query = $this->db->get('accounts');
+		
+		return $query->row();
+	}// getAccountData
 	
 	
 	/**
@@ -962,6 +997,48 @@ class account_model extends CI_Model
 	
 	
 	/**
+	 * get data from account_level_group table
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function getAccountLevelGroupData($data = array()) 
+	{
+		if (!isset($data['level_group_id']) && !isset($data['level_priority'])) {
+			return false;
+		}
+		
+		$this->db->where($data);
+		$query = $this->db->get('account_level_group');
+		
+		return $query->row();
+	}// getAccountLevelGroupData
+	
+	
+	/**
+	 * get account online code
+	 * @param integer $account_id
+	 * @param integer $site_id
+	 * @return string
+	 */
+	public function getAccountOnlineCode($account_id = '', $site_id = '') 
+	{
+		$this->db->where('account_id', $account_id)
+			   ->where('site_id', $site_id);
+		$query = $this->db->get('account_sites');
+		
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			$query->free_result();
+			
+			return $row->account_online_code;
+		}
+		
+		$query->free_result();
+		return null;
+	}// getAccountOnlineCode
+	
+	
+	/**
 	 * get_account_cookie
 	 * get cookie and decode > unserialize to array and return
 	 * @param string $level
@@ -988,84 +1065,15 @@ class account_model extends CI_Model
 	
 	
 	/**
-	 * get account data in single row by condition.
-	 * @param array $data
-	 * @return mixed
-	 */
-	public function get_account_data($data = array()) 
-	{
-		if (!is_array($data) || (is_array($data) && !isset($data['accounts.account_id']) && !isset($data['account_id']) && !isset($data['account_username']) && !isset($data['account_email']))) {
-			return false;
-		}
-		
-		// remove ambiguous column
-		if (isset($data['account_id'])) {
-			$data['accounts.account_id'] = $data['account_id'];
-			unset($data['account_id']);
-		}
-		
-		$this->db->select('*, accounts.account_id AS account_id, account_level.level_group_id AS level_group_id');
-		$this->db->join('account_level', 'account_level.account_id = accounts.account_id', 'left');
-		$this->db->join('account_level_group', 'account_level_group.level_group_id = account_level.level_group_id', 'left');
-		$this->db->where($data);
-		$query = $this->db->get('accounts');
-		
-		return $query->row();
-	}// get_account_data
-	
-	
-	/**
-	 * get data from account_level_group table
-	 * @param array $data
-	 * @return mixed
-	 */
-	public function get_account_level_group_data($data = array()) 
-	{
-		if (!isset($data['level_group_id']) && !isset($data['level_priority'])) {
-			return false;
-		}
-		
-		$this->db->where($data);
-		$query = $this->db->get('account_level_group');
-		
-		return $query->row();
-	}// get_account_level_group_data
-	
-	
-	/**
-	 * get_account_online_code
-	 * @param integer $account_id
-	 * @param integer $site_id
-	 * @return string
-	 */
-	public function get_account_online_code($account_id = '', $site_id = '') 
-	{
-		$this->db->where('account_id', $account_id)
-			   ->where('site_id', $site_id);
-		$query = $this->db->get('account_sites');
-		
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			$query->free_result();
-			
-			return $row->account_online_code;
-		}
-		
-		$query->free_result();
-		return null;
-	}// get_account_online_code
-	
-	
-	/**
 	 * hash password
 	 * alias name of encrypt password.
 	 * @param string $password
 	 * @return string
 	 */
-	public function hash_password($password = '') 
+	public function hashPassword($password = '') 
 	{
-		return $this->encrypt_password($password);
-	}// hash_password
+		return $this->encryptPassword($password);
+	}// hashPassword
 	
 	
 	
@@ -1073,7 +1081,7 @@ class account_model extends CI_Model
 	 * check is admin login
 	 * @return boolean 
 	 */
-	public function is_admin_login() 
+	public function isAdminLogin() 
 	{
 		// get admin cookie
 		$ca_account = $this->get_account_cookie('admin');
@@ -1084,16 +1092,16 @@ class account_model extends CI_Model
 		}
 		
 		// check again in database
-		return $this->check_account();
-	}// is_admin_login
+		return $this->checkAccount();
+	}// isAdminLogin
 	
 	
 	/**
-	 * is_duplicate_login
+	 * is duplicate login or is simultaneously login
 	 * @param string $onlinecode
 	 * @return boolean
 	 */
-	public function is_duplicate_login($account_id = '', $onlinecode = '') 
+	public function isDuplicateLogin($account_id = '', $onlinecode = '') 
 	{
 		// if not set online code.
 		if ($onlinecode == null) {
@@ -1108,7 +1116,7 @@ class account_model extends CI_Model
 		
 		// load model
 		$this->load->model('siteman_model');
-		$site_id = $this->siteman_model->get_site_id();
+		$site_id = $this->siteman_model->getSiteId();
 		
 		$this->db->where('account_id', $account_id)
 			   ->where('site_id', $site_id)
@@ -1128,14 +1136,14 @@ class account_model extends CI_Model
 		
 		$query->free_result();
 		return false;
-	}// is_duplicate_login
+	}// isDuplicateLogin
 	
 	
 	/**
 	 * check if member log
 	 * @return boolean 
 	 */
-	public function is_member_login() 
+	public function isMemberLogin() 
 	{
 		// get member cookie
 		$cm_account = $this->get_account_cookie('member');
@@ -1146,8 +1154,8 @@ class account_model extends CI_Model
 		}
 		
 		// check again in database
-		return $this->check_account();
-	}// is_member_login
+		return $this->checkAccount();
+	}// isMemberLogin
 	
 	
 	/**
@@ -1155,7 +1163,7 @@ class account_model extends CI_Model
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	public function list_account($list_for = 'front') 
+	public function listAccount($list_for = 'front') 
 	{
 		// query sql
 		$this->db->join('account_level', 'account_level.account_id = accounts.account_id', 'left');
@@ -1240,7 +1248,7 @@ class account_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_account
+	}// listAccount
 	
 	
 	/**
@@ -1248,7 +1256,7 @@ class account_model extends CI_Model
 	 * @param integer $account_id
 	 * @return mixed 
 	 */
-	public function list_account_logins($account_id = '') 
+	public function listAccountLogins($account_id = '') 
 	{
 		if (!is_numeric($account_id)) {return null;}
 		
@@ -1316,15 +1324,15 @@ class account_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_account_logins
+	}// listAccountLogins
 	
 	
 	/**
-	 * list_level_group
+	 * listLevelGroup
 	 * @param boolean $noguest
 	 * @return array|null
 	 */
-	public function list_level_group($noguest = true) 
+	public function listLevelGroup($noguest = true) 
 	{
 		if ($noguest) {
 			$this->db->where('level_group_id !=', '4');
@@ -1341,15 +1349,46 @@ class account_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_level_group
+	}// listLevelGroup
 	
 	
 	/**
-	 * login_fail_last_time
+	 * logout
+	 */
+	public function logOut() 
+	{
+		// get account id from cookie
+		$cm_account = $this->get_account_cookie('admin');
+		if (!isset($cm_account['id'])) {
+			$cm_account = $this->get_account_cookie('member');
+		}
+		
+		// delete cache of this account id
+		if (isset($cm_account['id']) && isset($cm_account['username'])) {
+			$this->config_model->deleteCache('chkacc_'.$cm_account['id'].'_');
+		}
+		
+		// load helper for delete cookie
+		$this->load->helper(array('cookie'));
+		
+		// delete cookie
+		delete_cookie('admin_account');
+		delete_cookie('member_account');
+		
+		// module plug here
+		$this->modules_plug->do_action('account_logout', $cm_account);
+		
+		// done
+		return true;
+	}// logOut
+	
+	
+	/**
+	 * login fail last time
 	 * @param string $username
 	 * @return mixed 
 	 */
-	public function login_fail_last_time($username = '') 
+	public function loginFailLastTime($username = '') 
 	{
 		if (empty($username)) {return false;}
 		
@@ -1386,46 +1425,15 @@ class account_model extends CI_Model
 		
 		$query->free_result();
 		return false;
-	}// login_fail_last_time
+	}// loginFailLastTime
 	
 	
 	/**
-	 * logout
-	 */
-	public function logout() 
-	{
-		// get account id from cookie
-		$cm_account = $this->get_account_cookie('admin');
-		if (!isset($cm_account['id'])) {
-			$cm_account = $this->get_account_cookie('member');
-		}
-		
-		// delete cache of this account id
-		if (isset($cm_account['id']) && isset($cm_account['username'])) {
-			$this->config_model->delete_cache('chkacc_'.$cm_account['id'].'_');
-		}
-		
-		// load helper for delete cookie
-		$this->load->helper(array('cookie'));
-		
-		// delete cookie
-		delete_cookie('admin_account');
-		delete_cookie('member_account');
-		
-		// module plug here
-		$this->modules_plug->do_action('account_logout', $cm_account);
-		
-		// done
-		return true;
-	}// logout
-	
-	
-	/**
-	 * member_edit_profile
+	 * member edit profile
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function member_edit_profile($data = array()) 
+	public function memberEditProfile($data = array()) 
 	{
 		if (empty($data) || !is_array($data)) {return false;}
 		
@@ -1451,7 +1459,7 @@ class account_model extends CI_Model
 		
 		// if email changed, send confirm
 		if ($email_change == 'yes') {
-			$send_change_email = $this->send_change_email($data);
+			$send_change_email = $this->sendChangeEmail($data);
 			if (isset($send_change_email['result']) && $send_change_email['result'] === true) {
 				$data['account_confirm_code'] = $send_change_email['confirm_code'];
 			} else {
@@ -1462,7 +1470,7 @@ class account_model extends CI_Model
 		
 		// check avatar upload
 		 if ($this->config_model->load_single('allow_avatar') == '1' && (isset($_FILES['account_avatar']['name']) && $_FILES['account_avatar']['name'] != null)) {
-			 $result = $this->upload_avatar($data['account_id']);
+			 $result = $this->uploadAvatar($data['account_id']);
 			 if (isset($result['result']) && $result['result'] === true) {
 				 $data['account_avatar'] = $result['account_avatar'];
 			 } else {
@@ -1473,9 +1481,9 @@ class account_model extends CI_Model
 		 
 		 // check password change and set password value for update in db.
 		if (!empty($data['account_new_password'])) {
-			$old_password = $this->encrypt_password($data['account_password']);
+			$old_password = $this->encryptPassword($data['account_password']);
 			$data['account_old_password_encrypted'] = $data['account_password'];
-			$data['account_new_password_encrypted'] = $this->encrypt_password($data['account_new_password']);
+			$data['account_new_password_encrypted'] = $this->encryptPassword($data['account_new_password']);
 			$get_old_password_from_db = $this->show_accounts_info($data['account_id'], 'account_id', 'account_password');
 			
 			// check old password is match in db.
@@ -1502,22 +1510,22 @@ class account_model extends CI_Model
 		$this->db->update('accounts', $data);
 		
 		// delete cache
-		$this->config_model->delete_cache('ainf_');
-		$this->config_model->delete_cache('chkacc_'.$data['account_id'].'_');
+		$this->config_model->deleteCache('ainf_');
+		$this->config_model->deleteCache('chkacc_'.$data['account_id'].'_');
 		
 		// module plug here
 		$this->modules_plug->do_action('account_member_edit', $data);
 		
 		return true;
-	}// member_edit_profile
+	}// memberEditProfile
 	
 	
 	/**
-	 * member_login
+	 * member login
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function member_login($data = array()) 
+	public function memberLogIn($data = array()) 
 	{
 		if (!isset($data['account_username']) || !isset($data['account_password'])) {return false;}
 		
@@ -1557,12 +1565,12 @@ class account_model extends CI_Model
 					// add online code for multisite check ------------------------------------------------
 					$session_data['account_id'] = $row->account_id;
 					$session_data['session_id'] = $session_id;
-					$this->add_login_session($session_data);
+					$this->addLoginSession($session_data);
 					unset($session_data);
 					// add online code for multisite check ------------------------------------------------
 
 					// record log in
-					$this->admin_login_record($row->account_id, '1', 'Success');
+					$this->adminLoginRecord($row->account_id, '1', 'Success');
 					$query->free_result();
 
 					// module plug here
@@ -1573,7 +1581,7 @@ class account_model extends CI_Model
 				} else {
 					// password not match
 					// login failed.
-					$this->admin_login_record($row->account_id, '0', 'Wrong username or password');
+					$this->adminLoginRecord($row->account_id, '0', 'Wrong username or password');
 					$query->free_result();
 					unset($query, $row);
 
@@ -1581,7 +1589,7 @@ class account_model extends CI_Model
 				}
 			} else {
 				// account disabled
-				$this->admin_login_record($row->account_id, '0', 'Account was disabed.');
+				$this->adminLoginRecord($row->account_id, '0', 'Account was disabed.');
 				$query->free_result();
 				unset($query);
 				
@@ -1594,16 +1602,21 @@ class account_model extends CI_Model
 		$query = $this->db->get_where('accounts', array('account_username' => $data['account_username']));
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			$this->admin_login_record($row->account_id, '0', 'Wrong username or password');
+			$this->adminLoginRecord($row->account_id, '0', 'Wrong username or password');
 		}
 		$query->free_result();
 		unset($query, $row);
 		
 		return $this->lang->line('account_wrong_username_or_password');
-	}// member_login
+	}// memberLogIn
 	
 	
-	public function register_account($data = array()) 
+	/**
+	 * for member register their account
+	 * @param type $data
+	 * @return boolean
+	 */
+	public function registerAccount($data = array()) 
 	{
 		if (empty($data) || !is_array($data)) {return false;}
 		
@@ -1630,7 +1643,7 @@ class account_model extends CI_Model
 		$data['account_confirm_code'] = random_string('alnum', '6');
 		
 		// send register email
-		$send_result = $this->send_register_email($data);
+		$send_result = $this->sendRegisterEmail($data);
 		if ($send_result !== true) {
 			return $send_result;
 		}
@@ -1640,7 +1653,7 @@ class account_model extends CI_Model
 		$this->load->helper('date');
 		
 		// set new values for add to db
-		$data['account_password'] = $this->encrypt_password($data['account_password']);
+		$data['account_password'] = $this->encryptPassword($data['account_password']);
 		$data['account_create'] = date('Y-m-d H:i:s', time());
 		$data['account_create_gmt'] = date('Y-m-d H:i:s', local_to_gmt(time()));
 		$data['account_status'] = '0';
@@ -1656,7 +1669,7 @@ class account_model extends CI_Model
 		
 		// add level
 		$this->load->model('siteman_model');
-		$list_site = $this->siteman_model->list_websites_all();
+		$list_site = $this->siteman_model->listWebsitesAll();
 		
 		if (isset($list_site['items']) && is_array(($list_site['items']))) {
 			foreach ($list_site['items'] as $site) {
@@ -1678,7 +1691,7 @@ class account_model extends CI_Model
 		
 		// done
 		return true;
-	}// register_account
+	}// registerAccount
 	
 	
 	/**
@@ -1687,7 +1700,7 @@ class account_model extends CI_Model
 	 * @param string $email
 	 * @return mixed 
 	 */
-	public function reset_password1($email = '') 
+	public function resetPassword1($email = '') 
 	{
 		if (empty($email)) {return false;}
 		
@@ -1741,7 +1754,7 @@ class account_model extends CI_Model
 			
 			// add to db
 			$this->db->set('account_confirm_code', $confirm_code);
-			$this->db->set('account_new_password', $this->encrypt_password($new_password));
+			$this->db->set('account_new_password', $this->encryptPassword($new_password));
 			$this->db->where('account_id', $row->account_id);
 			$this->db->update('accounts');
 			unset($confirm_code, $new_password, $link_cancel, $link_confirm, $email_content);
@@ -1752,15 +1765,15 @@ class account_model extends CI_Model
 		$query->free_result();
 		
 		return $this->lang->line('account_not_found_with_this_email');
-	}// reset_password1
+	}// resetPassword1
 	
 	
 	/**
-	 * send_change_email
+	 * send change email
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function send_change_email($data = array()) 
+	public function sendChangeEmail($data = array()) 
 	{
 		// for email changed, send email for confirm.
 		
@@ -1797,15 +1810,15 @@ class account_model extends CI_Model
 		
 		return array('result' => true, 'confirm_code' => $confirm_code);
 		// end for email changed, send email for confirm.
-	}// send_change_email
+	}// sendChangeEmail
 	
 	
 	/**
-	 * send_register_email
+	 * send register email
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function send_register_email($data = array()) 
+	public function sendRegisterEmail($data = array()) 
 	{
 		if (!isset($data['account_username']) || !isset($data['account_email']) || !isset($data['account_confirm_code'])) {return false;}
 		
@@ -1867,17 +1880,17 @@ class account_model extends CI_Model
 		unset($cfg, $member_verification, $email_content);
 		
 		return true;
-	}// send_register_email
+	}// sendRegisterEmail
 	
 	
 	/**
-	 * show_account_level_group_info
+	 * show account evel group info
 	 * show info from account_level_group table
 	 * @param integer $lv_group_id
 	 * @param string $return_field
 	 * @return mixed 
 	 */
-	public function show_account_level_group_info($lv_group_id = '', $return_field = 'level_name') 
+	public function showAccountLevelGroupInfo($lv_group_id = '', $return_field = 'level_name') 
 	{
 		if (!is_numeric($lv_group_id)) {return false;}
 		
@@ -1901,16 +1914,16 @@ class account_model extends CI_Model
 		}
 		
 		return $alg_val;
-	}// show_account_level_group_info
+	}// showAccountLevelGroupInfo
 	
 	
 	/**
-	 * show_account_level_info
+	 * show account level info
 	 * @param integer $account_id
 	 * @param boolean $return_level_name
 	 * @return mixed 
 	 */
-	public function show_account_level_info($account_id = '', $return_level_name = false) 
+	public function showAccountLevelInfo($account_id = '', $return_level_name = false) 
 	{
 		if ($account_id == null) {
 			$ca_account = $this->get_account_cookie('admin');
@@ -1932,7 +1945,7 @@ class account_model extends CI_Model
 			$query->free_result();
 			
 			if ($return_level_name == true) {
-				return $this->show_account_level_group_info($row->level_group_id);
+				return $this->showAccountLevelGroupInfo($row->level_group_id);
 			}
 			
 			return $row->level_group_id;
@@ -1940,7 +1953,7 @@ class account_model extends CI_Model
 		$query->free_result();
 		
 		return false;
-	}// show_account_level_info
+	}// showAccountLevelInfo
 	
 	
 	/**
@@ -1979,11 +1992,11 @@ class account_model extends CI_Model
 	
 	
 	/**
-	 * upload_avatar
+	 * upload avatar
 	 * @param integer $account_id
 	 * @return mixed 
 	 */
-	public function upload_avatar($account_id = '') 
+	public function uploadAvatar($account_id = '') 
 	{
 		if (!is_numeric($account_id)) {return false;}
 		
@@ -1999,7 +2012,7 @@ class account_model extends CI_Model
 			return $this->upload->display_errors('<div>', '</div>');
 		} else {
 			// upload success, delete old avatar
-			$this->delete_account_avatar($account_id);
+			$this->deleteAccountAvatar($account_id);
 			
 			// get file data
 			$data = $this->upload->data();
@@ -2011,7 +2024,7 @@ class account_model extends CI_Model
 			
 			return array('result' => true, 'account_avatar' => $config['upload_path'].$data['file_name']);
 		}
-	}// upload_avatar
+	}// uploadAvatar
 	
 
 }

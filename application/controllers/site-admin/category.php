@@ -43,10 +43,10 @@ class category extends admin_controller
 		if ($this->account_model->check_admin_permission('category_perm', 'category_add_perm') != true) {redirect('site-admin');}
 		
 		// list themes for select
-		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		$output['list_theme'] = $this->themes_model->listEnabledThemes();
 		
 		// list categories for select parent
-		$output['list_item'] = $this->taxonomy_model->list_item();
+		$output['list_item'] = $this->taxonomy_model->listTaxTerm();
 		
 		// save action
 		if ($this->input->post()) {
@@ -128,7 +128,7 @@ class category extends admin_controller
 			$nodupedit = ($nodupedit == 'true' ? true : false);
 			$id = intval($this->input->post('id'));
 			
-			$output['t_uri'] = $this->taxonomy_model->nodup_uri($t_name, $nodupedit, $id);
+			$output['t_uri'] = $this->taxonomy_model->noDupTaxonomyUri($t_name, $nodupedit, $id);
 			
 			// output
 			$this->output->set_content_type('application/json');
@@ -155,7 +155,7 @@ class category extends admin_controller
 						$this->db->update('taxonomy_term_data');
 						
 						// must update parent first, then update uris
-						$this->db->set('t_uris', $this->taxonomy_model->show_uri_tree($key1));
+						$this->db->set('t_uris', $this->taxonomy_model->showTaxTermUriTree($key1));
 						$this->db->where("tid", $key1);
 						$this->db->update('taxonomy_term_data');
 					}
@@ -164,7 +164,7 @@ class category extends admin_controller
 			unset($key, $key1, $item, $item1);
 			
 			// rebuild tree.
-			$this->taxonomy_model->rebuild();
+			$this->taxonomy_model->reBuildTaxTerm();
 			
 			echo '<div class="txt_success alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>'.$this->lang->line('admin_saved').'</div>';
 		}
@@ -182,16 +182,16 @@ class category extends admin_controller
 		$output['tid'] = $tid;
 		
 		// list themes for select
-		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		$output['list_theme'] = $this->themes_model->listEnabledThemes();
 		
 		// list categories for select parent
-		$output['list_item'] = $this->taxonomy_model->list_item();
+		$output['list_item'] = $this->taxonomy_model->listTaxTerm();
 		
 		// load data for form
 		$data['language'] = $this->taxonomy_model->language;
 		$data['t_type'] = $this->taxonomy_model->tax_type;
 		$data['tid'] = $tid;
-		$tax_term = $this->taxonomy_model->get_taxonomy_term_data_db($data);
+		$tax_term = $this->taxonomy_model->getTaxonomyTermDataDb($data);
 		if ($tax_term != null) {
 			$row = $tax_term;
 			
@@ -305,7 +305,7 @@ class category extends admin_controller
 		unset($form_status);
 		
 		// list categories
-		$output['list_item'] = $this->taxonomy_model->list_item();
+		$output['list_item'] = $this->taxonomy_model->listTaxTerm();
 		
 		// if ajax request, send only table body
 		if ($this->input->is_ajax_request()) {
@@ -314,7 +314,7 @@ class category extends admin_controller
 		}
 		
 		// count total items
-		$output['total_item'] = $this->taxonomy_model->list_item_total();
+		$output['total_item'] = $this->taxonomy_model->listTaxTermTotal();
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title($this->lang->line('category_category'));
@@ -340,7 +340,7 @@ class category extends admin_controller
 			foreach ($id as $an_id) {
 				$this->taxonomy_model->delete($an_id);
 			}
-			$this->taxonomy_model->rebuild();
+			$this->taxonomy_model->reBuildTaxTerm();
 		}
 		
 		// go back

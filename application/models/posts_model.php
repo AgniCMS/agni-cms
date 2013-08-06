@@ -52,7 +52,7 @@ class posts_model extends CI_Model
 		$data_post_revision['account_id'] = $ca_account['id'];
 		
 		// re-check post_uri
-		$data_posts['post_uri'] = $this->nodup_uri($data_posts['post_uri']);
+		$data_posts['post_uri'] = $this->noDupPostUri($data_posts['post_uri']);
 		$data_posts['post_uri_encoded'] = urlencode($data_posts['post_uri']);
 		
 		// insert into posts table #####
@@ -82,10 +82,10 @@ class posts_model extends CI_Model
 			foreach ($data_tax_index['tid'] as $tid) {
 				$this->db->set('post_id', $data['post_id']);
 				$this->db->set('tid', $tid);
-				$this->db->set('position', $this->get_last_tax_position($tid));
+				$this->db->set('position', $this->getLastTaxPosition($tid));
 				$this->db->set('create', time());
 				$this->db->insert('taxonomy_index');
-				$this->taxonomy_model->update_total_post($tid);
+				$this->taxonomy_model->updateTotalPost($tid);
 			}
 		}
 		
@@ -96,7 +96,7 @@ class posts_model extends CI_Model
 				$this->db->set('tid', $tid);
 				$this->db->set('create', time());
 				$this->db->insert('taxonomy_index');
-				$this->taxonomy_model->update_total_post($tid);
+				$this->taxonomy_model->updateTotalPost($tid);
 			}
 		}
 		
@@ -152,7 +152,7 @@ class posts_model extends CI_Model
 		
 		// rebuild menu items
 		$this->load->model('menu_model');
-		$this->menu_model->rebuild();
+		$this->menu_model->reBuildMenu();
 		// end delete from menu items -------------------------------------------------------------------------------
 		
 		// delete from url alias
@@ -176,7 +176,7 @@ class posts_model extends CI_Model
 		
 		// then update
 		foreach ($query_result as $row) {
-			$this->taxonomy_model->update_total_post($row->tid);
+			$this->taxonomy_model->updateTotalPost($row->tid);
 		}
 		// end delete from taxonomy_index---------------------------------------------------------------------------
 		
@@ -221,7 +221,7 @@ class posts_model extends CI_Model
 		$data_posts['language'] = $this->language;
 		
 		// load data for check things
-		$row = $this->get_post_data(array('post_id' => $data_posts['post_id']));
+		$row = $this->getPostData(array('post_id' => $data_posts['post_id']));
 		if ($row == null) {return false;}
 		
 		// get account id from cookie
@@ -229,7 +229,7 @@ class posts_model extends CI_Model
 		$data_post_revision['account_id'] = $ca_account['id'];
 		
 		// re-check post_uri
-		$data_posts['post_uri'] = $this->nodup_uri($data_posts['post_uri'], true, $data_posts['post_id']);
+		$data_posts['post_uri'] = $this->noDupPostUri($data_posts['post_uri'], true, $data_posts['post_id']);
 		$data_posts['post_uri_encoded'] = urlencode($data_posts['post_uri']);
 		
 		// set data for post_revision table
@@ -281,10 +281,10 @@ class posts_model extends CI_Model
 					// not exists, insert taxonomy term
 					$this->db->set('post_id', $data_posts['post_id']);
 					$this->db->set('tid', $tid);
-					$this->db->set('position', $this->get_last_tax_position($tid));
+					$this->db->set('position', $this->getLastTaxPosition($tid));
 					$this->db->set('create', time());
 					$this->db->insert('taxonomy_index');
-					$this->taxonomy_model->update_total_post($tid);
+					$this->taxonomy_model->updateTotalPost($tid);
 				}
 				$query2->free_result();
 			}
@@ -325,7 +325,7 @@ class posts_model extends CI_Model
 					$this->db->set('tid', $tid);
 					$this->db->set('create', time());
 					$this->db->insert('taxonomy_index');
-					$this->taxonomy_model->update_total_post($tid);
+					$this->taxonomy_model->updateTotalPost($tid);
 				}
 				
 				$query2->free_result();
@@ -388,42 +388,11 @@ class posts_model extends CI_Model
 	
 	
 	/**
-	 * get post fields from db
-	 * @param integer $post_id
-	 * @param array $data
-	 * @return mixed
-	 */
-	public function getPostFields($post_id = '', $data = array()) 
-	{
-		if (!is_numeric($post_id)) {
-			return null;
-		}
-		
-		$this->db->from('post_fields')
-				->where('post_id', $post_id);
-		
-		if (is_array($data) && !empty($data)) {
-			$this->db->where($data);
-		}
-		
-		$query = $this->db->get();
-		
-		if ($query->num_rows() > 0) {
-			return $query->result();
-		}
-		
-		$query->free_result();
-		
-		return null;
-	}// getPostFields
-	
-	
-	/**
-	 * get_last_tax_position
+	 * get last taxonomy position
 	 * @param integer $tid
 	 * @return integer 
 	 */
-	public function get_last_tax_position($tid = '') 
+	public function getLastTaxPosition($tid = '') 
 	{
 		if (!is_numeric($tid)) {return false;}
 		
@@ -443,7 +412,7 @@ class posts_model extends CI_Model
 		
 		unset($query, $row);
 		return '1';
-	}// get_last_tax_position
+	}// getLastTaxPosition
 	
 	
 	/**
@@ -451,7 +420,7 @@ class posts_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_post_data($data = array()) 
+	public function getPostData($data = array()) 
 	{
 		if (!is_array($data)) {return null;}
 		
@@ -486,7 +455,38 @@ class posts_model extends CI_Model
 		
 		// there is no selected post
 		return null;
-	}// get_post_data
+	}// getPostData
+	
+	
+	/**
+	 * get post fields from db
+	 * @param integer $post_id
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function getPostFields($post_id = '', $data = array()) 
+	{
+		if (!is_numeric($post_id)) {
+			return null;
+		}
+		
+		$this->db->from('post_fields')
+				->where('post_id', $post_id);
+		
+		if (is_array($data) && !empty($data)) {
+			$this->db->where($data);
+		}
+		
+		$query = $this->db->get();
+		
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		}
+		
+		$query->free_result();
+		
+		return null;
+	}// getPostFields
 	
 	
 	/**
@@ -494,7 +494,7 @@ class posts_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_post_revision_data($data = array()) 
+	public function getPostRevisionData($data = array()) 
 	{
 		$this->db->join('post_fields', 'post_fields.post_id = post_revision.post_id', 'left outer');
 		$this->db->join('accounts', 'accounts.account_id = post_revision.account_id', 'left');
@@ -512,7 +512,7 @@ class posts_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// get_post_revision_data
+	}// getPostRevisionData
 	
 	
 	/**
@@ -593,7 +593,7 @@ class posts_model extends CI_Model
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function list_item($list_for = 'front', $data = array()) 
+	public function listPost($list_for = 'front', $data = array()) 
 	{
 		$this->db->join('taxonomy_index', 'taxonomy_index.post_id = posts.post_id', 'left outer');
 		$this->db->join('accounts', 'accounts.account_id = posts.account_id', 'left');
@@ -713,7 +713,7 @@ class posts_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_item
+	}// listPost
 	
 	
 	/**
@@ -721,7 +721,7 @@ class posts_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function list_revision($data = array()) 
+	public function listRevision($data = array()) 
 	{
 		$this->db->join('accounts', 'post_revision.account_id = accounts.account_id', 'left');
 		if (isset($data['post_id'])) {
@@ -736,15 +736,15 @@ class posts_model extends CI_Model
 		$output['items'] = $query->result();
 		
 		return $output;
-	}// list_revision
+	}// listRevision
 	
 	
 	/**
-	 * modify_content
+	 * modify post content
 	 * @param string $content
 	 * @return string 
 	 */
-	public function modify_content($content = '', $post_type = '') 
+	public function modifyPostContent($content = '', $post_type = '') 
 	{
 		if ($this->modules_plug->has_filter('post_modifybody_value')) {
 			// modify content by plugin
@@ -756,23 +756,23 @@ class posts_model extends CI_Model
 		
 		// done
 		return $content;
-	}// modify_content
+	}// modifyPostContent
 	
 	
 	/**
-	 * nodup_uri
+	 * no dupllicate post uri
 	 * @param string $uri
 	 * @param boolean $editmode
 	 * @param integer $id
 	 * @return string 
 	 */
-	public function nodup_uri($uri, $editmode = false, $id = '') 
+	public function noDupPostUri($uri, $editmode = false, $id = '') 
 	{
 		$uri = url_title($uri);
 		
 		// load url model for check disallowed uri
 		$this->load->model('url_model');
-		$uri = $this->url_model->validate_allow_url($uri);
+		$uri = $this->url_model->validateAllowUrl($uri);
 		
 		// check if edit mode?
 		if ($editmode == true) {
@@ -807,15 +807,15 @@ class posts_model extends CI_Model
 		
 		unset($found, $count);
 		return $new_uri;
-	}// nodup_uri
+	}// noDupPostUri
 	
 	
 	/**
-	 * update_total_comment
+	 * update total comment
 	 * @param integer $post_id
 	 * @return boolean 
 	 */
-	public function update_total_comment($post_id = '') 
+	public function updateTotalComment($post_id = '') 
 	{
 		if (!is_numeric($post_id)) {return false;}
 		
@@ -828,7 +828,7 @@ class posts_model extends CI_Model
 		
 		unset($total_comment);
 		return true;
-	}// update_total_comment
+	}// updateTotalComment
 	
 	
 }

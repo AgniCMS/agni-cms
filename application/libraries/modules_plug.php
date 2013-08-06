@@ -133,7 +133,7 @@ class modules_plug
 				// delete this module from db.
 				$ci =& get_instance();
 				$ci->load->model('modules_model');
-				$ci->modules_model->delete_a_module($item['module_system_name']);
+				$ci->modules_model->deleteAModule($item['module_system_name']);
 			}
 		}
 		
@@ -195,7 +195,7 @@ class modules_plug
 	public function load_modules() 
 	{
 		$this->ci->load->model('siteman_model');
-		$site_id = $this->ci->siteman_model->get_site_id();
+		$site_id = $this->ci->siteman_model->getSiteId();
 		
 		$this->ci->db->join('module_sites', 'module_sites.module_id = modules.module_id', 'inner');
 		$this->ci->db->where('module_sites.site_id', $site_id);

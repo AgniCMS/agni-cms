@@ -175,12 +175,12 @@ class media_filesys
 	
 	
 	/**
-	 * move_file
+	 * move media file
 	 * @param string $old_path
 	 * @param string $new_path
 	 * @return boolean
 	 */
-	public function move_file($old_path = '', $new_path = '') 
+	public function moveMediaFile($old_path = '', $new_path = '') 
 	{
 		if (file_exists($old_path) && is_file($old_path)) {
 			$result = copy($old_path, $new_path);
@@ -192,17 +192,17 @@ class media_filesys
 		}
 		
 		return false;
-	}// move_file
+	}// moveMediaFile
 	
 	
 	/**
-	 * rename_folder
+	 * rename folder
 	 * @param string $current_path
 	 * @param string $current_folder
 	 * @param string $new_name
 	 * @return mixed
 	 */
-	public function rename_folder($current_path = '', $current_folder = '', $new_name = '') 
+	public function renameFolder($current_path = '', $current_folder = '', $new_name = '') 
 	{
 		if ($this->is_over_limit_base($this->base_dir, $current_path.'/') === true || $current_path == $this->base_dir) {
 			return 'Hack attempt!';
@@ -240,7 +240,7 @@ class media_filesys
 		unset($new_folder_name_path, $result);
 		
 		return lang('media_rename_folder_failed_please_check_write_permission');
-	}// rename_folder
+	}// renameFolder
 	
 	
 }

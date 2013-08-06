@@ -82,7 +82,7 @@ class comment extends MY_Controller
 				$outval['comment'] = $comment;
 				
 				// comment_body_value
-				$outval['comment_content'] = $this->comments_model->modify_content($comment->comment_body_value);
+				$outval['comment_content'] = $this->comments_model->modifyCommentContent($comment->comment_body_value);
 				
 				// comment class
 				$outval['comment_class'] = ($comment->comment_status == '1' ? 'comment-approved' : 'comment-un-approve');
@@ -162,7 +162,7 @@ class comment extends MY_Controller
 		
 		// get comment data
 		$data['comment_id'] = $comment_id;
-		$row = $this->comments_model->get_comment_data_db($data);
+		$row = $this->comments_model->getCommentDataDb($data);
 		
 		// not found a comment.
 		if ($row == null) { redirect(); }
@@ -202,7 +202,7 @@ class comment extends MY_Controller
 		$output['account_id'] = $row->account_id;
 		$output['subject'] = $row->subject;
 		$output['name'] = $row->name;
-		$output['comment_body_value'] = $this->comments_model->modify_content($row->comment_body_value);
+		$output['comment_body_value'] = $this->comments_model->modifyCommentContent($row->comment_body_value);
 		$output['email'] = $row->email;
 		$output['homepage'] = $row->homepage;
 		$output['row'] = $row;
@@ -216,7 +216,7 @@ class comment extends MY_Controller
 			$this->load->model('posts_model');
 			
 			// update total comment.
-			$this->posts_model->update_total_comment($row->post_id);
+			$this->posts_model->updateTotalComment($row->post_id);
 			
 			// end. go back to post page.
 			if (isset($output['go_to'])) {
@@ -267,7 +267,7 @@ class comment extends MY_Controller
 		
 		// get comment data
 		$data['comment_id'] = $comment_id;
-		$row = $this->comments_model->get_comment_data_db($data);
+		$row = $this->comments_model->getCommentDataDb($data);
 		
 		// not found a comment.
 		if ($row == null) { redirect(); }
@@ -333,7 +333,7 @@ class comment extends MY_Controller
 				$result = $this->comments_model->edit($data);
 				
 				if ($result === true) {
-					$gotopage = $this->comments_model->get_comment_display_page($comment_id, $this->mode);
+					$gotopage = $this->comments_model->getCommentDisplayPage($comment_id, $this->mode);
 					
 					if (isset($output['go_to'])) {
 						redirect($output['go_to']);
@@ -390,7 +390,7 @@ class comment extends MY_Controller
 		
 		// list comments------------------------------------------------------------------------------------------------
 		// get comments from db.
-		$output['list_item'] = $this->comments_model->list_item($post_id, $this->mode);
+		$output['list_item'] = $this->comments_model->listComment($post_id, $this->mode);
 		if ($output['list_item'] != null) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -408,7 +408,7 @@ class comment extends MY_Controller
 			// get comment info from db for reply form.
 			$data['comment_id'] = $output['comment_id'];
 			$data['posts.post_id'] = $post_id;
-			$row = $this->comments_model->get_comment_data_db($data);
+			$row = $this->comments_model->getCommentDataDb($data);
 			unset($data);
 			
 			if ($row != null) {
@@ -512,7 +512,7 @@ class comment extends MY_Controller
 					$max = rtrim($row->max, '/');
 					$parts = explode('.', $max);
 					$firstsegment = $parts[0];
-					$thread = $this->comments_model->int2vancode($this->comments_model->vancode2int($firstsegment) + 1) . '/';
+					$thread = $this->comments_model->int2VanCode($this->comments_model->vanCode2Int($firstsegment) + 1) . '/';
 					$query->free_result();
 				} else {
 					// this comment has parent
@@ -532,13 +532,13 @@ class comment extends MY_Controller
 					$row = $query->row();
 					if ($row->max == '') {
 						// first child of parent
-						$thread = $parent_thread . '.' . $this->comments_model->int2vancode(0) . '/';
+						$thread = $parent_thread . '.' . $this->comments_model->int2VanCode(0) . '/';
 					} else {
 						$max = rtrim($row->max, '/');
 						$parts = explode('.', $max);
 						$parent_depth = count(explode('.', $parent_thread));
 						$last = $parts[$parent_depth];
-						$thread = $parent_thread . '.' . $this->comments_model->int2vancode($this->comments_model->vancode2int($last) + 1) . '/';
+						$thread = $parent_thread . '.' . $this->comments_model->int2VanCode($this->comments_model->vanCode2Int($last) + 1) . '/';
 					}
 					$query->free_result();
 					unset($row, $query, $max, $parts, $parent_depth, $last);
@@ -551,7 +551,7 @@ class comment extends MY_Controller
 				
 				if (isset($result['result']) && $result['result'] === true) {
 					if ($data['comment_status'] == '1') {
-						$gotopage = $this->comments_model->get_comment_display_page($result['id'], $this->mode);
+						$gotopage = $this->comments_model->getCommentDisplayPage($result['id'], $this->mode);
 						redirect(current_url().'?per_page='.$gotopage.'#comment-id-'.$result['id']);
 					} else {
 						$output['form_status'] = 'success';

@@ -42,7 +42,7 @@
 			<select name="act">
 				<option value="" selected="selected"></option>
 				<option value="del"><?php echo lang('admin_delete'); ?></option>
-				<?php if ($this->account_model->show_account_level_info() === '1'): ?><option value="truncate"><?php echo lang('account_delete_all_user_logins'); ?></option><?php endif; ?>
+				<?php if ($this->account_model->showAccountLevelInfo() === '1'): ?><option value="truncate"><?php echo lang('account_delete_all_user_logins'); ?></option><?php endif; ?>
 			</select>
 			<button type="submit" class="bb-button btn btn-warning"><?php echo lang('admin_submit'); ?></button>
 		</div>

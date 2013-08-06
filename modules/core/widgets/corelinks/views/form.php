@@ -12,7 +12,7 @@
 		<select name="mg_id" class="input-block-level">
 			<option value=""></option>
 			<?php
-			$list_mg = $this->menu_model->list_group(false);
+			$list_mg = $this->menu_model->listMenuGroup(false);
 			if (is_array($list_mg['items'])) {
 				foreach ($list_mg['items'] as $row) {
 					echo '<option value="'.$row->mg_id.'"'.(isset($values['mg_id']) && $values['mg_id'] == $row->mg_id ? ' selected="selected"' : '').'>'.$row->mg_name.'</option>';

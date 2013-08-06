@@ -29,34 +29,34 @@ class menu_model extends CI_Model
 	
 	
 	/**
-	 * add_group
+	 * add menu group
 	 * @param array $data
 	 * @return boolean 
 	 */
-	public function add_group($data = array()) 
+	public function addMenuGroup($data = array()) 
 	{
 		// set additional data
 		$data['language'] = $this->language;
 		
 		$this->db->insert('menu_groups', $data);
 		return true;
-	}// add_group
+	}// addMenuGroup
 	
 	
 	/**
-	 * add_item
+	 * add menu item
 	 * @param array $data 
 	 * @return boolean
 	 */
-	public function add_item($data = array()) 
+	public function addMenuItem($data = array()) 
 	{
 		// set additional data for insert to db.
-		$data['position'] = $this->get_mi_newposition($data['mg_id'], $this->language);
+		$data['position'] = $this->getMiNewPosition($data['mg_id'], $this->language);
 		$data['language'] = $this->language;
 		
 		if (!is_array($data['type_id'])) {
 			$data['type_id'] = array($data['type_id']);
-			return $this->add_item($data);
+			return $this->addMenuItem($data);
 		} elseif (is_array($data['type_id'])) {
 			
 			foreach ($data['type_id'] as $type_id) {
@@ -100,17 +100,17 @@ class menu_model extends CI_Model
 		}
 		
 		// done. rebuild nlevel
-		$this->rebuild();
+		$this->reBuildMenu();
 		return true;
-	}// add_item
+	}// addMenuItem
 	
 	
 	/**
-	 * delete_group
+	 * delete menu group
 	 * @param integer $mg_id
 	 * @return boolean 
 	 */
-	public function delete_group($mg_id = '') 
+	public function deleteMenuGroup($mg_id = '') 
 	{
 		if (!is_numeric($mg_id)) {return false;}
 		
@@ -123,10 +123,15 @@ class menu_model extends CI_Model
 		$this->db->delete('menu_groups');
 		
 		return true;
-	}// delete_group
+	}// deleteMenuGroup
 	
 	
-	public function delete_item($mi_id = '') 
+	/**
+	 * delete menu item
+	 * @param integer $mi_id
+	 * @return boolean
+	 */
+	public function deleteMenuItem($mi_id = '') 
 	{
 		// delete children items
 		$this->db->where('parent_id', $mi_id);
@@ -134,7 +139,7 @@ class menu_model extends CI_Model
 		$query = $this->db->get('menu_items');
 		if ($query->num_rows() > 0) {
 			foreach ($query->result() as $row) {
-				$this->delete_item($row->mi_id);
+				$this->deleteMenuItem($row->mi_id);
 			}
 		}
 		$query->free_result();
@@ -146,22 +151,22 @@ class menu_model extends CI_Model
 		
 		// done
 		return true;
-	}// delete_item
+	}// deleteMenuItem
 	
 	
 	/**
-	 * edit_group
+	 * edit menu group
 	 * @param array $data
 	 * @return boolean 
 	 */
-	public function edit_group($data = array()) 
+	public function editMenuGroup($data = array()) 
 	{
 		$this->db->where('language', $this->language);
 		$this->db->where('mg_id', $data['mg_id']);
 		$this->db->update('menu_groups', $data);
 		
 		return true;
-	}// edit_group
+	}// editMenuGroup
 	
 	
 	/**
@@ -169,7 +174,7 @@ class menu_model extends CI_Model
 	 * @param array $data
 	 * @return boolean
 	 */
-	public function edit_item($data = array()) 
+	public function editMenuItem($data = array()) 
 	{
 		if (isset($data['mi_id'])) {
 			$this->db->where('mi_id', $data['mi_id']);
@@ -178,7 +183,7 @@ class menu_model extends CI_Model
 		
 		// done
 		return true;
-	}// edit_item
+	}// editMenuItem
 	
 	
 	/**
@@ -186,7 +191,7 @@ class menu_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_mg_data_db($data = array()) 
+	public function getMgDataDb($data = array()) 
 	{
 		if (!empty($data)) {
 			$this->db->where($data);
@@ -195,7 +200,7 @@ class menu_model extends CI_Model
 		$query = $this->db->get('menu_groups');
 		
 		return $query->row();
-	}// get_mg_data_db
+	}// getMgDataDb
 	
 	
 	/**
@@ -203,7 +208,7 @@ class menu_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_mi_data_db($data = array()) 
+	public function getMiDataDb($data = array()) 
 	{
 		if (!empty($data)) {
 			$this->db->where($data);
@@ -212,16 +217,16 @@ class menu_model extends CI_Model
 		$query = $this->db->get('menu_items');
 		
 		return $query->row();
-	}// get_mi_data_db
+	}// getMiDataDb
 	
 	
 	/**
-	 * get_mi_newposition
+	 * get menu item newposition
 	 * @param integer $mg_id
 	 * @param string $language
 	 * @return int 
 	 */
-	public function get_mi_newposition($mg_id = '', $language = '') 
+	public function getMiNewPosition($mg_id = '', $language = '') 
 	{
 		$this->db->where('mg_id', $mg_id);
 		$this->db->where('language', $language);
@@ -237,15 +242,15 @@ class menu_model extends CI_Model
 			$query->free_result();
 			return 1;
 		}
-	}// get_mi_newposition
+	}// getMiNewPosition
 	
 	
 	/**
-	 * list_group
+	 * list menu group
 	 * @param boolean $limit
 	 * @return mixed 
 	 */
-	public function list_group($limit = true) 
+	public function listMenuGroup($limit = true) 
 	{
 		$this->db->where('language', $this->language);
 		
@@ -313,15 +318,24 @@ class menu_model extends CI_Model
 		
 		$query->free_result();
 		return null;
+	}// listMenuGroup
+	
+	
+	/**
+	 * alias of method listMenuGroup
+	 */
+	public function list_group($limit = true) 
+	{
+		return $this->listMenuGroup($limit);
 	}// list_group
 	
 	
 	/**
-	 * list_item
+	 * list item
 	 * @param integer $mg_id
 	 * @return mixed 
 	 */
-	public function list_item($mg_id = '') 
+	public function listMenuItem($mg_id = '') 
 	{
 		if (!is_numeric($mg_id)) {return null;}
 		
@@ -342,6 +356,15 @@ class menu_model extends CI_Model
 		
 		$query->free_result();
 		return null;
+	}// listMenuItem
+	
+	
+	/**
+	 * alias of method list_item.
+	 */
+	public function list_item($mg_id = '') 
+	{
+		return $this->listMenuItem($mg_id);
 	}// list_item
 	
 	
@@ -432,7 +455,7 @@ class menu_model extends CI_Model
 	/**
 	 * Rebuilds the tree data and saves it to the database
 	 */
-	public function rebuild() 
+	public function reBuildMenu() 
 	{
 		$data = $this->_getTreeWithChildren();
 		
@@ -455,7 +478,7 @@ class menu_model extends CI_Model
 			$query = sprintf('update %s set nlevel = %d where %s = %d', $this->db->dbprefix('menu_items'), $row->nlevel, $this->fields['id'], $id);
 			$this->db->query($query);
 		}
-	}
+	}// reBuildMenu
 	
 	
 }

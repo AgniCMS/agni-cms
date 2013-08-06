@@ -56,7 +56,7 @@ class page extends admin_controller
 		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_add_perm') != true) {redirect('site-admin');}
 		
 		// list themes for select
-		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		$output['list_theme'] = $this->themes_model->listEnabledThemes();
 		
 		// preset settings and values
 		$output['post_comment'] = '0';
@@ -175,7 +175,7 @@ class page extends admin_controller
 			$nodupedit = ($nodupedit == 'true' ? true : false);
 			$id = intval($this->input->post('id'));
 			
-			$output['post_uri'] = $this->posts_model->nodup_uri($post_name, $nodupedit, $id);
+			$output['post_uri'] = $this->posts_model->noDupPostUri($post_name, $nodupedit, $id);
 			
 			// output
 			$this->output->set_content_type('application/json');
@@ -324,7 +324,7 @@ class page extends admin_controller
 		
 		// open posts table for check permission and edit.
 		$data['post_id'] = $post_id;
-		$row = $this->posts_model->get_post_data($data);
+		$row = $this->posts_model->getPostData($data);
 		unset($data['post_id']);
 		
 		// if selected post id is not exists.
@@ -371,7 +371,7 @@ class page extends admin_controller
 		// end check permissions-----------------------------------------------------------
 		
 		// list themes for select
-		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		$output['list_theme'] = $this->themes_model->listEnabledThemes();
 		
 		// preset settings and values---------------------------------------------------------
 		$output['post_id'] = $post_id;
@@ -407,7 +407,7 @@ class page extends admin_controller
 		
 		// list revision
 		$condition['post_id'] = $post_id;
-		$revision = $this->posts_model->list_revision($condition);
+		$revision = $this->posts_model->listRevision($condition);
 		$output['count_revision'] = $revision['total'];
 		$output['list_revision'] = $revision['items'];
 		unset($revision, $condition);
@@ -544,7 +544,7 @@ class page extends admin_controller
 		if ($this->input->get('orders') == null) {
 			$_GET['orders'] = 'posts.post_id';
 		}
-		$output['list_item'] = $this->posts_model->list_item('admin');
+		$output['list_item'] = $this->posts_model->listPost('admin');
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

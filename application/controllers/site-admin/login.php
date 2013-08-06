@@ -59,7 +59,7 @@ class login extends MY_Controller
 	public function index() 
 	{
 		// set theme to admin default theme (this controller use front controller NOT admin controller, if front controller set to others it can mess up theme and style.)
-		$theme_system_name = $this->themes_model->get_default_theme('admin');
+		$theme_system_name = $this->themes_model->getDefaultTheme('admin');
 		$this->theme_path = base_url().config_item('agni_theme_path').$theme_system_name.'/';// for use in css
 		$this->theme_system_name = $theme_system_name;
 		
@@ -107,8 +107,8 @@ class login extends MY_Controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$login_fail_last_time = $this->account_model->login_fail_last_time($data['username']);
-				$count_login_fail = $this->account_model->count_login_fail($data['username']);
+				$login_fail_last_time = $this->account_model->loginFailLastTime($data['username']);
+				$count_login_fail = $this->account_model->countLoginFail($data['username']);
 				
 				if (($count_login_fail !== false && $login_fail_last_time !== false) && ($count_login_fail > 10 && (time()-strtotime($login_fail_last_time))/(60) < 30)) {
 					// login failed over 10 times
@@ -118,14 +118,14 @@ class login extends MY_Controller
 						$result = $this->lang->line('account_wrong_captcha_code');
 					} else {
 						// try to login
-						$result = $this->account_model->admin_login($data);
+						$result = $this->account_model->adminLogIn($data);
 					}
 				}
 				unset($login_fail_last_time, $count_login_fail);
 				
 				// fetch last data (after login fail, there is a logins update)
-				$login_fail_last_time = $this->account_model->login_fail_last_time($data['username']);
-				$count_login_fail = $this->account_model->count_login_fail($data['username']);
+				$login_fail_last_time = $this->account_model->loginFailLastTime($data['username']);
+				$count_login_fail = $this->account_model->countLoginFail($data['username']);
 				if ($count_login_fail > 2 && $this->input->is_ajax_request()) {
 					$output['show_captcha'] = true;
 				}
@@ -212,7 +212,7 @@ class login extends MY_Controller
 					$result = $this->lang->line('account_wrong_captcha_code');
 				} else {
 					// send request reset password
-					$result = $this->account_model->reset_password1($email);
+					$result = $this->account_model->resetPassword1($email);
 				}
 			}
 			// check result

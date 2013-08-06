@@ -18,7 +18,7 @@ class area extends MY_Controller
 		parent::__construct();
 		
 		// check admin login!!!
-		if (! $this->account_model->is_admin_login()) {
+		if (! $this->account_model->isAdminLogin()) {
 			redirect('site-admin/login?rdr='.urlencode(current_url()));
 		}
 		

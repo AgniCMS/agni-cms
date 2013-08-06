@@ -48,7 +48,7 @@
 				<td><?php
 				// read theme name
 				if ($row->theme_system_name != null) {
-					$theme_data = $this->themes_model->read_theme_metadata($row->theme_system_name.'/'.$row->theme_system_name.'.info');
+					$theme_data = $this->themes_model->readThemeMetadata($row->theme_system_name.'/'.$row->theme_system_name.'.info');
 					echo anchor('area/demo/'.$row->theme_system_name, $theme_data['name']);
 					unset($theme_data);
 				}

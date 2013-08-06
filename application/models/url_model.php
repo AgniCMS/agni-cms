@@ -27,21 +27,21 @@ class url_model extends CI_Model
 	
 	
 	/**
-	 * add_redirect
+	 * add url redirect
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function add_redirect($data = array()) 
+	public function addUrlRedirect($data = array()) 
 	{
 		if (!is_array($data)) {return false;}
 		
 		// re-check uri
-		$data['uri'] = $this->nodup_uri($data['uri']);
+		$data['uri'] = $this->noDupUrlUri($data['uri']);
 		
 		// additional data for insert
 		$data['c_type'] = $this->c_type;
 		$data['uri_encoded'] = urlencode_except_slash($data['uri']);
-		$data['redirect_to_encoded'] = $this->encode_redirect_to($data['redirect_to']);
+		$data['redirect_to_encoded'] = $this->encodeRedirectTo($data['redirect_to']);
 		$data['language'] = $this->language;
 		
 		// insert
@@ -51,39 +51,39 @@ class url_model extends CI_Model
 		$output['id'] = $this->db->insert_id();
 		$output['result'] = true;
 		return $output;
-	}// add_redirect
+	}// addUrlRedirect
 	
 	
 	/**
-	 * delete_redirect
+	 * delete url redirect
 	 * @param integer $alias_id 
 	 * @return boolean
 	 */
-	public function delete_redirect($alias_id = '') 
+	public function deleteUrlRedirect($alias_id = '') 
 	{
 		$this->db->where('c_type', $this->c_type);
 		$this->db->where('alias_id', $alias_id);
 		$this->db->delete('url_alias');
 		
 		return true;
-	}// delete_redirect
+	}// deleteUrlRedirect
 	
 	
 	/**
-	 * edit_redirect
+	 * edit url redirect
 	 * @param array $data
 	 * @return mixed 
 	 */
-	public function edit_redirect($data = array()) 
+	public function editUrlRedirect($data = array()) 
 	{
 		if (!is_array($data)) {return false;}
 		
 		// re-check uri
-		$data['uri'] = $this->nodup_uri($data['uri'], true, $data['alias_id']);
+		$data['uri'] = $this->noDupUrlUri($data['uri'], true, $data['alias_id']);
 		
 		// additional data for update
 		$data['uri_encoded'] = urlencode_except_slash($data['uri']);
-		$data['redirect_to_encoded'] = $this->encode_redirect_to($data['redirect_to']);
+		$data['redirect_to_encoded'] = $this->encodeRedirectTo($data['redirect_to']);
 		
 		// insert
 		$this->db->where('c_type', $this->c_type);
@@ -93,28 +93,28 @@ class url_model extends CI_Model
 		
 		$output['result'] = true;
 		return $output;
-	}// edit_redirect
+	}// editUrlRedirect
 	
 	
 	/**
-	 * encode_redirect_to
+	 * encode url redirect to
 	 * @param string $redirect_to
 	 * @return string 
 	 */
-	public function encode_redirect_to($redirect_to = '') 
+	public function encodeRedirectTo($redirect_to = '') 
 	{
 		if ($redirect_to == null) {return null;}
 		
 		return urlencode_except_slash($redirect_to);
-	}// encode_redirect_to
+	}// encodeRedirectTo
 	
 	
 	/**
-	 * get_url_alias_data_db
+	 * get url alias data from db
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_url_alias_data_db($data = array()) 
+	public function getUrlAliasDataDb($data = array()) 
 	{
 		if (!empty($data)) {
 			$this->db->where($data);
@@ -123,10 +123,10 @@ class url_model extends CI_Model
 		$query = $this->db->get('url_alias');
 		
 		return $query->row();
-	}// get_url_alias_data_db
+	}// getUrlAliasDataDb
 	
 	
-	public function list_item($list_for = 'admin') 
+	public function listUrlItem($list_for = 'admin') 
 	{
 		$this->db->where('c_type', $this->c_type);
 		$this->db->where('language', $this->language);
@@ -216,19 +216,19 @@ class url_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_item
+	}// listUrlItem
 	
 	
 	/**
-	 * nodup_uri
+	 * nodup uri
 	 * @param string $uri
 	 * @param boolean $editmode
 	 * @param integer $id
 	 * @return string 
 	 */
-	public function nodup_uri($uri, $editmode = false, $id = '') 
+	public function noDupUrlUri($uri, $editmode = false, $id = '') 
 	{
-		$uri = $this->validate_allow_url($uri);
+		$uri = $this->validateAllowUrl($uri);
 		
 		// prevent url_title cut slash out (/)------------------------------------------------
 		$uri_raw = explode('/', $uri);
@@ -294,15 +294,15 @@ class url_model extends CI_Model
 		
 		unset($found, $count);
 		return $new_uri;
-	}// nodup_uri
+	}// noDupUrlUri
 	
 	
 	/**
-	 * validate_allow_url
+	 * validate allow url
 	 * @param string $uri
 	 * @return string 
 	 */
-	public function validate_allow_url($uri = '') 
+	public function validateAllowUrl($uri = '') 
 	{
 		if ($uri == null) {return null;}
 		
@@ -372,7 +372,7 @@ class url_model extends CI_Model
 		
 		// not found in disallowed uri
 		return $uri;
-	}// validate_allow_url
+	}// validateAllowUrl
 	
 	
 }

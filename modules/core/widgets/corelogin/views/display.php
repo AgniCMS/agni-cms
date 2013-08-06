@@ -3,7 +3,7 @@ if (isset($values['block_title']) && $values['block_title'] != null) {
 	echo '<h3>'.$values['block_title'].'</h3>';
 }
 ?>
-<?php if ($this->account_model->is_member_login()): ?> 
+<?php if ($this->account_model->isMemberLogin()): ?> 
 	<ul>
 		<?php
 		if (isset($values['show_admin_link']) && $values['show_admin_link'] == '1') {

@@ -48,7 +48,7 @@ class corelinks extends widget
 		
 		if (isset($values['mg_id'])) {
 			$this->load->model('menu_model');
-			$list_item = $this->menu_model->list_item($values['mg_id']);
+			$list_item = $this->menu_model->listMenuItem($values['mg_id']);
 			echo show_menuitem_nested($list_item);
 		}
 	}// run

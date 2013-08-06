@@ -255,7 +255,7 @@
 						<?php $this->load->helper('category');
 						$this->load->model('taxonomy_model');
 						$this->taxonomy_model->tax_type = 'category';
-						echo show_category_select($this->taxonomy_model->list_item(), $content_frontpage_category); ?> 
+						echo show_category_select($this->taxonomy_model->listTaxTerm(), $content_frontpage_category); ?> 
 					</select>
 				</div>
 			</div>

@@ -34,7 +34,7 @@ function set_site_id() {
 		// get site info eg site_id.
 		$data['site_domain'] = $site_domain;
 		$data['site_status'] = '1';
-		$site = $CI->siteman_model->get_site_data_db($data);
+		$site = $CI->siteman_model->getSiteDataDb($data);
 		unset($data);
 
 		if ($site == null) {
@@ -68,7 +68,7 @@ function set_site_table() {
 		// get site info eg site_id.
 		$data['site_domain'] = $site_domain;
 		$data['site_status'] = '1';
-		$site = $CI->siteman_model->get_site_data_db($data);
+		$site = $CI->siteman_model->getSiteDataDb($data);
 		unset($data);
 
 		// if no site data in db or site_id = 1

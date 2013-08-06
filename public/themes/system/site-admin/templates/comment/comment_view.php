@@ -60,7 +60,7 @@
 				</td>
 				<td>
 					<div class="comment-dates"><?php echo sprintf(lang('comment_submitted_on'), gmt_date('Y-m-d H:i:s', $row->comment_add_gmt)); ?></div>
-					<?php echo $this->comments_model->modify_content($row->comment_body_value); ?> 
+					<?php echo $this->comments_model->modifyCommentContent($row->comment_body_value); ?> 
 				</td>
 				<td><?php if ($row->post_type == 'page') {
 					echo anchor($row->post_uri_encoded, $row->post_name);

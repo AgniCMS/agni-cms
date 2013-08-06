@@ -68,7 +68,7 @@ class menu extends admin_controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$result = $this->menu_model->add_group($data);
+				$result = $this->menu_model->addMenuGroup($data);
 				
 				if ($result === true) {
 					// load session library
@@ -145,7 +145,7 @@ class menu extends admin_controller
 				log_message('error', $output['form_status_message']);
 			} else {
 				// 
-				$result = $this->menu_model->add_item($data);
+				$result = $this->menu_model->addMenuItem($data);
 				
 				if ($result === true) {
 					$output['result'] = true;
@@ -173,8 +173,8 @@ class menu extends admin_controller
 			
 			if (!is_numeric($mi_id)) {exit;}
 			
-			$this->menu_model->delete_item($mi_id);
-			$this->menu_model->rebuild();
+			$this->menu_model->deleteMenuItem($mi_id);
+			$this->menu_model->reBuildMenu();
 			
 			//
 			$output['result'] = true;
@@ -193,7 +193,7 @@ class menu extends admin_controller
 		if ($this->input->is_ajax_request()) {
 			// get data for edit
 			$data['mi_id'] = $mi_id;
-			$row = $this->menu_model->get_mi_data_db($data);
+			$row = $this->menu_model->getMiDataDb($data);
 			unset($data);
 			
 			if ($row == null) {exit;}
@@ -236,7 +236,7 @@ class menu extends admin_controller
 					exit;
 				} else {
 					// update menu item
-					$this->menu_model->edit_item($data);
+					$this->menu_model->editMenuItem($data);
 					echo 'true';
 					exit;
 				}
@@ -264,7 +264,7 @@ class menu extends admin_controller
 		$this->posts_model->post_type = $post_type;
 		
 		// list posts
-		$list_posts = $this->posts_model->list_item('admin');
+		$list_posts = $this->posts_model->listPost('admin');
 		
 		$output = '';
 		
@@ -296,7 +296,7 @@ class menu extends admin_controller
 		$this->taxonomy_model->tax_type = 'tag';
 		
 		// list tags
-		$list_tags = $this->taxonomy_model->list_tags('admin');
+		$list_tags = $this->taxonomy_model->listTags('admin');
 		
 		$output = '';
 		
@@ -342,7 +342,7 @@ class menu extends admin_controller
 			
 			unset($key, $key1, $item, $item1);
 			
-			$this->menu_model->rebuild();
+			$this->menu_model->reBuildMenu();
 			
 			echo '<div class="txt_success alert alert-success">'.$this->lang->line('admin_saved').'</div>';
 		}
@@ -359,7 +359,7 @@ class menu extends admin_controller
 		// open menu groups table for edit
 		$data['mg_id'] = $mg_id;
 		$data['language'] = $this->menu_model->language;
-		$row = $this->menu_model->get_mg_data_db($data);
+		$row = $this->menu_model->getMgDataDb($data);
 		unset($data);
 		
 		// not found
@@ -385,7 +385,7 @@ class menu extends admin_controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$result = $this->menu_model->edit_group($data);
+				$result = $this->menu_model->editMenuGroup($data);
 				if ($result === true) {
 					// load session library
 					$this->load->library('session');
@@ -439,7 +439,7 @@ class menu extends admin_controller
 		unset($form_status);
 		
 		// list menu group
-		$output['list_group'] = $this->menu_model->list_group();
+		$output['list_group'] = $this->menu_model->listMenuGroup();
 		if (is_array($output['list_group'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -468,7 +468,7 @@ class menu extends admin_controller
 		// query menu_groups for display info.
 		$data['mg_id'] = $mg_id;
 		$data['language'] = $this->lang->get_current_lang();
-		$row = $this->menu_model->get_mg_data_db($data);
+		$row = $this->menu_model->getMgDataDb($data);
 		unset($data);
 		
 		if ($row == null) {redirect('site-admin/menu');}
@@ -477,17 +477,17 @@ class menu extends admin_controller
 		
 		// categories for add
 		$this->taxonomy_model->tax_type = 'category';
-		$output['list_category'] = $this->taxonomy_model->list_item();
+		$output['list_category'] = $this->taxonomy_model->listTaxTerm();
 		
 		// pages for add
 		$this->posts_model->post_type = 'page';
-		$output['list_page'] = $this->posts_model->list_item('admin');
+		$output['list_page'] = $this->posts_model->listPost('admin');
 		if (is_array($output['list_page'])) {
 			$output['page_pagination'] = $this->pagination->create_links();
 		}
 		
 		// list menu_items
-		$output['list_item'] = $this->menu_model->list_item($mg_id);
+		$output['list_item'] = $this->menu_model->listMenuItem($mg_id);
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title($this->lang->line('menu_menu'));
@@ -513,7 +513,7 @@ class menu extends admin_controller
 			if ($this->account_model->check_admin_permission('menu_perm', 'menu_delete_group_perm') != true) {redirect('site-admin');}
 			if (is_array($id)) {
 				foreach ($id as $an_id) {
-					$this->menu_model->delete_group($an_id);
+					$this->menu_model->deleteMenuGroup($an_id);
 				}
 			}
 		}

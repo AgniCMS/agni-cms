@@ -52,7 +52,7 @@ class corecategories extends widget
 			$nohome = true;
 		}
 		
-		echo show_category_nested_block($this->taxonomy_model->list_item(), $nohome);
+		echo show_category_nested_block($this->taxonomy_model->listTaxTerm(), $nohome);
 	}// run
 	
 	

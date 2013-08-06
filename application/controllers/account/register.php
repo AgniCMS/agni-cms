@@ -80,7 +80,7 @@ class register extends MY_Controller
 				// if captcha pass
 				if (isset($continue_register) && $continue_register === true) {
 					// register action
-					$result = $this->account_model->register_account($data);
+					$result = $this->account_model->registerAccount($data);
 					
 					if ($result === true) {
 						$output['hide_register_form'] = true;

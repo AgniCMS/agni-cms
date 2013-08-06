@@ -16,7 +16,9 @@ class admin_controller extends MY_Controller {
 		parent::__construct();
 		
 		// check admin login
-		if (! $this->account_model->is_admin_login()) {redirect('site-admin/login?rdr='.urlencode(current_url()));}
+		if (! $this->account_model->isAdminLogin()) {
+			redirect('site-admin/login?rdr='.urlencode(current_url()));
+		}
 		
 		// load model
 		$this->load->model(array('modules_model', 'siteman_model'));
@@ -47,7 +49,7 @@ class admin_controller extends MY_Controller {
 		// call cron controller. --------------------------------------------------------------------------------------------------------------
 		
 		// get default admin theme name and set new theme_path
-		$theme_system_name = $this->themes_model->get_default_theme('admin');
+		$theme_system_name = $this->themes_model->getDefaultTheme('admin');
 		$this->theme_path = $this->base_url.config_item('agni_theme_path').$theme_system_name.'/';
 		$this->theme_system_name = $theme_system_name;
 		unset($theme_system_name);
@@ -67,7 +69,7 @@ class admin_controller extends MY_Controller {
 	function generate_page($page = '', $output = '') {
 		// get sites to list in admin page 
 		$sdata['site_status'] = '1';
-		$list_sites = $this->siteman_model->list_websites_all($sdata);
+		$list_sites = $this->siteman_model->listWebsitesAll($sdata);
 		if (isset($list_sites['total']) && $list_sites['total'] > 1) {
 			$output['agni_list_sites'] = $list_sites;
 		}

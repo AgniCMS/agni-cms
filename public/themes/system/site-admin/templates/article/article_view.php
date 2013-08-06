@@ -84,7 +84,7 @@
 				<td><?php echo ($row->post_status == '1' ? lang('post_published') : lang('post_draft')); ?></td>
 				<td><?php
 					$this->taxonomy_model->tax_type = 'category';
-					$list_taxterm_index = $this->taxonomy_model->list_taxterm_index($row->post_id);
+					$list_taxterm_index = $this->taxonomy_model->listTaxTermIndex($row->post_id);
 					if (!empty($list_taxterm_index)) {
 						$count = 1;
 						foreach ($list_taxterm_index as $tax) {
@@ -98,7 +98,7 @@
 				?></td>
 				<td><?php
 					$this->taxonomy_model->tax_type = 'tag';
-					$list_taxterm_index = $this->taxonomy_model->list_taxterm_index($row->post_id);
+					$list_taxterm_index = $this->taxonomy_model->listTaxTermIndex($row->post_id);
 					if (!empty($list_taxterm_index)) {
 						$count = 1;
 						foreach ($list_taxterm_index as $tax) {
@@ -113,7 +113,7 @@
 				<td><?php
 				// read theme name
 				if ($row->theme_system_name != null) {
-					$theme_data = $this->themes_model->read_theme_metadata($row->theme_system_name.'/'.$row->theme_system_name.'.info');
+					$theme_data = $this->themes_model->readThemeMetadata($row->theme_system_name.'/'.$row->theme_system_name.'.info');
 					echo anchor('area/demo/'.$row->theme_system_name, $theme_data['name']);
 					unset($theme_data);
 				}

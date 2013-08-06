@@ -20,11 +20,11 @@ class config_model extends CI_Model
 	
 	
 	/**
-	 * delete_cache
+	 * delete cache
 	 * @param string $partial_name
 	 * @return boolean 
 	 */
-	public function delete_cache($partial_name = '') 
+	public function deleteCache($partial_name = '') 
 	{
 		if (empty($partial_name)) {return false;}
 		
@@ -42,6 +42,8 @@ class config_model extends CI_Model
 					}
 				}
 			}
+			
+			return true;
 		}
 		
 		// delete cache
@@ -55,7 +57,7 @@ class config_model extends CI_Model
 		}
 		
 		return true;
-	}// delete_cache
+	}// deleteCache
 	
 	
 	/**
@@ -87,6 +89,21 @@ class config_model extends CI_Model
 	}// load
 	
 	
+	/**
+	 * the alias method of load_single.
+	 */
+	public function loadSingle($config_name = '', $return_field = 'config_value') 
+	{
+		return $this->load_single($config_name, $return_field);
+	}// loadSingle
+	
+	
+	/**
+	 * load single config value
+	 * @param string $config_name
+	 * @param string $return_field
+	 * @return mixed
+	 */
 	public function load_single($config_name = '', $return_field = 'config_value') 
 	{
 		if (empty($config_name)) {return null;}
@@ -135,6 +152,11 @@ class config_model extends CI_Model
 	}// load_single
 	
 	
+	/**
+	 * save config
+	 * @param array $data
+	 * @return boolean
+	 */
 	public function save($data = array()) 
 	{
 		if (empty($data)) {return false;}
@@ -150,26 +172,31 @@ class config_model extends CI_Model
 				$this->load->model('siteman_model');
 				
 				// set data for update
-				$data_site['site_id'] = $this->siteman_model->get_site_id(false);
+				$data_site['site_id'] = $this->siteman_model->getSiteId(false);
 				$data_site['site_name'] = $item;
-				$this->siteman_model->edit_site($data_site);
+				$this->siteman_model->editSite($data_site);
 				
 				unset($data_site);
 			}
 		}
 		
-		$this->save_frontpage_category($data);
+		$this->saveFrontpageCategory($data);
 		
 		// clear cfgload cache
-		$this->delete_cache('cfgload_'.SITE_TABLE);
-		$this->delete_cache('chkacc_');
+		$this->deleteCache('cfgload_'.SITE_TABLE);
+		$this->deleteCache('chkacc_');
 		
 		// done
 		return true;
 	}// save
 	
 	
-	public function save_frontpage_category($data = array()) 
+	/**
+	 * save front page category.
+	 * @param array $data
+	 * @return boolean
+	 */
+	public function saveFrontpageCategory($data = array()) 
 	{
 		if (!isset($data['content_frontpage_category'])) {return false;}
 		
@@ -189,7 +216,7 @@ class config_model extends CI_Model
 		}
 		
 		return true;
-	}// save_frontpage_category
+	}// saveFrontpageCategory
 	
 
 }

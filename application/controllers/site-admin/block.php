@@ -52,7 +52,7 @@ class block extends admin_controller
 			$data['block_status'] = '1';
 			
 			// inserting data.
-			$result = $this->blocks_model->add_to_area($data);
+			$result = $this->blocks_model->addToArea($data);
 			if (isset($result['result']) && $result['result'] == true) {
 				$output['form_status'] = '';
 				$output['form_status_message'] = '';
@@ -123,7 +123,7 @@ class block extends admin_controller
 		
 		if ($this->input->is_ajax_request() && !empty($theme_system_name)) {
 			
-			$list_block_in_area = $this->blocks_model->list_blocks_in_areas($theme_system_name);
+			$list_block_in_area = $this->blocks_model->listBlocksInAreas($theme_system_name);
 			$output = null;
 			if (isset($list_block_in_area[$area_name])) {
 				foreach($list_block_in_area[$area_name] as $block) {
@@ -180,7 +180,7 @@ class block extends admin_controller
 		// load data for edit
 		$data['block_id'] = $block_id;
 		$data['language'] = $this->lang->get_current_lang();
-		$block = $this->blocks_model->get_block_db($data);
+		$block = $this->blocks_model->getBlockDb($data);
 		
 		// if selected block is not exists.
 		if ($block == null) {$query->free_result(); redirect('site-admin/block');}
@@ -256,7 +256,7 @@ class block extends admin_controller
 		unset($form_status);
 		
 		// list enabled themes
-		$output['list_themes'] = $this->themes_model->list_enabled_themes();
+		$output['list_themes'] = $this->themes_model->listEnabledThemes();
 		
 		// set current selected theme (from select box or whatever.) value.
 		$output['current_selected_theme'] = strip_tags(trim($this->input->get('theme_system_name', true)));
@@ -265,15 +265,15 @@ class block extends admin_controller
 		if ($output['current_selected_theme'] != null) {
 			
 			// list areas
-			$output['list_areas'] = $this->themes_model->list_areas($output['current_selected_theme']);
+			$output['list_areas'] = $this->themes_model->listAreas($output['current_selected_theme']);
 			
 			// list current block in areas
-			$output['list_block_in_area'] = $this->blocks_model->list_blocks_in_areas($output['current_selected_theme']);
+			$output['list_block_in_area'] = $this->blocks_model->listBlocksInAreas($output['current_selected_theme']);
 			
 		}
 		
 		// list available widgets or blocks
-		$output['list_available_blocks'] = $this->modules_model->list_all_widgets();
+		$output['list_available_blocks'] = $this->modules_model->listAllBlocks();
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title($this->lang->line('block_blocks'));

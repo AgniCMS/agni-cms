@@ -21,7 +21,7 @@ class logout extends MY_Controller
 	
 	public function index() 
 	{
-		$this->account_model->logout();
+		$this->account_model->logOut();
 		
 		// go back
 		$this->load->library('user_agent');

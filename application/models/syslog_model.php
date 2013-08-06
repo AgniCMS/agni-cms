@@ -16,15 +16,18 @@ class syslog_model extends CI_Model
 	public function __construct() 
 	{
 		parent::__construct();
+		
+		// purge old log
+		$this->purgeOldLog();
 	}// __construct
 	
 	
 	/**
-	 * add_new_log
+	 * add new log
 	 * @param array $data
 	 * @return boolean
 	 */
-	public function add_new_log($data = array()) 
+	public function addNewLog($data = array()) 
 	{
 		// if not set account_id, get it from cookie.
 		if (!isset($data['account_id'])) {
@@ -45,7 +48,7 @@ class syslog_model extends CI_Model
 		// if not set site_id
 		if (!isset($data['site_id'])) {
 			$this->load->model('siteman_model');
-			$site_id = $this->siteman_model->get_site_id();
+			$site_id = $this->siteman_model->getSiteId();
 			
 			$data['site_id'] = $site_id;
 			unset($site_id);
@@ -88,15 +91,15 @@ class syslog_model extends CI_Model
 		$this->db->insert('syslog', $data);
 		
 		return true;
-	}// add_new_log
+	}// addNewLog
 	
 	
 	/**
-	 * purge_old_log
+	 * purge old log
 	 * @param integer $day_old
 	 * @return boolean
 	 */
-	public function purge_old_log($day_old = 90) 
+	public function purgeOldLog($day_old = 90) 
 	{
 		if ($day_old < 90 || !is_numeric($day_old)) {
 			$day_old = 90;
@@ -109,11 +112,11 @@ class syslog_model extends CI_Model
 		// system log
 		$log['sl_type'] = 'syslog';
 		$log['sl_message'] = 'Purge old log';
-		$this->add_new_log($log);
+		$this->addNewLog($log);
 		unset($log);
 		
 		return true;
-	}// purge_old_log
+	}// purgeOldLog
 
 
 }

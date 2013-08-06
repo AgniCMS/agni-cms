@@ -29,10 +29,10 @@ class permission_model extends CI_Model
 	
 	
 	/**
-	 * fetch_permissions
+	 * fetch permissions
 	 * @return array 
 	 */
-	public function fetch_permissions() 
+	public function fetchPermissions() 
 	{
 		$permission_array = array();
 		
@@ -84,15 +84,15 @@ class permission_model extends CI_Model
 		}*/ // change permission modules into each module permission page.
 		
 		return $permission_array;
-	}// fetch_permissions
+	}// fetchPermissions
 	
 	
 	/**
-	 * fetch_permissions_module
+	 * fetch permissions module
 	 * @param string $module_system_name
 	 * @return array
 	 */
-	public function fetch_permissions_module($module_system_name = '') 
+	public function fetchPermissionsModule($module_system_name = '') 
 	{
 		if ($module_system_name == null) {return false;}
 		
@@ -124,16 +124,16 @@ class permission_model extends CI_Model
 		}
 		
 		return $permission_array;
-	}// fetch_permissions_module
+	}// fetchPermissionsModule
 	
 	
 	/**
-	 * has_permission
+	 * has permission
 	 * check if specific module has permission
 	 * @param string $module_system_name
 	 * @return boolean
 	 */
-	public function has_permission($module_system_name = '') 
+	public function hasPermission($module_system_name = '') 
 	{
 		if ($module_system_name == null) {return false;}
 		
@@ -169,15 +169,15 @@ class permission_model extends CI_Model
 		} else {
 			return false;
 		}
-	}// has_permission
+	}// hasPermission
 	
 	
 	/**
-	 * list_permissions_check
+	 * list permissions check
 	 * for check permission settings
 	 * @return array 
 	 */
-	public function list_permissions_check($data = array()) 
+	public function listPermissionsCheck($data = array()) 
 	{
 		$output = array();
 		
@@ -192,16 +192,16 @@ class permission_model extends CI_Model
 		}
 		
 		return $output;
-	}// list_permissions_check
+	}// listPermissionsCheck
 	
 	
 	/**
-	 * reset_permissions
+	 * reset permissions
 	 * @return boolean 
 	 */
-	public function reset_permissions() 
+	public function resetPermissions() 
 	{
-		$this->config_model->delete_cache('check_admin_permission_');
+		$this->config_model->deleteCache('check_admin_permission_');
 		
 		// empty permissions db
 		$this->db->truncate('account_level_permission');
@@ -210,19 +210,19 @@ class permission_model extends CI_Model
 		$log['sl_type'] = 'permission';
 		$log['sl_message'] = 'Reset permission';
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		return true;
-	}// reset_permission
+	}// resetPermissions
 	
 	
 	/**
-	 * save_permissions
+	 * save permissions
 	 * @param array $data
 	 * @return boolean
 	 */
-	public function save_permissions($data = array()) 
+	public function savePermissions($data = array()) 
 	{
 		foreach ($data['level_group_id'] as $key => $lv_groups) {
 			foreach ($lv_groups as $level_group_id) {
@@ -267,7 +267,7 @@ class permission_model extends CI_Model
 		// now remove permission in db that was not checked. ---------------------------------------------------------------
 		
 		return true;
-	}// save_permissions
+	}// savePermissions
 	
 	
 }

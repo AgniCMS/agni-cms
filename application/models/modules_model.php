@@ -19,22 +19,22 @@ class modules_model extends CI_Model
 	public function __construct() 
 	{
 		parent::__construct();
-		$this->_setup_module_dir();
+		$this->_setupModuleDir();
 	}// __construct
 	
 	
-	public function _setup_module_dir() 
+	private function _setupModuleDir() 
 	{
 		$this->config->load('agni');
 		$this->module_dir = $this->config->item('modules_uri');
-	}// _setup_module_dir
+	}// _setupModuleDir
 	
 	
 	/**
 	 * add module
 	 * @return mixed 
 	 */
-	public function add_module() 
+	public function addModule() 
 	{
 		// load agni config
 		$this->config->load('agni');
@@ -43,7 +43,7 @@ class modules_model extends CI_Model
 		$log['sl_type'] = 'module';
 		$log['sl_message'] = 'Add new module';
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		// config upload
@@ -120,15 +120,15 @@ class modules_model extends CI_Model
 				return true;
 			}
 		}
-	}// add_module
+	}// addModule
 	
 	
 	/**
-	 * delete_a_module
+	 * delete a module
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	public function delete_a_module($module_system_name = '') 
+	public function deleteAModule($module_system_name = '') 
 	{
 		// uninstall module controller
 		$this->load->module(array($module_system_name.'_uninstall'));
@@ -173,14 +173,14 @@ class modules_model extends CI_Model
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache('ismodactive_'.$module_system_name);
-		$this->config_model->delete_cache('ismodhaspermission_'.$module_system_name);
+		$this->config_model->deleteCache('ismodactive_'.$module_system_name);
+		$this->config_model->deleteCache('ismodhaspermission_'.$module_system_name);
 		
 		// system log
 		$log['sl_type'] = 'module';
 		$log['sl_message'] = 'Delete module '.$module_system_name;
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		// load file helper for delete folder recursive
@@ -194,20 +194,20 @@ class modules_model extends CI_Model
 		}
 		
 		return false;
-	}// delete_a_module
+	}// deleteAModule
 	
 	
 	/**
-	 * do_activate
+	 * do activate module
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	public function do_activate($module_system_name = '', $site_id = '') 
+	public function doActivate($module_system_name = '', $site_id = '') 
 	{
-		$pdata = $this->read_module_metadata($module_system_name.'/'.$module_system_name.'_module.php' );
+		$pdata = $this->readModuleMetadata($module_system_name.'/'.$module_system_name.'_module.php' );
 		
 		// check if module is inserted
-		$row = $this->get_modules_data(array('module_system_name' => $module_system_name));
+		$row = $this->getModulesData(array('module_system_name' => $module_system_name));
 		
 		// set data for insert/update
 		$this->db->set('module_name', (empty($pdata['name']) ? $module_system_name : $pdata['name']));
@@ -223,7 +223,7 @@ class modules_model extends CI_Model
 			$this->db->insert('modules');
 			
 			// inserted, get modules data again
-			$row = $this->get_modules_data(array('module_system_name' => $module_system_name));
+			$row = $this->getModulesData(array('module_system_name' => $module_system_name));
 		} else {
 			$this->db->where('module_system_name', $module_system_name);
 			$this->db->update('modules');
@@ -250,14 +250,14 @@ class modules_model extends CI_Model
 		unset($row, $pdata);
 		
 		// delete cache
-		$this->config_model->delete_cache('ismodactive_'.$module_system_name.'_'.$site_id);
-		$this->config_model->delete_cache('ismodinstall_'.$module_system_name.'_'.$site_id);
+		$this->config_model->deleteCache('ismodactive_'.$module_system_name.'_'.$site_id);
+		$this->config_model->deleteCache('ismodinstall_'.$module_system_name.'_'.$site_id);
 		
 		// system log
 		$log['sl_type'] = 'module';
 		$log['sl_message'] = 'Enable module '.$module_system_name;
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		// if module have install action?
@@ -265,21 +265,21 @@ class modules_model extends CI_Model
 		$find_install = Modules::find($module_system_name.'_install', $module_system_name, 'controllers/');
 		if (isset($find_install[0]) && $find_install[0] != null) {
 			// set status as installed.
-			$this->set_install_module($module_system_name, $site_id);
+			$this->setInstallModule($module_system_name, $site_id);
 			
 			redirect($module_system_name.'/'.$module_system_name.'_install?site_id='.$site_id);
 		} else {
 			return true;
 		}
-	}// do_activate
+	}// doActivate
 	
 	
 	/**
-	 * do_deactivate
+	 * do deactivate module
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	public function do_deactivate($module_system_name = '', $site_id = '') 
+	public function doDeactivate($module_system_name = '', $site_id = '') 
 	{
 		$this->db->trans_start();
 		
@@ -306,27 +306,36 @@ class modules_model extends CI_Model
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache('ismodactive_'.$module_system_name.'_'.$site_id);
-		$this->config_model->delete_cache('ismodhaspermission_'.$module_system_name);
+		$this->config_model->deleteCache('ismodactive_'.$module_system_name.'_'.$site_id);
+		$this->config_model->deleteCache('ismodhaspermission_'.$module_system_name);
 		
 		// system log
 		$log['sl_type'] = 'module';
 		$log['sl_message'] = 'Disable module '.$module_system_name;
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		return true;
+	}// doDeactivate
+	
+	
+	/**
+	 * alias method of doDeactivate.
+	 */
+	public function do_deactivate($module_system_name = '', $site_id = '') 
+	{
+		return $this->doDeactivate($module_system_name, $site_id);
 	}// do_deactivate
 	
 	
 	/**
-	 * do_uninstall
+	 * do uninstall module
 	 * @param string $module_system_name
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	public function do_uninstall($module_system_name = '', $site_id = '') 
+	public function doUninstall($module_system_name = '', $site_id = '') 
 	{
 		$this->db->trans_start();
 		
@@ -353,14 +362,14 @@ class modules_model extends CI_Model
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache('ismodinstall_'.$module_system_name.'_'.$site_id);
-		$this->config_model->delete_cache('ismodhaspermission_'.$module_system_name);
+		$this->config_model->deleteCache('ismodinstall_'.$module_system_name.'_'.$site_id);
+		$this->config_model->deleteCache('ismodhaspermission_'.$module_system_name);
 		
 		// system log
 		$log['sl_type'] = 'module';
 		$log['sl_message'] = 'Set module '.$module_system_name.' as uninstalled';
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		$find_uninstall = Modules::find($module_system_name.'_uninstall', $module_system_name, 'controllers/');
@@ -375,15 +384,15 @@ class modules_model extends CI_Model
 		}
 		
 		return true;
-	}// do_uninstall
+	}// doUninstall
 	
 	
 	/**
-	 * get_modules_data
+	 * get module data
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_modules_data($data = array()) 
+	public function getModulesData($data = array()) 
 	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
@@ -392,11 +401,20 @@ class modules_model extends CI_Model
 		$query = $this->db->get('modules');
 		
 		return $query->row();
-	}// get_modules_data
+	}// getModulesData
 	
 	
 	/**
-	 * is_activated
+	 * alias method of is_activated.
+	 */
+	public function isModuleActivated($module_system_name = '', $site_id = '') 
+	{
+		return $this->is_activated($module_system_name, $site_id);
+	}// isModuleActivated
+	
+	
+	/**
+	 * is module activated
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
@@ -506,69 +524,10 @@ class modules_model extends CI_Model
 	
 	
 	/**
-	 * list all modules
+	 * list all blocks
 	 * @return mixed 
 	 */
-	public function list_all_modules() 
-	{
-		$dir = $this->scan_module_dir();
-		
-		if (is_array($dir))
-			$pages = array_chunk($dir, 20);
-		
-		// pagination
-		$pgkey = (int)$this->input->get('per_page');
-		if ($pgkey > 0) {$pgkey = ($pgkey-1);}
-		
-		// pagination-----------------------------
-		$this->load->library('pagination');
-		$config['base_url'] = site_url($this->uri->uri_string()).'?';
-		$config['total_rows'] = count($dir);
-		$config['per_page'] = 20;
-		$config['use_page_numbers'] = true;
-		// pagination tags customize for bootstrap css framework
-		$config['num_links'] = 3;
-		$config['page_query_string'] = true;
-		$config['full_tag_open'] = '<div class="pagination"><ul>';
-		$config['full_tag_close'] = "</ul></div>\n";
-		$config['first_tag_open'] = '<li>';
-		$config['first_tag_close'] = '</li>';
-		$config['last_tag_open'] = '<li>';
-		$config['last_tag_close'] = '</li>';
-		$config['next_tag_open'] = '<li>';
-		$config['next_tag_close'] = '</li>';
-		$config['prev_tag_open'] = '<li>';
-		$config['prev_tag_close'] = '</li>';
-		$config['cur_tag_open'] = '<li class="active"><a>';
-		$config['cur_tag_close'] = '</a></li>';
-		$config['num_tag_open'] = '<li>';
-		$config['num_tag_close'] = '</li>';
-		// end customize for bootstrap
-		$config['first_link'] = '|&lt;';
-		$config['last_link'] = '&gt;|';
-		$this->pagination->initialize($config);
-		//you may need this in view if you call this in controller or model --> $this->pagination->create_links();
-		// end pagination-----------------------------
-		
-		//
-		$output['total'] = count($dir);
-		
-		if (is_array($dir)) {
-			$output['items'] = $pages[$pgkey];
-		} else {
-			$output['items'] = null;
-		}
-		
-		//$output['pagination'] = $pagination;
-		return $output;
-	}// list_all_modules
-	
-	
-	/**
-	 * list_all_widgets
-	 * @return mixed 
-	 */
-	public function list_all_widgets() 
+	public function listAllBlocks() 
 	{
 		$this->db->join('module_sites', 'module_sites.module_id = modules.module_id', 'inner');
 		$this->db->where('module_sites.module_enable', '1');
@@ -621,14 +580,73 @@ class modules_model extends CI_Model
 		$query->free_result();
 		
 		return $output;
-	}// list_all_widgets
+	}// listAllBlocks
 	
 	
 	/**
-	 * load_admin_nav
+	 * list all modules
+	 * @return mixed 
+	 */
+	public function listAllModules() 
+	{
+		$dir = $this->scanModuleDir();
+		
+		if (is_array($dir))
+			$pages = array_chunk($dir, 20);
+		
+		// pagination
+		$pgkey = (int)$this->input->get('per_page');
+		if ($pgkey > 0) {$pgkey = ($pgkey-1);}
+		
+		// pagination-----------------------------
+		$this->load->library('pagination');
+		$config['base_url'] = site_url($this->uri->uri_string()).'?';
+		$config['total_rows'] = count($dir);
+		$config['per_page'] = 20;
+		$config['use_page_numbers'] = true;
+		// pagination tags customize for bootstrap css framework
+		$config['num_links'] = 3;
+		$config['page_query_string'] = true;
+		$config['full_tag_open'] = '<div class="pagination"><ul>';
+		$config['full_tag_close'] = "</ul></div>\n";
+		$config['first_tag_open'] = '<li>';
+		$config['first_tag_close'] = '</li>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_tag_close'] = '</li>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_tag_close'] = '</li>';
+		$config['prev_tag_open'] = '<li>';
+		$config['prev_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a>';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		// end customize for bootstrap
+		$config['first_link'] = '|&lt;';
+		$config['last_link'] = '&gt;|';
+		$this->pagination->initialize($config);
+		//you may need this in view if you call this in controller or model --> $this->pagination->create_links();
+		// end pagination-----------------------------
+		
+		//
+		$output['total'] = count($dir);
+		
+		if (is_array($dir)) {
+			$output['items'] = $pages[$pgkey];
+		} else {
+			$output['items'] = null;
+		}
+		
+		//$output['pagination'] = $pagination;
+		return $output;
+	}// listAllModules
+	
+	
+	/**
+	 * load admin nav bar component
 	 * @return string|null 
 	 */
-	public function load_admin_nav() 
+	public function loadAdminNav() 
 	{
 		set_site_id();
 		
@@ -680,7 +698,7 @@ class modules_model extends CI_Model
 		$query->free_result();
 		
 		return null;
-	}// load_admin_nav
+	}// loadAdminNav
 	
 	
 	/**
@@ -688,7 +706,7 @@ class modules_model extends CI_Model
 	 * @param string $module_item
 	 * @return array 
 	 */
-	public function read_module_metadata($module_item = '') 
+	public function readModuleMetadata($module_item = '') 
 	{
 		if (empty($module_item)) {return null;}
 		
@@ -713,14 +731,14 @@ class modules_model extends CI_Model
 		
 		unset($p_data, $name, $url, $version, $description, $author_name, $author_url);
 		return $output;
-	}// read_module_metadata
+	}// readModuleMetadata
 	
 	
 	/**
 	 *scan module directory
 	 * @return mixed 
 	 */
-	public function scan_module_dir() 
+	public function scanModuleDir() 
 	{
 		$this->load->model('siteman_model');
 		
@@ -740,7 +758,7 @@ class modules_model extends CI_Model
 					
 					if (is_dir($this->module_dir.$item) && file_exists($this->module_dir.$item.'/'.$item.'_module.php')) {
 						$dir[$i]['module_system_name'] = $item;
-						$pdata = $this->read_module_metadata($item.'/'.$item.'_module.php');
+						$pdata = $this->readModuleMetadata($item.'/'.$item.'_module.php');
 						$dir[$i]['module_name'] = $pdata['name'];
 						$dir[$i]['module_url'] = $pdata['url'];
 						$dir[$i]['module_version'] = $pdata['version'];
@@ -751,7 +769,7 @@ class modules_model extends CI_Model
 						unset($pdata);
 						
 						// check if activated
-						$dir[$i]['module_activated'] = $this->is_activated($item, $this->siteman_model->get_site_id());
+						$dir[$i]['module_activated'] = $this->isModuleActivated($item, $this->siteman_model->getSiteId());
 						
 						unset($result);
 					}
@@ -761,17 +779,17 @@ class modules_model extends CI_Model
 			
 			return $dir;
 		}
-	}// scan_module_dir
+	}// scanModuleDir
 	
 	
 	/**
-	 * set_install_module
+	 * set installed module
 	 * set module install status to 1.
 	 * @param string $module_system_name
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	public function set_install_module($module_system_name = '', $site_id = '') 
+	public function setInstallModule($module_system_name = '', $site_id = '') 
 	{
 		if ($module_system_name == null || !is_numeric($site_id)) {return null;}
 		
@@ -790,18 +808,18 @@ class modules_model extends CI_Model
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache('ismodinstall_'.$module_system_name.'_'.$site_id);
+		$this->config_model->deleteCache('ismodinstall_'.$module_system_name.'_'.$site_id);
 		
 		// system log
 		$log['sl_type'] = 'module';
 		$log['sl_message'] = 'Set module '.$module_system_name.' as installed';
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		$query->free_result();
 		return true;
-	}// set_install_module
+	}// setInstallModule
 	
 	
 }

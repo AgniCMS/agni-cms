@@ -28,7 +28,7 @@ class view_logins extends MY_Controller
 	public function index() 
 	{
 		// is member login?
-		if (!$this->account_model->is_member_login()) {redirect(site_url());}
+		if (!$this->account_model->isMemberLogin()) {redirect(site_url());}
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
@@ -42,14 +42,14 @@ class view_logins extends MY_Controller
 		$cm_account = $this->account_model->get_account_cookie('member');
 		
 		// load accounts table
-		$row = $this->account_model->get_account_data(array('account_id' => $cm_account['id']));
+		$row = $this->account_model->getAccountData(array('account_id' => $cm_account['id']));
 		if ($row == null) {
 			redirect(site_url());
 		}
 		$output['account'] = $row;
 		
 		// list logins
-		$output['list_item'] = $this->account_model->list_account_logins($row->account_id);
+		$output['list_item'] = $this->account_model->listAccountLogins($row->account_id);
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title($this->lang->line('account_view_logins'));

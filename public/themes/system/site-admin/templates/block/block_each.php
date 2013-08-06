@@ -1,8 +1,8 @@
 <li id="<?php echo $block->block_id; ?>" itemid="listitem_<?php echo $block->block_id; ?>" class="each-block<?php if ($block->block_status == '0') {echo ' block-disabled';} ?>">
 	
-	<h4 class="block-title"><?php echo $this->blocks_model->get_block_data($block->block_name, $block->block_file, 'title'); ?></h4>
+	<h4 class="block-title"><?php echo $this->blocks_model->getBlockData($block->block_name, $block->block_file, 'title'); ?></h4>
 	
-	<p><?php echo $this->blocks_model->get_block_data($block->block_name, $block->block_file, 'description'); ?></p>
+	<p><?php echo $this->blocks_model->getBlockData($block->block_name, $block->block_file, 'description'); ?></p>
 	
 	<?php 
 	$block_args = unserialize($block->block_values);

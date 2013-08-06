@@ -26,7 +26,7 @@ class cron extends MY_Controller
 	{
 		// to prevent user call to cron too often, use cache to check.
 		// set site_id
-		$site_id = $this->siteman_model->get_site_id();
+		$site_id = $this->siteman_model->getSiteId();
 		
 		// check last run.
 		$this->load->driver('cache', array('adapter' => 'file'));
@@ -37,7 +37,7 @@ class cron extends MY_Controller
 			$this->load->model('queue_model');
 			
 			// check queue of update core
-			$queue = $this->queue_model->get_queue_data(array('queue_name' => $this->agni_update->agni_update_core_name));
+			$queue = $this->queue_model->getQueueData(array('queue_name' => $this->agni_update->agni_update_core_name));
 			
 			if ($queue != null) {
 				$queue_data = unserialize($queue->queue_data);
@@ -67,7 +67,7 @@ class cron extends MY_Controller
 	{
 		// to prevent user call to cron too often, use cache to check.
 		// set site_id
-		$site_id = $this->siteman_model->get_site_id();
+		$site_id = $this->siteman_model->getSiteId();
 		
 		// check last run.
 		$this->load->driver('cache', array('adapter' => 'file'));
@@ -78,7 +78,7 @@ class cron extends MY_Controller
 			$log['sl_type'] = 'cron';
 			$log['sl_message'] = 'Run cron';
 			$this->load->model('syslog_model');
-			$this->syslog_model->add_new_log($log);
+			$this->syslog_model->addNewLog($log);
 			unset($log);
 			
 			// get config

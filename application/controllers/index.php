@@ -76,7 +76,7 @@ class index extends MY_Controller
 		if ($fp_category != null && is_numeric($fp_category)) {
 			$_GET['tid'] = $fp_category;
 		}
-		$output['list_item'] = $this->posts_model->list_item('front');
+		$output['list_item'] = $this->posts_model->listPost('front');
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

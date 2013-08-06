@@ -10,5 +10,5 @@
  */
 
 // set variables for echo in areas.
-$area_navigation = render_area('navigation');
-$area_sidebar = render_area('sidebar');
+$area_navigation = renderArea('navigation');
+$area_sidebar = renderArea('sidebar');

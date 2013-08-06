@@ -72,7 +72,7 @@ class forgotpw extends MY_Controller
 				
 				// if captcha pass
 				if (isset($continue) && $continue === true) {
-					$result = $this->account_model->reset_password1($data['account_email']);
+					$result = $this->account_model->resetPassword1($data['account_email']);
 					
 					if ($result === true) {
 						$output['hide_form'] = true;

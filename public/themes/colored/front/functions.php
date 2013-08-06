@@ -10,8 +10,8 @@
  */
 
 // set variables for echo in areas.
-$area_navigation = render_area('navigation');
-$area_banner = render_area('banner');
-$area_footer1 = render_area('footer1');
-$area_footer2 = render_area('footer2');
-$area_footer3 = render_area('footer3');
+$area_navigation = renderArea('navigation');
+$area_banner = renderArea('banner');
+$area_footer1 = renderArea('footer1');
+$area_footer2 = renderArea('footer2');
+$area_footer3 = renderArea('footer3');

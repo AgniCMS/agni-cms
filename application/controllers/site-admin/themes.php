@@ -41,7 +41,7 @@ class themes extends admin_controller
 		
 		// save action.
 		if ($this->input->post()) {
-			$result = $this->themes_model->add_theme();
+			$result = $this->themes_model->addTheme();
 			
 			if ($result === true) {
 				// load session
@@ -78,10 +78,10 @@ class themes extends admin_controller
 		$theme_system_name = trim($this->input->post('theme_system_name'));
 		
 		// set default
-		$result = $this->themes_model->set_default($theme_system_name, 'admin');
+		$result = $this->themes_model->setDefaultTheme($theme_system_name, 'admin');
 		
 		// read theme data
-		$pdata = $this->themes_model->read_theme_metadata($theme_system_name.'/'.$theme_system_name.'.info');
+		$pdata = $this->themes_model->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info');
 		
 		// load session
 		$this->load->library('session');
@@ -112,10 +112,10 @@ class themes extends admin_controller
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_set_default_perm') != true) {redirect('site-admin');}
 		
-		$result = $this->themes_model->set_default($theme_system_name);
+		$result = $this->themes_model->setDefaultTheme($theme_system_name);
 		
 		// read theme data
-		$pdata = $this->themes_model->read_theme_metadata($theme_system_name.'/'.$theme_system_name.'.info');
+		$pdata = $this->themes_model->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info');
 		
 		// load session
 		$this->load->library('session');
@@ -147,17 +147,17 @@ class themes extends admin_controller
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_delete_perm') != true) {redirect('site-admin');}
 		
 		// read theme data
-		$pdata = $this->themes_model->read_theme_metadata($theme_system_name.'/'.$theme_system_name.'.info');
+		$pdata = $this->themes_model->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info');
 		
 		$output['theme_name'] = ($pdata['name'] != null ? $pdata['name'] : $theme_system_name);
 		
 		// list used theme in sites.
-		$output['theme_use_in_site'] = $this->themes_model->list_theme_use_in_sites($theme_system_name);
+		$output['theme_use_in_site'] = $this->themes_model->listThemeUseInSites($theme_system_name);
 		
 		// delete action
 		if ($this->input->post()) {
 			if ($this->input->post('confirm') == 'yes') {
-				$result = $this->themes_model->delete_theme($theme_system_name);
+				$result = $this->themes_model->deleteTheme($theme_system_name);
 				
 				if ($result === true) {
 					// load session
@@ -195,9 +195,9 @@ class themes extends admin_controller
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_enable_disable_perm') != true) {redirect('site-admin');}
 		
-		$result = $this->themes_model->do_disable($theme_system_name);
+		$result = $this->themes_model->doDisableTheme($theme_system_name);
 		
-		$pdata = $this->themes_model->read_theme_metadata($theme_system_name.'/'.$theme_system_name.'.info');
+		$pdata = $this->themes_model->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info');
 		
 		// load session
 		$this->load->library('session');
@@ -228,10 +228,10 @@ class themes extends admin_controller
 		// check permission
 		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_enable_disable_perm') != true) {redirect('site-admin');}
 		
-		$result = $this->themes_model->do_enable($theme_system_name);
+		$result = $this->themes_model->doEnableTheme($theme_system_name);
 		
 		// read theme data
-		$pdata = $this->themes_model->read_theme_metadata($theme_system_name.'/'.$theme_system_name.'.info');
+		$pdata = $this->themes_model->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info');
 		
 		// load session
 		$this->load->library('session');
@@ -272,14 +272,14 @@ class themes extends admin_controller
 		unset($form_status);
 		
 		// list enabled themes
-		$output['list_enabled'] = $this->themes_model->list_enabled_themes();
+		$output['list_enabled'] = $this->themes_model->listEnabledThemes();
 		
 		// list themes
-		$output['list_item'] = $this->themes_model->list_all_themes();
+		$output['list_item'] = $this->themes_model->listAllThemes();
 		
 		// default admin theme is...
 		$output['theme_admin_name'] = '';
-		$theme_system_name = $this->themes_model->get_default_theme('admin');
+		$theme_system_name = $this->themes_model->getDefaultTheme('admin');
 		if ($theme_system_name != null) {
 			$output['theme_admin_name'] = $theme_system_name;
 		}

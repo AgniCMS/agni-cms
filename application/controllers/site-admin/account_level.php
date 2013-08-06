@@ -49,7 +49,7 @@ class account_level extends admin_controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$result = $this->account_model->add_level_group($data);
+				$result = $this->account_model->addLevelGroup($data);
 				
 				if ($result === true) {
 					// load session library
@@ -108,7 +108,7 @@ class account_level extends admin_controller
 		}
 		
 		// delete cache
-		$this->config_model->delete_cache('alg_');
+		$this->config_model->deleteCache('alg_');
 		
 		// done
 		$output['form_status'] = 'success';
@@ -128,7 +128,7 @@ class account_level extends admin_controller
 		if (!is_numeric($level_group_id)) {redirect('site-admin/account-level');}
 		
 		// load data for form
-		$row = $this->account_model->get_account_level_group_data(array('level_group_id' => $level_group_id));
+		$row = $this->account_model->getAccountLevelGroupData(array('level_group_id' => $level_group_id));
 		if ($row != null) {
 			$output['level_name'] = $row->level_name;
 			$output['level_description'] = $row->level_description;
@@ -150,7 +150,7 @@ class account_level extends admin_controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$result = $this->account_model->edit_level_group($data);
+				$result = $this->account_model->editLevelGroup($data);
 				
 				if ($result === true) {
 					// load session library
@@ -192,7 +192,7 @@ class account_level extends admin_controller
 		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_manage_perm') != true) {redirect('site-admin');}
 		
 		// list item
-		$output['list_item'] = $this->account_model->list_level_group(false);
+		$output['list_item'] = $this->account_model->listLevelGroup(false);
 		
 		// load session for flashdata
 		$this->load->library('session');
@@ -226,7 +226,7 @@ class account_level extends admin_controller
 			
 			if (is_array($id)) {
 				foreach ($id as $an_id) {
-					$this->account_model->delete_level_group($an_id);
+					$this->account_model->deleteLevelGroup($an_id);
 				}
 			}
 		}

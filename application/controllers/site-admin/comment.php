@@ -58,7 +58,7 @@ class comment extends admin_controller
 		
 		// open comments table for check permission and edit.
 		$data['comment_id'] = $comment_id;
-		$comment = $this->comments_model->get_comment_data_db($data);
+		$comment = $this->comments_model->getCommentDataDb($data);
 		if ($comment == null) {redirect('site-admin/comment');}// not found
 		
 		$row = $comment;
@@ -191,7 +191,7 @@ class comment extends admin_controller
 			$_GET['orders'] = 'comment_id';
 			$_GET['sort'] = 'desc';
 		}
-		$output['list_item'] = $this->comments_model->list_item('', 'flat', 'admin');
+		$output['list_item'] = $this->comments_model->listComment('', 'flat', 'admin');
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -271,7 +271,7 @@ class comment extends admin_controller
 					
 					// update total comment in posts table
 					$this->load->model('posts_model');
-					$this->posts_model->update_total_comment($row->post_id);
+					$this->posts_model->updateTotalComment($row->post_id);
 				}
 			} else {
 				// show confirm delete view
@@ -281,7 +281,7 @@ class comment extends admin_controller
 				foreach ($this->input->post('id') as $an_id) {
 					$output['input_ids'] .= '<input type="hidden" name="id[]" value="'.$an_id.'" />';
 					$data['comment_id'] = $an_id;
-					$comment = $this->comments_model->get_comment_data_db($data);
+					$comment = $this->comments_model->getCommentDataDb($data);
 					if ($comment != null) {
 						$row = $comment;
 						$output['list_comments'][$row->comment_id]['subject'] = $row->subject;

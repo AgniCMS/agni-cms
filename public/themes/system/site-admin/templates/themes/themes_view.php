@@ -17,9 +17,9 @@
 	<?php if (isset($list_enabled['items']) && is_array($list_enabled['items'])): ?> 
 	<?php foreach ($list_enabled['items'] as $key): ?> 
 	<div class="each-theme each-theme-enabled">
-		<?php $ss_large = $this->themes_model->show_theme_screenshot($key->theme_system_name, 'large');
+		<?php $ss_large = $this->themes_model->showThemeScreenshot($key->theme_system_name, 'large');
 		if ($ss_large != null) {echo '<a href="'.$ss_large.'">';} ?> 
-		<img src="<?php echo $this->themes_model->show_theme_screenshot($key->theme_system_name); ?>" alt="<?php echo $key->theme_system_name; ?>" />
+		<img src="<?php echo $this->themes_model->showThemeScreenshot($key->theme_system_name); ?>" alt="<?php echo $key->theme_system_name; ?>" />
 		<?php if ($ss_large != null) {echo '</a>';} ?> 
 		<div class="theme-name">
 			<?php if (!empty($key->theme_name)): ?><?php echo $key->theme_name; ?><?php else: ?><em title="<?php echo lang('themes_no_name'); ?>"><?php echo $key->theme_system_name; ?></em><?php endif; ?>

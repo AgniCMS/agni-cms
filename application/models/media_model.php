@@ -24,7 +24,7 @@ class media_model extends CI_Model
 	 * @param array $data
 	 * @return array
 	 */
-	public function add_data_only($data = array()) 
+	public function addDataOnly($data = array()) 
 	{
 		// set additional data for insert.
 		$data['file_add'] = time();
@@ -37,7 +37,7 @@ class media_model extends CI_Model
 		$output['result'] = true;
 		$output['file_id'] = $this->db->insert_id();
 		return $output;
-	}// add_data_only
+	}// addDataOnly
 	
 	
 	/**
@@ -108,11 +108,11 @@ class media_model extends CI_Model
 	
 	
 	/**
-	 * delete_folder
+	 * delete media folder
 	 * @param string $folder
 	 * @return boolean
 	 */
-	public function delete_folder($folder = '') 
+	public function deleteMediaFolder($folder = '') 
 	{
 		$this->load->helper(array('directory', 'file'));
 		
@@ -129,7 +129,7 @@ class media_model extends CI_Model
 		}
 		
 		return true;
-	}// delete_folder
+	}// deleteMediaFolder
 	
 	
 	/**
@@ -152,7 +152,7 @@ class media_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_file_data_db($data = array()) 
+	public function getFileDataDb($data = array()) 
 	{
 		$this->db->join('accounts', 'files.account_id = accounts.account_id', 'left');
 		if (!empty($data)) {
@@ -167,7 +167,16 @@ class media_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// get_file_data_db
+	}// getFileDataDb
+	
+	
+	/**
+	 * alias of method get_img
+	 */
+	public function getImg($file_id = '', $return_element = 'img') 
+	{
+		return $this->get_img($file_id, $return_element);
+	}// getImg
 	
 	
 	/**
@@ -184,7 +193,7 @@ class media_model extends CI_Model
 		// check cached
 		if (false === $get_img = $this->cache->get('media-get_img_'.$file_id.'_'.$return_element)) {
 			$data['file_id'] = $file_id;
-			$row = $this->get_file_data_db($data);
+			$row = $this->getFileDataDb($data);
 			
 			if ($row != null) {
 				if ($return_element == 'img') {
@@ -206,11 +215,11 @@ class media_model extends CI_Model
 	
 	
 	/**
-	 * list_item
+	 * list media
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	public function list_item($list_for = 'front', $data = array()) 
+	public function listMedia($list_for = 'front', $data = array()) 
 	{
 		$this->db->join('accounts', 'accounts.account_id = files.account_id', 'left');
 		
@@ -314,15 +323,15 @@ class media_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_item
+	}// listMedia
 	
 	
 	/**
-	 * move_file
+	 * move media
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function move_file($data = array()) 
+	public function moveMedia($data = array()) 
 	{
 		$this->load->library('media_filesys');
 		
@@ -332,7 +341,7 @@ class media_model extends CI_Model
 			if ($query->num_rows() > 0) {
 				$row = $query->row();
 				
-				$result = $this->media_filesys->move_file($row->file, str_replace($row->folder, $data['target_folder'].'/', $row->file));
+				$result = $this->media_filesys->moveMediaFile($row->file, str_replace($row->folder, $data['target_folder'].'/', $row->file));
 				
 				if ($result == true) {
 					$data_update['file_id'] = $id;
@@ -348,17 +357,17 @@ class media_model extends CI_Model
 		}
 		
 		return true;
-	}// move_file
+	}// moveMedia
 	
 	
 	/**
-	 * rename_folder
+	 * rename folder in db
 	 * @param string $current_path
 	 * @param string $current_folder
 	 * @param string $new_name
 	 * @return boolean
 	 */
-	public function rename_folder($current_path = '', $current_folder = '', $new_name = '') 
+	public function renameFolderDb($current_path = '', $current_folder = '', $new_name = '') 
 	{
 		// prevent double slash
 		$current_path = rtrim($current_path, '/');
@@ -425,14 +434,14 @@ class media_model extends CI_Model
 		// loop rename files & folders in all sub. ---------------------------------------------------------------------------------------------
 		
 		return true;
-	}// rename_folder
+	}// renameFolderDb
 	
 	
 	/**
-	 * upload_media
+	 * upload media
 	 * @return mixed 
 	 */
-	public function upload_media() 
+	public function uploadMedia() 
 	{
 		
 		// get account id from cookie
@@ -493,7 +502,7 @@ class media_model extends CI_Model
 			$data['file_size'] = $size['size'];
 			$data['media_name'] = $filedata['file_name'];
 			$data['media_keywords'] = $filedata['file_name'];
-			$this->add_data_only($data);
+			$this->addDataOnly($data);
 			unset($data);
 			
 			// done.
@@ -501,7 +510,7 @@ class media_model extends CI_Model
 			
 		}
 		
-	}// upload_media
+	}// uploadMedia
 	
 	
 }

@@ -43,7 +43,7 @@ class tag extends admin_controller
 		if ($this->account_model->check_admin_permission('tag_perm', 'tag_add_perm') != true) {redirect('site-admin');}
 		
 		// list themes for select
-		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		$output['list_theme'] = $this->themes_model->listEnabledThemes();
 		
 		// save action
 		if ($this->input->post()) {
@@ -73,7 +73,7 @@ class tag extends admin_controller
 			if ($this->form_validation->run() == false) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
-			} elseif ($this->taxonomy_model->show_taxterm_info($data['t_name'], 't_name', 'tid') != null) {
+			} elseif ($this->taxonomy_model->showTaxTermInfo($data['t_name'], 't_name', 'tid') != null) {
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = $this->lang->line('tag_name_exists');
 			} else {
@@ -82,7 +82,7 @@ class tag extends admin_controller
 				if ($result === true) {
 					
 					if ($this->input->is_ajax_request()) {
-						$output['tid'] = $this->taxonomy_model->show_taxterm_info($data['t_name'], 't_name', 'tid');
+						$output['tid'] = $this->taxonomy_model->showTaxTermInfo($data['t_name'], 't_name', 'tid');
 						// output
 						$this->output->set_content_type('application/json');
 						$this->output->set_output(json_encode($output));
@@ -139,7 +139,7 @@ class tag extends admin_controller
 			$nodupedit = ($nodupedit == 'true' ? true : false);
 			$id = intval($this->input->post('id'));
 			
-			$output['t_uri'] = $this->taxonomy_model->nodup_uri($t_name, $nodupedit, $id);
+			$output['t_uri'] = $this->taxonomy_model->noDupTaxonomyUri($t_name, $nodupedit, $id);
 			
 			// output
 			$this->output->set_content_type('application/json');
@@ -160,18 +160,18 @@ class tag extends admin_controller
 		$output['tid'] = $tid;
 		
 		// list themes for select
-		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		$output['list_theme'] = $this->themes_model->listEnabledThemes();
 		
 		// load data for form
 		$data['language'] = $this->taxonomy_model->language;
 		$data['t_type'] = $this->taxonomy_model->tax_type;
 		$data['tid'] = $tid;
-		$tax_term = $this->taxonomy_model->get_taxonomy_term_data_db($data);
+		$tax_term = $this->taxonomy_model->getTaxonomyTermDataDb($data);
+		
 		if ($tax_term != null) {
 			$row = $tax_term;
 			
 			$output['row'] = $row;
-			
 			$output['parent_id'] = $row->parent_id;
 			$output['t_name'] = $row->t_name;
 			$output['t_description'] = htmlspecialchars($row->t_description, ENT_QUOTES, config_item('charset'));
@@ -222,7 +222,7 @@ class tag extends admin_controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$check_result = $this->taxonomy_model->show_taxterm_info($data['t_name'], 't_name', 'tid');
+				$check_result = $this->taxonomy_model->showTaxTermInfo($data['t_name'], 't_name', 'tid');
 				
 				if ($check_result != $data['tid'] && $check_result != null) {
 					$output['form_status'] = 'error';
@@ -291,7 +291,7 @@ class tag extends admin_controller
 		$output['q'] = htmlspecialchars(trim($this->input->get('q')), ENT_QUOTES, config_item('charset'));
 		
 		// list tags
-		$output['list_item'] = $this->taxonomy_model->list_tags('admin');
+		$output['list_item'] = $this->taxonomy_model->listTags('admin');
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -322,7 +322,7 @@ class tag extends admin_controller
 				$this->taxonomy_model->delete($an_id);
 			}
 			
-			$this->taxonomy_model->rebuild();
+			$this->taxonomy_model->reBuildTaxTerm();
 		}
 		
 		// go back

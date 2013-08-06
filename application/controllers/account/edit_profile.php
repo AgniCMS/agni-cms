@@ -41,7 +41,7 @@ class edit_profile extends MY_Controller
 		$account_id = trim($this->input->post('account_id'));
 		
 		// delete avatar
-		$this->account_model->delete_account_avatar($account_id);
+		$this->account_model->deleteAccountAvatar($account_id);
 		
 		// return
 		if (!$this->input->is_ajax_request()) {
@@ -58,7 +58,7 @@ class edit_profile extends MY_Controller
 	public function index() 
 	{
 		// is member login?
-		if (!$this->account_model->is_member_login()) {redirect(site_url());}
+		if (!$this->account_model->isMemberLogin()) {redirect(site_url());}
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');
@@ -89,7 +89,7 @@ class edit_profile extends MY_Controller
 		// check from db
 		$data['account_id'] = $cm_account['id'];
 		$data['account_username'] = $cm_account['username'];
-		$row = $this->account_model->get_account_data($data);
+		$row = $this->account_model->getAccountData($data);
 		unset($data);
 		
 		if ($row != null) {
@@ -132,7 +132,7 @@ class edit_profile extends MY_Controller
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
-				$result = $this->account_model->member_edit_profile($data);
+				$result = $this->account_model->memberEditProfile($data);
 				
 				if ($result === true) {
 					// flash success msg to session

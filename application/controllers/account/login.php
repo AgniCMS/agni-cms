@@ -80,8 +80,8 @@ class login extends MY_Controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$login_fail_last_time = $this->account_model->login_fail_last_time($data['account_username']);
-				$count_login_fail = $this->account_model->count_login_fail($data['account_username']);
+				$login_fail_last_time = $this->account_model->loginFailLastTime($data['account_username']);
+				$count_login_fail = $this->account_model->countLoginFail($data['account_username']);
 				
 				// count login fail and wait time
 				if (($count_login_fail !== false && $login_fail_last_time !== false) && ($count_login_fail > 10 && (time()-strtotime($login_fail_last_time))/(60) < 30)) {
@@ -92,7 +92,7 @@ class login extends MY_Controller
 						$result = $this->lang->line('account_wrong_captcha_code');
 					} else {
 						// try to login
-						$result = $this->account_model->member_login($data);
+						$result = $this->account_model->memberLogIn($data);
 					}
 				}
 				
@@ -120,8 +120,8 @@ class login extends MY_Controller
 					}
 				} else {
 					// fetch last data (after login fail, there is a logins update)
-					$login_fail_last_time = $this->account_model->login_fail_last_time($data['account_username']);
-					$count_login_fail = $this->account_model->count_login_fail($data['account_username']);
+					$login_fail_last_time = $this->account_model->loginFailLastTime($data['account_username']);
+					$count_login_fail = $this->account_model->countLoginFail($data['account_username']);
 					
 					if ($count_login_fail > 2 && $this->input->is_ajax_request()) {
 						$output['show_captcha'] = true;

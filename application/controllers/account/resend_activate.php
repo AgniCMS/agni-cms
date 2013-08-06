@@ -70,7 +70,7 @@ class resend_activate extends MY_Controller
 					$data['account_username'] = $row->account_username;
 					
 					// re-send email
-					$result = $this->account_model->send_register_email($data);
+					$result = $this->account_model->sendRegisterEmail($data);
 					
 					if ($result === true) {
 						$this->db->set('account_confirm_code', $data['account_confirm_code']);

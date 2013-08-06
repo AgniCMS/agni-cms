@@ -60,7 +60,7 @@ class urls extends admin_controller
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
-				$result = $this->url_model->add_redirect($data);
+				$result = $this->url_model->addUrlRedirect($data);
 				
 				if (isset($result['result']) && $result['result'] === true) {
 					// load session library
@@ -106,7 +106,7 @@ class urls extends admin_controller
 			$nodupedit = ($nodupedit == 'true' ? true : false);
 			$id = intval($this->input->post('id'));
 			
-			$output['input_uri'] = $this->url_model->nodup_uri($uri, $nodupedit, $id);
+			$output['input_uri'] = $this->url_model->noDupUrlUri($uri, $nodupedit, $id);
 			
 			// output
 			$this->output->set_content_type('application/json');
@@ -123,7 +123,7 @@ class urls extends admin_controller
 		// load data for edit
 		$data['alias_id'] = $alias_id;
 		$data['language'] = $this->lang->get_current_lang();
-		$row = $this->url_model->get_url_alias_data_db($data);
+		$row = $this->url_model->getUrlAliasDataDb($data);
 		unset($data);
 		
 		if ($row == null) {
@@ -155,7 +155,7 @@ class urls extends admin_controller
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
-				$result = $this->url_model->edit_redirect($data);
+				$result = $this->url_model->editUrlRedirect($data);
 				
 				if (isset($result['result']) && $result['result'] === true) {
 					// load session library
@@ -212,7 +212,7 @@ class urls extends admin_controller
 		$output['q'] = htmlspecialchars(trim($this->input->get('q')), ENT_QUOTES, config_item('charset'));
 		
 		// list item
-		$output['list_item'] = $this->url_model->list_item();
+		$output['list_item'] = $this->url_model->listUrlItem();
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -240,7 +240,7 @@ class urls extends admin_controller
 			
 			if (is_array($id)) {
 				foreach ($id as $an_id) {
-					$this->url_model->delete_redirect($an_id);
+					$this->url_model->deleteUrlRedirect($an_id);
 				}
 			}
 		}

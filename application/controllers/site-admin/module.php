@@ -40,7 +40,7 @@ class module extends admin_controller
 		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 		
 		// do activate
-		$result = $this->modules_model->do_activate($module_system_name, $site_id);
+		$result = $this->modules_model->doActivate($module_system_name, $site_id);
 		
 		// load session
 		$this->load->library('session');
@@ -73,7 +73,7 @@ class module extends admin_controller
 		
 		// save action.
 		if ($this->input->post()) {
-			$result = $this->modules_model->add_module();
+			$result = $this->modules_model->addModule();
 			
 			if ($result === true) {
 				// load session
@@ -111,7 +111,7 @@ class module extends admin_controller
 		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 		
 		// do deactivate
-		$result = $this->modules_model->do_deactivate($module_system_name, $site_id);
+		$result = $this->modules_model->doDeactivate($module_system_name, $site_id);
 		
 		// load session
 		$this->load->library('session');
@@ -144,7 +144,7 @@ class module extends admin_controller
 		
 		// get module sys name
 		$module_system_name = trim($this->input->post('id'));
-		$result = $this->modules_model->delete_a_module($module_system_name);
+		$result = $this->modules_model->deleteAModule($module_system_name);
 		
 		// load session
 		$this->load->library('session');
@@ -193,7 +193,7 @@ class module extends admin_controller
 		unset($form_status);
 		
 		// list modules
-		$output['list_item'] = $this->modules_model->list_all_modules();
+		$output['list_item'] = $this->modules_model->listAllModules();
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -202,11 +202,11 @@ class module extends admin_controller
 		$this->load->model('siteman_model');
 		$temp_get_orders = $this->input->get('orders');
 		$_GET['orders'] = 'site_id';
-		$output['sites'] = $this->siteman_model->list_websites_all();
+		$output['sites'] = $this->siteman_model->listWebsitesAll();
 		$_GET['orders'] = $temp_get_orders;
 		unset($temp_get_orders);
 		
-		$output['current_site_id'] = $this->siteman_model->get_site_id();
+		$output['current_site_id'] = $this->siteman_model->getSiteId();
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title($this->lang->line('modules_modules'));
@@ -225,7 +225,7 @@ class module extends admin_controller
 		$id = $this->input->post('id');
 		if (!is_array($id)) {redirect('site-admin/module');}
 		$act = trim($this->input->post('act'));
-		$site_id = $this->siteman_model->get_site_id();
+		$site_id = $this->siteman_model->getSiteId();
 		
 		// load library
 		$this->load->library('session');
@@ -235,7 +235,7 @@ class module extends admin_controller
 			if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 			
 			foreach ($id as $an_id) {
-				$result = $this->modules_model->do_activate($an_id, $site_id);
+				$result = $this->modules_model->doActivate($an_id, $site_id);
 				if ($result === false) {
 					$fail_activate = true;
 				}
@@ -265,7 +265,7 @@ class module extends admin_controller
 			if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 			
 			foreach ($id as $an_id) {
-				$result = $this->modules_model->do_deactivate($an_id, $site_id);
+				$result = $this->modules_model->doDeactivate($an_id, $site_id);
 				if ($result === false) {
 					$fail_deactivate = true;
 				}
@@ -296,7 +296,7 @@ class module extends admin_controller
 			
 			$delete_fail = false;
 			foreach ($id as $an_id) {
-				$result = $this->modules_model->delete_a_module($an_id);
+				$result = $this->modules_model->deleteAModule($an_id);
 				if ($result === false) {
 					$delete_fail = true;
 				}
@@ -343,7 +343,7 @@ class module extends admin_controller
 		}
 		
 		// uninstall
-		$result = $this->modules_model->do_uninstall($module_system_name, $site_id);
+		$result = $this->modules_model->doUninstall($module_system_name, $site_id);
 		
 		// load session
 		$this->load->library('session');

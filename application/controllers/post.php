@@ -96,7 +96,7 @@ class post extends MY_Controller
 			$output['content_show_author'] = $this->input->post('content_show_author');
 		
 		// 
-		$output['body_value'] = $this->posts_model->modify_content($output['body_value'], 'article');
+		$output['body_value'] = $this->posts_model->modifyPostContent($output['body_value'], 'article');
 		$output['list_category'] = '';
 		$output['list_tag'] = '';
 		$output['comment_allow'] = $output['post_comment'];
@@ -141,7 +141,7 @@ class post extends MY_Controller
 		// get "revision" data from db.
 		$data['post_revision.revision_id'] = $revision_id;
 		$data['post_revision.post_id'] = $post_id;
-		$row = $this->posts_model->get_post_revision_data($data);
+		$row = $this->posts_model->getPostRevisionData($data);
 		unset($data);
 		
 		// not found
@@ -167,7 +167,7 @@ class post extends MY_Controller
 			$output['post_author'] = anchor('author/'.$row->account_username, $row->account_username, array('rel' => 'author'));
 		}
 		
-		$output['body_value'] = $this->posts_model->modify_content($row->body_value, $row->post_type);
+		$output['body_value'] = $this->posts_model->modifyPostContent($row->body_value, $row->post_type);
 		
 		// set custom theme (if specified)---------------------------------
 		if ($row->theme_system_name != null) {
@@ -202,11 +202,11 @@ class post extends MY_Controller
 		
 		// list category for this page-------------------------------------------
 		$this->taxonomy_model->tax_type = 'category';
-		$output['list_category'] = $this->taxonomy_model->list_taxterm_index($row->post_id, true);
+		$output['list_category'] = $this->taxonomy_model->listTaxTermIndex($row->post_id, true);
 		
 		// list tag for this page------------------------------------------------
 		$this->taxonomy_model->tax_type = 'tag';
-		$output['list_tag'] = $this->taxonomy_model->list_taxterm_index($row->post_id);
+		$output['list_tag'] = $this->taxonomy_model->listTaxTermIndex($row->post_id);
 		
 		// head tags output ##############################
 		if ($row->meta_title != null) {
@@ -257,7 +257,7 @@ class post extends MY_Controller
 		// load post from db by uri
 		$data['posts.post_uri_encoded'] = $post_uri;
 		$data['posts_status'] = '1';
-		$row = $this->posts_model->get_post_data($data);
+		$row = $this->posts_model->getPostData($data);
 		unset($data);
 		
 		// post not found.
@@ -274,7 +274,7 @@ class post extends MY_Controller
 		foreach ($segs as $segment) {
 			$data['t_uri_encoded'] = $segment;
 			$data['language'] = $this->lang->get_current_lang();
-			$row_seg = $this->taxonomy_model->get_taxonomy_term_data_db($data);
+			$row_seg = $this->taxonomy_model->getTaxonomyTermDataDb($data);
 			unset($data);
 			
 			$last_taxterm_uri = '';
@@ -309,7 +309,7 @@ class post extends MY_Controller
 			$output['post_author'] = anchor('author/'.$row->account_username, $row->account_username, array('rel' => 'author'));
 		}
 		
-		$output['body_value'] = $this->posts_model->modify_content($row->body_value, $row->post_type);
+		$output['body_value'] = $this->posts_model->modifyPostContent($row->body_value, $row->post_type);
 		
 		// set custom theme (if specified)---------------------------------
 		if ($row->theme_system_name != null) {
@@ -360,11 +360,11 @@ class post extends MY_Controller
 		if ($row->post_type == 'article') {
 			// list category for this page-------------------------------------------
 			$this->taxonomy_model->tax_type = 'category';
-			$output['list_category'] = $this->taxonomy_model->list_taxterm_index($row->post_id, true);
+			$output['list_category'] = $this->taxonomy_model->listTaxTermIndex($row->post_id, true);
 			
 			// list tag for this page------------------------------------------------
 			$this->taxonomy_model->tax_type = 'tag';
-			$output['list_tag'] = $this->taxonomy_model->list_taxterm_index($row->post_id);
+			$output['list_tag'] = $this->taxonomy_model->listTaxTermIndex($row->post_id);
 		}
 		
 		// add view count.

@@ -77,7 +77,7 @@
 		<div id="tabs-3">
 			<div class="theme-select">
 				<label>
-					<img src="<?php echo $this->themes_model->show_theme_screenshot(''); ?>" alt="" /><br />
+					<img src="<?php echo $this->themes_model->showThemeScreenshot(''); ?>" alt="" /><br />
 					<input type="radio" name="theme_system_name" value=""<?php if (!isset($theme_system_name) || (isset($theme_system_name) && $theme_system_name == null)) {echo ' checked="checked"';} ?> /> <?php echo lang('category_no_theme'); ?>
 				</label>
 			</div>
@@ -85,7 +85,7 @@
 			<?php foreach ($list_theme['items'] as $row): ?>
 			<div class="theme-select">
 				<label>
-					<img src="<?php echo $this->themes_model->show_theme_screenshot($row->theme_system_name); ?>" alt="<?php echo $row->theme_name; ?>" /><br />
+					<img src="<?php echo $this->themes_model->showThemeScreenshot($row->theme_system_name); ?>" alt="<?php echo $row->theme_name; ?>" /><br />
 					<input type="radio" name="theme_system_name" value="<?php echo $row->theme_system_name; ?>"<?php if (isset($theme_system_name) && $theme_system_name == $row->theme_system_name) {echo ' checked="checked"';} ?> /> <?php echo $row->theme_name; ?>
 				</label>
 			</div>

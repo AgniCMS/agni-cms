@@ -34,7 +34,7 @@ class comments_model extends CI_Model
 		
 		// get post data and check post exists.
 		$data_post['post_id'] = $data['post_id'];
-		$row = $this->posts_model->get_post_data($data_post);
+		$row = $this->posts_model->getPostData($data_post);
 		unset($data_post);
 		
 		// post not exists
@@ -57,7 +57,7 @@ class comments_model extends CI_Model
 		
 		// update post table -> total comments.
 		$this->load->model('posts_model');
-		$this->posts_model->update_total_comment($data['post_id']);
+		$this->posts_model->updateTotalComment($data['post_id']);
 		
 		// email notify admin new comment
 		$cfg_val = $this->config_model->load(array('comment_new_notify_admin', 'comment_admin_notify_emails', 'mail_sender_email'));
@@ -215,6 +215,65 @@ class comments_model extends CI_Model
 	
 	
 	/**
+	 *  get comments data from db.
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function getCommentDataDb($data = array()) 
+	{
+		$this->db->join('posts', 'comments.post_id = posts.post_id', 'left');
+		$this->db->join('accounts', 'comments.account_id = accounts.account_id', 'left outer');
+		
+		if (!empty($data)) {
+			$this->db->where($data);
+		}
+		
+		$query = $this->db->get('comments');
+		
+		return $query->row();
+	}// getCommentDataDb
+	
+	
+	/**
+	 * get comment display page
+	 * @param integer $comment_id
+	 * @param string $mode
+	 * @return integer 
+	 */
+	public function getCommentDisplayPage($comment_id = '', $mode = 'thread') 
+	{
+		// account id from cookie
+		$cm_account = $this->account_model->get_account_cookie('admin');
+		$account_id = $cm_account['id'];
+		if ($account_id == null) {$account_id = '0';}
+		
+		// query db to get current page that this comment will display in.
+		// this step cannot use active record because it has JOIN ... ON ... AND comes together.
+		$sql = 'SELECT *, count(*) AS count FROM '.$this->db->dbprefix('comments').' as c1';
+		$sql .= ' INNER JOIN '.$this->db->dbprefix('comments').' AS c2 ON c1.post_id = c2.post_id';
+		$sql .= ' AND c2.comment_id = '.$comment_id;
+		if ($this->account_model->check_admin_permission('comment_perm', 'comment_viewall_perm', $account_id)) {
+			$sql .= ' and c1.comment_status = 1';
+		}
+		if ($mode == 'thread') {
+			$sql .= ' WHERE SUBSTRING(c1.thread, 1, (LENGTH(c1.thread) -1)) < SUBSTRING(c2.thread, 1, (LENGTH(c2.thread) -1))';
+		} else {
+			$sql .= ' AND c1.comment_id < '.$comment_id;
+		}
+		$sql .= ' GROUP BY c1.comment_id';
+		
+		$query = $this->db->query($sql);
+		
+		$row = $query->row();
+		$query->free_result();
+		
+		//
+		$num_per_page = $this->config_model->load_single('comment_perpage');
+		return (floor(($row->count+1)/$num_per_page)*$num_per_page);
+	}// getCommentDisplayPage
+	
+	
+	/**
 	 * get comment fields from db
 	 * @param integer $comment_id
 	 * @param array $data
@@ -246,65 +305,6 @@ class comments_model extends CI_Model
 	
 	
 	/**
-	 *  get comments data from db.
-	 * @param array $data
-	 * @return mixed
-	 */
-	public function get_comment_data_db($data = array()) 
-	{
-		$this->db->join('posts', 'comments.post_id = posts.post_id', 'left');
-		$this->db->join('accounts', 'comments.account_id = accounts.account_id', 'left outer');
-		
-		if (!empty($data)) {
-			$this->db->where($data);
-		}
-		
-		$query = $this->db->get('comments');
-		
-		return $query->row();
-	}// get_comment_data_db
-	
-	
-	/**
-	 * get_comment_display_page
-	 * @param integer $comment_id
-	 * @param string $mode
-	 * @return integer 
-	 */
-	public function get_comment_display_page($comment_id = '', $mode = 'thread') 
-	{
-		// account id from cookie
-		$cm_account = $this->account_model->get_account_cookie('admin');
-		$account_id = $cm_account['id'];
-		if ($account_id == null) {$account_id = '0';}
-		
-		// query db to get current page that this comment will display in.
-		// this step cannot use active record because it has JOIN ... ON ... AND comes together.
-		$sql = 'SELECT *, count(*) AS count FROM '.$this->db->dbprefix('comments').' as c1';
-		$sql .= ' INNER JOIN '.$this->db->dbprefix('comments').' AS c2 ON c1.post_id = c2.post_id';
-		$sql .= ' AND c2.comment_id = '.$comment_id;
-		if ($this->account_model->check_admin_permission('comment_perm', 'comment_viewall_perm', $account_id)) {
-			$sql .= ' and c1.comment_status = 1';
-		}
-		if ($mode == 'thread') {
-			$sql .= ' WHERE SUBSTRING(c1.thread, 1, (LENGTH(c1.thread) -1)) < SUBSTRING(c2.thread, 1, (LENGTH(c2.thread) -1))';
-		} else {
-			$sql .= ' AND c1.comment_id < '.$comment_id;
-		}
-		$sql .= ' GROUP BY c1.comment_id';
-		
-		$query = $this->db->query($sql);
-		
-		$row = $query->row();
-		$query->free_result();
-		
-		//
-		$num_per_page = $this->config_model->load_single('comment_perpage');
-		return (floor(($row->count+1)/$num_per_page)*$num_per_page);
-	}// get_comment_display_page
-	
-	
-	/**
 	 * Generate vancode.
 	 *
 	 * Consists of a leading character indicating length, followed by N digits
@@ -321,13 +321,13 @@ class comments_model extends CI_Model
 	 * 
 	 * @param integer $i
 	 */
-	public function int2vancode($i = 0) 
+	public function int2VanCode($i = 0) 
 	{
 		$num = base_convert((int) $i, 10, 36);
 		$length = strlen($num);
 
 		return chr($length + ord('0') - 1) . $num;
-	}// int2vancode
+	}// int2VanCode
 	
 	
 	/**
@@ -337,7 +337,7 @@ class comments_model extends CI_Model
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	public function list_item($post_id = '',$mode = 'thread', $list_for = 'front') 
+	public function listComment($post_id = '',$mode = 'thread', $list_for = 'front') 
 	{
 		// comment view permission
 		$comment_view_permission = $this->account_model->check_admin_permission('comment_perm', 'comment_viewall_perm');
@@ -464,15 +464,15 @@ class comments_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_item
+	}// listComment
 	
 	
 	/**
-	 * modify_content
+	 * modify comment content
 	 * @param string $content
 	 * @return string 
 	 */
-	public function modify_content($content = '') 
+	public function modifyCommentContent($content = '') 
 	{
 		if ($this->modules_plug->has_filter('comment_modifybody_value')) {
 			// modify content by plugin
@@ -484,7 +484,7 @@ class comments_model extends CI_Model
 		}
 		
 		return $content;
-	}// modify_content
+	}// modifyCommentContent
 	
 	
 	/**
@@ -494,10 +494,10 @@ class comments_model extends CI_Model
 	 * 
 	 * @param integer $c
 	 */
-	public function vancode2int($c = '00') 
+	public function vanCode2Int($c = '00') 
 	{
 		return base_convert(substr($c, 1), 36, 10);
-	}// vancode2int
+	}// vanCode2Int
 	
 	
 }

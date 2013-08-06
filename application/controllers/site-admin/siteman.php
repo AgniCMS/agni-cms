@@ -61,7 +61,7 @@ class siteman extends admin_controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$result = $this->siteman_model->add_site($data);
+				$result = $this->siteman_model->addSite($data);
 				
 				if ($result === true) {
 					// load session library
@@ -104,7 +104,7 @@ class siteman extends admin_controller
 		
 		// get site data from db.
 		$data['site_id'] = $site_id;
-		$row = $this->siteman_model->get_site_data_db($data);
+		$row = $this->siteman_model->getSiteDataDb($data);
 		unset($data);
 		
 		if ($row == null) {
@@ -138,7 +138,7 @@ class siteman extends admin_controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
-				$result = $this->siteman_model->edit_site($data);
+				$result = $this->siteman_model->editSite($data);
 				
 				if ($result === true) {
 					// load session library
@@ -194,7 +194,7 @@ class siteman extends admin_controller
 		unset($form_status);
 		
 		// list websites
-		$output['list_websites'] = $this->siteman_model->list_websites();
+		$output['list_websites'] = $this->siteman_model->listWebsites();
 		if (is_array($output['list_websites'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -220,7 +220,7 @@ class siteman extends admin_controller
 		if ($act == 'del') {
 			if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_delete_perm') != true) {redirect('site-admin');}
 			foreach ($id as $an_id) {
-				$this->siteman_model->delete_site($an_id);
+				$this->siteman_model->deleteSite($an_id);
 			}
 		}
 		

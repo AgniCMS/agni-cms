@@ -51,19 +51,19 @@ class agni_update
 					$data_arr['update_version'] = (string) $update->version;
 					$data['queue_data'] = serialize($data_arr);
 					$data['queue_update'] = time();
-					if (!$ci->queue_model->is_queue_exists($data['queue_name'])) {
+					if (!$ci->queue_model->isQueueExists($data['queue_name'])) {
 						// queue is not exists, use insert queue.
 						$data['queue_create'] = time();
 
-						$ci->queue_model->add_queue($data);
+						$ci->queue_model->addQueue($data);
 					} else {
 						// queue exists, use update queue.
 						// get queue data
-						$queue = $ci->queue_model->get_queue_data(array('queue_name' => $data['queue_name']));
+						$queue = $ci->queue_model->getQueueData(array('queue_name' => $data['queue_name']));
 						if ($queue != null) {
 							$data['queue_id'] = $queue->queue_id;
 							
-							$ci->queue_model->edit_queue($data);
+							$ci->queue_model->editQueue($data);
 						}
 					}
 					
@@ -455,7 +455,7 @@ class agni_update
 						$ci->load->model('siteman_model');
 						
 						// get all sites from sites table
-						$list_site = $ci->siteman_model->list_websites_all();
+						$list_site = $ci->siteman_model->listWebsitesAll();
 						
 						if (isset($list_site['items']) && is_array($list_site['items'])) {
 							// loop update config in all sites that we are using current version.

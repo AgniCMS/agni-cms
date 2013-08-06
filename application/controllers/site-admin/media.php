@@ -63,7 +63,7 @@ class media extends admin_controller
 		
 		if (!$this->media_filesys->is_over_limit_base($this->media_filesys->base_dir, $folder)) {
 			// recursive delete folders and files in it.
-			$this->media_model->delete_folder($folder);
+			$this->media_model->deleteMediaFolder($folder);
 			
 			$output['result'] = true;
 		} else {
@@ -94,7 +94,7 @@ class media extends admin_controller
 			
 			// open db for edit and check permission (own, other)
 			$data['file_id'] = $file_id;
-			$row = $this->media_model->get_file_data_db($data);
+			$row = $this->media_model->getFileDataDb($data);
 			unset($data);
 			if ($row == null) {
 				return false;
@@ -243,12 +243,12 @@ class media extends admin_controller
 		$current_folder = trim($this->input->post('current_folder'));
 		$folder_new_name = trim($this->input->post('folder_new_name'));
 		
-		$result = $this->media_filesys->rename_folder($current_path, $current_folder, $folder_new_name);
+		$result = $this->media_filesys->renameFolder($current_path, $current_folder, $folder_new_name);
 		
 		if ($result === true) {
 			$output['result'] = true;
 			// rename in db too
-			$this->media_model->rename_folder($current_path, $current_folder, $folder_new_name);
+			$this->media_model->renameFolderDb($current_path, $current_folder, $folder_new_name);
 		} else {
 			$output['result'] = false;
 			$output['result_text'] = $result;
@@ -280,7 +280,7 @@ class media extends admin_controller
 			
 			// open db for edit and check permission (own, other)
 			$data['file_id'] = $file_id;
-			$row = $this->media_model->get_file_data_db($data);
+			$row = $this->media_model->getFileDataDb($data);
 			unset($data);
 			if ($row == null) {
 				redirect('site-admin/media');
@@ -373,7 +373,7 @@ class media extends admin_controller
 		
 		// open db for copy files and info
 		$data['file_id'] = $file_id;
-		$row = $this->media_model->get_file_data_db($data);
+		$row = $this->media_model->getFileDataDb($data);
 		unset($data);
 		
 		if ($row == null) {
@@ -439,7 +439,7 @@ class media extends admin_controller
 		$data['file_size'] = $row->file_size;
 		$data['media_name'] = $row->media_name;
 		$data['media_keywords'] = $row->media_keywords;
-		$this->media_model->add_data_only($data);
+		$this->media_model->addDataOnly($data);
 		unset($data);
 		
 		// done
@@ -465,7 +465,7 @@ class media extends admin_controller
 		
 		// open db for edit and check permission (own, other)
 		$data['file_id'] = $file_id;
-		$row = $this->media_model->get_file_data_db($data);
+		$row = $this->media_model->getFileDataDb($data);
 		unset($data);
 		if ($row == null) {
 			redirect('site-admin/media');
@@ -598,7 +598,7 @@ class media extends admin_controller
 		
 		// list item
 		$data['folder'] = $current_path.'/';
-		$output['list_item'] = $this->media_model->list_item('admin', $data);
+		$output['list_item'] = $this->media_model->listMedia('admin', $data);
 		unset($data);
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
@@ -644,7 +644,7 @@ class media extends admin_controller
 		// check permission each file and remove unallowed one.
 		foreach ($ids as $key => $id) {
 			$data['file_id'] = $id;
-				$row = $this->media_model->get_file_data_db($data);
+				$row = $this->media_model->getFileDataDb($data);
 				unset($data);
 				
 				// file not found in db, skip it.
@@ -674,7 +674,7 @@ class media extends admin_controller
 				$output['form_status'] = 'error';
 				$output['form_status_message'] = $this->lang->line('media_please_select_target_folder');
 			} else {
-				$result = $this->media_model->move_file($data);
+				$result = $this->media_model->moveMedia($data);
 				
 				if ($result === true) {
 					$this->load->library('session');
@@ -758,7 +758,7 @@ class media extends admin_controller
 		
 		// list item
 		$data['folder'] = $current_path.'/';
-		$output['list_item'] = $this->media_model->list_item('admin', $data);
+		$output['list_item'] = $this->media_model->listMedia('admin', $data);
 		unset($data);
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
@@ -802,7 +802,7 @@ class media extends admin_controller
 			
 			foreach ($id as $an_id) {
 				$data['file_id'] = $an_id;
-				$row = $this->media_model->get_file_data_db($data);
+				$row = $this->media_model->getFileDataDb($data);
 				unset($data);
 				
 				// file not found in db, skip it.
@@ -842,7 +842,7 @@ class media extends admin_controller
 		if ($this->account_model->check_admin_permission('media_perm', 'media_upload_perm') != true) {redirect('site-admin');}
 		
 		// upload
-		$upload_result = $this->media_model->upload_media();
+		$upload_result = $this->media_model->uploadMedia();
 		
 		// fix non utf-8 in browsers.
 		echo '<!DOCTYPE html>

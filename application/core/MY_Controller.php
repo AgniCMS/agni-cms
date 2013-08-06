@@ -31,7 +31,7 @@ class MY_Controller extends MX_Controller {
 		
 		// get default theme name
 		$this->load->model('themes_model');
-		$theme_system_name = $this->themes_model->get_default_theme();
+		$theme_system_name = $this->themes_model->getDefaultTheme();
 		
 		// set theme path and theme name.
 		$this->theme_path = $this->base_url.config_item('agni_theme_path').$theme_system_name.'/';

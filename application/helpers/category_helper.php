@@ -141,7 +141,7 @@ if (!function_exists('show_category_table_adminpage')) {
 			$output .= "\t\t\t".'<td>'.$item->t_total.'</td>'."\n";
 			// read theme name
 			if ($item->theme_system_name != null) {
-				$theme_data = $ci->themes_model->read_theme_metadata($item->theme_system_name.'/'.$item->theme_system_name.'.info');
+				$theme_data = $ci->themes_model->readThemeMetadata($item->theme_system_name.'/'.$item->theme_system_name.'.info');
 				$theme_name = $theme_data['name'];
 				unset($theme_data);
 			} else {

@@ -14,7 +14,7 @@
 		$this->load->model('posts_model');
 		$this->load->helper('date');
 		$this->posts_model->post_type = 'article';
-		$list_item = $this->posts_model->list_item('admin');
+		$list_item = $this->posts_model->listPost('admin');
 		if (is_array($list_item['items'])) {
 			$i = 1;
 		?> 

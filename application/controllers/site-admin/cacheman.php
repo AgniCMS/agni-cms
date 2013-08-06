@@ -41,7 +41,7 @@ class cacheman extends admin_controller
 				if ($this->account_model->check_admin_permission('cache_perm', 'cache_perm_clear_all') != true) {redirect('site-admin');}
 				
 				// clear all cache
-				$this->config_model->delete_cache('ALL');
+				$this->config_model->deleteCache('ALL');
 				
 				// flash message-----------------------------------
 				// load session library

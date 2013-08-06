@@ -66,7 +66,7 @@ class author extends MY_Controller
 		
 		// list posts
 		$data['account_username'] = $username;
-		$output['list_item'] = $this->posts_model->list_item('front', $data);
+		$output['list_item'] = $this->posts_model->listPost('front', $data);
 		unset($data);
 		
 		if (is_array($output['list_item'])) {

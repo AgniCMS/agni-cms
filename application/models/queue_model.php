@@ -20,11 +20,11 @@ class queue_model extends CI_Model
 	
 	
 	/**
-	 * add_queue
+	 * add queue
 	 * @param array $data
 	 * @return boolean
 	 */
-	public function add_queue($data = array()) 
+	public function addQueue($data = array()) 
 	{
 		$this->db->insert('queue', $data);
 		
@@ -33,15 +33,15 @@ class queue_model extends CI_Model
 		
 		$output['result'] = true;
 		return $output;
-	}// add_queue
+	}// addQueue
 	
 	
 	/**
-	 * delete_queue
+	 * delete queue
 	 * @param array $data
 	 * @return boolean
 	 */
-	public function delete_queue($data = array()) 
+	public function deleteQueue($data = array()) 
 	{
 		if (!is_array($data) || (is_array($data) && empty($data))) {return false;}
 		
@@ -49,15 +49,15 @@ class queue_model extends CI_Model
 			   ->delete('queue');
 		
 		return true;
-	}// delete_queue
+	}// deleteQueue
 	
 	
 	/**
-	 * edit_queue
+	 * edit queue
 	 * @param array $data
 	 * @return boolean
 	 */
-	public function edit_queue($data = array()) 
+	public function editQueue($data = array()) 
 	{
 		$this->db->where('queue_id', $data['queue_id'])
 			   ->update('queue', $data);
@@ -65,15 +65,15 @@ class queue_model extends CI_Model
 		$output['queue_id'] = $data['queue_id'];
 		$output['result'] = true;
 		return $output;
-	}// edit_queue
+	}// editQueue
 	
 	
 	/**
-	 * get_queue_data
+	 * get queue data
 	 * @param array|string $data
 	 * @return mixed
 	 */
-	public function get_queue_data($data = array()) 
+	public function getQueueData($data = array()) 
 	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
@@ -84,15 +84,15 @@ class queue_model extends CI_Model
 		$query = $this->db->get('queue');
 		
 		return $query->row();
-	}// get_queue_data
+	}// getQueueData
 	
 	
 	/**
-	 * is_queue_exists
+	 * is queue exists
 	 * @param string $queue_name
 	 * @return boolean
 	 */
-	public function is_queue_exists($queue_name = '') 
+	public function isQueueExists($queue_name = '') 
 	{
 		$this->db->where('queue_name', $queue_name);
 		
@@ -101,7 +101,7 @@ class queue_model extends CI_Model
 		}
 		
 		return false;
-	}// is_queue_exists
+	}// isQueueExists
 
 
 }

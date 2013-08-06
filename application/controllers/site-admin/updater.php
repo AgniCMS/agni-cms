@@ -69,7 +69,7 @@ class updater extends admin_controller
 		$this->load->library(array('encrypt'));
 		
 		// get queue data of agni core update.
-		$queue = $this->queue_model->get_queue_data(array('queue_name' => $this->agni_update->agni_update_core_name));
+		$queue = $this->queue_model->getQueueData(array('queue_name' => $this->agni_update->agni_update_core_name));
 		
 		// if no queue.
 		if ($queue == null) {
@@ -189,7 +189,7 @@ class updater extends admin_controller
 		if ($rewrite_method == null) {redirect('site-admin/updater');}
 		
 		// get queue data of agni core update. -------------------------------------------------------------------------------------
-		$queue = $this->queue_model->get_queue_data(array('queue_name' => $this->agni_update->agni_update_core_name));
+		$queue = $this->queue_model->getQueueData(array('queue_name' => $this->agni_update->agni_update_core_name));
 		
 		// if no queue.
 		if ($queue == null) {
@@ -240,7 +240,7 @@ class updater extends admin_controller
 						$this->agni_update->update_core_version();
 						
 						// delete queue
-						$this->queue_model->delete_queue(array('queue_name' => $this->agni_update->agni_update_core_name));
+						$this->queue_model->deleteQueue(array('queue_name' => $this->agni_update->agni_update_core_name));
 						
 						// delete global_status and all other sessions.
 						$this->session->unset_userdata('global_status');
@@ -248,7 +248,7 @@ class updater extends admin_controller
 						$this->session->unset_userdata('ftp_config');
 						
 						// remove cron cached
-						$site_id = $this->siteman_model->get_site_id();
+						$site_id = $this->siteman_model->getSiteId();
 						$this->cache->delete('site_id_'.$site_id.'_agnicms_checked_queue_update_core_cron_controller');
 						$this->cache->delete('site_id_'.$site_id.'_agnicms_had_run_cron_controller');
 						

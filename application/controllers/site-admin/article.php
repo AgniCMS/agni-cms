@@ -57,11 +57,11 @@ class article extends admin_controller
 		if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_add_perm') != true) {redirect('site-admin');}
 		
 		// list themes for select
-		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		$output['list_theme'] = $this->themes_model->listEnabledThemes();
 		
 		// list categories for check
 		$this->taxonomy_model->tax_type = 'category';
-		$output['list_category'] = $this->taxonomy_model->list_item();
+		$output['list_category'] = $this->taxonomy_model->listTaxTerm();
 		
 		// preset settings and values
 		$output['post_comment'] = '1';
@@ -183,7 +183,7 @@ class article extends admin_controller
 			$nodupedit = ($nodupedit == 'true' ? true : false);
 			$id = intval($this->input->post('id'));
 			
-			$output['post_uri'] = $this->posts_model->nodup_uri($post_name, $nodupedit, $id);
+			$output['post_uri'] = $this->posts_model->noDupPostUri($post_name, $nodupedit, $id);
 			
 			// output
 			$this->output->set_content_type('application/json');
@@ -198,7 +198,7 @@ class article extends admin_controller
 		$_GET['q'] = trim($this->input->get('term'));
 		
 		$this->taxonomy_model->tax_type = 'tag';
-		$list_tags = $this->taxonomy_model->list_tags('admin');
+		$list_tags = $this->taxonomy_model->listTags('admin');
 		
 		$output = '';
 		if (isset($list_tags['items']) && is_array($list_tags['items'])) {
@@ -360,7 +360,7 @@ class article extends admin_controller
 		
 		// open posts table for check permission and edit.
 		$data['post_id'] = $post_id;
-		$row = $this->posts_model->get_post_data($data);
+		$row = $this->posts_model->getPostData($data);
 		unset($data['post_id']);
 		
 		// if selected post id is not exists.
@@ -407,11 +407,11 @@ class article extends admin_controller
 		// end check permissions-----------------------------------------------------------
 		
 		// list themes for select
-		$output['list_theme'] = $this->themes_model->list_enabled_themes();
+		$output['list_theme'] = $this->themes_model->listEnabledThemes();
 		
 		// list categories for check
 		$this->taxonomy_model->tax_type = 'category';
-		$output['list_category'] = $this->taxonomy_model->list_item();
+		$output['list_category'] = $this->taxonomy_model->listTaxTerm();
 		
 		// preset settings and values---------------------------------------------------------
 		$output['post_id'] = $post_id;
@@ -420,7 +420,7 @@ class article extends admin_controller
 		
 		// load settings and values from db for edit.---------------------------------------
 		$this->taxonomy_model->tax_type = 'tag';
-		$ttlist = $this->taxonomy_model->list_taxterm_index($post_id);
+		$ttlist = $this->taxonomy_model->listTaxTermIndex($post_id);
 		$tid = array();
 		if (!empty($ttlist)) {
 			foreach ($ttlist as $atid) {
@@ -432,7 +432,7 @@ class article extends admin_controller
 		
 		// load categories of this post for edit.
 		$this->taxonomy_model->tax_type = 'category';
-		$ttlist = $this->taxonomy_model->list_taxterm_index($post_id);
+		$ttlist = $this->taxonomy_model->listTaxTermIndex($post_id);
 		$tid = array();
 		if (!empty($ttlist)) {
 			foreach ($ttlist as $atid) {
@@ -471,7 +471,7 @@ class article extends admin_controller
 		
 		// list revision
 		$condition['post_id'] = $post_id;
-		$revision = $this->posts_model->list_revision($condition);
+		$revision = $this->posts_model->listRevision($condition);
 		$output['count_revision'] = $revision['total'];
 		$output['list_revision'] = $revision['items'];
 		unset($revision, $condition);
@@ -596,7 +596,7 @@ class article extends admin_controller
 		
 		// list category for select filter
 		$this->taxonomy_model->tax_type = 'category';
-		$output['list_category'] = $this->taxonomy_model->list_item();
+		$output['list_category'] = $this->taxonomy_model->listTaxTerm();
 		
 		// sort, orders, search, tid
 		$output['orders'] = strip_tags(trim($this->input->get('orders')));
@@ -614,7 +614,7 @@ class article extends admin_controller
 		unset($form_status);
 		
 		// list item
-		$output['list_item'] = $this->posts_model->list_item('admin');
+		$output['list_item'] = $this->posts_model->listPost('admin');
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -734,14 +734,9 @@ class article extends admin_controller
 		$this->load->library('user_agent');
 		
 		// get current position
-		/*$this->db->where('post_id', $post_id)->where('tid', $tid);
-		$query = $this->db->get('taxonomy_index');
-		if ($query->num_rows() <= 0) {$query->free_result(); redirect('site-admin/article');}// not found
-		$row = $query->row();
-		$query->free_result();*/// no more use, use model instead (below this line).
 		$condition['post_id'] = $post_id;
 		$condition['tid'] = $tid;
-		$row = $this->taxonomy_model->get_taxonomy_index_data($condition);
+		$row = $this->taxonomy_model->getTaxonomyIndexData($condition);
 		if ($row == null) {
 			// not found
 			redirect('site-admin/article');

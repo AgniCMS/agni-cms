@@ -21,7 +21,7 @@ class logout extends admin_controller
 	
 	public function index() 
 	{
-		$this->account_model->logout();
+		$this->account_model->logOut();
 		
 		redirect('site-admin');
 	}// index

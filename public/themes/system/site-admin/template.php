@@ -134,7 +134,7 @@
 						</li>
 						<?php endif; ?> 
 						<li><?php echo anchor('#', lang('admin_nav_component'), array('onclick' => 'return false;')); ?> 
-							<?php echo $this->modules_model->load_admin_nav(); ?> 
+							<?php echo $this->modules_model->loadAdminNav(); ?> 
 						</li>
 						<li><?php echo anchor('#', lang('admin_nav_extensions'), array('onclick' => 'return false;')); ?> 
 							<?php if (check_admin_permission('modules_manage_perm', 'modules_viewall_perm') || check_admin_permission('themes_manage_perm', 'themes_viewall_perm') || check_admin_permission('siteman_perm', 'siteman_manage_perm')): ?> 

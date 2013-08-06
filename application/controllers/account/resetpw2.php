@@ -80,7 +80,7 @@ class resetpw2 extends MY_Controller
 							$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 						} else {
 							// update new password
-							$this->db->set('account_password', $this->account_model->encrypt_password($data['new_password']));
+							$this->db->set('account_password', $this->account_model->encryptPassword($data['new_password']));
 							$this->db->set('account_new_password', NULL);
 							$this->db->set('account_confirm_code', NULL);
 							$this->db->where('account_id', $account_id);

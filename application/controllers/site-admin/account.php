@@ -36,7 +36,7 @@ class account extends admin_controller
 		// check permission
 		if ($this->account_model->check_admin_permission('account_perm', 'account_add_perm') != true) {redirect('site-admin');}
 		
-		$output['list_level'] = $this->account_model->list_level_group();
+		$output['list_level'] = $this->account_model->listLevelGroup();
 		
 		// post method. save action
 		if ($this->input->post()) {
@@ -68,7 +68,7 @@ class account extends admin_controller
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
-				$result = $this->account_model->add_account($data);
+				$result = $this->account_model->addAccount($data);
 				
 				if ($result === true) {
 					// load session library
@@ -126,7 +126,7 @@ class account extends admin_controller
 		unset($ca_account);
 		
 		// delete avatar
-		$this->account_model->delete_account_avatar($account_id);
+		$this->account_model->deleteAccountAvatar($account_id);
 		
 		// return
 		if (!$this->input->is_ajax_request()) {
@@ -148,15 +148,15 @@ class account extends admin_controller
 		if (! is_numeric($account_id)) {redirect('site-admin');}
 		
 		// check delete log higher level than yours?
-		$target_level_group_id = $this->account_model->show_account_level_info($account_id);
+		$target_level_group_id = $this->account_model->showAccountLevelInfo($account_id);
 		if ($target_level_group_id == false) {redirect('site-admin');}
-		if ($this->account_model->can_i_add_edit_account($target_level_group_id) == false) {redirect('site-admin');}
+		if ($this->account_model->canIAddEditAccount($target_level_group_id) == false) {redirect('site-admin');}
 		
 		// get act command
 		$act = trim($this->input->post('act'));
 		
 		// act is truncate, check is this super admin?
-		$level_id = $this->account_model->show_account_level_info();
+		$level_id = $this->account_model->showAccountLevelInfo();
 		if ($act == 'truncate' && $level_id !== '1') {
 			// not super admin
 			redirect('site-admin/account/viewlog/'.$account_id);
@@ -195,7 +195,7 @@ class account extends admin_controller
 		unset($ca_account);
 		
 		// load data for form
-		$row = $this->account_model->get_account_data(array('account_id' => $account_id));
+		$row = $this->account_model->getAccountData(array('account_id' => $account_id));
 		
 		if ($row == null) {
 			// not found selected account_id.
@@ -217,7 +217,7 @@ class account extends admin_controller
 		$output['row'] = $row;
 
 		// check if editing higher level?
-		if (!$this->account_model->can_i_add_edit_account($output['level_group_id'])) {
+		if (!$this->account_model->canIAddEditAccount($output['level_group_id'])) {
 			// you cannot edit this user because he/she has higher role than you
 			$this->load->library('session');
 			$this->session->set_flashdata(
@@ -231,7 +231,7 @@ class account extends admin_controller
 		}
 		
 		// list level group for select
-		$output['list_level'] = $this->account_model->list_level_group();
+		$output['list_level'] = $this->account_model->listLevelGroup();
 		
 		// post method. save action
 		if ($this->input->post()) {
@@ -264,7 +264,7 @@ class account extends admin_controller
 				$output['form_status_message'] = '<ul>'.validation_errors('<li>', '</li>').'</ul>';
 			} else {
 				// save
-				$result = $this->account_model->edit_account($data);
+				$result = $this->account_model->editAccount($data);
 				
 				if ($result === true) {
 					// load session library
@@ -315,7 +315,7 @@ class account extends admin_controller
 		$output['sort'] = ($this->input->get('sort') == null || $this->input->get('sort') == 'asc' ? 'desc' : 'asc');
 		
 		// list item
-		$output['list_item'] = $this->account_model->list_account('admin');
+		$output['list_item'] = $this->account_model->listAccount('admin');
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}
@@ -352,13 +352,13 @@ class account extends admin_controller
 			if (is_array($id)) {
 				foreach ($id as $an_id) {
 					// check if delete higher level than yours
-					$target_level_group_id = $this->account_model->show_account_level_info($an_id);
+					$target_level_group_id = $this->account_model->showAccountLevelInfo($an_id);
 					
 					if ($target_level_group_id == false) {break;}
 					
-					if ($this->account_model->can_i_add_edit_account($target_level_group_id) == true) {
+					if ($this->account_model->canIAddEditAccount($target_level_group_id) == true) {
 						// delete account
-						$this->account_model->delete_account($an_id);
+						$this->account_model->deleteAccount($an_id);
 					}
 				}
 			}
@@ -391,9 +391,9 @@ class account extends admin_controller
 		unset($form_status);
 		
 		// check if viewing higher level than yours?
-		$target_level_group_id = $this->account_model->show_account_level_info($account_id);
+		$target_level_group_id = $this->account_model->showAccountLevelInfo($account_id);
 		if ($target_level_group_id == false) {redirect('site-admin');}
-		if ($this->account_model->can_i_add_edit_account($target_level_group_id) == false) {redirect('site-admin');}
+		if ($this->account_model->canIAddEditAccount($target_level_group_id) == false) {redirect('site-admin');}
 		
 		// list logins
 		$output['account_id'] = $account_id;
@@ -401,7 +401,7 @@ class account extends admin_controller
 		
 		// sort
 		$output['sort'] = ($this->input->get('sort') == null || $this->input->get('sort') == 'desc' ? 'asc' : 'desc');
-		$output['list_item'] = $this->account_model->list_account_logins($account_id);
+		$output['list_item'] = $this->account_model->listAccountLogins($account_id);
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

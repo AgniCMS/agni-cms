@@ -155,7 +155,7 @@
 				<?php if (isset($tagid) && is_array($tagid)): ?>
 				<?php foreach ($tagid as $a_tagid): ?>
 				<span class="each-added-tag">
-					<?php $this->taxonomy_model->tax_type = 'tag'; echo $this->taxonomy_model->show_taxterm_info($a_tagid); ?><input type="hidden" name="tagid[]" value="<?php echo $a_tagid; ?>" /><i class="remove-added-tag icon-remove" onclick="added_tag_remove($(this));"></i>
+					<?php $this->taxonomy_model->tax_type = 'tag'; echo $this->taxonomy_model->showTaxTermInfo($a_tagid); ?><input type="hidden" name="tagid[]" value="<?php echo $a_tagid; ?>" /><i class="remove-added-tag icon-remove" onclick="added_tag_remove($(this));"></i>
 				</span>
 				<?php endforeach; ?>
 				<?php endif; ?>
@@ -205,7 +205,7 @@
 		<div id="tabs-3">
 			<div class="theme-select">
 				<label>
-					<img src="<?php echo $this->themes_model->show_theme_screenshot(''); ?>" alt="" /><br />
+					<img src="<?php echo $this->themes_model->showThemeScreenshot(''); ?>" alt="" /><br />
 					<input type="radio" name="theme_system_name" value=""<?php if (!isset($theme_system_name) || (isset($theme_system_name) && $theme_system_name == null)) {echo ' checked="checked"';} ?> /> <?php echo lang('post_no_theme'); ?> 
 				</label>
 			</div>
@@ -213,7 +213,7 @@
 			<?php foreach ($list_theme['items'] as $row): ?> 
 			<div class="theme-select">
 				<label>
-					<img src="<?php echo $this->themes_model->show_theme_screenshot($row->theme_system_name); ?>" alt="<?php echo $row->theme_name; ?>" /><br />
+					<img src="<?php echo $this->themes_model->showThemeScreenshot($row->theme_system_name); ?>" alt="<?php echo $row->theme_name; ?>" /><br />
 					<input type="radio" name="theme_system_name" value="<?php echo $row->theme_system_name; ?>"<?php if (isset($theme_system_name) && $theme_system_name == $row->theme_system_name) {echo ' checked="checked"';} ?> /> <?php echo $row->theme_name; ?> 
 				</label>
 			</div>

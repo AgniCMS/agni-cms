@@ -38,7 +38,7 @@ class taxonomy_model extends CI_Model
 		if (empty($data)) {return false;}
 		
 		// check uri
-		$data['t_uri'] = $this->nodup_uri($data['t_uri']);
+		$data['t_uri'] = $this->noDupTaxonomyUri($data['t_uri']);
 		
 		// additional data for insert to db
 		$data['language'] = $this->language;
@@ -52,12 +52,12 @@ class taxonomy_model extends CI_Model
 		$tid = $this->db->insert_id();
 		
 		// set t_uris (it is taxonomy tree)
-		$this->db->set('t_uris', $this->show_uri_tree($tid));
+		$this->db->set('t_uris', $this->showTaxTermUriTree($tid));
 		$this->db->where('tid', $tid);
 		$this->db->update('taxonomy_term_data');
 		
 		// rebuild tree level.
-		$this->rebuild();
+		$this->reBuildTaxTerm();
 		
 		// additional data for url_alias
 		$data_alias['c_type'] = $this->tax_type;
@@ -104,7 +104,7 @@ class taxonomy_model extends CI_Model
 		
 		// rebuild menu items
 		$this->load->model('menu_model');
-		$this->menu_model->rebuild();
+		$this->menu_model->reBuildMenu();
 		// end delete from menu items -------------------------------------------------------------------------------
 		
 		// delete url alias
@@ -155,8 +155,8 @@ class taxonomy_model extends CI_Model
 		if (empty($data)) {return false;}
 		
 		// check uri
-		$data['t_uri'] = $this->nodup_uri($data['t_uri'], true, $data['tid']);
-		$data_ua['uri'] = $this->nodup_uri($data_ua['uri'], true, $data['tid']);
+		$data['t_uri'] = $this->noDupTaxonomyUri($data['t_uri'], true, $data['tid']);
+		$data_ua['uri'] = $this->noDupTaxonomyUri($data_ua['uri'], true, $data['tid']);
 		
 		// additional data for taxonomy_term_data table
 		$data['t_uri_encoded'] = urlencode($data['t_uri']);
@@ -169,13 +169,13 @@ class taxonomy_model extends CI_Model
 		$this->db->update('taxonomy_term_data', $data);
 		
 		// update uris
-		$uri_tree = $this->show_uri_tree($data['tid']);
+		$uri_tree = $this->showTaxTermUriTree($data['tid']);
 		$this->db->set('t_uris', $uri_tree);
 		$this->db->where('tid', $data['tid']);
 		$this->db->update('taxonomy_term_data');
 		
 		// rebuild tree.
-		$this->rebuild();
+		$this->reBuildTaxTerm();
 		
 		// additional data for url_alias table
 		$data['uri_encoded'] = $data['t_uri_encoded'];
@@ -236,7 +236,7 @@ class taxonomy_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_taxonomy_index_data($data = array()) 
+	public function getTaxonomyIndexData($data = array()) 
 	{
 		if (isset($data['post_id'])) {
 			$this->db->where('post_id', $data['post_id']);
@@ -253,7 +253,7 @@ class taxonomy_model extends CI_Model
 		
 		// there is no selected taxonomy_index
 		return null;
-	}// get_taxonomy_index_data
+	}// getTaxonomyIndexData
 	
 	
 	/**
@@ -261,7 +261,7 @@ class taxonomy_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_taxonomy_term_data_db($data = array()) 
+	public function getTaxonomyTermDataDb($data = array()) 
 	{
 		if ($this->tax_type != null) {
 			$this->db->where('t_type', $this->tax_type);
@@ -274,67 +274,15 @@ class taxonomy_model extends CI_Model
 		$query = $this->db->get('taxonomy_term_data');
 		
 		return $query->row();
-	}// get_taxonomy_term_data_db
+	}// getTaxonomyTermDataDb
 	
 	
 	/**
-	 * list_item
-	 * @return mixed 
-	 * 
-	 * create array object from the code of arnaud576875
-	 * @link http://stackoverflow.com/questions/4843945/php-tree-structure-for-categories-and-sub-categories-without-looping-a-query
-	 */
-	public function list_item() 
-	{
-		$this->db->where('language', $this->language);
-		$this->db->where('t_type', $this->tax_type);
-		$this->db->order_by('t_name', 'asc');
-		
-		$query = $this->db->get('taxonomy_term_data');
-		
-		if ($query->num_rows() > 0) {
-			$output = array();
-			
-			foreach ($query->result() as $row)
-				$output[$row->parent_id][] = $row;
-			
-			foreach ($query->result() as $row) if (isset($output[$row->tid]))
-				$row->childs = $output[$row->tid];
-			
-			$output = $output[0];// this is important for prevent duplicate items
-			return $output;
-		}
-		
-		$query->free_result();
-		return null;
-	}// list_item
-	
-	
-	/**
-	 * list_item_total
-	 * get total taxonomy from list_item method.
-	 * @return integer
-	 */
-	public function list_item_total() 
-	{
-		// copy these query from list_item() method
-		$this->db->where('language', $this->language);
-		$this->db->where('t_type', $this->tax_type);
-		$this->db->order_by('t_name', 'asc');
-		
-		// run query
-		$query = $this->db->get('taxonomy_term_data');
-		
-		return $query->num_rows();
-	}// list_item_total
-	
-	
-	/**
-	 * list_tags
+	 * list tags
 	 * @param admin|front $list_for
 	 * @return mixed 
 	 */
-	public function list_tags($list_for = 'front') 
+	public function listTags($list_for = 'front') 
 	{
 		$this->db->where('language', $this->language);
 		$this->db->where('t_type', $this->tax_type);
@@ -425,7 +373,49 @@ class taxonomy_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_tags
+	}// listTags
+	
+	
+	/**
+	 * list taxonomy term
+	 * @return mixed 
+	 * 
+	 * create array object from the code of arnaud576875
+	 * @link http://stackoverflow.com/questions/4843945/php-tree-structure-for-categories-and-sub-categories-without-looping-a-query
+	 */
+	public function listTaxTerm() 
+	{
+		$this->db->where('language', $this->language);
+		$this->db->where('t_type', $this->tax_type);
+		$this->db->order_by('t_name', 'asc');
+		
+		$query = $this->db->get('taxonomy_term_data');
+		
+		if ($query->num_rows() > 0) {
+			$output = array();
+			
+			foreach ($query->result() as $row)
+				$output[$row->parent_id][] = $row;
+			
+			foreach ($query->result() as $row) if (isset($output[$row->tid]))
+				$row->childs = $output[$row->tid];
+			
+			$output = $output[0];// this is important for prevent duplicate items
+			return $output;
+		}
+		
+		$query->free_result();
+		return null;
+	}// listTaxTerm
+	
+	
+	/**
+	 * alias of method listTaxTerm.
+	 */
+	public function list_item() 
+	{
+		return $this->listTaxTerm();
+	}// list_item
 	
 	
 	/**
@@ -433,7 +423,7 @@ class taxonomy_model extends CI_Model
 	 * @param type $post_id
 	 * @return null 
 	 */
-	public function list_taxterm_index($post_id = '', $nohome_category = false) 
+	public function listTaxTermIndex($post_id = '', $nohome_category = false) 
 	{
 		$home_category_id = $this->config_model->load_single('content_frontpage_category', $this->lang->get_current_lang());
 		
@@ -457,23 +447,42 @@ class taxonomy_model extends CI_Model
 		$query->free_result();
 		
 		return null;
-	}// list_taxterm_index
+	}// listTaxTermIndex
 	
 	
 	/**
-	 * nodup_uri
+	 * list taxonomy term total
+	 * get total taxonomy from list taxonomy term method.
+	 * @return integer
+	 */
+	public function listTaxTermTotal() 
+	{
+		// copy these query from listTaxTerm() method
+		$this->db->where('language', $this->language);
+		$this->db->where('t_type', $this->tax_type);
+		$this->db->order_by('t_name', 'asc');
+		
+		// run query
+		$query = $this->db->get('taxonomy_term_data');
+		
+		return $query->num_rows();
+	}// listTaxTermTotal
+	
+	
+	/**
+	 * no duplicate taxonomy uri
 	 * @param string $uri
 	 * @param boolean $editmode
 	 * @param integer $id
 	 * @return string 
 	 */
-	public function nodup_uri($uri, $editmode = false, $id = '') 
+	public function noDupTaxonomyUri($uri, $editmode = false, $id = '') 
 	{
 		$uri = url_title($uri);
 		
 		// load url model for check disallowed uri
 		$this->load->model('url_model');
-		$uri = $this->url_model->validate_allow_url($uri);
+		$uri = $this->url_model->validateAllowUrl($uri);
 		
 		//
 		if ($editmode == true) {
@@ -513,17 +522,17 @@ class taxonomy_model extends CI_Model
 		
 		unset($found, $count);
 		return $new_uri;
-	}// nodup_uri
+	}// noDupTaxonomyUri
 	
 	
 	/**
-	 * show_taxterm_info
+	 * show taxterm info
 	 * @param mixed $check_val
 	 * @param string $check_field
 	 * @param string $return_field
 	 * @return string 
 	 */
-	public function show_taxterm_info($check_val = '', $check_field = 'tid', $return_field = 't_name') 
+	public function showTaxTermInfo($check_val = '', $check_field = 'tid', $return_field = 't_name') 
 	{
 		$this->db->where('language', $this->language);
 		$this->db->where('t_type', $this->tax_type);
@@ -539,15 +548,15 @@ class taxonomy_model extends CI_Model
 		$query->free_result();
 		
 		return null;
-	}// show_taxterm_info
+	}// showTaxTermInfo
 	
 	
 	/**
-	 * show_uri_tree
+	 * show uri tree
 	 * @param type $tid
 	 * @return string 
 	 */
-	public function show_uri_tree($tid = '') 
+	public function showTaxTermUriTree($tid = '') 
 	{
 		$end_depth = 'no';
 		do {
@@ -583,15 +592,15 @@ class taxonomy_model extends CI_Model
 		// remove junk var
 		unset($end_depth, $query, $row, $output);
 		return $uri;
-	}// show_uri_tree
+	}// showTaxTermUriTree
 	
 	
 	/**
-	 * update_total_post
+	 * update total post
 	 * @param integer $tid
 	 * @return boolean 
 	 */
-	public function update_total_post($tid = '') 
+	public function updateTotalPost($tid = '') 
 	{
 		if (!is_numeric($tid)) {return false;}
 		$this->db->where('tid', $tid);
@@ -603,7 +612,7 @@ class taxonomy_model extends CI_Model
 		$this->db->update('taxonomy_term_data');
 		
 		return true;
-	}// update_total_post
+	}// updateTotalPost
 	
 	
 	######################################################################
@@ -694,7 +703,7 @@ class taxonomy_model extends CI_Model
 	/**
 	 * Rebuilds the tree data and saves it to the database
 	 */
-	public function rebuild() 
+	public function reBuildTaxTerm() 
 	{
 		$data = $this->_getTreeWithChildren();
 		
@@ -717,7 +726,7 @@ class taxonomy_model extends CI_Model
 			$query = sprintf('update %s set nlevel = %d where %s = %d', $this->db->dbprefix('taxonomy_term_data'), $row->nlevel, $this->fields['id'], $id);
 			$this->db->query($query);
 		}
-	}
+	}// reBuildTaxTerm
 	
 	
 }

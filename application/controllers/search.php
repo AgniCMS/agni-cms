@@ -43,7 +43,7 @@ class search extends MY_Controller
 		
 		if (mb_strlen($q) > 1) {
 			// search and list post
-			$output['list_item'] = $this->posts_model->list_item('front');
+			$output['list_item'] = $this->posts_model->listPost('front');
 			if (is_array($output['list_item'])) {
 				$output['pagination'] = $this->pagination->create_links();
 			}

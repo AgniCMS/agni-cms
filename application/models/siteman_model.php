@@ -68,7 +68,7 @@ class siteman_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function add_site($data = array()) 
+	public function addSite($data = array()) 
 	{
 		// additional data for inserting
 		$data['site_create'] = time();
@@ -83,16 +83,16 @@ class siteman_model extends CI_Model
 		$site_id = $this->db->insert_id();
 		
 		// start copy tables
-		$this->copy_newsite_table($site_id);
+		$this->copyNewSiteTable($site_id);
 		
 		// add new theme to new site -------------------------------------------------------------------------------------------------
 		$this->load->model('themes_model');
 		
-		$default_theme = $this->themes_model->get_default_theme();
-		$default_theme_admin = $this->themes_model->get_default_theme('admin');
+		$default_theme = $this->themes_model->getDefaultTheme();
+		$default_theme_admin = $this->themes_model->getDefaultTheme('admin');
 		
-		$this->themes_model->set_default($default_theme, 'front', $site_id);
-		$this->themes_model->set_default($default_theme_admin, 'admin', $site_id);
+		$this->themes_model->setDefaultTheme($default_theme, 'front', $site_id);
+		$this->themes_model->setDefaultTheme($default_theme_admin, 'admin', $site_id);
 		
 		unset($default_theme, $default_theme_admin);
 		// add new theme to new site -------------------------------------------------------------------------------------------------
@@ -107,20 +107,20 @@ class siteman_model extends CI_Model
 		$log['sl_type'] = 'multisite';
 		$log['sl_message'] = 'Add new site';
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		return true;
-	}// add_site
+	}// addSite
 	
 	
 	/**
-	 * copy_newsite_table
+	 * copy new site table
 	 * copy tables for new website
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	public function copy_newsite_table($site_id = '') 
+	public function copyNewSiteTable($site_id = '') 
 	{
 		foreach ($this->core_tables as $table) {
 			if ($table == 'account_level' || $table == 'account_level_group' || $table == 'config') {
@@ -140,15 +140,15 @@ class siteman_model extends CI_Model
 		
 		// done
 		return true;
-	}// copy_newsite_table
+	}// copyNewSiteTable
 	
 	
 	/**
-	 * delete_site
+	 * delete site
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	public function delete_site($site_id = '') 
+	public function deleteSite($site_id = '') 
 	{
 		// do not allow admin/user delete first site.
 		if ($site_id == '1') {
@@ -185,12 +185,12 @@ class siteman_model extends CI_Model
 		$log['sl_type'] = 'multisite';
 		$log['sl_message'] = 'Delete site';
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		// done 
 		return true;
-	}// delete_site
+	}// deleteSite
 	
 	
 	/**
@@ -198,7 +198,7 @@ class siteman_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function edit_site($data = array()) 
+	public function editSite($data = array()) 
 	{
 		// additional data for updating
 		$data['site_update'] = time();
@@ -229,12 +229,12 @@ class siteman_model extends CI_Model
 		$log['sl_type'] = 'multisite';
 		$log['sl_message'] = 'Update site';
 		$this->load->model('syslog_model');
-		$this->syslog_model->add_new_log($log);
+		$this->syslog_model->addNewLog($log);
 		unset($log);
 		
 		// done
 		return true;
-	}// edit_site
+	}// editSite
 	
 	
 	/**
@@ -242,7 +242,7 @@ class siteman_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function get_site_data_db($data = array()) 
+	public function getSiteDataDb($data = array()) 
 	{
 		if (!empty($data)) {
 			$this->db->where($data);
@@ -256,7 +256,7 @@ class siteman_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// get_site_data_db
+	}// getSiteDataDb
 	
 	
 	/**
@@ -264,7 +264,7 @@ class siteman_model extends CI_Model
 	 * @param boolean $enabled_only
 	 * @return integer
 	 */
-	public function get_site_id($enabled_only = true) 
+	public function getSiteId($enabled_only = true) 
 	{
 		$site_domain = $this->input->server('HTTP_HOST');
 		
@@ -273,7 +273,7 @@ class siteman_model extends CI_Model
 		if ($enabled_only === true) {
 			$data['site_status'] = '1';
 		}
-		$site = $this->get_site_data_db($data);
+		$site = $this->getSiteDataDb($data);
 		unset($data);
 		
 		if ($site != null) {
@@ -281,6 +281,15 @@ class siteman_model extends CI_Model
 		}
 		
 		return '1';
+	}// getSiteId
+	
+	
+	/**
+	 * alias of method getSiteId.
+	 */
+	public function get_site_id($enabled_only = true) 
+	{
+		return $this->getSiteId($enabled_only);
 	}// get_site_id
 	
 	
@@ -289,7 +298,7 @@ class siteman_model extends CI_Model
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function list_websites($data = array()) 
+	public function listWebsites($data = array()) 
 	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
@@ -375,15 +384,15 @@ class siteman_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_websites
+	}// listWebsites
 	
 	
 	/**
-	 * list_websites_all
+	 * list websites all
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function list_websites_all($data = array()) 
+	public function listWebsitesAll($data = array()) 
 	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
@@ -408,7 +417,7 @@ class siteman_model extends CI_Model
 		
 		$query->free_result();
 		return null;
-	}// list_websites_all
+	}// listWebsitesAll
 
 
 }

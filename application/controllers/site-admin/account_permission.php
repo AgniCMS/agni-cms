@@ -48,9 +48,9 @@ class account_permission extends admin_controller
 		}
 		unset($form_status);
 		
-		$output['list_permissions'] = $this->permission_model->fetch_permissions();
-		$output['list_permissions_check'] = $this->permission_model->list_permissions_check();
-		$output['list_level_group'] = $this->account_model->list_level_group(false);
+		$output['list_permissions'] = $this->permission_model->fetchPermissions();
+		$output['list_permissions_check'] = $this->permission_model->listPermissionsCheck();
+		$output['list_level_group'] = $this->account_model->listLevelGroup(false);
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title($this->lang->line('account_permission'));
@@ -73,7 +73,7 @@ class account_permission extends admin_controller
 		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin/modules');}
 		
 		// check if module really has permission
-		if (!$this->permission_model->has_permission($module_system_name)) {redirect('site-admin/modules');}
+		if (!$this->permission_model->hasPermission($module_system_name)) {redirect('site-admin/modules');}
 		
 		// load module model for get module data
 		$this->load->model('modules_model');
@@ -89,7 +89,7 @@ class account_permission extends admin_controller
 		
 		// get module data -----------------------------------------------------------------------------------------------------------------
 		$data['module_system_name'] = $module_system_name;
-		$module = $this->modules_model->get_modules_data($data);
+		$module = $this->modules_model->getModulesData($data);
 		unset($data);
 		
 		if ($module == null) {
@@ -99,16 +99,16 @@ class account_permission extends admin_controller
 		$output['module'] = $module;
 		// get module data -----------------------------------------------------------------------------------------------------------------
 		
-		$output['list_permissions'] = $this->permission_model->fetch_permissions_module($module_system_name);
+		$output['list_permissions'] = $this->permission_model->fetchPermissionsModule($module_system_name);
 		
 		// get permission page from module's permission
 		$permission_page = key($output['list_permissions']);
 		
 		$data['permission_page'] = $permission_page;
-		$output['list_permissions_check'] = $this->permission_model->list_permissions_check($data);
+		$output['list_permissions_check'] = $this->permission_model->listPermissionsCheck($data);
 		unset($data);
 		
-		$output['list_level_group'] = $this->account_model->list_level_group(false);
+		$output['list_level_group'] = $this->account_model->listLevelGroup(false);
 		
 		// head tags output ##############################
 		$output['page_title'] = $this->html_model->gen_title(sprintf($this->lang->line('account_permission_module'), $module->module_name));
@@ -133,7 +133,7 @@ class account_permission extends admin_controller
 		// check permission
 		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
 		
-		$this->permission_model->reset_permissions();
+		$this->permission_model->resetPermissions();
 	}// reset
 	
 	
@@ -150,7 +150,7 @@ class account_permission extends admin_controller
 			$data['permission_page'] = $this->input->post('permission_page');
 			$data['permission_action'] = $this->input->post('permission_action');
 			
-			$this->permission_model->save_permissions($data);
+			$this->permission_model->savePermissions($data);
 		}
 		
 		// set success msg and send back

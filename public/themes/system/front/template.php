@@ -46,7 +46,7 @@
 					<h1 class="pull-left brand"><?php echo anchor(base_url(), $this->config_model->load_single('site_name'), array('rel' => 'home', 'class' => 'site-name site-title')); ?></h1>
 					<div class="pull-right account-header-area">
 						<?php
-						if ($this->account_model->is_member_login()) {
+						if ($this->account_model->isMemberLogin()) {
 							echo anchor('account/edit-profile', lang('account_edit_profile'));
 							echo ' '.anchor('account/logout', lang('account_logout'));
 						} else {
