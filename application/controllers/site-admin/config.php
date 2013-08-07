@@ -43,7 +43,7 @@ class config extends admin_controller
 	public function ajax_test_ftp() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('config_global', 'config_global') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('config_global', 'config_global') != true) {redirect('site-admin');}
 		
 		if (!$this->input->is_ajax_request()) {redirect('site-admin');}
 		
@@ -86,7 +86,7 @@ class config extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('config_global', 'config_global') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('config_global', 'config_global') != true) {redirect('site-admin');}
 		
 		// load session
 		$this->load->library('session');

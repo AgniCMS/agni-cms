@@ -54,7 +54,7 @@ class post extends MY_Controller
 		$data['post_comment'] = $this->input->post('post_comment');
 			$data['post_comment'] = ($data['post_comment'] != '1' ? '0' : '1');
 		$data['post_status'] = $this->input->post('post_status');
-			if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_publish_unpublish_perm') != true) {$data['post_status'] = '0';}
+			if ($this->account_model->checkAdminPermission('post_article_perm', 'post_article_publish_unpublish_perm') != true) {$data['post_status'] = '0';}
 		$data['meta_title'] = htmlspecialchars(trim($this->input->post('meta_title')), ENT_QUOTES, config_item('charset'));
 			$data['meta_title'] = ($data['meta_title'] == null ? null : $data['meta_title']);
 		$data['meta_description'] = htmlspecialchars(trim($this->input->post('meta_description')), ENT_QUOTES, config_item('charset'));

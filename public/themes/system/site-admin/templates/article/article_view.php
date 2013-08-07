@@ -73,7 +73,7 @@
 			<tr>
 				<td class="check-column"><?php echo form_checkbox('id[]', $row->post_id); ?></td>
 				<td>
-					<?php if ($this->input->get('tid') != null && $this->account_model->check_admin_permission('post_article_perm', 'post_article_sort_perm') && (($orders == 'position' && ($cur_sort == 'desc' || $cur_sort == null)) || $orders == null)): ?>
+					<?php if ($this->input->get('tid') != null && $this->account_model->checkAdminPermission('post_article_perm', 'post_article_sort_perm') && (($orders == 'position' && ($cur_sort == 'desc' || $cur_sort == null)) || $orders == null)): ?>
 					<span class="reorder" title="<?php echo $row->position; ?>">
 						<?php echo anchor('site-admin/article/reorder/'.$row->post_id.'/'.$this->input->get('tid').'/up', '<span class="icon-arrow-up"></span>', array('class' => 'up')); ?> 
 						<?php echo anchor('site-admin/article/reorder/'.$row->post_id.'/'.$this->input->get('tid').'/dn', '<span class="icon-arrow-down"></span>', array('class' => 'down')); ?> 
@@ -125,7 +125,7 @@
 				</td>
 				<td><?php echo $row->view_count; ?></td>
 				<td>
-					<?php if (($this->account_model->check_admin_permission('post_article_perm', 'post_article_edit_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->check_admin_permission('post_article_perm', 'post_article_edit_other_perm') && $row->account_id != $my_account_id)): ?>
+					<?php if (($this->account_model->checkAdminPermission('post_article_perm', 'post_article_edit_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->checkAdminPermission('post_article_perm', 'post_article_edit_other_perm') && $row->account_id != $my_account_id)): ?>
 					<?php echo anchor(current_url().'/edit/'.$row->post_id, lang('admin_edit')); ?>
 					<?php endif; ?>
 				</td>
@@ -143,7 +143,7 @@
 		<div class="cmd-left">
 			<select name="act">
 				<option value="" selected="selected"></option>
-				<?php if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_publish_unpublish_perm')): ?> 
+				<?php if ($this->account_model->checkAdminPermission('post_article_perm', 'post_article_publish_unpublish_perm')): ?> 
 				<option value="publish"><?php echo lang('post_publish'); ?></option>
 				<option value="unpublish"><?php echo lang('post_unpublished'); ?></option>
 				<option value="">---------</option>

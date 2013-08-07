@@ -10,7 +10,7 @@ if (!function_exists('show_category_nested_block')) {
 
 		$fp_category = null;
 		if ($nohome)
-			$fp_category = $ci->config_model->load_single('content_frontpage_category', $ci->lang->get_current_lang());
+			$fp_category = $ci->config_model->loadSingle('content_frontpage_category', $ci->lang->get_current_lang());
 
 		$output = '<ul class="category-tree">';
 		foreach ($array as $item) {

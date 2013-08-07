@@ -34,7 +34,7 @@ class account_level extends admin_controller
 	public function add() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_add_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_lv_perm', 'account_lv_add_perm') != true) {redirect('site-admin');}
 		
 		// save action
 		if ($this->input->post()) {
@@ -88,7 +88,7 @@ class account_level extends admin_controller
 	public function ajaxsort() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_sort_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_lv_perm', 'account_lv_sort_perm') != true) {redirect('site-admin');}
 		
 		// check ajax request
 		if (!$this->input->is_ajax_request()) {redirect('site-admin');}
@@ -122,7 +122,7 @@ class account_level extends admin_controller
 	public function edit($level_group_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_edit_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_lv_perm', 'account_lv_edit_perm') != true) {redirect('site-admin');}
 		
 		// no level_group_id? get out.
 		if (!is_numeric($level_group_id)) {redirect('site-admin/account-level');}
@@ -189,7 +189,7 @@ class account_level extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_manage_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_lv_perm', 'account_lv_manage_perm') != true) {redirect('site-admin');}
 		
 		// list item
 		$output['list_item'] = $this->account_model->listLevelGroup(false);
@@ -222,7 +222,7 @@ class account_level extends admin_controller
 		
 		if ($act == 'del') {
 			// check permission
-			if ($this->account_model->check_admin_permission('account_lv_perm', 'account_lv_delete_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('account_lv_perm', 'account_lv_delete_perm') != true) {redirect('site-admin');}
 			
 			if (is_array($id)) {
 				foreach ($id as $an_id) {

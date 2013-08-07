@@ -53,9 +53,9 @@ class media extends admin_controller
 	public function ajax_delete_folder() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
 		// check both permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_delete_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_delete_other_perm') != true) {redirect('site-admin/media');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_delete_own_perm') != true && $this->account_model->checkAdminPermission('media_perm', 'media_delete_other_perm') != true) {redirect('site-admin/media');}
 		
 		if (!$this->input->is_ajax_request()) {redirect('site-admin/media');}
 		
@@ -81,10 +81,10 @@ class media extends admin_controller
 	public function ajax_crop() 
 	{
 		// check both permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_edit_own_perm') != true && $this->account_model->checkAdminPermission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -101,7 +101,7 @@ class media extends admin_controller
 			}
 			
 			// check permissions-----------------------------------------------------------
-			if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
+			if ($this->account_model->checkAdminPermission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
 				// user has NO permission to edit own and editing own.
 				unset($row, $my_account_id);
 				// flash error permission message
@@ -114,7 +114,7 @@ class media extends admin_controller
 					)
 				);
 				redirect('site-admin/media');
-			} elseif ($this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
+			} elseif ($this->account_model->checkAdminPermission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
 				// user has NO permission to edit others and editing others.
 				unset($row, $my_account_id);
 				// flash error permission message
@@ -202,7 +202,7 @@ class media extends admin_controller
 	public function ajax_new_folder() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
 		
 		if (!$this->input->is_ajax_request()) {redirect('site-admin/media');}
 		
@@ -235,7 +235,7 @@ class media extends admin_controller
 	public function ajax_rename_folder() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_manage_folder') != true) {redirect('site-admin/media');}
 		
 		if (!$this->input->is_ajax_request()) {redirect('site-admin/media');}
 		
@@ -267,10 +267,10 @@ class media extends admin_controller
 	public function ajax_resize() 
 	{
 		// check both permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_edit_own_perm') != true && $this->account_model->checkAdminPermission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -287,7 +287,7 @@ class media extends admin_controller
 			}
 			
 			// check permissions-----------------------------------------------------------
-			if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
+			if ($this->account_model->checkAdminPermission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
 				// user has NO permission to edit own and editing own.
 				unset($row, $my_account_id);
 				// flash error permission message
@@ -300,7 +300,7 @@ class media extends admin_controller
 					)
 				);
 				redirect('site-admin/media');
-			} elseif ($this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
+			} elseif ($this->account_model->checkAdminPermission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
 				// user has NO permission to edit others and editing others.
 				unset($row, $my_account_id);
 				// flash error permission message
@@ -364,10 +364,10 @@ class media extends admin_controller
 	public function copy($file_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_copy_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_copy_perm') != true) {redirect('site-admin');}
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -456,10 +456,10 @@ class media extends admin_controller
 	public function edit($file_id = '') 
 	{
 		// check both permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_edit_own_perm') != true && $this->account_model->checkAdminPermission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -472,7 +472,7 @@ class media extends admin_controller
 		}
 		
 		// check permissions-----------------------------------------------------------
-		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_edit_own_perm') === false && $row->account_id == $my_account_id) {
 			// user has NO permission to edit own and editing own.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -485,7 +485,7 @@ class media extends admin_controller
 				)
 			);
 			redirect('site-admin/media');
-		} elseif ($this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
+		} elseif ($this->account_model->checkAdminPermission('media_perm', 'media_edit_other_perm') === false && $row->account_id != $my_account_id) {
 			// user has NO permission to edit others and editing others.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -562,7 +562,7 @@ class media extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_viewall_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_viewall_perm') != true) {redirect('site-admin');}
 		
 		// load session for flashdata
 		$this->load->library('session');
@@ -574,7 +574,7 @@ class media extends admin_controller
 		unset($form_status);
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$output['my_account_id'] = $ca_account['id'];
 		unset($ca_account);
 		
@@ -626,10 +626,10 @@ class media extends admin_controller
 	public function move_file($ids = '') 
 	{
 		// check both permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_edit_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_edit_own_perm') != true && $this->account_model->checkAdminPermission('media_perm', 'media_edit_other_perm') != true) {redirect('site-admin');}
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -651,12 +651,12 @@ class media extends admin_controller
 				if ($row == null) {continue;}
 				
 				// check permissions-----------------------------------------------------------
-				if ($this->account_model->check_admin_permission('media_perm', 'media_delete_own_perm') === false && $row->account_id == $my_account_id) {
+				if ($this->account_model->checkAdminPermission('media_perm', 'media_delete_own_perm') === false && $row->account_id == $my_account_id) {
 					// user has NO permission to edit own and editing own.
 					unset($row, $my_account_id, $ids[$key]);
 					$cannot_move_some_files = true;
 					continue;
-				} elseif ($this->account_model->check_admin_permission('media_perm', 'media_delete_other_perm') === false && $row->account_id != $my_account_id) {
+				} elseif ($this->account_model->checkAdminPermission('media_perm', 'media_delete_other_perm') === false && $row->account_id != $my_account_id) {
 					// user has NO permission to edit others and editing others.
 					unset($row, $my_account_id, $ids[$key]);
 					$cannot_move_some_files = true;
@@ -722,7 +722,7 @@ class media extends admin_controller
 	public function popup() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_viewall_perm') != true) {return null;}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_viewall_perm') != true) {return null;}
 		
 		// load session for flashdata
 		$this->load->library('session');
@@ -734,7 +734,7 @@ class media extends admin_controller
 		unset($form_status);
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$output['my_account_id'] = $ca_account['id'];
 		unset($ca_account);
 		
@@ -786,7 +786,7 @@ class media extends admin_controller
 	public function process_bulk() 
 	{
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -798,7 +798,7 @@ class media extends admin_controller
 		// do action.
 		if ($act == 'del') {
 			// check both permission
-			if ($this->account_model->check_admin_permission('media_perm', 'media_delete_own_perm') != true && $this->account_model->check_admin_permission('media_perm', 'media_delete_other_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('media_perm', 'media_delete_own_perm') != true && $this->account_model->checkAdminPermission('media_perm', 'media_delete_other_perm') != true) {redirect('site-admin');}
 			
 			foreach ($id as $an_id) {
 				$data['file_id'] = $an_id;
@@ -809,11 +809,11 @@ class media extends admin_controller
 				if ($row == null) {continue;}
 				
 				// check permissions-----------------------------------------------------------
-				if ($this->account_model->check_admin_permission('media_perm', 'media_delete_own_perm') === false && $row->account_id == $my_account_id) {
+				if ($this->account_model->checkAdminPermission('media_perm', 'media_delete_own_perm') === false && $row->account_id == $my_account_id) {
 					// user has NO permission to edit own and editing own.
 					unset($row, $my_account_id);
 					continue;
-				} elseif ($this->account_model->check_admin_permission('media_perm', 'media_delete_other_perm') === false && $row->account_id != $my_account_id) {
+				} elseif ($this->account_model->checkAdminPermission('media_perm', 'media_delete_other_perm') === false && $row->account_id != $my_account_id) {
 					// user has NO permission to edit others and editing others.
 					unset($row, $my_account_id);
 					continue;
@@ -839,7 +839,7 @@ class media extends admin_controller
 	public function upload() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('media_perm', 'media_upload_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('media_perm', 'media_upload_perm') != true) {redirect('site-admin');}
 		
 		// upload
 		$upload_result = $this->media_model->uploadMedia();

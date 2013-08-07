@@ -37,7 +37,7 @@ class themes extends admin_controller
 	public function add() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_add_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('themes_manage_perm', 'themes_add_perm') != true) {redirect('site-admin');}
 		
 		// save action.
 		if ($this->input->post()) {
@@ -73,7 +73,7 @@ class themes extends admin_controller
 	public function defaultadmin() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_set_default_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('themes_manage_perm', 'themes_set_default_perm') != true) {redirect('site-admin');}
 		
 		$theme_system_name = trim($this->input->post('theme_system_name'));
 		
@@ -110,7 +110,7 @@ class themes extends admin_controller
 	public function defaults($theme_system_name = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_set_default_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('themes_manage_perm', 'themes_set_default_perm') != true) {redirect('site-admin');}
 		
 		$result = $this->themes_model->setDefaultTheme($theme_system_name);
 		
@@ -144,7 +144,7 @@ class themes extends admin_controller
 	public function delete($theme_system_name = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_delete_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('themes_manage_perm', 'themes_delete_perm') != true) {redirect('site-admin');}
 		
 		// read theme data
 		$pdata = $this->themes_model->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info');
@@ -193,7 +193,7 @@ class themes extends admin_controller
 	public function disable($theme_system_name = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_enable_disable_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('themes_manage_perm', 'themes_enable_disable_perm') != true) {redirect('site-admin');}
 		
 		$result = $this->themes_model->doDisableTheme($theme_system_name);
 		
@@ -226,7 +226,7 @@ class themes extends admin_controller
 	public function enable($theme_system_name = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_enable_disable_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('themes_manage_perm', 'themes_enable_disable_perm') != true) {redirect('site-admin');}
 		
 		$result = $this->themes_model->doEnableTheme($theme_system_name);
 		
@@ -260,7 +260,7 @@ class themes extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('themes_manage_perm', 'themes_viewall_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('themes_manage_perm', 'themes_viewall_perm') != true) {redirect('site-admin');}
 		
 		// load session for show last flashed session
 		$this->load->library('session');

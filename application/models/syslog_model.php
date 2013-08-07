@@ -31,9 +31,9 @@ class syslog_model extends CI_Model
 	{
 		// if not set account_id, get it from cookie.
 		if (!isset($data['account_id'])) {
-			$ca_account = $this->account_model->get_account_cookie('admin');
+			$ca_account = $this->account_model->getAccountCookie('admin');
 			if (!isset($ca_account['id'])) {
-				$cm_account = $this->account_mode->get_account_cookie('member');
+				$cm_account = $this->account_mode->getAccountCookie('member');
 				if (!isset($cm_account['id'])) {
 					$data['account_id'] = '0';
 				} else {

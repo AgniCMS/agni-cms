@@ -45,7 +45,7 @@ class author extends MY_Controller
 		}
 		
 		// get account cookie
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		if (isset($cm_account['id']) && isset($cm_account['username'])) {
 			$my_account_id = $cm_account['id'];
 			$my_username = $cm_account['username'];

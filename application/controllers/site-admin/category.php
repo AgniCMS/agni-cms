@@ -40,7 +40,7 @@ class category extends admin_controller
 	public function add() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('category_perm', 'category_add_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('category_perm', 'category_add_perm') != true) {redirect('site-admin');}
 		
 		// list themes for select
 		$output['list_theme'] = $this->themes_model->listEnabledThemes();
@@ -141,7 +141,7 @@ class category extends admin_controller
 	public function ajax_sort() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('category_perm', 'category_sort_perm') != true) {return null;}
+		if ($this->account_model->checkAdminPermission('category_perm', 'category_sort_perm') != true) {return null;}
 		
 		// method post
 		if ($this->input->post() && $this->input->is_ajax_request()) {
@@ -174,7 +174,7 @@ class category extends admin_controller
 	public function edit($tid = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('category_perm', 'category_edit_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('category_perm', 'category_edit_perm') != true) {redirect('site-admin');}
 		
 		// tid not number?
 		if (!is_numeric($tid)) {redirect('site-admin');}
@@ -293,7 +293,7 @@ class category extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('category_perm', 'category_viewall_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('category_perm', 'category_viewall_perm') != true) {redirect('site-admin');}
 		
 		// load session for flashdata
 		$this->load->library('session');
@@ -336,7 +336,7 @@ class category extends admin_controller
 		
 		if ($act == 'del') {
 			// check permission
-			if ($this->account_model->check_admin_permission('category_perm', 'category_delete_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('category_perm', 'category_delete_perm') != true) {redirect('site-admin');}
 			foreach ($id as $an_id) {
 				$this->taxonomy_model->delete($an_id);
 			}

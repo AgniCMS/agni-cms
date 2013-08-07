@@ -90,21 +90,12 @@ class config_model extends CI_Model
 	
 	
 	/**
-	 * the alias method of load_single.
-	 */
-	public function loadSingle($config_name = '', $return_field = 'config_value') 
-	{
-		return $this->load_single($config_name, $return_field);
-	}// loadSingle
-	
-	
-	/**
 	 * load single config value
 	 * @param string $config_name
 	 * @param string $return_field
 	 * @return mixed
 	 */
-	public function load_single($config_name = '', $return_field = 'config_value') 
+	public function loadSingle($config_name = '', $return_field = 'config_value') 
 	{
 		if (empty($config_name)) {return null;}
 		
@@ -149,6 +140,15 @@ class config_model extends CI_Model
 		}
 		
 		return $cfg_val;
+	}// loadSingle
+	
+	
+	/**
+	 * the alias method of loadSingle.
+	 */
+	public function load_single($config_name = '', $return_field = 'config_value') 
+	{
+		return $this->loadSingle($config_name, $return_field);
 	}// load_single
 	
 	

@@ -38,7 +38,7 @@ class urls extends admin_controller
 	public function add() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('urls_perm', 'urls_perm_add') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('urls_perm', 'urls_perm_add') != true) {redirect('site-admin');}
 		
 		// preset value
 		$output['redirect_code'] = 302;
@@ -118,7 +118,7 @@ class urls extends admin_controller
 	public function edit($alias_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('urls_perm', 'urls_perm_edit') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('urls_perm', 'urls_perm_edit') != true) {redirect('site-admin');}
 		
 		// load data for edit
 		$data['alias_id'] = $alias_id;
@@ -196,7 +196,7 @@ class urls extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('urls_perm', 'urls_perm_view_all') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('urls_perm', 'urls_perm_view_all') != true) {redirect('site-admin');}
 		
 		// load session for flashdata
 		$this->load->library('session');
@@ -236,7 +236,7 @@ class urls extends admin_controller
 		
 		if ($act == 'del') {
 			// check permission
-			if ($this->account_model->check_admin_permission('urls_perm', 'urls_perm_delete') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('urls_perm', 'urls_perm_delete') != true) {redirect('site-admin');}
 			
 			if (is_array($id)) {
 				foreach ($id as $an_id) {

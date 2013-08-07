@@ -67,7 +67,7 @@
 				</td>
 				<td><?php echo $row->view_count; ?></td>
 				<td>
-					<?php if (($this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_other_perm') && $row->account_id != $my_account_id)): ?>
+					<?php if (($this->account_model->checkAdminPermission('post_page_perm', 'post_page_edit_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_edit_other_perm') && $row->account_id != $my_account_id)): ?>
 					<?php echo anchor(current_url().'/edit/'.$row->post_id, lang('admin_edit')); ?>
 					<?php endif; ?>
 				</td>
@@ -85,7 +85,7 @@
 		<div class="cmd-left">
 			<select name="act">
 				<option value="" selected="selected"></option>
-				<?php if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_publish_unpublish_perm')): ?> 
+				<?php if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_publish_unpublish_perm')): ?> 
 				<option value="publish"><?php echo lang('post_publish'); ?></option>
 				<option value="unpublish"><?php echo lang('post_unpublished'); ?></option>
 				<option value="">---------</option>

@@ -49,7 +49,7 @@ class menu extends admin_controller
 	public function addgroup() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('menu_perm', 'menu_add_group_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('menu_perm', 'menu_add_group_perm') != true) {redirect('site-admin');}
 		
 		$output['mg_name'] = '';
 		$output['mg_description'] = '';
@@ -108,7 +108,7 @@ class menu extends admin_controller
 	public function ajax_additem() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('menu_perm', 'menu_add_perm') != true) {exit;}
+		if ($this->account_model->checkAdminPermission('menu_perm', 'menu_add_perm') != true) {exit;}
 		
 		if ($this->input->is_ajax_request()) {
 			$data['mg_id'] = trim($this->input->post('mg_id'));
@@ -166,7 +166,7 @@ class menu extends admin_controller
 	public function ajax_deleteitem() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('menu_perm', 'menu_delete_perm') != true) {exit;}
+		if ($this->account_model->checkAdminPermission('menu_perm', 'menu_delete_perm') != true) {exit;}
 		
 		if ($this->input->is_ajax_request()) {
 			$mi_id = $this->input->post('mi_id');
@@ -188,7 +188,7 @@ class menu extends admin_controller
 	public function ajax_edititem($mi_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('menu_perm', 'menu_edit_perm') != true) {exit;}
+		if ($this->account_model->checkAdminPermission('menu_perm', 'menu_edit_perm') != true) {exit;}
 		
 		if ($this->input->is_ajax_request()) {
 			// get data for edit
@@ -321,7 +321,7 @@ class menu extends admin_controller
 	public function ajax_sortitem($mg_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('menu_perm', 'menu_sort_perm') != true) {exit;}
+		if ($this->account_model->checkAdminPermission('menu_perm', 'menu_sort_perm') != true) {exit;}
 		
 		if ($this->input->is_ajax_request()) {
 			foreach ($this->input->post() as $key => $item) {
@@ -352,7 +352,7 @@ class menu extends admin_controller
 	public function editgroup($mg_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('menu_perm', 'menu_edit_group_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('menu_perm', 'menu_edit_group_perm') != true) {redirect('site-admin');}
 		
 		if (!is_numeric($mg_id)) {redirect('site-admin/menu');}
 		
@@ -423,7 +423,7 @@ class menu extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('menu_perm', 'menu_viewall_group_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('menu_perm', 'menu_viewall_group_perm') != true) {redirect('site-admin');}
 		
 		// orders, sort for link
 		$output['orders'] = strip_tags(trim($this->input->get('orders')));
@@ -459,7 +459,7 @@ class menu extends admin_controller
 	public function item($mg_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('menu_perm', 'menu_viewall_menu_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('menu_perm', 'menu_viewall_menu_perm') != true) {redirect('site-admin');}
 		
 		if (!is_numeric($mg_id)) {redirect('site-admin/menu');}
 		
@@ -510,7 +510,7 @@ class menu extends admin_controller
 		
 		if ($act == 'del') {
 			// check permission
-			if ($this->account_model->check_admin_permission('menu_perm', 'menu_delete_group_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('menu_perm', 'menu_delete_group_perm') != true) {redirect('site-admin');}
 			if (is_array($id)) {
 				foreach ($id as $an_id) {
 					$this->menu_model->deleteMenuGroup($an_id);

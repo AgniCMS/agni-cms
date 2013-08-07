@@ -33,7 +33,7 @@ class html_model extends CI_Model
 		if (current_url() == base_url() || current_url() == site_url()) {$class .= ' home';}
 		
 		// gen logged in class
-		$cm_cookie = $this->account_model->get_account_cookie('member');
+		$cm_cookie = $this->account_model->getAccountCookie('member');
 		if (!isset($cm_cookie['id']) || !isset($cm_cookie['username']) || !isset($cm_cookie['password']) || !isset($cm_cookie['onlinecode'])) {
 			$class .= ' not-logged-in';
 		} elseif (isset($cm_cookie['id'])) {

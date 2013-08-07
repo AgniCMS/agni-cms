@@ -38,7 +38,7 @@ class cacheman extends admin_controller
 			
 			if ($action == 'clear') {
 				// check permission
-				if ($this->account_model->check_admin_permission('cache_perm', 'cache_perm_clear_all') != true) {redirect('site-admin');}
+				if ($this->account_model->checkAdminPermission('cache_perm', 'cache_perm_clear_all') != true) {redirect('site-admin');}
 				
 				// clear all cache
 				$this->config_model->deleteCache('ALL');
@@ -70,7 +70,7 @@ class cacheman extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('cache_perm', 'cache_perm_manage') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('cache_perm', 'cache_perm_manage') != true) {redirect('site-admin');}
 		
 		// load session for flashdata
 		$this->load->library('session');

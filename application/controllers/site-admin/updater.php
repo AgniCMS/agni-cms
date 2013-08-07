@@ -58,7 +58,7 @@ class updater extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('updater_perm', 'updater_update_core_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('updater_perm', 'updater_update_core_perm') != true) {redirect('site-admin');}
 		
 		// check if this site enable auto update.
 		$cfg = $this->config_model->load(array('angi_auto_update'));
@@ -177,7 +177,7 @@ class updater extends admin_controller
 	public function step2() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('updater_perm', 'updater_update_core_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('updater_perm', 'updater_update_core_perm') != true) {redirect('site-admin');}
 		
 		// check if this site enable auto update.
 		$cfg = $this->config_model->load(array('angi_auto_update'));

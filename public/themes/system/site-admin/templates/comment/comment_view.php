@@ -87,7 +87,7 @@
 			<select name="act">
 				<option value="" selected="selected"></option>
 				<?php echo $this->modules_plug->do_filter('comment_admin_index_options'); ?> 
-				<?php if ($this->account_model->check_admin_permission('comment_perm', 'comment_approve_unapprove_perm')): ?> 
+				<?php if ($this->account_model->checkAdminPermission('comment_perm', 'comment_approve_unapprove_perm')): ?> 
 				<option value="approve"><?php echo lang('comment_approve'); ?></option>
 				<option value="unapprove"><?php echo lang('comment_unapprove'); ?></option>
 				<option value="">---------</option>

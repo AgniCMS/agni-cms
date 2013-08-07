@@ -36,7 +36,7 @@
 				| <span class="icon-refresh cursor-pointer" onclick="window.location.reload();" title="<?php echo lang('media_reload'); ?>"></span>
 
 
-				<?php if ($this->account_model->check_admin_permission('media_perm', 'media_upload_perm')): ?> 
+				<?php if ($this->account_model->checkAdminPermission('media_perm', 'media_upload_perm')): ?> 
 				<?php echo form_open_multipart('site-admin/media/upload', array('class' => 'media-upload-form', 'id' => 'form-upload', 'target' => 'upload_target', 'onsubmit' => 'return silent_upload()')); ?> 
 					<div id="upload-msg"></div>
 

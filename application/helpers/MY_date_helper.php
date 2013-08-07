@@ -36,7 +36,7 @@ function gmt_date($dateformat = 'Y-m-d H:i:s', $time = '', $gmt = '') {
 		$CI->load->model('account_model');
 		
 		// get account cookie
-		$cm = $CI->account_model->get_account_cookie('member');
+		$cm = $CI->account_model->getAccountCookie('member');
 		
 		if (! isset($cm['id'])) {
 			// not member, not login get gmt value from config

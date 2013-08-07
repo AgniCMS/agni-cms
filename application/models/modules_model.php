@@ -405,20 +405,11 @@ class modules_model extends CI_Model
 	
 	
 	/**
-	 * alias method of is_activated.
-	 */
-	public function isModuleActivated($module_system_name = '', $site_id = '') 
-	{
-		return $this->is_activated($module_system_name, $site_id);
-	}// isModuleActivated
-	
-	
-	/**
 	 * is module activated
 	 * @param string $module_system_name
 	 * @return boolean 
 	 */
-	public function is_activated($module_system_name = '', $site_id = '') 
+	public function isModuleActivated($module_system_name = '', $site_id = '') 
 	{
 		if ($module_system_name == null) {return false;}
 		if ($site_id == null) {return false;}
@@ -454,6 +445,15 @@ class modules_model extends CI_Model
 		} else {
 			return false;
 		}
+	}// isModuleActivated
+	
+	
+	/**
+	 * alias method of isModuleActivated.
+	 */
+	public function is_activated($module_system_name = '', $site_id = '') 
+	{
+		return $this->isModuleActivated($module_system_name, $site_id);
 	}// is_activated
 	
 	
@@ -479,12 +479,12 @@ class modules_model extends CI_Model
 	
 	
 	/**
-	 * is_installed
+	 * is module installed
 	 * @param string $module_system_name
 	 * @param integer $site_id
 	 * @return boolean
 	 */
-	public function is_installed($module_system_name = '', $site_id = '') 
+	public function isModuleInstalled($module_system_name = '', $site_id = '') 
 	{
 		if ($module_system_name == null) {return false;}
 		if ($site_id == null) {return false;}
@@ -520,6 +520,15 @@ class modules_model extends CI_Model
 		} else {
 			return false;
 		}
+	}// isModuleInstalled
+	
+	
+	/**
+	 * alias of method isModuleInstalled.
+	 */
+	public function is_installed($module_system_name = '', $site_id = '') 
+	{
+		return $this->isModuleInstalled($module_system_name, $site_id);
 	}// is_installed
 	
 	

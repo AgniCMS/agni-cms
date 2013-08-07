@@ -37,7 +37,7 @@ class siteman extends admin_controller
 	public function add() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_add_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('siteman_perm', 'siteman_add_perm') != true) {redirect('site-admin');}
 		
 		// preset form value
 		$output['site_status'] = '1';
@@ -100,7 +100,7 @@ class siteman extends admin_controller
 	public function edit($site_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_edit_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('siteman_perm', 'siteman_edit_perm') != true) {redirect('site-admin');}
 		
 		// get site data from db.
 		$data['site_id'] = $site_id;
@@ -177,7 +177,7 @@ class siteman extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_manage_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('siteman_perm', 'siteman_manage_perm') != true) {redirect('site-admin');}
 		
 		// sort, orders, search for links and form
 		$output['orders'] = strip_tags(trim($this->input->get('orders')));
@@ -218,7 +218,7 @@ class siteman extends admin_controller
 		$act = trim($this->input->post('act'));
 		
 		if ($act == 'del') {
-			if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_delete_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('siteman_perm', 'siteman_delete_perm') != true) {redirect('site-admin');}
 			foreach ($id as $an_id) {
 				$this->siteman_model->deleteSite($an_id);
 			}

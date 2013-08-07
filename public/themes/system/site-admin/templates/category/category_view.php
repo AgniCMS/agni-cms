@@ -52,7 +52,7 @@
 				<div class="clearfix"></div>
 			</div>
 		</div>
-		<?php if ($this->account_model->check_admin_permission('category_perm', 'category_sort_perm')): ?> 
+		<?php if ($this->account_model->checkAdminPermission('category_perm', 'category_sort_perm')): ?> 
 		<div class="span4">
 			<h2><?php echo lang('category_reposition'); ?></h2>
 			<div class="sort-result"></div>

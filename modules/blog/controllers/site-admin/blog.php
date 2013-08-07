@@ -23,7 +23,7 @@ class blog extends admin_controller {
 	
 	function add() {
 		// check permission
-		if ($this->account_model->check_admin_permission('blog_admin', 'blog_add_post') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('blog_admin', 'blog_add_post') != true) {redirect('site-admin');}
 		// post method. save action
 		if ($this->input->post()) {
 			$data['blog_title'] = htmlspecialchars(trim($this->input->post('blog_title', true)), ENT_QUOTES, config_item('charset'));
@@ -73,7 +73,7 @@ class blog extends admin_controller {
 	
 	function edit($blog_id = '') {
 		// check permission
-		if ($this->account_model->check_admin_permission('blog_admin', 'blog_edit_post') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('blog_admin', 'blog_edit_post') != true) {redirect('site-admin');}
 		// open db load data for form
 		$this->db->where('blog_id', $blog_id);
 		$query = $this->db->get('blog');
@@ -134,7 +134,7 @@ class blog extends admin_controller {
 	
 	function index() {
 		// check permission
-		if ($this->account_model->check_admin_permission('blog_admin', 'blog_all_post') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('blog_admin', 'blog_all_post') != true) {redirect('site-admin');}
 		
 		// load session for flashdata
 		$this->load->library('session');
@@ -168,7 +168,7 @@ class blog extends admin_controller {
 		$ids = $this->input->post('id');
 		if ($act == 'del') {
 			// check permission
-			if ($this->account_model->check_admin_permission('blog_admin', 'blog_delete_post') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('blog_admin', 'blog_delete_post') != true) {redirect('site-admin');}
 			foreach ($ids as $an_id) {
 				$this->blog_model->delete($an_id);
 			}

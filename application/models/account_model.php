@@ -168,7 +168,7 @@ class account_model extends CI_Model
 			
 			if ($row->account_status == '1') {
 				if ($this->checkPassword($data['password'], $row->account_password) === true) {
-					if ($this->check_admin_permission('account_admin_login', 'account_admin_login', $row->account_id) == true) {
+					if ($this->checkAdminPermission('account_admin_login', 'account_admin_login', $row->account_id) == true) {
 						$this->load->library('session');
 						$session_id = $this->session->userdata('session_id');
 
@@ -176,7 +176,7 @@ class account_model extends CI_Model
 						$need_update_session = false;// กำหนดเป็น false ไปก่อน เพื่อให้มีการอัปเดท session (สมมุติว่ายังไม่เคยมีการ login จากหน้าแรกเลย.
 
 						// เอาคุกกี้สำหรับหน้าแรกมา เพื่อหาว่าเคยมีการ login แล้วรึยัง
-						$cm_account = $this->get_account_cookie('member');
+						$cm_account = $this->getAccountCookie('member');
 						if (isset($cm_account['id']) && isset($cm_account['username']) && isset($cm_account['password']) && isset($cm_account['onlinecode']) && $cm_account['id'] == $row->account_id) {
 							// เคยมีการ login จากหน้าแรกแล้ว
 							// ดึงค่า session, onlinecode จากที่เคย login หน้าแรกมาใช้.
@@ -341,7 +341,7 @@ class account_model extends CI_Model
 		if (!is_numeric($target_level_id)) {return false;}
 		
 		if (!is_numeric($my_account_id)) {
-			$ca_account = $this->get_account_cookie('admin');
+			$ca_account = $this->getAccountCookie('admin');
 			if (isset($ca_account['id'])) {
 				$my_account_id = $ca_account['id'];
 			} else {
@@ -387,13 +387,13 @@ class account_model extends CI_Model
 		$this->load->library('session');
 		
 		// get cookie
-		$ca_account = $this->get_account_cookie('admin');
+		$ca_account = $this->getAccountCookie('admin');
 		$c_account = $ca_account;
 		
 		// if admin cookie is not set...
 		if (!isset($ca_account['id']) || !isset($ca_account['username']) || !isset($ca_account['password']) || !isset($ca_account['onlinecode'])) {
 			// get member cookie.
-			$cm_account = $this->get_account_cookie('member');
+			$cm_account = $this->getAccountCookie('member');
 			
 			// if member cookie is not set
 			if (!isset($cm_account['id']) || !isset($cm_account['username']) || !isset($cm_account['password']) || !isset($cm_account['onlinecode'])) {
@@ -519,44 +519,18 @@ class account_model extends CI_Model
 	
 	
 	/**
-	 * check password entered and hash one.
-	 * @param string $entered_password
-	 * @param string $hashed_password
-	 * @return boolean
-	 */
-	public function checkPassword($entered_password = '', $hashed_password = '') 
-	{
-		if ($this->modules_plug->has_filter('account_check_hash_password')) {
-			$result = $this->modules_plug->do_action('account_check_hash_password', array($entered_password, $hashed_password));
-			
-			if (isset($result['account_check_hash_password']) && is_array($result['account_check_hash_password'])) {
-				return array_shift(array_values($result['account_check_hash_password']));
-			}
-			
-			return false;
-		} else {
-			include_once 'application/libraries/PasswordHash.php';
-			$PasswordHash = new PasswordHash(12, false);
-			
-			// check password
-			return $PasswordHash->CheckPassword($entered_password, $hashed_password);
-		}
-	}// checkPassword
-	
-	
-	/**
-	 * check_admin_permission
+	 * check admin permission
 	 * check permission match to user'sgroup_id page_name and action
 	 * @param integer $account_id
 	 * @param string $page_name
 	 * @param string $action
 	 * @return boolean 
 	 */
-	public function check_admin_permission($page_name = '', $action = '', $account_id = '') 
+	public function checkAdminPermission($page_name = '', $action = '', $account_id = '') 
 	{
 		if ($account_id == null) {
 			// account id is empty, get it from cookie.
-			$ca_account = $this->get_account_cookie('admin');
+			$ca_account = $this->getAccountCookie('admin');
 			$account_id = (isset($ca_account['id']) ? $ca_account['id'] : '0');
 		}
 		
@@ -613,7 +587,42 @@ class account_model extends CI_Model
 		} else {
 			return false;
 		}
+	}// checkAdminPermission
+	
+	
+	/**
+	 * alias of method checkAdminPermission.
+	 */
+	public function check_admin_permission($page_name = '', $action = '', $account_id = '') 
+	{
+		return $this->checkAdminPermission($page_name, $action, $account_id);
 	}// check_admin_permission
+	
+	
+	/**
+	 * check password entered and hash one.
+	 * @param string $entered_password
+	 * @param string $hashed_password
+	 * @return boolean
+	 */
+	public function checkPassword($entered_password = '', $hashed_password = '') 
+	{
+		if ($this->modules_plug->has_filter('account_check_hash_password')) {
+			$result = $this->modules_plug->do_action('account_check_hash_password', array($entered_password, $hashed_password));
+			
+			if (isset($result['account_check_hash_password']) && is_array($result['account_check_hash_password'])) {
+				return array_shift(array_values($result['account_check_hash_password']));
+			}
+			
+			return false;
+		} else {
+			include_once 'application/libraries/PasswordHash.php';
+			$PasswordHash = new PasswordHash(12, false);
+			
+			// check password
+			return $PasswordHash->CheckPassword($entered_password, $hashed_password);
+		}
+	}// checkPassword
 	
 	
 	/**
@@ -939,6 +948,41 @@ class account_model extends CI_Model
 	
 	
 	/**
+	 * get account cookie
+	 * get cookie and decode > unserialize to array and return
+	 * @param string $level
+	 * @return array|null 
+	 */
+	public function getAccountCookie($level = 'admin') 
+	{if ($level != 'admin' && $level != 'member') {$level = 'member';}
+		
+		// load helper & library
+		$this->load->helper('cookie');
+		$this->load->library('encrypt');
+		
+		// get cookie
+		$c_account = get_cookie($level . '_account', true);
+		if ($c_account != null) {
+			$c_account = $this->encrypt->decode($c_account);
+			$c_account = @unserialize($c_account);
+			return $c_account;
+		}
+		
+		return null;
+		
+	}// getAccountCookie
+	
+	
+	/**
+	 * alias of method getAccountCookie.
+	 */
+	public function get_account_cookie($level = 'admin') 
+	{
+		return $this->getAccountCookie($level);
+	}// get_account_cookie
+	
+	
+	/**
 	 * get account data in single row by condition.
 	 * @param array $data
 	 * @return mixed
@@ -1039,32 +1083,6 @@ class account_model extends CI_Model
 	
 	
 	/**
-	 * get_account_cookie
-	 * get cookie and decode > unserialize to array and return
-	 * @param string $level
-	 * @return array|null 
-	 */
-	public function get_account_cookie($level = 'admin') 
-	{
-		if ($level != 'admin' && $level != 'member') {$level = 'member';}
-		
-		// load helper & library
-		$this->load->helper('cookie');
-		$this->load->library('encrypt');
-		
-		// get cookie
-		$c_account = get_cookie($level . '_account', true);
-		if ($c_account != null) {
-			$c_account = $this->encrypt->decode($c_account);
-			$c_account = @unserialize($c_account);
-			return $c_account;
-		}
-		
-		return null;
-	}// get_account_cookie
-	
-	
-	/**
 	 * hash password
 	 * alias name of encrypt password.
 	 * @param string $password
@@ -1084,7 +1102,7 @@ class account_model extends CI_Model
 	public function isAdminLogin() 
 	{
 		// get admin cookie
-		$ca_account = $this->get_account_cookie('admin');
+		$ca_account = $this->getAccountCookie('admin');
 		
 		// check admin cookie is set or not?
 		if (!isset($ca_account['id']) || !isset($ca_account['username']) || !isset($ca_account['password']) || !isset($ca_account['onlinecode'])) {
@@ -1105,7 +1123,7 @@ class account_model extends CI_Model
 	{
 		// if not set online code.
 		if ($onlinecode == null) {
-			$cm_account = $this->get_account_cookie('member');
+			$cm_account = $this->getAccountCookie('member');
 			
 			if (!isset($cm_account['onlinecode'])) {
 				return false;
@@ -1146,7 +1164,7 @@ class account_model extends CI_Model
 	public function isMemberLogin() 
 	{
 		// get member cookie
-		$cm_account = $this->get_account_cookie('member');
+		$cm_account = $this->getAccountCookie('member');
 		
 		// check if member cookie is not set
 		if (!isset($cm_account['id']) || !isset($cm_account['username']) || !isset($cm_account['password']) || !isset($cm_account['onlinecode'])) {
@@ -1362,9 +1380,9 @@ class account_model extends CI_Model
 	public function logOut() 
 	{
 		// get account id from cookie
-		$cm_account = $this->get_account_cookie('admin');
+		$cm_account = $this->getAccountCookie('admin');
 		if (!isset($cm_account['id'])) {
-			$cm_account = $this->get_account_cookie('member');
+			$cm_account = $this->getAccountCookie('member');
 		}
 		
 		// delete cache of this account id
@@ -1930,8 +1948,8 @@ class account_model extends CI_Model
 	public function showAccountLevelInfo($account_id = '', $return_level_name = false) 
 	{
 		if ($account_id == null) {
-			$ca_account = $this->get_account_cookie('admin');
-			$cm_account = $this->get_account_cookie('member');
+			$ca_account = $this->getAccountCookie('admin');
+			$cm_account = $this->getAccountCookie('member');
 			if (isset($ca_account['id'])) {
 				$account_id = $ca_account['id'];
 			} elseif (isset($cm_account['id'])) {
@@ -1968,7 +1986,7 @@ class account_model extends CI_Model
 	 * @param string $return_field
 	 * @return mixed
 	 */
-	public function show_accounts_info($check_value = '', $check_field = 'account_id', $return_field = 'account_username') 
+	public function showAccountsInfo($check_value = '', $check_field = 'account_id', $return_field = 'account_username') 
 	{
 		if ($check_value == null || $check_field == null || $return_field == null) {return false;}
 		
@@ -1992,6 +2010,15 @@ class account_model extends CI_Model
 		}
 		
 		return $ainf;
+	}// showAccountsInfo
+	
+	
+	/**
+	 * alias of method showAccountsInfo.
+	 */
+	public function show_accounts_info($check_value = '', $check_field = 'account_id', $return_field = 'account_username') 
+	{
+		return $this->showAccountsInfo($check_value, $check_field, $return_field);
 	}// show_accounts_info
 	
 	

@@ -42,10 +42,10 @@ class akismet_module
 	{
 		$ci =& get_instance();
 		$output = '';
-		if ($ci->account_model->check_admin_permission('akismet_perm', 'akismet_set_spam_perm')) {
+		if ($ci->account_model->checkAdminPermission('akismet_perm', 'akismet_set_spam_perm')) {
 			$output .= '<option value="spam">'.$ci->lang->line('akismet_spam').'</option>';
 		}
-		if ($ci->account_model->check_admin_permission('akismet_perm', 'akismet_set_notspam_perm')) {
+		if ($ci->account_model->checkAdminPermission('akismet_perm', 'akismet_set_notspam_perm')) {
 			$output .= '<option value="notspam">'.$ci->lang->line('akismet_not_spam').'</option>';
 		}
 		$output .= '<option value="">---------</option>';
@@ -71,7 +71,7 @@ class akismet_module
 		//
 		if ($cmds['act'] == 'spam') {
 			// check permission
-			if (!$ci->account_model->check_admin_permission('akismet_perm', 'akismet_set_spam_perm')) {return;}
+			if (!$ci->account_model->checkAdminPermission('akismet_perm', 'akismet_set_spam_perm')) {return;}
 			// get akismet api
 			$akismet_api = $this->_get_akismet_api();
 			foreach ($cmds['id'] as $an_id) {
@@ -104,7 +104,7 @@ class akismet_module
 			}
 		} elseif ($cmds['act'] == 'notspam') {
 			// check permission
-			if (!$ci->account_model->check_admin_permission('akismet_perm', 'akismet_set_notspam_perm')) {return;}
+			if (!$ci->account_model->checkAdminPermission('akismet_perm', 'akismet_set_notspam_perm')) {return;}
 			// get akismet api
 			$akismet_api = $this->_get_akismet_api();
 			foreach ($cmds['id'] as $an_id) {

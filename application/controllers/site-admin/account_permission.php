@@ -37,7 +37,7 @@ class account_permission extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
 		
 		// load session for flashdata
 		$this->load->library('session');
@@ -70,7 +70,7 @@ class account_permission extends admin_controller
 	public function module($module_system_name = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin/modules');}
+		if ($this->account_model->checkAdminPermission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin/modules');}
 		
 		// check if module really has permission
 		if (!$this->permission_model->hasPermission($module_system_name)) {redirect('site-admin/modules');}
@@ -131,7 +131,7 @@ class account_permission extends admin_controller
 		if (strtolower($this->input->server('REQUEST_METHOD')) != 'post') {redirect('site-admin/account-permission');}
 		
 		// check permission
-		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
 		
 		$this->permission_model->resetPermissions();
 	}// reset
@@ -140,7 +140,7 @@ class account_permission extends admin_controller
 	public function save() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
 		
 		// save action
 		if ($this->input->post()) {

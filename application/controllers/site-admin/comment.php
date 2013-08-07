@@ -49,10 +49,10 @@ class comment extends admin_controller
 	public function edit($comment_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm') != true && $this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('comment_perm', 'comment_edit_own_perm') != true && $this->account_model->checkAdminPermission('comment_perm', 'comment_edit_other_perm') != true) {redirect('site-admin');}
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -65,7 +65,7 @@ class comment extends admin_controller
 		unset($comment);
 		
 		// check permissions-----------------------------------------------------------
-		if ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm') === false && $row->account_id == $my_account_id) {
+		if ($this->account_model->checkAdminPermission('comment_perm', 'comment_edit_own_perm') === false && $row->account_id == $my_account_id) {
 			// user has NO permission to edit own and editing own.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -78,7 +78,7 @@ class comment extends admin_controller
 				)
 			);
 			redirect('site-admin/comment');
-		} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm') === false && $row->account_id != $my_account_id) {
+		} elseif ($this->account_model->checkAdminPermission('comment_perm', 'comment_edit_other_perm') === false && $row->account_id != $my_account_id) {
 			// user has NO permission to edit others and editing others.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -168,7 +168,7 @@ class comment extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('comment_perm', 'comment_viewall_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('comment_perm', 'comment_viewall_perm') != true) {redirect('site-admin');}
 		
 		// sort, orders, search for views.
 		$output['orders'] = strip_tags(trim($this->input->get('orders')));
@@ -211,7 +211,7 @@ class comment extends admin_controller
 	public function process_bulk() 
 	{
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -223,7 +223,7 @@ class comment extends admin_controller
 		
 		if ($act == 'approve') {
 			// check permission
-			if (!$this->account_model->check_admin_permission('comment_perm', 'comment_approve_unapprove_perm')) {redirect('site-admin/comment');}
+			if (!$this->account_model->checkAdminPermission('comment_perm', 'comment_approve_unapprove_perm')) {redirect('site-admin/comment');}
 			foreach ($id as $an_id) {
 				$data['comment_id'] = $an_id;
 				$data['comment_status'] = '1';
@@ -231,7 +231,7 @@ class comment extends admin_controller
 			}
 		} elseif ($act == 'unapprove') {
 			// check permission
-			if (!$this->account_model->check_admin_permission('comment_perm', 'comment_approve_unapprove_perm')) {redirect('site-admin/comment');}
+			if (!$this->account_model->checkAdminPermission('comment_perm', 'comment_approve_unapprove_perm')) {redirect('site-admin/comment');}
 			foreach ($id as $an_id) {
 				$data['comment_id'] = $an_id;
 				$data['comment_status'] = '0';
@@ -242,7 +242,7 @@ class comment extends admin_controller
 			if ($confirm == 'yes') {
 				// confirmed delete.
 				// check permission
-				if ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm') != true && $this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm') != true) {redirect('site-admin/comment');}
+				if ($this->account_model->checkAdminPermission('comment_perm', 'comment_delete_own_perm') != true && $this->account_model->checkAdminPermission('comment_perm', 'comment_delete_other_perm') != true) {redirect('site-admin/comment');}
 				
 				foreach ($id as $an_id) {
 					$this->db->where('comment_id', $an_id);
@@ -255,11 +255,11 @@ class comment extends admin_controller
 					$query->free_result();
 					
 					// check permissions-----------------------------------------------------------
-					if ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm') === false && $row->account_id == $my_account_id) {
+					if ($this->account_model->checkAdminPermission('comment_perm', 'comment_delete_own_perm') === false && $row->account_id == $my_account_id) {
 						// user has NO permission to edit own and editing own.
 						unset($row, $my_account_id, $query);
 						continue;
-					} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm') === false && $row->account_id != $my_account_id) {
+					} elseif ($this->account_model->checkAdminPermission('comment_perm', 'comment_delete_other_perm') === false && $row->account_id != $my_account_id) {
 						// user has NO permission to edit others and editing others.
 						unset($row, $my_account_id, $query);
 						continue;

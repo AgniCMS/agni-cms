@@ -57,7 +57,7 @@ if (!function_exists('show_menuitem_nested_sortable')) {
 			$output .= '</span>';
 			$output .= ' &nbsp; &nbsp; <span class="item-actions">';
 			
-			if ($ci->account_model->check_admin_permission('menu_perm', 'menu_edit_perm')) {
+			if ($ci->account_model->checkAdminPermission('menu_perm', 'menu_edit_perm')) {
 				// show edit source link
 				// those category, tag, article, page are source and editable.
 				switch ($item->mi_type) {
@@ -91,11 +91,11 @@ if (!function_exists('show_menuitem_nested_sortable')) {
 				$output .= '<a href="#" title="'.lang('admin_edit').'" onclick="return edit_menu_item(\''.$item->mi_id.'\');"><i class="icon-pencil"></i> '.lang('admin_edit').'</a>';
 			}
 			
-			if ($ci->account_model->check_admin_permission('menu_perm', 'menu_edit_perm') && $ci->account_model->check_admin_permission('menu_perm', 'menu_delete_perm')) {
+			if ($ci->account_model->checkAdminPermission('menu_perm', 'menu_edit_perm') && $ci->account_model->checkAdminPermission('menu_perm', 'menu_delete_perm')) {
 				$output .= ' | ';
 			}
 			
-			if ($ci->account_model->check_admin_permission('menu_perm', 'menu_delete_perm')) {
+			if ($ci->account_model->checkAdminPermission('menu_perm', 'menu_delete_perm')) {
 				$output .= '<a href="#" title="'.lang('admin_delete').'" onclick="return delete_menu_item(\''.$item->mi_id.'\');"><i class="icon-trash"></i> '.lang('admin_delete').'</a>';
 			}
 			

@@ -47,7 +47,7 @@ class posts_model extends CI_Model
 		$data_posts['language'] = $this->language;
 		
 		// get account id from cookie
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$data_posts['account_id'] = $ca_account['id'];
 		$data_post_revision['account_id'] = $ca_account['id'];
 		
@@ -225,7 +225,7 @@ class posts_model extends CI_Model
 		if ($row == null) {return false;}
 		
 		// get account id from cookie
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$data_post_revision['account_id'] = $ca_account['id'];
 		
 		// re-check post_uri
@@ -516,26 +516,26 @@ class posts_model extends CI_Model
 	
 	
 	/**
-	 * is_allow_delete_post
+	 * is allow delete post
 	 * check permission if user allowed to delete post.
 	 * @param object $row
 	 * @return boolean 
 	 */
-	public function is_allow_delete_post($row = '') 
+	public function isAllowDeletePost($row = '') 
 	{
 		if (!is_object($row) || $row == null || !isset($row->post_type)) {return false;}
 		
 		// get my account id
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		$my_account_id = (isset($cm_account['id']) ? $cm_account['id'] : 0);
 		
 		if ($row->post_type == 'article') {
-			if (($this->account_model->check_admin_permission('post_article_perm', 'post_article_delete_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->check_admin_permission('post_article_perm', 'post_article_delete_other_perm') && $row->account_id != $my_account_id)) {
+			if (($this->account_model->checkAdminPermission('post_article_perm', 'post_article_delete_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->checkAdminPermission('post_article_perm', 'post_article_delete_other_perm') && $row->account_id != $my_account_id)) {
 				return true;
 			}
 			return false;
 		} elseif ($row->post_type == 'page') {
-			 if (($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_other_perm') && $row->account_id != $my_account_id)) {
+			 if (($this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_other_perm') && $row->account_id != $my_account_id)) {
 				return true;
 			}
 			return false;
@@ -548,30 +548,39 @@ class posts_model extends CI_Model
 			}
 			return false;
 		}
+	}// isAllowDeletePost
+	
+	
+	/**
+	 * alias of method isAllowDeletePost.
+	 */
+	public function is_allow_delete_post($row = '') 
+	{
+		return $this->isAllowDeletePost($row);
 	}// is_allow_delete_post
 	
 	
 	/**
-	 * is_allow_edit_post
+	 * is allow edit post
 	 * check permission if user allowed to edit post.
 	 * @param object $row
 	 * @return boolean 
 	 */
-	public function is_allow_edit_post($row = '') 
+	public function isAllowEditPost($row = '') 
 	{
 		if (!is_object($row) || $row == null || !isset($row->post_type)) {return false;}
 		
 		// get my account id
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		$my_account_id = (isset($cm_account['id']) ? $cm_account['id'] : 0);
 		
 		if ($row->post_type == 'article') {
-			if (($this->account_model->check_admin_permission('post_article_perm', 'post_article_edit_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->check_admin_permission('post_article_perm', 'post_article_edit_other_perm') && $row->account_id != $my_account_id)) {
+			if (($this->account_model->checkAdminPermission('post_article_perm', 'post_article_edit_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->checkAdminPermission('post_article_perm', 'post_article_edit_other_perm') && $row->account_id != $my_account_id)) {
 				return true;
 			}
 			return false;
 		} elseif ($row->post_type == 'page') {
-			if (($this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_other_perm') && $row->account_id != $my_account_id)) {
+			if (($this->account_model->checkAdminPermission('post_page_perm', 'post_page_edit_own_perm') && $row->account_id == $my_account_id) || ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_edit_other_perm') && $row->account_id != $my_account_id)) {
 				return true;
 			}
 			return false;
@@ -584,6 +593,15 @@ class posts_model extends CI_Model
 			}
 			return false;
 		}
+	}// isAllowEditPost
+	
+	
+	/**
+	 * alias of method isAllowEditPost.
+	 */
+	public function is_allow_edit_post($row = '') 
+	{
+		return $this->isAllowEditPost($row);
 	}// is_allow_edit_post
 	
 	

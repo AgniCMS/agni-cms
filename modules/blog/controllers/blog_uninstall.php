@@ -35,7 +35,7 @@ class blog_uninstall extends admin_controller
 		
 		// disable module is the last step and required.
 		$this->load->model('modules_model');
-		$this->modules_model->do_deactivate($this->module_system_name, $this->input->get('site_id'));
+		$this->modules_model->doDeactivate($this->module_system_name, $this->input->get('site_id'));
 		
 		// done
 		$this->load->library('session');

@@ -24,7 +24,7 @@ class akismet extends admin_controller
 	public function config() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('akismet_perm', 'akismet_config_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('akismet_perm', 'akismet_config_perm') != true) {redirect('site-admin');}
 		
 		// load session for flashdata
 		$this->load->library('session');
@@ -35,7 +35,7 @@ class akismet extends admin_controller
 		}
 		unset($form_status);
 		
-		$output['akismet_api'] = $this->config_model->load_single('akismet_api');
+		$output['akismet_api'] = $this->config_model->loadSingle('akismet_api');
 		
 		// save action
 		if ($this->input->post()) {

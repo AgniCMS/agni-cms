@@ -2,7 +2,7 @@
 
 <div class="cmds">
 	<div class="cmd-left">
-		<?php if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_add_perm')) { ?> 
+		<?php if ($this->account_model->checkAdminPermission('siteman_perm', 'siteman_add_perm')) { ?> 
 		<button type="button" class="bb-button btn" onclick="window.location=site_url+'site-admin/siteman/add';"><?php echo lang('admin_add'); ?></button>
 		<?php } ?> 
 	</div>
@@ -48,7 +48,7 @@
 				<td><?php echo gmt_date('Y-m-d H:i:s', $row->site_create_gmt); ?></td>
 				<td><?php echo gmt_date('Y-m-d H:i:s', $row->site_update_gmt); ?></td>
 				<td>
-					<?php if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_edit_perm')) { ?> 
+					<?php if ($this->account_model->checkAdminPermission('siteman_perm', 'siteman_edit_perm')) { ?> 
 					<?php echo anchor(current_url().'/edit/'.$row->site_id, lang('admin_edit')); ?> 
 					<?php } ?> 
 				</td>
@@ -66,7 +66,7 @@
 		<div class="cmd-left">
 			<select name="act">
 				<option value="" selected="selected"></option>
-				<?php if ($this->account_model->check_admin_permission('siteman_perm', 'siteman_delete_perm')): ?> 
+				<?php if ($this->account_model->checkAdminPermission('siteman_perm', 'siteman_delete_perm')): ?> 
 				<option value="del"><?php echo lang('admin_delete'); ?></option>
 				<?php endif; ?> 
 			</select>

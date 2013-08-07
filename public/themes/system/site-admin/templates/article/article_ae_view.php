@@ -86,7 +86,7 @@
 					<label class="radio"><input type="radio" name="post_comment" value="1"<?php if (isset($post_comment) && $post_comment == '1') {echo ' checked="checked"';} ?> /><?php echo lang('post_comment_on'); ?></label>
 					<label class="radio"><input type="radio" name="post_comment" value="0"<?php if (isset($post_comment) && $post_comment == '0') {echo ' checked="checked"';} ?> /><?php echo lang('post_comment_off'); ?></label>
 				</div>
-				<?php if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_publish_unpublish_perm')): ?> 
+				<?php if ($this->account_model->checkAdminPermission('post_article_perm', 'post_article_publish_unpublish_perm')): ?> 
 				<h3><a href="#"><?php echo lang('post_publishing_option'); ?></a></h3>
 				<div>
 					<label class="checkbox"><input type="checkbox" name="post_status" value="1"<?php if (isset($post_status) && $post_status == '1') {echo ' checked="checked"';} ?> /><?php echo lang('post_published'); ?></label>

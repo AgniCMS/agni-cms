@@ -53,7 +53,7 @@ class page extends admin_controller
 	public function add() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_add_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_add_perm') != true) {redirect('site-admin');}
 		
 		// list themes for select
 		$output['list_theme'] = $this->themes_model->listEnabledThemes();
@@ -74,7 +74,7 @@ class page extends admin_controller
 				if ($data_posts['post_feature_image'] == null || !is_numeric($data_posts['post_feature_image'])) {$data_posts['post_feature_image'] = null;}
 			$data_posts['post_comment'] = (int) $this->input->post('post_comment');
 			$data_posts['post_status'] = (int) $this->input->post('post_status');
-				if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_publish_unpublish_perm') != true) {$data_posts['post_status'] = '0';}
+				if ($this->account_model->checkAdminPermission('post_article_perm', 'post_article_publish_unpublish_perm') != true) {$data_posts['post_status'] = '0';}
 			$data_posts['post_add'] = time();
 			$data_posts['post_add_gmt'] = local_to_gmt(time());
 			$data_posts['post_update'] = time();
@@ -187,7 +187,7 @@ class page extends admin_controller
 	public function del_rev($post_id = '', $revision_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('post_page_perm', 'post_delete_revision') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('post_page_perm', 'post_delete_revision') != true) {redirect('site-admin');}
 		
 		if (!is_numeric($post_id) || !is_numeric($revision_id)) {redirect('site-admin/page');}
 		
@@ -227,10 +227,10 @@ class page extends admin_controller
 	public function delete($post_id = '') 
 	{
 		// check permission (both canNOT delete own and delete other => get out)
-		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_own_perm') != true && $this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_other_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_own_perm') != true && $this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_other_perm') != true) {redirect('site-admin');}
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -246,7 +246,7 @@ class page extends admin_controller
 		$row = $query->row();
 		
 		// check permissions-----------------------------------------------------------
-		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_own_perm') === false && $row->account_id == $my_account_id) {
+		if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_own_perm') === false && $row->account_id == $my_account_id) {
 			// user has NO permission to edit own and editing own.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -259,7 +259,7 @@ class page extends admin_controller
 				)
 			);
 			redirect('site-admin/page');
-		} elseif ($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_other_perm') === false && $row->account_id != $my_account_id) {
+		} elseif ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_other_perm') === false && $row->account_id != $my_account_id) {
 			// user has NO permission to edit others and editing others.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -315,10 +315,10 @@ class page extends admin_controller
 	public function edit($post_id = '') 
 	{
 		// check permission (both canNOT edit own and edit other => get out)
-		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_own_perm') != true && $this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_other_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_edit_own_perm') != true && $this->account_model->checkAdminPermission('post_page_perm', 'post_page_edit_other_perm') != true) {redirect('site-admin');}
 		
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -341,7 +341,7 @@ class page extends admin_controller
 		}
 		
 		// check permissions-----------------------------------------------------------
-		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_own_perm') === false && $row->account_id == $my_account_id) {
+		if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_edit_own_perm') === false && $row->account_id == $my_account_id) {
 			// user has NO permission to edit own and editing own.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -354,7 +354,7 @@ class page extends admin_controller
 				)
 			);
 			redirect('site-admin/page');
-		} elseif ($this->account_model->check_admin_permission('post_page_perm', 'post_page_edit_other_perm') === false && $row->account_id != $my_account_id) {
+		} elseif ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_edit_other_perm') === false && $row->account_id != $my_account_id) {
 			// user has NO permission to edit others and editing others.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -424,7 +424,7 @@ class page extends admin_controller
 			$data_posts['post_feature_image'] = trim($this->input->post('post_feature_image'));
 				if ($data_posts['post_feature_image'] == null || !is_numeric($data_posts['post_feature_image'])) {$data_posts['post_feature_image'] = null;}
 			$data_posts['post_comment'] = (int) $this->input->post('post_comment');
-			if ($this->account_model->check_admin_permission('post_article_perm', 'post_article_publish_unpublish_perm')) {
+			if ($this->account_model->checkAdminPermission('post_article_perm', 'post_article_publish_unpublish_perm')) {
 				$data_posts['post_status'] = (int) $this->input->post('post_status');
 				$data_posts['post_status'] = ($data_posts['post_status'] == '1' ? '1' : '0');
 			}
@@ -524,7 +524,7 @@ class page extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_viewall_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_viewall_perm') != true) {redirect('site-admin');}
 		
 		// sort, orders, search, tid
 		$output['orders'] = strip_tags(trim($this->input->get('orders')));
@@ -550,7 +550,7 @@ class page extends admin_controller
 		}
 		
 		// my account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$output['my_account_id'] = $ca_account['id'];
 		unset($ca_account);
 		
@@ -569,7 +569,7 @@ class page extends admin_controller
 	public function process_bulk() 
 	{
 		// get account id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$my_account_id = $ca_account['id'];
 		unset($ca_account);
 		
@@ -580,7 +580,7 @@ class page extends admin_controller
 		
 		if ($act == 'publish') {
 			// check permission
-			if (!$this->account_model->check_admin_permission('post_page_perm', 'post_page_publish_unpublish_perm')) {redirect('site-admin/page');}
+			if (!$this->account_model->checkAdminPermission('post_page_perm', 'post_page_publish_unpublish_perm')) {redirect('site-admin/page');}
 			
 			foreach ($id as $an_id) {
 				// open for check
@@ -606,7 +606,7 @@ class page extends admin_controller
 			}
 		} elseif($act == 'unpublish') {
 			// check permission
-			if (!$this->account_model->check_admin_permission('post_page_perm', 'post_page_publish_unpublish_perm')) {redirect('site-admin/page');}
+			if (!$this->account_model->checkAdminPermission('post_page_perm', 'post_page_publish_unpublish_perm')) {redirect('site-admin/page');}
 			
 			foreach ($id as $an_id) {
 				$this->db->where('post_id', $an_id);
@@ -617,7 +617,7 @@ class page extends admin_controller
 			}
 		} elseif ($act == 'del') {
 			// check both permission
-			if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_own_perm') != true && $this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_other_perm') != true) {redirect('site-admin/page');}
+			if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_own_perm') != true && $this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_other_perm') != true) {redirect('site-admin/page');}
 			
 			foreach ($id as $an_id) {
 				$this->db->where('post_id', $an_id);
@@ -627,11 +627,11 @@ class page extends admin_controller
 				$query->free_result();
 				
 				// check permissions-----------------------------------------------------------
-				if ($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_own_perm') === false && $row->account_id == $my_account_id) {
+				if ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_own_perm') === false && $row->account_id == $my_account_id) {
 					// user has NO permission to edit own and editing own.
 					unset($row, $my_account_id);
 					continue;
-				} elseif ($this->account_model->check_admin_permission('post_page_perm', 'post_page_delete_other_perm') === false && $row->account_id != $my_account_id) {
+				} elseif ($this->account_model->checkAdminPermission('post_page_perm', 'post_page_delete_other_perm') === false && $row->account_id != $my_account_id) {
 					// user has NO permission to edit others and editing others.
 					unset($row, $my_account_id);
 					continue;
@@ -656,7 +656,7 @@ class page extends admin_controller
 	public function revert($post_id = '', $revision_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('post_page_perm', 'post_revert_revision') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('post_page_perm', 'post_revert_revision') != true) {redirect('site-admin');}
 		
 		if (!is_numeric($post_id) || !is_numeric($revision_id)) {redirect('site-admin/page');}
 		

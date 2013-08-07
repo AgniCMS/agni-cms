@@ -22,7 +22,7 @@ class blog_model extends CI_Model
 	public function add($data = array()) 
 	{
 		// get account_id
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$this->db->set('account_id', $ca_account['id']);
 		$this->db->set('blog_title', $data['blog_title']);
 		$this->db->set('blog_content', $data['blog_content']);
@@ -78,7 +78,7 @@ class blog_model extends CI_Model
 			$config['per_page'] = 20;
 		} else {
 			$config['base_url'] = site_url($this->uri->uri_string()).'?';
-			$config['per_page'] = $this->config_model->load_single('content_items_perpage');
+			$config['per_page'] = $this->config_model->loadSingle('content_items_perpage');
 		}
 		$config['total_rows'] = $total;
 		$config['num_links'] = 5;

@@ -171,24 +171,14 @@ class media_model extends CI_Model
 	
 	
 	/**
-	 * alias of method get_img
-	 */
-	public function getImg($file_id = '', $return_element = 'img') 
-	{
-		return $this->get_img($file_id, $return_element);
-	}// getImg
-	
-	
-	/**
-	 * get_img
+	 * get image
 	 * get file_id and return img url or <img>
 	 * @param integer $file_id
 	 * @param img|null $return_element
 	 * @return string 
 	 */
-	public function get_img($file_id = '', $return_element = 'img') 
-	{
-		if (!is_numeric($file_id)) {return null;}
+	public function getImg($file_id = '', $return_element = 'img') 
+	{if (!is_numeric($file_id)) {return null;}
 		
 		// check cached
 		if (false === $get_img = $this->cache->get('media-get_img_'.$file_id.'_'.$return_element)) {
@@ -211,6 +201,16 @@ class media_model extends CI_Model
 		}
 		
 		return $get_img;
+		
+	}// getImg
+	
+	
+	/**
+	 * alias of method getImg
+	 */
+	public function get_img($file_id = '', $return_element = 'img') 
+	{
+		return $this->getImg($file_id, $return_element);
 	}// get_img
 	
 	
@@ -445,7 +445,7 @@ class media_model extends CI_Model
 	{
 		
 		// get account id from cookie
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		$account_id = $ca_account['id'];
 		unset($ca_account);
 		

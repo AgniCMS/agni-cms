@@ -51,7 +51,7 @@ class comment extends MY_Controller
 		
 		if (!isset($comments['items'])) {return '<p class="list-comment-no-comment no-comment">'.$this->lang->line('comment_no_comment').'</p>';}
 		
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		$account_id = $cm_account['id'];
 		if ($account_id == null) {$account_id = '0';}
 		
@@ -89,31 +89,31 @@ class comment extends MY_Controller
 				
 				// check edit comment permission.------------------------
 				$outval['comment_edit_permission'] = true;
-				if ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm', $account_id) && $comment->c1_account_id != $account_id) {
-					if (!$this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm', $account_id)) {
+				if ($this->account_model->checkAdminPermission('comment_perm', 'comment_edit_own_perm', $account_id) && $comment->c1_account_id != $account_id) {
+					if (!$this->account_model->checkAdminPermission('comment_perm', 'comment_edit_other_perm', $account_id)) {
 						$outval['comment_edit_permission'] = false;
 					}
-				} elseif (!$this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm', $account_id) && $comment->c1_account_id == $account_id) {
+				} elseif (!$this->account_model->checkAdminPermission('comment_perm', 'comment_edit_own_perm', $account_id) && $comment->c1_account_id == $account_id) {
 					$outval['comment_edit_permission'] = false;
-				} elseif (!$this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm', $account_id) && !$this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm', $account_id)) {
+				} elseif (!$this->account_model->checkAdminPermission('comment_perm', 'comment_edit_own_perm', $account_id) && !$this->account_model->checkAdminPermission('comment_perm', 'comment_edit_other_perm', $account_id)) {
 					$outval['comment_edit_permission'] = false;
 				}
 				
 				// check delete comment permission.------------------------------
 				$outval['comment_delete_permission'] = true;
-				if ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm', $account_id) && $comment->c1_account_id != $account_id) {
-					if (!$this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm', $account_id)) {
+				if ($this->account_model->checkAdminPermission('comment_perm', 'comment_delete_own_perm', $account_id) && $comment->c1_account_id != $account_id) {
+					if (!$this->account_model->checkAdminPermission('comment_perm', 'comment_delete_other_perm', $account_id)) {
 						$outval['comment_delete_permission'] = false;
 					}
-				} elseif (!$this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm', $account_id) && $comment->c1_account_id == $account_id) {
+				} elseif (!$this->account_model->checkAdminPermission('comment_perm', 'comment_delete_own_perm', $account_id) && $comment->c1_account_id == $account_id) {
 					$outval['comment_delete_permission'] = false;
-				} elseif (!$this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm', $account_id) && !$this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm', $account_id)) {
+				} elseif (!$this->account_model->checkAdminPermission('comment_perm', 'comment_delete_own_perm', $account_id) && !$this->account_model->checkAdminPermission('comment_perm', 'comment_delete_other_perm', $account_id)) {
 					$outval['comment_delete_permission'] = false;
 				}
 				
 				// check add/reply comment permission-----------------------------
 				$outval['comment_postreply_permission'] = false;
-				if ($this->account_model->check_admin_permission('comment_perm', 'comment_allowpost_perm', $account_id)) {
+				if ($this->account_model->checkAdminPermission('comment_perm', 'comment_allowpost_perm', $account_id)) {
 					$outval['comment_postreply_permission'] = true;
 				}
 				
@@ -141,7 +141,7 @@ class comment extends MY_Controller
 		if (!is_numeric($comment_id)) {redirect();}
 		
 		// account id from cookie
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		$account_id = (isset($cm_account['id']) ? $cm_account['id'] : '0');
 		unset($cm_account);
 		
@@ -149,7 +149,7 @@ class comment extends MY_Controller
 		if ($account_id == '0') {redirect();}
 		
 		// check whole permission
-		if (!$this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm', $account_id) && !$this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm', $account_id)) {redirect();}
+		if (!$this->account_model->checkAdminPermission('comment_perm', 'comment_delete_own_perm', $account_id) && !$this->account_model->checkAdminPermission('comment_perm', 'comment_delete_other_perm', $account_id)) {redirect();}
 		
 		// load user_agent lib for redirect to opened page (referer page)
 		$this->load->library('user_agent');
@@ -168,7 +168,7 @@ class comment extends MY_Controller
 		if ($row == null) { redirect(); }
 		
 		// check permissions for both own and others---------------------------------------------------------------------------------
-		if ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_own_perm') === false && $row->account_id == $account_id) {
+		if ($this->account_model->checkAdminPermission('comment_perm', 'comment_delete_own_perm') === false && $row->account_id == $account_id) {
 			// user has NO permission to edit own and editing own.
 			unset($row, $account_id);
 			// flash error permission message
@@ -181,7 +181,7 @@ class comment extends MY_Controller
 				)
 			);
 			redirect();
-		} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_delete_other_perm') === false && $row->account_id != $account_id) {
+		} elseif ($this->account_model->checkAdminPermission('comment_perm', 'comment_delete_other_perm') === false && $row->account_id != $account_id) {
 			// user has NO permission to edit others and editing others.
 			unset($row, $account_id);
 			// flash error permission message
@@ -246,7 +246,7 @@ class comment extends MY_Controller
 		if (!is_numeric($comment_id)) {redirect();}
 		
 		// account id from cookie
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		$account_id = (isset($cm_account['id']) ? $cm_account['id'] : '0');
 		unset($cm_account);
 		
@@ -254,7 +254,7 @@ class comment extends MY_Controller
 		if ($account_id == '0') {redirect();}
 		
 		// check whole permission
-		if (!$this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm', $account_id) && !$this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm', $account_id)) {redirect();}
+		if (!$this->account_model->checkAdminPermission('comment_perm', 'comment_edit_own_perm', $account_id) && !$this->account_model->checkAdminPermission('comment_perm', 'comment_edit_other_perm', $account_id)) {redirect();}
 		
 		// load user_agent lib for redirect to opened page
 		$this->load->library('user_agent');
@@ -273,7 +273,7 @@ class comment extends MY_Controller
 		if ($row == null) { redirect(); }
 		
 		// check permissions -------------------------------------------------------------------------------------------------------------------
-		if ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_own_perm') === false && $row->account_id == $account_id) {
+		if ($this->account_model->checkAdminPermission('comment_perm', 'comment_edit_own_perm') === false && $row->account_id == $account_id) {
 			// user has NO permission to edit own and editing own.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -286,7 +286,7 @@ class comment extends MY_Controller
 				)
 			);
 			redirect();
-		} elseif ($this->account_model->check_admin_permission('comment_perm', 'comment_edit_other_perm') === false && $row->account_id != $account_id) {
+		} elseif ($this->account_model->checkAdminPermission('comment_perm', 'comment_edit_other_perm') === false && $row->account_id != $account_id) {
 			// user has NO permission to edit others and editing others.
 			unset($row, $my_account_id);
 			// flash error permission message
@@ -385,7 +385,7 @@ class comment extends MY_Controller
 		unset($comment_cfg);
 		
 		// account id from cookie
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		$output['account_id'] = (isset($cm_account['id']) ? $cm_account['id'] : '0');
 		
 		// list comments------------------------------------------------------------------------------------------------
@@ -447,7 +447,7 @@ class comment extends MY_Controller
 		$account_id = (int) trim($this->input->post('account_id'));
 		if ($account_id == null) {$account_id = '0';}
 		
-		if (check_admin_permission('comment_perm', 'comment_allowpost_perm', $account_id)) {
+		if (checkAdminPermission('comment_perm', 'comment_allowpost_perm', $account_id)) {
 			
 			if ($account_id == '0') {
 				// flash 'name' into cookie
@@ -478,7 +478,7 @@ class comment extends MY_Controller
 					if ($data['subject'] == null) {$data['subject'] = mb_strimwidth(strip_tags($this->input->post('comment_body_value')), 0, 70, '...');}
 				
 				// prepare comment status
-				if (check_admin_permission('comment_perm', 'comment_nomoderation_perm', $account_id)) {
+				if (checkAdminPermission('comment_perm', 'comment_nomoderation_perm', $account_id)) {
 					$data['comment_status'] = (int) 1;
 					$data['comment_spam_status'] = 'normal';
 				} else {

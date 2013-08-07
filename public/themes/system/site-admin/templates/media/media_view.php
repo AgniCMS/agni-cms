@@ -35,7 +35,7 @@
 				| <?php echo anchor('site-admin/media?current_path='.urlencode($current_path).'&amp;orders='.$orders.'&amp;sort='.$cur_sort.'&amp;filter=files.account_id&amp;filter_val='.$my_account_id, lang('media_my_file_only')); ?> 
 
 
-				<?php if ($this->account_model->check_admin_permission('media_perm', 'media_upload_perm')): ?> 
+				<?php if ($this->account_model->checkAdminPermission('media_perm', 'media_upload_perm')): ?> 
 				<?php echo form_open_multipart('site-admin/media/upload', array('class' => 'media-upload-form', 'id' => 'form-upload', 'target' => 'upload_target', 'onsubmit' => 'return silent_upload()')); ?> 
 					<div id="upload-msg"></div>
 

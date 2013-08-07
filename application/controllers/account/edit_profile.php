@@ -84,7 +84,7 @@ class edit_profile extends MY_Controller
 		unset($form_status);
 		
 		// get id
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		
 		// check from db
 		$data['account_id'] = $cm_account['id'];

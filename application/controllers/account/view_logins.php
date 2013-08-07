@@ -39,7 +39,7 @@ class view_logins extends MY_Controller
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		
 		// get id
-		$cm_account = $this->account_model->get_account_cookie('member');
+		$cm_account = $this->account_model->getAccountCookie('member');
 		
 		// load accounts table
 		$row = $this->account_model->getAccountData(array('account_id' => $cm_account['id']));

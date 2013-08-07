@@ -86,7 +86,7 @@
 			}
 		});// remove block from dragged area.
 		
-		$('.each-area ol')<?php if ($this->account_model->check_admin_permission('block_perm', 'block_add_perm')): ?>.droppable({
+		$('.each-area ol')<?php if ($this->account_model->checkAdminPermission('block_perm', 'block_add_perm')): ?>.droppable({
 			activeClass: "ui-state-default",
 			hoverClass: "ui-state-hover",
 			accept: ":not(.ui-sortable-helper)",
@@ -109,7 +109,7 @@
 					}
 				});
 			}
-		})<?php endif; ?><?php if ($this->account_model->check_admin_permission('block_perm', 'block_sort_perm')): ?>.sortable({
+		})<?php endif; ?><?php if ($this->account_model->checkAdminPermission('block_perm', 'block_sort_perm')): ?>.sortable({
 			handle: 'h4',
 			items: "li:not(.placeholder, .action-item)",
 			sort: function() {

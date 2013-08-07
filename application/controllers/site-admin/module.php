@@ -37,7 +37,7 @@ class module extends admin_controller
 	public function activate($module_system_name = '', $site_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 		
 		// do activate
 		$result = $this->modules_model->doActivate($module_system_name, $site_id);
@@ -69,7 +69,7 @@ class module extends admin_controller
 	public function add() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_add_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_add_perm') != true) {redirect('site-admin');}
 		
 		// save action.
 		if ($this->input->post()) {
@@ -108,7 +108,7 @@ class module extends admin_controller
 	public function deactivate($module_system_name = '', $site_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 		
 		// do deactivate
 		$result = $this->modules_model->doDeactivate($module_system_name, $site_id);
@@ -140,7 +140,7 @@ class module extends admin_controller
 	public function delete() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_delete_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_delete_perm') != true) {redirect('site-admin');}
 		
 		// get module sys name
 		$module_system_name = trim($this->input->post('id'));
@@ -174,8 +174,8 @@ class module extends admin_controller
 	{
 		// check permission 
 		// special! to allow admin go to manage module's permission, we need to check at least 1 of these 2 permission.
-		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_viewall_perm') != true
-			   && $this->account_model->check_admin_permission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_viewall_perm') != true
+			   && $this->account_model->checkAdminPermission('account_permission_perm', 'account_permission_manage_perm') != true) {redirect('site-admin');}
 		
 		// load permission model for check module has permission.
 		$this->load->model('permission_model');
@@ -232,7 +232,7 @@ class module extends admin_controller
 		
 		if ($act == 'activate') {
 			// check permission
-			if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 			
 			foreach ($id as $an_id) {
 				$result = $this->modules_model->doActivate($an_id, $site_id);
@@ -262,7 +262,7 @@ class module extends admin_controller
 			unset($fail_activate, $result);
 		} elseif ($act == 'deactivate') {
 			// check permission
-			if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_activate_deactivate_perm') != true) {redirect('site-admin');}
 			
 			foreach ($id as $an_id) {
 				$result = $this->modules_model->doDeactivate($an_id, $site_id);
@@ -292,7 +292,7 @@ class module extends admin_controller
 			unset($fail_deactivate, $result);
 		} elseif ($act == 'del') {
 			// check permission
-			if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_delete_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_delete_perm') != true) {redirect('site-admin');}
 			
 			$delete_fail = false;
 			foreach ($id as $an_id) {
@@ -336,7 +336,7 @@ class module extends admin_controller
 	public function uninstall($module_system_name = '', $site_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('modules_manage_perm', 'modules_uninstall_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('modules_manage_perm', 'modules_uninstall_perm') != true) {redirect('site-admin');}
 		
 		if (strtolower($this->input->server('REQUEST_METHOD')) != 'post') {
 			redirect('site-admin');

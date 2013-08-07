@@ -34,7 +34,7 @@ class account extends admin_controller
 	public function add() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_perm', 'account_add_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_perm', 'account_add_perm') != true) {redirect('site-admin');}
 		
 		$output['list_level'] = $this->account_model->listLevelGroup();
 		
@@ -115,13 +115,13 @@ class account extends admin_controller
 		$account_id = trim($this->input->post('account_id'));
 		
 		// load account cookie for check edit self?
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		if (!isset($ca_account['id'])) {redirect('site-admin');}
 		
 		// if not edit myself, go check permission.
 		if ($account_id != null && $account_id != $ca_account['id']) {
 			// check permission
-			if ($this->account_model->check_admin_permission('account_perm', 'account_edit_perm') != true) {unset($ca_account); redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('account_perm', 'account_edit_perm') != true) {unset($ca_account); redirect('site-admin');}
 		}
 		unset($ca_account);
 		
@@ -143,7 +143,7 @@ class account extends admin_controller
 	public function delete_log($account_id = '') 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_perm', 'account_deletelog_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_perm', 'account_deletelog_perm') != true) {redirect('site-admin');}
 		
 		if (! is_numeric($account_id)) {redirect('site-admin');}
 		
@@ -179,13 +179,13 @@ class account extends admin_controller
 	public function edit($account_id = '') 
 	{
 		// load account cookie for check edit self?
-		$ca_account = $this->account_model->get_account_cookie('admin');
+		$ca_account = $this->account_model->getAccountCookie('admin');
 		if (!isset($ca_account['id'])) {redirect('site-admin');}
 		
 		// if not edit myself, go check permission.
 		if ($account_id != null && $account_id != $ca_account['id']) {
 			// check permission
-			if ($this->account_model->check_admin_permission('account_perm', 'account_edit_perm') != true) {unset($ca_account); redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('account_perm', 'account_edit_perm') != true) {unset($ca_account); redirect('site-admin');}
 		}
 		
 		// no account_id set, load from cookie
@@ -309,7 +309,7 @@ class account extends admin_controller
 	public function index() 
 	{
 		// check permission
-		if ($this->account_model->check_admin_permission('account_perm', 'account_manage_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_perm', 'account_manage_perm') != true) {redirect('site-admin');}
 		
 		// sort
 		$output['sort'] = ($this->input->get('sort') == null || $this->input->get('sort') == 'asc' ? 'desc' : 'asc');
@@ -350,7 +350,7 @@ class account extends admin_controller
 		
 		if ($act == 'del') {
 			// check permission
-			if ($this->account_model->check_admin_permission('account_perm', 'account_delete_perm') != true) {redirect('site-admin');}
+			if ($this->account_model->checkAdminPermission('account_perm', 'account_delete_perm') != true) {redirect('site-admin');}
 			if (is_array($id)) {
 				foreach ($id as $an_id) {
 					// check if delete higher level than yours
@@ -381,7 +381,7 @@ class account extends admin_controller
 		if (!is_numeric($account_id)) {redirect('site-admin');}
 		
 		// check permission
-		if ($this->account_model->check_admin_permission('account_perm', 'account_viewlog_perm') != true) {redirect('site-admin');}
+		if ($this->account_model->checkAdminPermission('account_perm', 'account_viewlog_perm') != true) {redirect('site-admin');}
 		
 		// load session for flashdata
 		$this->load->library('session');

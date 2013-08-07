@@ -9,7 +9,7 @@
 				<div class="site-name"><?php echo $this->config_model->load_single('site_name'); ?></div>
 				<div class="user">
 					<?php if (!isset($cookie)) {
-						$cookie = $this->account_model->get_account_cookie('admin');
+						$cookie = $this->account_model->getAccountCookie('admin');
 					} ?> 
 					<ul>
 						<li><?php echo sprintf(lang('admin_hello'), $cookie['username']); ?></li>

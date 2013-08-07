@@ -66,7 +66,7 @@
 							<ul class="dropdown-menu">
 								<?php if (isset($sites['items']) && is_array($sites['items'])) { ?> 
 									<?php foreach ($sites['items'] as $site) { ?> 
-									<?php if ($this->modules_model->is_installed($key['module_system_name'], $site->site_id) === true) { ?> 
+									<?php if ($this->modules_model->isModuleInstalled($key['module_system_name'], $site->site_id) === true) { ?> 
 									<li><?php echo anchor('site-admin/module/uninstall/'.$key['module_system_name'].'/'.$site->site_id, $site->site_name, array('onclick' => 'return ajax_uninstall_module(\''.sprintf(lang('module_are_you_sure_uninstall'), $key['module_name']).'\', $(this));')); ?></li>
 									<?php } // endif; ?> 
 									<?php } // endforeach; ?> 

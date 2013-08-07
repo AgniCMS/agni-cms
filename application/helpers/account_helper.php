@@ -12,7 +12,7 @@
 function check_admin_permission($page = '', $action = '', $account_id = '') {
 	$CI =& get_instance();
 	$CI->load->model('account_model');
-	return $CI->account_model->check_admin_permission($page, $action, $account_id);
+	return $CI->account_model->checkAdminPermission($page, $action, $account_id);
 }// check_admin_permission
 
 

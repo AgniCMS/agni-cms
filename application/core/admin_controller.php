@@ -39,7 +39,7 @@ class admin_controller extends MY_Controller {
 			$this->cron->index();
 			
 			// check update queue for admin to click update.
-			if ($this->account_model->check_admin_permission('updater_perm', 'updater_update_core_perm') === true 
+			if ($this->account_model->checkAdminPermission('updater_perm', 'updater_update_core_perm') === true 
 			&& (isset($cfg['angi_auto_update']['value']) && $cfg['angi_auto_update']['value'] == '1') 
 			) {
 				$this->cron->check_queue_update_core();
@@ -90,7 +90,7 @@ class admin_controller extends MY_Controller {
 		
 		//
 		$output['page_content'] = $this->load->view($page, $output, true);
-		$output['cookie'] = $this->account_model->get_account_cookie('admin');
+		$output['cookie'] = $this->account_model->getAccountCookie('admin');
 		$this->load->view('site-admin/template', $output);
 	}// generate_page
 	

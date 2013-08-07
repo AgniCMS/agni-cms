@@ -243,7 +243,7 @@ class comments_model extends CI_Model
 	public function getCommentDisplayPage($comment_id = '', $mode = 'thread') 
 	{
 		// account id from cookie
-		$cm_account = $this->account_model->get_account_cookie('admin');
+		$cm_account = $this->account_model->getAccountCookie('admin');
 		$account_id = $cm_account['id'];
 		if ($account_id == null) {$account_id = '0';}
 		
@@ -252,7 +252,7 @@ class comments_model extends CI_Model
 		$sql = 'SELECT *, count(*) AS count FROM '.$this->db->dbprefix('comments').' as c1';
 		$sql .= ' INNER JOIN '.$this->db->dbprefix('comments').' AS c2 ON c1.post_id = c2.post_id';
 		$sql .= ' AND c2.comment_id = '.$comment_id;
-		if ($this->account_model->check_admin_permission('comment_perm', 'comment_viewall_perm', $account_id)) {
+		if ($this->account_model->checkAdminPermission('comment_perm', 'comment_viewall_perm', $account_id)) {
 			$sql .= ' and c1.comment_status = 1';
 		}
 		if ($mode == 'thread') {
@@ -340,7 +340,7 @@ class comments_model extends CI_Model
 	public function listComment($post_id = '',$mode = 'thread', $list_for = 'front') 
 	{
 		// comment view permission
-		$comment_view_permission = $this->account_model->check_admin_permission('comment_perm', 'comment_viewall_perm');
+		$comment_view_permission = $this->account_model->checkAdminPermission('comment_perm', 'comment_viewall_perm');
 		
 		$this->db->select('*, comments.account_id AS c1_account_id');
 		$this->db->join('accounts', 'accounts.account_id = comments.account_id', 'left outer');
