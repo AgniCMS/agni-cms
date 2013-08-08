@@ -21,7 +21,7 @@ class email_template
 		$template_path = APPPATH.'language/'.$CI->config->item('language')."/";
 		
 		if (file_exists($template_path.$email_file)) {
-			$site_name = $CI->config_model->load_single('site_name');
+			$site_name = $CI->config_model->loadSingle('site_name');
 			//
 			$output = file_get_contents($template_path.$email_file);
 			$output = str_replace("%sitename%", $site_name, $output);

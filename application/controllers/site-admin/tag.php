@@ -291,7 +291,7 @@ class tag extends admin_controller
 		$output['q'] = htmlspecialchars(trim($this->input->get('q')), ENT_QUOTES, config_item('charset'));
 		
 		// list tags
-		$output['list_item'] = $this->taxonomy_model->listTags('admin');
+		$output['list_item'] = $this->taxonomy_model->listTags(array('list_for' => 'admin'));
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

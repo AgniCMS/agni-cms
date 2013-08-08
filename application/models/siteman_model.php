@@ -296,9 +296,10 @@ class siteman_model extends CI_Model
 	/**
 	 * list websites
 	 * @param array $data
+	 * @param array $datacond data condition.
 	 * @return mixed
 	 */
-	public function listWebsites($data = array()) 
+	public function listWebsites($data = array(), $datacond = array()) 
 	{
 		if (is_array($data) && !empty($data)) {
 			$this->db->where($data);
@@ -343,8 +344,12 @@ class siteman_model extends CI_Model
 		
 		// pagination-----------------------------
 		$this->load->library('pagination');
-		$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort).($q != null ?'&amp;q='.$q : '');
-		$config['per_page'] = 20;
+		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
+		if (isset($datacond['per_page']) && is_numeric($datacond['per_page'])) {
+			$config['per_page'] = $datacond['per_page'];
+		} else {
+			$config['per_page'] = (isset($datacond['list_for']) && $datacond['list_for'] == 'admin' ? 20 : $this->config_model->loadSingle('content_items_perpage'));
+		}
 		$config['total_rows'] = $total;
 		// pagination tags customize for bootstrap css framework
 		$config['num_links'] = 3;

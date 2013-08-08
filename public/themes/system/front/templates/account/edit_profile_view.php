@@ -73,7 +73,7 @@
 			<div class="control-group">
 				<label class="control-label"><?php echo lang('account_timezone'); ?>: </label>
 				<div class="controls">
-					<?php echo timezone_menu((isset($account_timezone) ? $account_timezone : $this->config_model->load_single('site_timezone')), '', 'account_timezone'); ?> 
+					<?php echo timezone_menu((isset($account_timezone) ? $account_timezone : $this->config_model->loadSingle('site_timezone')), '', 'account_timezone'); ?> 
 				</div>
 			</div>
 

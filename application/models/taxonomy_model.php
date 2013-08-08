@@ -279,10 +279,10 @@ class taxonomy_model extends CI_Model
 	
 	/**
 	 * list tags
-	 * @param admin|front $list_for
+	 * @param array $data
 	 * @return mixed 
 	 */
-	public function listTags($list_for = 'front') 
+	public function listTags($data = array()) 
 	{
 		$this->db->where('language', $this->language);
 		$this->db->where('t_type', $this->tax_type);
@@ -332,9 +332,13 @@ class taxonomy_model extends CI_Model
 		
 		// pagination-----------------------------
 		$this->load->library('pagination');
-		$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort).($q != null ?'&amp;q='.$q : '');
+		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
+		if (isset($data['per_page']) && is_numeric($data['per_page'])) {
+			$config['per_page'] = $data['per_page'];
+		} else {
+			$config['per_page'] = (isset($data['list_for']) && $data['list_for'] == 'admin' ? 20 : $this->config_model->loadSingle('content_items_perpage'));
+		}
 		$config['total_rows'] = $total;
-		$config['per_page'] = ($list_for == 'admin' ? 20 : $this->config_model->load_single('content_items_perpage'));
 		// pagination tags customize for bootstrap css framework
 		$config['num_links'] = 3;
 		$config['page_query_string'] = true;
@@ -425,7 +429,7 @@ class taxonomy_model extends CI_Model
 	 */
 	public function listTaxTermIndex($post_id = '', $nohome_category = false) 
 	{
-		$home_category_id = $this->config_model->load_single('content_frontpage_category', $this->lang->get_current_lang());
+		$home_category_id = $this->config_model->loadSingle('content_frontpage_category', $this->lang->get_current_lang());
 		
 		//
 		$this->db->join('taxonomy_term_data', 'taxonomy_index.tid = taxonomy_term_data.tid', 'inner');

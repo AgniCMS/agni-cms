@@ -296,7 +296,7 @@ class menu extends admin_controller
 		$this->taxonomy_model->tax_type = 'tag';
 		
 		// list tags
-		$list_tags = $this->taxonomy_model->listTags('admin');
+		$list_tags = $this->taxonomy_model->listTags(array('list_for' => 'admin'));
 		
 		$output = '';
 		
@@ -439,7 +439,7 @@ class menu extends admin_controller
 		unset($form_status);
 		
 		// list menu group
-		$output['list_group'] = $this->menu_model->listMenuGroup();
+		$output['list_group'] = $this->menu_model->listMenuGroup(true, array('list_for' => 'admin'));
 		if (is_array($output['list_group'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

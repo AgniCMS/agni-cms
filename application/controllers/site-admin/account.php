@@ -48,7 +48,7 @@ class account extends admin_controller
 			$data['account_birthdate'] = strip_tags(trim($this->input->post('account_birthdate')));
 				if (empty($data['account_birthdate'])) {$data['account_birthdate'] = null;}
 			$data['account_timezone'] = trim($this->input->post('account_timezone'));
-				if (empty($data['account_timezone'])) {$data['account_timezone'] = $this->config_model->load_single('site_timezone');}
+				if (empty($data['account_timezone'])) {$data['account_timezone'] = $this->config_model->loadSingle('site_timezone');}
 			$data['account_status'] = $this->input->post('account_status');
 			$data['account_status_text'] = trim($this->input->post('account_status_text', true));
 				if (empty($data['account_status_text'])) {$data['account_status_text'] = null;}
@@ -397,13 +397,13 @@ class account extends admin_controller
 		if ($target_level_group_id == false) {redirect('site-admin');}
 		if ($this->account_model->canIAddEditAccount($target_level_group_id) == false) {redirect('site-admin');}
 		
-		// list logins
+		// send output account data
 		$output['account_id'] = $account_id;
 		$output['account_username'] = $this->account_model->show_accounts_info($account_id, 'account_id', 'account_username');
 		
-		// sort
+		// sort and list logins
 		$output['sort'] = ($this->input->get('sort') == null || $this->input->get('sort') == 'desc' ? 'asc' : 'desc');
-		$output['list_item'] = $this->account_model->listAccountLogins($account_id);
+		$output['list_item'] = $this->account_model->listAccountLogins($account_id, array('list_for' => 'admin'));
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

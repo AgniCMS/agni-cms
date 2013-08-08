@@ -194,7 +194,7 @@ class siteman extends admin_controller
 		unset($form_status);
 		
 		// list websites
-		$output['list_websites'] = $this->siteman_model->listWebsites();
+		$output['list_websites'] = $this->siteman_model->listWebsites('', array('list_for' => 'admin'));
 		if (is_array($output['list_websites'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

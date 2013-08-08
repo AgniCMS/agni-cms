@@ -265,7 +265,7 @@ class themes_model extends CI_Model
 		$this->db->where('theme_system_name', $theme_system_name);
 		if ($this->db->count_all_results('themes') <= 0) {
 			// not in db, use insert.
-			$pdata = $this->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info' );
+			$pdata = $this->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info');
 			
 			// check if enabled
 			if ($this->isEnabledTheme($theme_system_name)) {
@@ -288,7 +288,7 @@ class themes_model extends CI_Model
 			}
 		} else {
 			// get theme data from theme name.info
-			$pdata = $this->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info' );
+			$pdata = $this->readThemeMetadata($theme_system_name.'/'.$theme_system_name.'.info');
 			
 			// in db, use update
 			$this->db->trans_start();

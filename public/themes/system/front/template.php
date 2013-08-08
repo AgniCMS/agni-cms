@@ -43,7 +43,7 @@
 		<div class="container page-container">
 			<header class="row-fluid page-header-row clearfix">
 				<div class="span12">
-					<h1 class="pull-left brand"><?php echo anchor(base_url(), $this->config_model->load_single('site_name'), array('rel' => 'home', 'class' => 'site-name site-title')); ?></h1>
+					<h1 class="pull-left brand"><?php echo anchor(base_url(), $this->config_model->loadSingle('site_name'), array('rel' => 'home', 'class' => 'site-name site-title')); ?></h1>
 					<div class="pull-right account-header-area">
 						<?php
 						if ($this->account_model->isMemberLogin()) {

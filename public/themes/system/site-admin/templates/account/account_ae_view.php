@@ -38,7 +38,7 @@
 		</div>
 		<?php endif; ?> 
 		
-		<?php if ($this->config_model->load_single('allow_avatar') == '1' && $this->uri->segment(3) == 'edit'): ?> 
+		<?php if ($this->config_model->loadSingle('allow_avatar') == '1' && $this->uri->segment(3) == 'edit'): ?> 
 		<div class="control-group">
 			<label class="control-label"><?php echo lang('account_avatar'); ?>: </label>
 			<div class="controls">
@@ -49,7 +49,7 @@
 				</div>
 				<?php endif; ?>
 				<input type="file" name="account_avatar" /><br />
-				<span class="help-block">&lt;= <?php echo $this->config_model->load_single('avatar_size'); ?>KB. <?php echo str_replace('|', ', ', $this->config_model->load_single('avatar_allowed_types')); ?></span>
+				<span class="help-block">&lt;= <?php echo $this->config_model->loadSingle('avatar_size'); ?>KB. <?php echo str_replace('|', ', ', $this->config_model->loadSingle('avatar_allowed_types')); ?></span>
 			</div>
 		</div>
 		<?php endif; ?> 
@@ -73,7 +73,7 @@
 		<div class="control-group">
 			<label class="control-label"><?php echo lang('account_timezone'); ?>: </label>
 			<div class="controls">
-				<?php echo timezone_menu((isset($account_timezone) ? $account_timezone : $this->config_model->load_single('site_timezone')), 'input-block-level', 'account_timezone'); ?>
+				<?php echo timezone_menu((isset($account_timezone) ? $account_timezone : $this->config_model->loadSingle('site_timezone')), 'input-block-level', 'account_timezone'); ?>
 			</div>
 		</div>
 		
@@ -137,7 +137,7 @@
 		}
 	});// jquery document ready
 
-	<?php if ($this->config_model->load_single('allow_avatar') == '1' && $this->uri->segment(3) == 'edit'): ?> 
+	<?php if ($this->config_model->loadSingle('allow_avatar') == '1' && $this->uri->segment(3) == 'edit'): ?> 
 	function ajax_delete_avatar() {
 		$confirm = confirm('<?php echo lang('account_are_you_sure_delete_avatar'); ?>');
 		

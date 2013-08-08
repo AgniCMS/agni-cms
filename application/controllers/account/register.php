@@ -27,7 +27,7 @@ class register extends MY_Controller
 	
 	public function index() 
 	{
-		if ($this->config_model->load_single('member_allow_register') == '0') {redirect($this->base_url);}// check for allowed register?
+		if ($this->config_model->loadSingle('member_allow_register') == '0') {redirect($this->base_url);}// check for allowed register?
 		
 		// set breadcrumb ----------------------------------------------------------------------------------------------------------------------
 		$breadcrumb[] = array('text' => $this->lang->line('frontend_home'), 'url' => '/');

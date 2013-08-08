@@ -194,7 +194,7 @@ class post extends MY_Controller
 		
 		// load comment setting------------------------
 		$output['comment_allow'] = $row->post_comment;
-		$global_comment_setting = $this->config_model->load_single('comment_allow');
+		$global_comment_setting = $this->config_model->loadSingle('comment_allow');
 		if ($global_comment_setting != null) {
 			$output['comment_allow'] = $global_comment_setting;
 		}
@@ -350,7 +350,7 @@ class post extends MY_Controller
 		
 		// load comment setting------------------------
 		$output['comment_allow'] = $row->post_comment;
-		$global_comment_setting = $this->config_model->load_single('comment_allow');
+		$global_comment_setting = $this->config_model->loadSingle('comment_allow');
 		if ($global_comment_setting != null) {
 			$output['comment_allow'] = $global_comment_setting;
 		}

@@ -248,9 +248,10 @@ class menu_model extends CI_Model
 	/**
 	 * list menu group
 	 * @param boolean $limit
+	 * @param array $data
 	 * @return mixed 
 	 */
-	public function listMenuGroup($limit = true) 
+	public function listMenuGroup($limit = true, $data = array()) 
 	{
 		$this->db->where('language', $this->language);
 		
@@ -276,8 +277,12 @@ class menu_model extends CI_Model
 			
 			// pagination-----------------------------
 			$this->load->library('pagination');
-			$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.$orders.'&amp;sort='.$sort;
-			$config['per_page'] = 20;
+			$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
+			if (isset($data['per_page']) && is_numeric($data['per_page'])) {
+				$config['per_page'] = $data['per_page'];
+			} else {
+				$config['per_page'] = (isset($data['list_for']) && $data['list_for'] == 'admin' ? 20 : $this->config_model->loadSingle('content_items_perpage'));
+			}
 			$config['total_rows'] = $total;
 			// pagination tags customize for bootstrap css framework
 			$config['num_links'] = 3;

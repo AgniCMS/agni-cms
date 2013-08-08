@@ -193,7 +193,7 @@ class module extends admin_controller
 		unset($form_status);
 		
 		// list modules
-		$output['list_item'] = $this->modules_model->listAllModules();
+		$output['list_item'] = $this->modules_model->listAllModules(array('list_for' => 'admin'));
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

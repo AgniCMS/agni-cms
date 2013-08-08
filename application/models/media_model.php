@@ -216,10 +216,10 @@ class media_model extends CI_Model
 	
 	/**
 	 * list media
-	 * @param admin|front $list_for
+	 * @param array $data
 	 * @return mixed 
 	 */
-	public function listMedia($list_for = 'front', $data = array()) 
+	public function listMedia($data = array()) 
 	{
 		$this->db->join('accounts', 'accounts.account_id = files.account_id', 'left');
 		
@@ -279,12 +279,11 @@ class media_model extends CI_Model
 		
 		// pagination-----------------------------
 		$this->load->library('pagination');
-		if ($list_for == 'admin') {
-			$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort).'&amp;filter='.$filter.'&amp;filter_val='.$filter_val.($q != null ?'&amp;q='.$q : '');
-			$config['per_page'] = 20;
+		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
+		if (isset($data['per_page']) && is_numeric($data['per_page'])) {
+			$config['per_page'] = $data['per_page'];
 		} else {
-			$config['base_url'] = site_url($this->uri->uri_string()).'?'.($q != null ?'q='.$q : '');
-			$config['per_page'] = $this->config_model->load_single('content_items_perpage');
+			$config['per_page'] = (isset($data['list_for']) && $data['list_for'] == 'admin' ? 20 : $this->config_model->loadSingle('content_items_perpage'));
 		}
 		$config['total_rows'] = $total;
 		// pagination tags customize for bootstrap css framework
@@ -465,7 +464,7 @@ class media_model extends CI_Model
 			
 			// config
 			$config['upload_path'] = $current_path;
-			$config['allowed_types'] = $this->config_model->load_single('media_allowed_types');
+			$config['allowed_types'] = $this->config_model->loadSingle('media_allowed_types');
 			
 			if (!preg_match("/^[A-Za-z 0-9~_\-.+={}\"'()]+$/", $_FILES['file']['name'])) {
 				// this file has not safe file name. encrypt it.

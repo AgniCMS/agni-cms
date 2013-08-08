@@ -104,7 +104,7 @@ class config extends admin_controller
 			foreach ($query->result() as $row) {
 				$output[$row->config_name] = htmlspecialchars($row->config_value);
 			}
-			$output['content_frontpage_category'] = $this->config_model->load_single('content_frontpage_category', $this->lang->get_current_lang());
+			$output['content_frontpage_category'] = $this->config_model->loadSingle('content_frontpage_category', $this->lang->get_current_lang());
 		} else {
 			log_message('error', 'No config in config table.');
 			redirect('site-admin');

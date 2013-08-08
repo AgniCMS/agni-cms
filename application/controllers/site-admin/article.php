@@ -198,7 +198,7 @@ class article extends admin_controller
 		$_GET['q'] = trim($this->input->get('term'));
 		
 		$this->taxonomy_model->tax_type = 'tag';
-		$list_tags = $this->taxonomy_model->listTags('admin');
+		$list_tags = $this->taxonomy_model->listTags(array('list_for' => 'admin'));
 		
 		$output = '';
 		if (isset($list_tags['items']) && is_array($list_tags['items'])) {

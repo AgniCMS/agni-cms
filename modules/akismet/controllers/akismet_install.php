@@ -33,7 +33,7 @@ class akismet_install extends admin_controller
 		
 		// install config name ------------------------------------------------------------------------------------------------------------------
 		$this->db->where('config_name', 'akismet_api');
-		$query = $this->db->get('config');
+		$query = $this->db->get($this->db->dbprefix($site_id . 'config'));
 		if ($query->num_rows() <= 0) {
 			$this->db->set('config_name', 'akismet_api');
 			$this->db->set('config_value', null);

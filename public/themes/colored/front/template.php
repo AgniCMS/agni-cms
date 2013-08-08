@@ -42,7 +42,7 @@
 		
 		<div class="container container_12 page-header">
 			<div class="inner-page-header">
-				<?php $header_tag = (current_url() == site_url() || current_url() == site_url('/') ? 'h1' : 'div');?><<?php echo $header_tag; ?> class="grid_12 site-name"><a href="<?php echo site_url(); ?>"><?php echo $this->config_model->load_single('site_name'); ?></a></<?php echo $header_tag; ?>>
+				<?php $header_tag = (current_url() == site_url() || current_url() == site_url('/') ? 'h1' : 'div');?><<?php echo $header_tag; ?> class="grid_12 site-name"><a href="<?php echo site_url(); ?>"><?php echo $this->config_model->loadSingle('site_name'); ?></a></<?php echo $header_tag; ?>>
 				<div class="grid_12 page-banner<?php if ($area_banner == null) {echo ' default-banner';} ?>">
 					<?php echo $area_banner; ?> 
 				</div>

@@ -438,7 +438,7 @@ class account_model extends CI_Model
 					// account is not disable
 					
 					// check if globa config not allow duplicate login
-					if ($this->config_model->load_single('duplicate_login') == '0') {
+					if ($this->config_model->loadSingle('duplicate_login') == '0') {
 						if ($this->isDuplicateLogin($id, $onlinecode) === true) {
 							// dup log in detected.
 							$query->free_result();
@@ -494,7 +494,7 @@ class account_model extends CI_Model
 		// return cached
 		if ($account_val != null) {
 			// check global config not allow duplicate login
-			if ($this->config_model->load_single('duplicate_login') == '0') {
+			if ($this->config_model->loadSingle('duplicate_login') == '0') {
 				if ($onlinecode != $account_val) {
 					// duplicate login detected
 					
@@ -847,7 +847,7 @@ class account_model extends CI_Model
 		unset($send_change_email);
 		
 		// check avatar upload
-		 if ($this->config_model->load_single('allow_avatar') == '1' && (isset($_FILES['account_avatar']['name']) && $_FILES['account_avatar']['name'] != null)) {
+		 if ($this->config_model->loadSingle('allow_avatar') == '1' && (isset($_FILES['account_avatar']['name']) && $_FILES['account_avatar']['name'] != null)) {
 			 $result = $this->uploadAvatar($data['account_id']);
 			 if (isset($result['result']) && $result['result'] === true) {
 				 $data['account_avatar'] = $result['account_avatar'];
@@ -1227,12 +1227,12 @@ class account_model extends CI_Model
 		// pagination-----------------------------
 		$this->load->library('pagination');
 		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
-		$config['total_rows'] = $total;
 		if (isset($data['per_page']) && is_numeric($data['per_page'])) {
 			$config['per_page'] = $data['per_page'];
 		} else {
-			$config['per_page'] = (isset($data['list_for']) && $data['list_for'] == 'admin' ? 20 : $this->config_model->load_single('content_items_perpage'));
+			$config['per_page'] = (isset($data['list_for']) && $data['list_for'] == 'admin' ? 20 : $this->config_model->loadSingle('content_items_perpage'));
 		}
+		$config['total_rows'] = $total;
 		// pagination tags customize for bootstrap css framework
 		$config['num_links'] = 3;
 		$config['page_query_string'] = true;
@@ -1276,9 +1276,10 @@ class account_model extends CI_Model
 	/**
 	 * list account logins
 	 * @param integer $account_id
+	 * @param array $data
 	 * @return mixed 
 	 */
-	public function listAccountLogins($account_id = '') 
+	public function listAccountLogins($account_id = '', $data = array()) 
 	{
 		if (!is_numeric($account_id)) {return null;}
 		
@@ -1307,9 +1308,13 @@ class account_model extends CI_Model
 		
 		// pagination-----------------------------
 		$this->load->library('pagination');
-		$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort);
+		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page', 'orders', 'sort')) . '&amp;orders=' . htmlspecialchars($orders) . '&amp;sort=' . htmlspecialchars($sort);
 		$config['total_rows'] = $total;
-		$config['per_page'] = 20;
+		if (isset($data['per_page']) && is_numeric($data['per_page'])) {
+			$config['per_page'] = $data['per_page'];
+		} else {
+			$config['per_page'] = (isset($data['list_for']) && $data['list_for'] == 'admin' ? 20 : $this->config_model->loadSingle('content_items_perpage'));
+		}
 		// pagination tags customize for bootstrap css framework
 		$config['num_links'] = 3;
 		$config['page_query_string'] = true;
@@ -1491,7 +1496,7 @@ class account_model extends CI_Model
 		unset($send_change_email);
 		
 		// check avatar upload
-		 if ($this->config_model->load_single('allow_avatar') == '1' && (isset($_FILES['account_avatar']['name']) && $_FILES['account_avatar']['name'] != null)) {
+		 if ($this->config_model->loadSingle('allow_avatar') == '1' && (isset($_FILES['account_avatar']['name']) && $_FILES['account_avatar']['name'] != null)) {
 			 $result = $this->uploadAvatar($data['account_id']);
 			 if (isset($result['result']) && $result['result'] === true) {
 				 $data['account_avatar'] = $result['account_avatar'];
@@ -1679,7 +1684,7 @@ class account_model extends CI_Model
 		$data['account_create'] = date('Y-m-d H:i:s', time());
 		$data['account_create_gmt'] = date('Y-m-d H:i:s', local_to_gmt(time()));
 		$data['account_status'] = '0';
-		if ($this->config_model->load_single('member_verification') == '2') {
+		if ($this->config_model->loadSingle('member_verification') == '2') {
 			$data['account_status_text'] = 'Waiting for admin verification.';
 		}
 		
@@ -1762,7 +1767,7 @@ class account_model extends CI_Model
 			$email_content = str_replace("%linkcancel%", $link_cancel, $email_content);
 			
 			// send email
-			$this->email->from($this->config_model->load_single('mail_sender_email'));
+			$this->email->from($this->config_model->loadSingle('mail_sender_email'));
 			$this->email->to($email);
 			$this->email->subject($this->lang->line('account_email_reset_password1'));
 			$this->email->message($email_content);
@@ -1818,7 +1823,7 @@ class account_model extends CI_Model
 		$email_content = str_replace("%linkcancel%", $link_cancel, $email_content);
 		
 		// send email
-		$this->email->from($this->config_model->load_single('mail_sender_email'));
+		$this->email->from($this->config_model->loadSingle('mail_sender_email'));
 		$this->email->to($data['account_old_email']);
 		$this->email->subject($this->lang->line('account_email_change1'));
 		$this->email->message($email_content);

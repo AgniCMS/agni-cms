@@ -120,7 +120,7 @@ class edit_profile extends MY_Controller
 			$data['account_birthdate'] = strip_tags(trim($this->input->post('account_birthdate')));
 				if (empty($data['account_birthdate'])) {$data['account_birthdate'] = null;}
 			$data['account_timezone'] = trim($this->input->post('account_timezone'));
-				if (empty($data['account_timezone'])) {$data['account_timezone'] = $this->config_model->load_single('site_timezone');}
+				if (empty($data['account_timezone'])) {$data['account_timezone'] = $this->config_model->loadSingle('site_timezone');}
 			
 			// load form validation
 			$this->load->library('form_validation');

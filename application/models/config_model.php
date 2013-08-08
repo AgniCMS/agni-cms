@@ -67,7 +67,7 @@ class config_model extends CI_Model
 	 */
 	public function load($fields = array()) 
 	{
-		if (! is_array($fields)) {return $this->load_single($fields);}
+		if (! is_array($fields)) {return $this->loadSingle($fields);}
 		if (empty($fields)) {return array();}
 		
 		$this->db->where_in('config_name', $fields);

@@ -204,7 +204,7 @@ class modules_model extends CI_Model
 	 */
 	public function doActivate($module_system_name = '', $site_id = '') 
 	{
-		$pdata = $this->readModuleMetadata($module_system_name.'/'.$module_system_name.'_module.php' );
+		$pdata = $this->readModuleMetadata($module_system_name.'/'.$module_system_name.'_module.php');
 		
 		// check if module is inserted
 		$row = $this->getModulesData(array('module_system_name' => $module_system_name));
@@ -594,9 +594,10 @@ class modules_model extends CI_Model
 	
 	/**
 	 * list all modules
+	 * @param array $data
 	 * @return mixed 
 	 */
-	public function listAllModules() 
+	public function listAllModules($data = array()) 
 	{
 		$dir = $this->scanModuleDir();
 		
@@ -609,9 +610,13 @@ class modules_model extends CI_Model
 		
 		// pagination-----------------------------
 		$this->load->library('pagination');
-		$config['base_url'] = site_url($this->uri->uri_string()).'?';
+		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
+		if (isset($data['per_page']) && is_numeric($data['per_page'])) {
+			$config['per_page'] = $data['per_page'];
+		} else {
+			$config['per_page'] = (isset($data['list_for']) && $data['list_for'] == 'admin' ? 20 : $this->config_model->loadSingle('content_items_perpage'));
+		}
 		$config['total_rows'] = count($dir);
-		$config['per_page'] = 20;
 		$config['use_page_numbers'] = true;
 		// pagination tags customize for bootstrap css framework
 		$config['num_links'] = 3;

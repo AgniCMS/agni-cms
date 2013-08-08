@@ -685,12 +685,11 @@ class posts_model extends CI_Model
 		
 		// pagination-----------------------------
 		$this->load->library('pagination');
-		if ($list_for == 'admin') {
-			$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort).($q != null ?'&amp;q='.$q : '').($tid != null ? '&amp;tid='.$tid : '');
-			$config['per_page'] = 20;
+		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
+		if (isset($data['per_page']) && is_numeric($data['per_page'])) {
+			$config['per_page'] = $data['per_page'];
 		} else {
-			$config['base_url'] = site_url($this->uri->uri_string()).'?'.($q != null ?'q='.$q : '');
-			$config['per_page'] = $this->config_model->load_single('content_items_perpage');
+			$config['per_page'] = ($list_for == 'admin' ? 20 : $this->config_model->loadSingle('content_items_perpage'));
 		}
 		$config['total_rows'] = $total;
 		// pagination tags customize for bootstrap css framework

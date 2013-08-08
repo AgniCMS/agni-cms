@@ -62,7 +62,7 @@
 			<div class="control-group">
 				<div class="controls">
 					<button type="submit" class="btn btn-primary"><?php echo lang('account_register'); ?></button> 
-					<?php if ($this->config_model->load_single('member_verification') == '1') {echo anchor('account/resend-activate', lang('account_not_get_verify_email'));} ?>
+					<?php if ($this->config_model->loadSingle('member_verification') == '1') {echo anchor('account/resend-activate', lang('account_not_get_verify_email'));} ?>
 				</div>
 			</div>
 			

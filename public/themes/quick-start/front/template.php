@@ -41,7 +41,7 @@
 		
 		<div class="container page-header-row">
 			<header class="row">
-				<h1 class="span12 site-name"><a href="<?php echo site_url(); ?>"><?php echo $this->config_model->load_single('site_name'); ?></a></h1>
+				<h1 class="span12 site-name"><a href="<?php echo site_url(); ?>"><?php echo $this->config_model->loadSingle('site_name'); ?></a></h1>
 				<nav class="span12 navbar">
 					<?php echo $area_navigation; ?> 
 					<div class="clear"></div>

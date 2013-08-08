@@ -51,7 +51,7 @@ class index extends MY_Controller
 		}
 		
 		// get frontpage category from config
-		$fp_category = $this->config_model->load_single('content_frontpage_category', $this->lang->get_current_lang());
+		$fp_category = $this->config_model->loadSingle('content_frontpage_category', $this->lang->get_current_lang());
 		
 		if ($fp_category != null) {
 			// load category for title, metas

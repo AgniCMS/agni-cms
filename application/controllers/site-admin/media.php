@@ -598,7 +598,8 @@ class media extends admin_controller
 		
 		// list item
 		$data['folder'] = $current_path.'/';
-		$output['list_item'] = $this->media_model->listMedia('admin', $data);
+		$data['list_for'] = 'admin';
+		$output['list_item'] = $this->media_model->listMedia($data);
 		unset($data);
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
@@ -758,7 +759,8 @@ class media extends admin_controller
 		
 		// list item
 		$data['folder'] = $current_path.'/';
-		$output['list_item'] = $this->media_model->listMedia('admin', $data);
+		$data['list_for'] = 'admin';
+		$output['list_item'] = $this->media_model->listMedia($data);
 		unset($data);
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();

@@ -212,7 +212,7 @@ class urls extends admin_controller
 		$output['q'] = htmlspecialchars(trim($this->input->get('q')), ENT_QUOTES, config_item('charset'));
 		
 		// list item
-		$output['list_item'] = $this->url_model->listUrlItem();
+		$output['list_item'] = $this->url_model->listUrlItem(array('list_for' => 'admin'));
 		if (is_array($output['list_item'])) {
 			$output['pagination'] = $this->pagination->create_links();
 		}

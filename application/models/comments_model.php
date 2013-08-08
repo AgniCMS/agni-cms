@@ -268,7 +268,7 @@ class comments_model extends CI_Model
 		$query->free_result();
 		
 		//
-		$num_per_page = $this->config_model->load_single('comment_perpage');
+		$num_per_page = $this->config_model->loadSingle('comment_perpage');
 		return (floor(($row->count+1)/$num_per_page)*$num_per_page);
 	}// getCommentDisplayPage
 	
@@ -419,12 +419,11 @@ class comments_model extends CI_Model
 		
 		// pagination-----------------------------
 		$this->load->library('pagination');
-		if ($list_for == 'admin') {
-			$config['base_url'] = site_url($this->uri->uri_string()).'?orders='.htmlspecialchars($orders).'&amp;sort='.htmlspecialchars($sort).($q != null ?'&amp;q='.$q : '').($filter != null && $filter_val != null ? '&amp;filter='.$filter.'&amp;filter_val='.$filter_val : '');
-			$config['per_page'] = 20;
+		$config['base_url'] = site_url($this->uri->uri_string()).'?' . generate_querystring_except(array('per_page'));
+		if (isset($data['per_page']) && is_numeric($data['per_page'])) {
+			$config['per_page'] = $data['per_page'];
 		} else {
-			$config['base_url'] = site_url($this->uri->uri_string()).'?';
-			$config['per_page'] = $this->config_model->load_single('comment_perpage');
+			$config['per_page'] = ($list_for == 'admin' ? 20 : $this->config_model->loadSingle('comment_perpage'));
 		}
 		$config['total_rows'] = $total;
 		// pagination tags customize for bootstrap css framework

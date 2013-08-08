@@ -30,7 +30,7 @@ function gmt_date($dateformat = 'Y-m-d H:i:s', $time = '', $gmt = '') {
 	if ($gmt == null) {
 		// get gmt from global config
 		$CI->load->model('config_model');
-		$global_gmt = $CI->config_model->load_single('site_timezone');
+		$global_gmt = $CI->config_model->loadSingle('site_timezone');
 		
 		// load account_model
 		$CI->load->model('account_model');
