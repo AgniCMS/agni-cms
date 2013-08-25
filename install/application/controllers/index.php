@@ -129,7 +129,7 @@ class index extends MY_Controller
 		}
 		
 		// magic quote gpc
-		if (get_magic_quotes_gpc()) {
+		if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
 			// is on
 			$list_verify['agni_vf_magic_quote_gpc']['value'] = lang('agni_enable');
 			$list_verify['agni_vf_magic_quote_gpc']['result'] = 'fail';
