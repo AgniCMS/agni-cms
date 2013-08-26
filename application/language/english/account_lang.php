@@ -93,6 +93,9 @@ $lang['account_wrong_captcha_code'] = 'You entered wrong captcha code!';
 $lang['account_wrong_password'] = 'Wrong password.';
 $lang['account_wrong_username_or_password'] = 'Sorry, wrong username or password.';
 
+// form validation error message
+$lang['account_invalid_space_between_text'] = 'The %s field does not allow to contain space between text.';
+
 // permission
 $lang['account_add_perm'] = 'Add an account';
 $lang['account_admin_login'] = 'Login at admin page';

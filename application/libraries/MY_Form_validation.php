@@ -14,6 +14,32 @@ class MY_Form_validation extends CI_Form_validation
 	}// __construct
 	
 	
+	/**
+	 * no space between text.
+	 * @param string $string
+	 * @return boolean
+	 */
+	public function no_space_between_text($string = '') 
+	{
+		$ci =& get_instance();
+
+		// if not found space.
+		if (preg_match('/\s/', $string) == false) {
+			// not found space, return true.
+			return true;
+		} else {
+			// found space, return false.
+			$ci->form_validation->set_message('no_space_between_text', $ci->lang->line('account_invalid_space_between_text'));
+			return false;
+		}
+	}// no_space_between_text
+	
+	
+	/**
+	 * check date value.
+	 * @param string $str
+	 * @return boolean
+	 */
 	public function preg_match_date($str = '') 
 	{
 		$this->CI =& get_instance();

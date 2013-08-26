@@ -47,7 +47,7 @@ class register extends MY_Controller
 			
 			// load form validation
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules('account_username', 'lang:account_username', 'trim|required|xss_clean|min_length[1]');
+			$this->form_validation->set_rules('account_username', 'lang:account_username', 'trim|required|xss_clean|min_length[1]|no_space_between_text');
 			$this->form_validation->set_rules('account_email', 'lang:account_email', 'trim|required|valid_email|xss_clean');
 			$this->form_validation->set_rules('account_password', 'lang:account_password', 'trim|required');
 			$this->form_validation->set_rules('account_confirm_password', 'lang:account_confirm_password', 'trim|required|matches[account_password]');
