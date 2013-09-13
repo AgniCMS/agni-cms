@@ -28,7 +28,7 @@
 		<script type="text/javascript">
 			// declare variable for use in .js file
 			var base_url = '<?php echo $this->base_url; ?>';
-			var site_url = '<?php echo site_url(); ?>/';
+			var site_url = '<?php echo site_url('/'); ?>';
 			var csrf_name = '<?php echo config_item('csrf_token_name'); ?>';
 			var csrf_value = '<?php echo $this->security->get_csrf_hash(); ?>';
 		</script>
