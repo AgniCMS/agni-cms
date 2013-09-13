@@ -282,14 +282,17 @@
 	
 <?php echo form_close(); ?> 
 
-<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/tiny_mce/jquery.tinymce.js"></script>
+<script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/tinymce4/jquery.tinymce.min.js"></script>
+<?php /*script type="text/javascript" src="<?php echo $this->theme_path; ?>share-js/tiny_mce/jquery.tinymce.js"></script>*/ // this code is for TinyMCE v.3 ?>
 <script type="text/javascript">
 	make_tabs();
+	
 	
 	$(document).ready(function() {
 		$('#accordion').accordion({ 
 			autoHeight: false
 		});// accordion
+		
 		
 		<?php if ($this->uri->segment(3) == 'add'): ?> 
 		// convert from name to uri (php+ajax)
@@ -299,22 +302,79 @@
 		});// name to uri
 		<?php endif; ?> 
 
+
 		// check for no duplicate uri while entering
 		$(".post_uri").keyup(function() {
 			var uri_val = $(this).val();
 			delay(function(){ajax_check_uri(uri_val);}, 2000);
 		});// check uri
 		
+		
 		$('.revision-log').keyup(function() {
 			$('.revision-check').attr('checked', 'checked');
 		});// auto check new revision
 		
+		
 		$('.post-body, .post-header-tags').tabby();// use tab in textarea
+		
 		
 		$('.post-summary').tinymce({
 			// Location of TinyMCE script
-			script_url : '<?php echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
+			script_url : '<?php echo $this->theme_path; ?>share-js/tinymce4/tinymce.min.js',
 			content_css : '<?php echo $this->theme_path; ?>share-css/bootstrap/css/bootstrap.min.css',
+			// fix bug when open and tinymce not show in first time.
+			height: '150px',
+			width: '100%',
+			
+			image_advtab: true,
+			schema: 'html5',
+			theme : "modern",
+			plugins: ['code', 'image', 'link', 'textcolor'],
+			
+			// HTML5 formats
+			style_formats : [
+				{title: 'Headers', items: [
+					{title: 'Header 1', block: 'h1'},
+					{title: 'Header 2', block: 'h2'},
+					{title: 'Header 3', block: 'h3'},
+					{title: 'Header 4', block: 'h4'},
+					{title: 'Header 5', block: 'h5'},
+					{title: 'Header 6', block: 'h6'}
+				]},
+			
+				{title: 'Inline', items: [
+					{title: 'B Bold', inline: 'strong'},
+					{title: 'I Italic', inline: 'em'},
+					{title: 'U Underline', inline: 'span', styles: {'text-decoration': 'underline'}},
+					{title: 'S Strikethrough', inline: 'span', styles: {'text-decoration': 'line-through'}},
+					{title: 'x² Superscript', inline: 'sup'},
+					{title: 'x₂ Subscript', inline: 'sub'},
+					{title: '<> Code', inline: 'code'}
+				]},
+			
+				{title: 'Blocks', items: [
+					{title: 'Paragraph', block: 'p'},
+					{title: 'Blockquote', block: 'blockquote'},
+					{title: 'Div', block: 'div'},
+					{title: 'Pre', block: 'pre'}
+				]},
+
+				{title: 'Containers', items: [
+					{title: 'section', block: 'section', wrapper: true, merge_siblings: false},
+					{title: 'article', block: 'article', wrapper: true, merge_siblings: false},
+					{title: 'blockquote', block: 'blockquote', wrapper: true},
+					{title: 'hgroup', block: 'hgroup', wrapper: true},
+					{title: 'aside', block: 'aside', wrapper: true},
+					{title: 'figure', block: 'figure', wrapper: true}
+				]}
+			],
+			
+			toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | forecolor backcolor | link image'
+			
+			// the source code below for use with TinyMCE v.3 ---------------------------
+			/*// Location of TinyMCE script
+			script_url : '<?php //echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
+			content_css : '<?php //echo $this->theme_path; ?>share-css/bootstrap/css/bootstrap.min.css',
 			// fix bug when open and tinymce not show in first time.
 			height: '150px',
 			width: '100%',
@@ -347,13 +407,44 @@
 			theme_advanced_buttons2: "",
 			theme_advanced_buttons3: "",
 			theme_advanced_resizing : true,
-			theme_advanced_resize_horizontal : false
+			theme_advanced_resize_horizontal : false*/
+			// end source code for TinyMCE v.3 -------------------------------------------
 		});// tinymce summary
+		
+		
 		$('.post-body').tinymce({
 			// Location of TinyMCE script
-			script_url : '<?php echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
-			apply_source_formatting : true,
+			script_url : '<?php echo $this->theme_path; ?>share-js/tinymce4/tinymce.min.js',
 			content_css : '<?php echo $this->theme_path; ?>share-css/bootstrap/css/bootstrap.min.css',
+			
+			// fix bug when open and tinymce not show in first time.
+			height: '400px',
+			width: '100%',
+			
+			convert_urls : true,
+			document_base_url : base_url,
+			image_advtab: true,
+			inline_styles : true,
+			preformatted : false,
+			relative_urls : false,
+			schema: 'html5',
+			theme : "modern",
+			
+			plugins: [
+					"advlist autolink lists link image charmap print preview hr anchor pagebreak",
+					"searchreplace wordcount visualblocks visualchars code fullscreen",
+					"insertdatetime media nonbreaking save table contextmenu directionality",
+					"emoticons template paste textcolor"
+			],
+			
+			toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+			toolbar2: "print preview media | forecolor backcolor emoticons"
+			
+			// the source code below for use with TinyMCE v.3 ---------------------------
+			/*/ Location of TinyMCE script
+			script_url : '<?php //echo $this->theme_path; ?>share-js/tiny_mce/tiny_mce.js',
+			apply_source_formatting : true,
+			content_css : '<?php //echo $this->theme_path; ?>share-css/bootstrap/css/bootstrap.min.css',
 			convert_urls : false,
 			document_base_url : base_url,
 			inline_styles : true,
@@ -385,7 +476,7 @@
 					{title : 'aside', block : 'aside', wrapper: true},
 					{title : 'figure', block : 'figure', wrapper: true}
 			],
-			
+
 			// Theme options
 			theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,formatselect,fontselect,fontsizeselect",
 			theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,|,forecolor,backcolor",
@@ -395,7 +486,8 @@
 			theme_advanced_toolbar_align : "left",
 			theme_advanced_toolbar_location : "top",
 			theme_advanced_resizing : true,
-			theme_advanced_resize_horizontal : false
+			theme_advanced_resize_horizontal : false*/
+			// end source code for TinyMCE v.3 -------------------------------------------
 		});// tinymce post-body
 	});// jquery
 	
