@@ -187,9 +187,12 @@ class agni_update
 			$ci->filesystem->chmod('application/config/database.php', '0666');
 		}
 		
+		// get index page.
+		$index_page = rtrim(str_replace($ci->lang->get_current_lang(), '', $bak_config['index_page']), '/');
+		
 		// read config.php.bak ---------------------------------------------------------------
 		$config_php = read_file('application/config/config.php.bak');
-		$config_php = preg_replace("#\\\$config\['index_page'\] = '(.*)';#", '\$config[\'index_page\'] = \''.$bak_config['index_page'].'\';', $config_php);
+		$config_php = preg_replace("#\\\$config\['index_page'\] = '(.*)';#", '\$config[\'index_page\'] = \''.$index_page.'\';', $config_php);
 		$config_php = preg_replace("#\\\$config\['uri_protocol'\] = '(.*)';#", '\$config[\'uri_protocol\'] = \''.$bak_config['uri_protocol'].'\';', $config_php);
 		$config_php = preg_replace("#\\\$config\['url_suffix'\] = '(.*)';#", '\$config[\'url_suffix\'] = \''.$bak_config['url_suffix'].'\';', $config_php);
 		$config_php = preg_replace("#\\\$config\['language'\] = '(.*)';#", '\$config[\'language\'] = \''.$bak_config['language'].'\';', $config_php);
