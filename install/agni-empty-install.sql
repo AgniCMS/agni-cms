@@ -337,7 +337,7 @@ INSERT INTO `an_config` (`config_name`, `config_value`, `config_core`, `config_d
 ('comment_new_notify_admin', '1', 1, 'notify admin when new comment?\r\n0=no, 1=yes(require moderation only), 2=yes(all)'),
 ('comment_admin_notify_emails', 'admin@localhost', 1, 'emails of administrators to notify when new comment or moderation required ?'),
 ('media_allowed_types', '7z|aac|ace|ai|aif|aifc|aiff|avi|bmp|css|csv|doc|docx|eml|flv|gif|gz|h264|h.264|htm|html|jpeg|jpg|js|json|log|mid|midi|mov|mp3|mpeg|mpg|pdf|png|ppt|psd|swf|tar|text|tgz|tif|tiff|txt|wav|webm|word|xls|xlsx|xml|xsl|zip', 1, 'media upload allowed file types.\r\nthese types must specified mime-type in config/mimes.php'),
-('agni_version', '1.3', 1, 'current Agni CMS version. use for compare with auto update.'),
+('agni_version', '1.4', 1, 'current Agni CMS version. use for compare with auto update.'),
 ('angi_auto_update', '1', 1, 'enable auto update. recommended setting to \'true\' (1 = true, 0 = false) for use auto update, but if you want manual update (core hacking or custom modification through core files) set to false.'),
 ('agni_auto_update_url', 'http://agnicms.org/modules/updateservice/update.xml', 1, 'url of auto update.'),
 ('agni_system_cron', '1', 1, 'agni system cron. set to true (1) if you want to run cron from system or set to false (0) if you already have real cron job call to http://yourdomain.tld/path-installed/cron .'),
