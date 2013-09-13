@@ -28,7 +28,7 @@ B. ติดตั้งด้วยตัวเอง
     - public/upload (และย่อยๆลงไปทั้งหมด)
     - public/themes
 
-  3. นำเข้าไฟล์ install/agni-install.sql ไปในฐานข้อมูล ภายในชื่อฐานข้อมูลที่คุณกำหนดเอง
+  3. นำเข้าไฟล์ install/agni-empty-install.sql ไปในฐานข้อมูล ภายในชื่อฐานข้อมูลที่คุณกำหนดเอง
 
   4. ตั้งค่าฐานข้อมูลในไฟล์ application/config/database.php โดยต้องกำหนดค่าต่างๆเหล่านี้ให้ถูกต้อง
     - hostname, username, password, database
@@ -66,7 +66,7 @@ B. Manual install.
     - public/upload (all sub directories and files)
     - public/themes.
 
-  3. Import install/agni-install.sql in to database.
+  3. Import install/agni-empty-install.sql in to database.
 
   4. Change configuration in application/config/database.php and these things must be configured correctly.
     - hostname, username, password, database.
