@@ -374,6 +374,7 @@
 			width: '100%',
 			
 			image_advtab: true,
+			remove_script_host: false,
 			schema: 'html5',
 			theme : "modern",
 			plugins: ['code', 'image', 'link', 'textcolor'],
@@ -474,6 +475,7 @@
 			inline_styles : true,
 			preformatted : false,
 			relative_urls : false,
+			remove_script_host: false,
 			schema: 'html5',
 			theme : "modern",
 			
