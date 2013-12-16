@@ -1,1 +1,9 @@
+To do changes with db & code.
+- is remove
++ is add
+
+-----
 database changes:
+-----
+accounts
+	- account_fullname
