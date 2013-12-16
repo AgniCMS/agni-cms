@@ -1,5 +1,0 @@
-module plug action
-
-
-module plug filter
-category_admin_bottom = ด้านล่างของหน้าเพิ่ม/แก้ไขหมวดหมู่ในส่วนของ admin

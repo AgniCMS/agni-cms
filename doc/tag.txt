@@ -1,5 +1,0 @@
-module plug action
-
-
-module plug filter
-tag_admin_bottom = ด้านล่างของหน้าเพิ่ม/แก้ไขแท็กของ admin

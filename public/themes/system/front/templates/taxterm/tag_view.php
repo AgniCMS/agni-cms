@@ -1,1 +1,0 @@
-<?php $this->load->view('front/templates/taxterm/category_view'); ?>

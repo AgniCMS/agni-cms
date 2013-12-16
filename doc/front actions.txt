@@ -1,7 +1,0 @@
-module plug action
-front_core_controller_constructor = ทำงานที่ core controller บริเวณ constructor ซึ่งเป็นจุดเริ่มต้นการทำงานของทั้งระบบ ส่งค่า $this object ของ core controller เข้าไป
-front_home_controller = ทำงานที่ controller ของหน้าแรก โดยถ้ามีโมดูลปลั๊กนี้ ระบบจะไม่ใช้ controller หน้าแรกเลย. ไม่มีส่งค่าอะไรเข้าไป
-
-module plug filter
-front_html_body_class = ให้ return ค่า class ที่จะแสดงใน <body class="...">
-front_html_head = ให้ echo ค่าต่างๆที่จะแสดงใน <head>...</head> ของหน้าแรกออกมา.
