@@ -1,9 +1,14 @@
 To do changes with db & code.
 - is remove
 + is add
+-> is change to
 
 -----
 database changes:
 -----
 accounts
-	- account_fullname
+	account_fullname -> account_display_name
+	+ account_firstname
+	+ account_middlename
+	+ account_lastname
+	- account_online_code
