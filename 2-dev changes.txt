@@ -8,7 +8,12 @@ database changes:
 -----
 accounts
 	account_fullname -> account_display_name
-	+ account_firstname
-	+ account_middlename
-	+ account_lastname
+	+ account_firstname[varchar255]
+	+ account_middlename[varchar255]
+	+ account_lastname[varchar255]
 	- account_online_code
+	account_create[date/time] -> account_create[bigint20]
+	account_create_gmt[date/time] -> account_create_gmt[bigint20]
+	account_last_login[date/time] -> account_last_login[bigint20]
+	account_last_login_gmt[date/time] -> account_last_login_gmt[bigint20]
+	+ account_confirm_code_since[bigint20]
