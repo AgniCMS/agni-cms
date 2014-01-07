@@ -17,3 +17,10 @@ accounts
 	account_last_login[date/time] -> account_last_login[bigint20]
 	account_last_login_gmt[date/time] -> account_last_login_gmt[bigint20]
 	+ account_confirm_code_since[bigint20]
+
+-----
+data changes:
+-----
+accounts
+	account_timezone from CI timezone to php timezone (http://www.php.net/manual/en/timezones.php)
+	
