@@ -19,8 +19,55 @@ accounts
 	+ account_confirm_code_since[bigint20]
 
 -----
-data changes:
+data in database changes:
 -----
 accounts
 	account_timezone from CI timezone to php timezone (http://www.php.net/manual/en/timezones.php)
+config
+	config_name change (
+		duplicate_login => simultaneous_login
+	)
+	config_value change (
+		site_timezone,
+	)
+	config_description change (
+		avatar_path, 
+		avatar_allowed_types, 
+		avatar_path, 
+		member_verification, 
+		content_items_perpage,
+		media_allowed_types,
+	)
 	
+	config add = member_disallow_username, 
+		member_max_login_fail, 
+		member_login_fail_wait_time, 
+		member_login_remember_length, 
+		member_confirm_wait_time, 
+		member_email_change_need_confirm,
+		content_admin_items_perpage,
+
+-----
+Files & Folders changes:
+-----
+- /application
+- /doc
+- /system
+- /Codeigniter license.txt
++ /assets
++ /fuel
+/public/images -> /assets/img
+
+[controllers]:
+	account/* (delete old files and add new files)
+	- site-admin/* (delete whole folder and use new folder)
+	+ admin/* (use this name instead of site-admin)
+[models]:
+	- *.* (all old files and folders)
+	+ *.* (add all new files and folders)
+[views]:
+	- *.* (all old files and folders)
+	+ *.* (add all new files and folders)
+
+Almost all files & folders structure changes except 'public/themes, public/upload'.
+The folder '/public/images' moved to 'assets/img'
