@@ -20,7 +20,7 @@ accounts
 account_level_permission
 	*empty table and let admin set their permission again.
 	+ permission_core[int1]
-	+ permission_module_system_name[varchar255]
+	+ module_system_name[varchar255]
 
 -----
 data in database changes:
