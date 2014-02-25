@@ -32,7 +32,7 @@
 		<div class="cmds">
 			<div class="span6">
 				<?php echo anchor('site-admin/media/popup', sprintf(lang('admin_total'), $list_item['total'])); ?> 
-				| <?php echo anchor('site-admin/media/popup?orders='.$orders.'&amp;sort='.$cur_sort.'&amp;filter=f.account_id&amp;filter_val='.$my_account_id, lang('media_my_file_only')); ?> 
+				| <?php echo anchor('site-admin/media/popup?orders='.$orders.'&amp;sort='.$cur_sort.'&amp;filter=files.account_id&amp;filter_val='.$my_account_id, lang('media_my_file_only')); ?> 
 				| <span class="icon-refresh cursor-pointer" onclick="window.location.reload();" title="<?php echo lang('media_reload'); ?>"></span>
 
 
