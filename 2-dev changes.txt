@@ -21,6 +21,8 @@ account_level_permission
 	*empty table and let admin set their permission again.
 	+ permission_core[int1]
 	+ module_system_name[varchar255]
++account_permission
+	+ (All fields same as account_level_permission except level_group_id change to account_id)
 
 -----
 data in database changes:
