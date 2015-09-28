@@ -33,7 +33,7 @@ class corehtmlbox extends widget
 	}// block_show_form
 	
 	
-	public function run() 
+	public static function run() 
 	{
 		// get arguments
 		$args = func_get_args();

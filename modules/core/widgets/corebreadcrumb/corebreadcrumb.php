@@ -26,13 +26,14 @@ class corebreadcrumb extends widget
 	}// __construct
 	
 	
-	public function run() 
+	public static function run() 
 	{
 		if ((current_url() == site_url()) || (current_url().'/' == site_url('/')) || (current_url() == site_url('/'))) {
 			// on home page = not show.
 			return ;
 		}
 		
+		$thisclass = new self;
 		$args = func_get_args();
 		
 		// if there is data send from controller or view.
@@ -67,20 +68,20 @@ class corebreadcrumb extends widget
 		} else {
 			// there is no data send from controller or view, use old breadcrumb style.
 			// load cache driver
-			$this->load->driver('cache', array('adapter' => 'file'));
-			if (false === $output = $this->cache->get('breadcrumb_'.md5(current_url()))) {
+			$thisclass->load->driver('cache', array('adapter' => 'file'));
+			if (false === $output = $thisclass->cache->get('breadcrumb_'.md5(current_url()))) {
 				$output = '<ul>';
 				// start from Home
 				$output .= '<li>'.anchor('', lang('coremd_breadcrumb_home')).'</li>';
 				// loop each uri to breadcrumb
-				$segs = $this->uri->segment_array();
+				$segs = $thisclass->uri->segment_array();
 				foreach ($segs as $segment) {
 					// lookup in url alias
-					$this->db->join('posts', 'url_alias.uri = posts.post_uri', 'left');
-					$this->db->join('taxonomy_term_data', 'url_alias.uri = taxonomy_term_data.t_uri', 'left');
-					$this->db->where('uri_encoded', $segment);
-					$this->db->where('url_alias.language', $this->lang->get_current_lang());
-					$query = $this->db->get('url_alias');
+					$thisclass->db->join('posts', 'url_alias.uri = posts.post_uri', 'left');
+					$thisclass->db->join('taxonomy_term_data', 'url_alias.uri = taxonomy_term_data.t_uri', 'left');
+					$thisclass->db->where('uri_encoded', $segment);
+					$thisclass->db->where('url_alias.language', $thisclass->lang->get_current_lang());
+					$query = $thisclass->db->get('url_alias');
 					
 					if ($query->num_rows() > 0) {
 						$row = $query->row();
@@ -91,16 +92,16 @@ class corebreadcrumb extends widget
 						} elseif ($c_type == 'tag') {
 							$output .= '<li>'.anchor('tag/'.$row->t_uris, $row->t_name).'</li>';
 						} elseif ($c_type == 'article') {
-							$output .= '<li>'.anchor($this->uri->uri_string(), $row->post_name).'</li>';
+							$output .= '<li>'.anchor($thisclass->uri->uri_string(), $row->post_name).'</li>';
 						} elseif ($c_type == 'page') {
-							$output .= '<li>'.anchor($this->uri->uri_string(), $row->post_name).'</li>';
+							$output .= '<li>'.anchor($thisclass->uri->uri_string(), $row->post_name).'</li>';
 						}
 					}
 					
 					// other pages that doesn't in url alias.
 					switch($segment) {
 						case 'search':
-							$this->lang->load('search');
+							$thisclass->lang->load('search');
 							$output .= '<li>'.anchor('search', lang('search_search')).'</li>';
 							break;
 						default: 
@@ -110,7 +111,7 @@ class corebreadcrumb extends widget
 				
 				$output .= '</ul>';
 				
-				$this->cache->save('breadcrumb_'.md5(current_url()), $output, 3600);
+				$thisclass->cache->save('breadcrumb_'.md5(current_url()), $output, 3600);
 			}
 		}
 		

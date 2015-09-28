@@ -32,10 +32,11 @@ class corelangswitch extends widget
 	}// block_show_form
 	
 	
-	public function run() 
+	public static function run() 
 	{
+		$thisclass = new self;
 		// load helper
-		$this->load->helper('url');
+		$thisclass->load->helper('url');
 		
 		// get arguments
 		$args = func_get_args();

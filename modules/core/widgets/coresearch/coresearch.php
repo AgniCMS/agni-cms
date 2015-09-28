@@ -34,8 +34,9 @@ class coresearch extends widget
 	}// block_show_form
 	
 	
-	public function run() 
+	public static function run() 
 	{
+		$thisclass = new self;
 		// get arguments
 		$args = func_get_args();
 		$values = (isset($args[1]) ? unserialize($args[1]) : '');

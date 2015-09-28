@@ -33,10 +33,13 @@ class corelinks extends widget
 	}// block_show_form
 	
 	
-	public function run() 
+	public static function run() 
 	{
+		$thisclass = new self;
+
 		// load helper
-		$this->load->helper('menu');
+		$thisclass->load->helper('menu');
+
 		// get arguments
 		$args = func_get_args();
 		$values = (isset($args[1]) ? unserialize($args[1]) : '');
@@ -47,8 +50,8 @@ class corelinks extends widget
 		}
 		
 		if (isset($values['mg_id'])) {
-			$this->load->model('menu_model');
-			$list_item = $this->menu_model->listMenuItem($values['mg_id']);
+			$thisclass->load->model('menu_model');
+			$list_item = $thisclass->menu_model->listMenuItem($values['mg_id']);
 			echo show_menuitem_nested($list_item);
 		}
 	}// run

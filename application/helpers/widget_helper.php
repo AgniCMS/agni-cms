@@ -49,13 +49,14 @@ class widget
 	 * @param mixed $values
 	 * @return type 
 	 */
-	public function run($name = '', $file = '', $values = '', $dbobj = '') 
+	public static function run($name = '', $file = '', $values = '', $dbobj = '') 
 	{
 		$args = func_get_args();
+		$thisclass = new self;
 		
-		$this->module_path = config_item('modules_uri');
+		$thisclass->module_path = config_item('modules_uri');
 		
-		include_once $this->module_path.$file;
+		include_once $thisclass->module_path.$file;
 
 		if (class_exists($name)) {
 			$name = strtolower($name);

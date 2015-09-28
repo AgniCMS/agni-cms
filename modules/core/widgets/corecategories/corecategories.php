@@ -32,11 +32,13 @@ class corecategories extends widget
 	}// block_show_form
 	
 	
-	public function run() 
+	public static function run() 
 	{
-		$this->load->model('taxonomy_model');
-		$this->taxonomy_model->tax_type = 'category';
-		$this->load->helper('category');
+		$thisclass = new self;
+
+		$thisclass->load->model('taxonomy_model');
+		$thisclass->taxonomy_model->tax_type = 'category';
+		$thisclass->load->helper('category');
 		// get arguments
 		$args = func_get_args();
 		$values = (isset($args[1]) ? unserialize($args[1]) : '');
@@ -52,7 +54,7 @@ class corecategories extends widget
 			$nohome = true;
 		}
 		
-		echo show_category_nested_block($this->taxonomy_model->listTaxTerm(), $nohome);
+		echo show_category_nested_block($thisclass->taxonomy_model->listTaxTerm(), $nohome);
 	}// run
 	
 	
