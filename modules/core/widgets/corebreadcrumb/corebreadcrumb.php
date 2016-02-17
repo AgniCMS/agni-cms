@@ -26,7 +26,7 @@ class corebreadcrumb extends widget
 	}// __construct
 	
 	
-	public static function run() 
+	public static function run($name = '', $file = '', $values = '', $dbobj = '') 
 	{
 		if ((current_url() == site_url()) || (current_url().'/' == site_url('/')) || (current_url() == site_url('/'))) {
 			// on home page = not show.

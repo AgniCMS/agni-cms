@@ -32,7 +32,7 @@ class corecategories extends widget
 	}// block_show_form
 	
 	
-	public static function run() 
+	public static function run($name = '', $file = '', $values = '', $dbobj = '') 
 	{
 		$thisclass = new self;
 
