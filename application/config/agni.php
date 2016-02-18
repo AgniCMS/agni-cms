@@ -6,7 +6,7 @@
  * @package agni cms
  * @author vee w.
  * @license http://www.opensource.org/licenses/GPL-3.0
- * @version 1.0
+ * @version 1.6
  * @since file available since version 1.0
  *
  */
