@@ -1,4 +1,4 @@
-
+This project is no longer maintained.
 
 
 =====ขั้นตอนการติดตั้ง ภาษาไทย=====
